@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 42e7f46d0e5a84171a3909479c1646ba
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - displacement2D: {fileID: 2800000, guid: 478fe261b62ca4bd99fb0a88e3bdb7ef, type: 2}
+  - secondDisplacement2D: {fileID: 2800000, guid: 64cfb2c11a69743638efec3e7f2d370f,
+      type: 2}
+  - thirdDisplacement2D: {fileID: 2800000, guid: 9a40d060f6add4542958ee8e54c8f88b,
+      type: 2}
+  - firstCompressed: {fileID: 2800000, guid: a782b26d6436b48d9882906b9f8ca31a, type: 2}
+  - secondCompressed: {fileID: 2800000, guid: 4facc21e08e3a43ed97c930f7dae6e7b, type: 2}
+  - thirdCompressed: {fileID: 2800000, guid: dc30b984e8e3c4cdfb38d5fceb411602, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

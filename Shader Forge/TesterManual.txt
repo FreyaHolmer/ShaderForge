@@ -1,0 +1,55 @@
+Hello, person reading this text!
+Welcome to the Shader Forge Alpha, and thanks for signing up to test it!
+
+You hopefully want to get going instantly, but please read this document first, it's not that long!
+
+Report bugs and request features here:
+https://shaderforge.userecho.com/
+
+List of some of the currently planned nodes and features: 
+https://docs.google.com/spreadsheet/ccc?key=0AqHpAiSNy9eDdGRaQ2hIbHpLVWtfbURSb1VRTlF0NGc&usp=sharing
+
+
+Important Legal stuff:
+----------------------
+- This is a test version solely for testing purposes, not a free license of Shader Forge, which means:
+- Don't use shaders created in Shader Forge in a public project
+- Don't share the code it creates to anyone apart from the alpha/beta testers
+- Don't give this test version to anyone or publish it online etc
+(Note that you are of course welcome (and encouraged) to share screenshots of Shader Forge and screenshots of shaders you've created in it publicly!)
+
+
+
+Installing:
+-----------
+Open a Unity project -> Double click the .unitypackage file you got in your mail
+Unity plugins are per-project, so open the project you want to test the Shader Forge alpha in
+
+
+
+Quick start:
+------------
+Opening Shader Forge = Window -> Shader Forge
+ 	     Panning = Click and drag empty space
+	     Zooming = (Coming later)
+	Adding nodes = RMB + select node OR pick from right panel and place (Dragging doesn't work at the moment)
+	Moving nodes = Click and drag
+      Deleting nodes = Hover cursor over and press delete
+Deleting connections = Hover cursor over and press delete
+
+
+
+A few known issues: (More here: https://shaderforge.userecho.com/ )
+-------------------
+- Shaders can't receive shadows
+- Vertex lighting is mostly broken
+- Only a directional light and ambient light is supported 
+- Loads of nodes are intentionally missing, check the feature list to see what is planned. If something is missing on that list, feel free to request it!
+
+
+
+Good luck!
+
+
+// Joachim Holmér
+// webmaster@acegikmo.com

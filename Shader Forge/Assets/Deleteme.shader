@@ -1,0 +1,1 @@
+﻿Shader "Hidden/tmp_shdr"{SubShader{Pass{}}}

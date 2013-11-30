@@ -313,7 +313,8 @@ namespace ShaderForge {
 			// Relink everything
 			int depth = maxDepth;
 			while( depth > 0 ) {
-				foreach( SF_Node n in editor.nodes ) {
+				for(int i=0; i<editor.nodes.Count; i++){
+					SF_Node n = editor.nodes[i];
 					if( n.depth == depth ) {
 						n.OnUpdateNode(NodeUpdateType.Soft, cascade:true);
 					}
@@ -395,7 +396,8 @@ namespace ShaderForge {
 			foreach( SF_Node node in editor.nodes )
 				sData += node.Serialize(false,useSuffixPrefix:true);
 
-			sData += editor.nodeView.treeStatus.SerializeProps() + ";";
+			if(editor.nodeView.treeStatus.propertyList.Count > 0)
+				sData += editor.nodeView.treeStatus.SerializeProps() + ";";
 
 			string footer = "pass:END;sub:END;";
 			footer += "*" + "/";

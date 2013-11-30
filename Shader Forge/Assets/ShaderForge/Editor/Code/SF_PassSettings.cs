@@ -1109,7 +1109,7 @@ namespace ShaderForge {
 			if( !autoSort )
 				return;
 
-			if( editor.materialOutput.alpha.IsConnectedAndEnabled() || editor.materialOutput.refraction.IsConnectedAndEnabled() ) {
+			if( editor.materialOutput.alpha.IsConnectedAndEnabled() || editor.materialOutput.refraction.IsConnectedAndEnabled() || editor.nodeView.treeStatus.usesSceneData ) {
 				SetQueuePreset(Queue.Transparent);
 				renderType = RenderType.Transparent;
 				ignoreProjector = true;

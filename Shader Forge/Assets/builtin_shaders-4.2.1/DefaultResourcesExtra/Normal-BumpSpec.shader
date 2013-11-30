@@ -12,6 +12,7 @@ SubShader {
 	
 CGPROGRAM
 #pragma surface surf BlinnPhong
+#pragma debug
 
 
 sampler2D _MainTex;

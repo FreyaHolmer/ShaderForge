@@ -75,8 +75,8 @@ namespace ShaderForge {
 		public SF_Editor() {
 			//Debug.Log( "[SF_LOG] - SF_Editor CONSTRUCTOR SF_Editor()" );
 			SF_Editor.instance = this;
-			Texture tabIcon = (Texture2D)Resources.LoadAssetAtPath( SF_Paths.pInterface + "icon_normal.tga", typeof( Texture2D ) );
-			HOPanelUtils.SetWindowTitle( this, (Texture)tabIcon, "Shader Forge" );
+			//Texture tabIcon = (Texture2D)Resources.LoadAssetAtPath( SF_Paths.pInterface + "icon_normal.tga", typeof( Texture2D ) );
+			HOPanelUtils.SetWindowTitle( this, (Texture)SF_GUI.Icon, "Shader Forge" );
 		}
 
 		[MenuItem( "Window/Shader Forge" )]
@@ -156,7 +156,7 @@ namespace ShaderForge {
 			string catProps = "Properties/";
 			
 			AddTemplate( typeof( SFN_Tex2d ), catProps + "Texture 2D", KeyCode.T );
-			AddTemplate( typeof( SFN_Tex2dAsset ), catProps + "Texture Asset" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Tex2dAsset ), catProps + "Texture Asset" );
 			AddTemplate( typeof( SFN_ValueProperty ), catProps + "Value" );
 			AddTemplate( typeof( SFN_Vector4Property ), catProps + "Vector 4" );
 			AddTemplate( typeof( SFN_Color ), catProps + "Color" );
@@ -206,6 +206,9 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_ViewPosition ), catExtData + "View Position" );
 			AddTemplate( typeof( SFN_ProjectionParameters ), catExtData + "Projection Parameters" );
 			AddTemplate( typeof( SFN_ScreenParameters ), catExtData + "Screen Parameters" );
+
+			string catSceneData = "Scene Data/";
+			AddTemplate( typeof(SFN_SceneColor), catSceneData + "Scene Color" ).MarkAsNewNode();
 			
 
 			string catMathConst = "Math Constants/";
@@ -856,7 +859,7 @@ namespace ShaderForge {
 		public void DrawPreviewPanel( Rect r ) {
 			// Left side shader preview
 
-			Rect logoRect = new Rect( 0, 0, SF_GUI.Logo.width, SF_GUI.Logo.height );
+			Rect logoRect = new Rect( 5, 0, SF_GUI.Logo.width, SF_GUI.Logo.height );
 
 			GUI.DrawTexture( logoRect, SF_GUI.Logo );
 			GUI.Box( new Rect(203,10,128,19), SF_Tools.versionStage+" "+SF_Tools.version, versionStyle );

@@ -12,6 +12,7 @@ namespace ShaderForge {
 		public SF_Editor editor;
 		public List<SF_ErrorEntry> errors;
 		public bool mipInputUsed = false; // If this is true, only DX is allowed :<
+		public bool usesSceneData = false;
 		// public bool lightNodesUsed = false; // Used to re-enable light settings when shader is set to unlit
 
 
@@ -33,12 +34,12 @@ namespace ShaderForge {
 		}
 
 		public void DeserializeProps( string s ) {
-			//Debug.Log("Deserializing properties = " + s);
+			Debug.Log("Deserializing properties = " + s);
 			string[] split = s.Split( '-' );
 			propertyList = new System.Collections.Generic.List<SF_Node>();
 			for( int i = 0; i < split.Length; i++ ) {
-				//Debug.Log("Found " + GetNodeByID( int.Parse( split[i] )).nodeName);
-				//Debug.Log ("Attempting deserialization. int parse of ["+split[i]+"]");
+				Debug.Log("Found " + GetNodeByID( int.Parse( split[i] )).nodeName);
+				Debug.Log ("Attempting deserialization. int parse of ["+split[i]+"]");
 				propertyList.Add( GetNodeByID( int.Parse( split[i] ) ) );
 			}
 		}
@@ -89,6 +90,7 @@ namespace ShaderForge {
 
 			bool foundMipUsed = false;
 			SF_Node mipNode = null;
+			usesSceneData = false;
 			foreach( SF_Node n in cNodes ) {
 
 				// Refresh property list
@@ -99,6 +101,10 @@ namespace ShaderForge {
 					}
 				}
 
+				if( n is SFN_SceneColor ){
+					usesSceneData = true;
+				}
+
 
 				if( n is SFN_Tex2d || n is SFN_Cubemap ) { // Check MIP input
 					if( n.GetInputIsConnected( "MIP" ) ) {
@@ -106,6 +112,7 @@ namespace ShaderForge {
 						mipNode = n;
 					}
 				}
+
 
 
 				foreach( SF_NodeConnection con in n.connectors ) {

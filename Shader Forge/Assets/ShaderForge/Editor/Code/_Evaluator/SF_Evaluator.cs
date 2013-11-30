@@ -179,6 +179,12 @@ namespace ShaderForge {
 					dependencies.time = true;
 				}
 
+				if( n is SFN_SceneColor){
+					if((n as SFN_SceneColor).AutoUV())
+						dependencies.NeedFragScreenPos();
+					dependencies.NeedGrabPass();
+				}
+
 				if( n is SFN_ObjectPosition ) {
 					dependencies.NeedFragObjPos();
 				}
@@ -420,11 +426,6 @@ namespace ShaderForge {
 				else
 					App( "#pragma multi_compile_shadowcaster" );
 			}
-			
-			
-
-
-			
 
 
 			
@@ -432,7 +433,7 @@ namespace ShaderForge {
 				App( "#pragma exclude_renderers " + dependencies.GetExcludePlatforms() );
 			if( dependencies.IsTargetingAboveDefault() )
 				App( "#pragma target " + dependencies.GetShaderTarget() );
-			App ("#pragma glsl");
+			// App ("#pragma glsl"); // Kills non DX instruction counts
 		}
 		void EndCG() {
 			App( "ENDCG" );
@@ -673,7 +674,9 @@ namespace ShaderForge {
 		void CalcDiffuse() {
 
 			//App( "float atten = 1.0;" );
-			AppDebug("CalcDiffuse()");
+			AppDebug("Diffuse");
+
+
 
 			//InitAttenuation();
 			if( ps.IsEnergyConserving() ) {
@@ -748,7 +751,11 @@ namespace ShaderForge {
 				}
 			}
 
-			lmbStr = "float3 diffuse = " + lmbStr + " * attenColor;";
+			lmbStr = "float3 diffuse = " + lmbStr + " * attenColor";
+
+			lmbStr += ";";
+
+
 			App( lmbStr );
 
 			if( LightmapThisPass() ) {
@@ -823,6 +830,7 @@ namespace ShaderForge {
 
 
 		void CalcGloss(){
+			AppDebug("Gloss");
 			if( ps.remapGlossExponentially ) {
 				App( "float gloss = exp2(" + ps.n_gloss + "*10.0+1.0);" );
 			} else {
@@ -835,7 +843,7 @@ namespace ShaderForge {
 
 
 
-			AppDebug("CalcSpecular()");
+			AppDebug("Specular");
 
 			string s = "float3 specular = attenColor * " + ps.n_specular;
 			if( ps.IsPBL() ) {
@@ -929,7 +937,7 @@ namespace ShaderForge {
 
 
 		void CalcEmissive(){
-			AppDebug("CalcEmissive()");
+			AppDebug("Emissive");
 			App ("float3 emissive = " + ps.n_emissive + ";");
 		}
 
@@ -968,7 +976,7 @@ namespace ShaderForge {
 
 
 		void AppFinalOutput(string color, string alpha) {
-			AppDebug("Final output color");
+			AppDebug("Final Color");
 			if( ps.HasRefraction() && currentPass == PassType.FwdBase ) {
 				App( "return fixed4(lerp(tex2D(_GrabTexture, float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ").rgb, " + color + "," + alpha + "),1);" );
 			} else {
@@ -981,10 +989,16 @@ namespace ShaderForge {
 
 			if( IsShadowOrOutlinePass() )
 				return;
-			AppDebug ("Lighting()");
+			AppDebug ("Lighting");
 
 			if( ps.IsVertexLit() && SF_Evaluator.inFrag ) {
-				App( "float3 lightFinal = i.vtxLight;" ); // TODO: Emissive and other frag effects?
+				string finalLightStr = "float3 lightFinal = i.vtxLight";
+
+				if(DoPassDiffuse())
+					finalLightStr += " * " + ps.n_diffuse; // TODO: Not ideal, affects both spec and diffuse
+
+				finalLightStr += ";";
+				App( finalLightStr ); // TODO: Emissive and other frag effects? TODO: Separate vtx spec and vtx diffuse
 				return;
 			}
 
@@ -1010,7 +1024,7 @@ namespace ShaderForge {
 			//InitLightDir();
 
 			//if(SF_Evaluator.inFrag)
-			if( DoPassDiffuse() ) // Diffuse LIGHT, not texture
+			if( DoPassDiffuse() ) // Diffuse + texture (If not vertex lit)
 				CalcDiffuse();
 
 			if( DoPassEmissive() ) // Emissive
@@ -1026,6 +1040,10 @@ namespace ShaderForge {
 			if( !ps.IsVertexLit() && currentProgram == ShaderProgram.Frag ) {
 
 				string lgFinal = "float3 lightFinal = diffuse";
+
+				if(ps.mOut.diffuse.IsConnectedEnabledAndAvailable()){
+					lgFinal += " * " + ps.n_diffuse;
+				}
 
 				if(DoPassSpecular())
 					lgFinal += " + specular";
@@ -1310,7 +1328,6 @@ namespace ShaderForge {
 
 
 
-
 			Lighting(); // This is ignored in shadow passes
 
 			if( currentPass == PassType.ShadColl ) {
@@ -1320,7 +1337,12 @@ namespace ShaderForge {
 			} else if(currentPass == PassType.Outline){
 				App ("return fixed4("+ps.n_outlineColor+",0);");
 			} else {
-				AppFinalOutput("lightFinal * " + ps.n_diffuse, ps.n_alpha);
+
+				//if(ps.mOut.diffuse.IsConnectedEnabledAndAvailable()){
+				//	AppFinalOutput("lightFinal + " + "diffuse", ps.n_alpha); // This is really weird, it should already be included in the light calcs. Do more research // TODO
+				//}else
+					AppFinalOutput("lightFinal", ps.n_alpha);
+				
 			}
 
 			End();
@@ -1972,8 +1994,11 @@ namespace ShaderForge {
 			shaderString += GetScopeTabs() + s + "\n";
 		}
 		public void AppDebug( string s ) {
-			if(DEBUG)
-				shaderString += "//////// DEBUG - " + s + "\n";
+			//if(DEBUG)
+
+
+
+			shaderString += GetScopeTabs().Replace(' ','/').Substring(s.Length + 2) + " " + s + ":\n";
 		}
 		string GetScopeTabs() {
 			string s = "";

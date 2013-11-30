@@ -36,6 +36,7 @@ namespace ShaderForge {
 		}
 
 		public void AssignToEmptyInputs( ValueType vt ) {
+			Debug.Log("AssignToEmptInputs: " + vt + " on output of " + output.node.nodeName);
 			foreach( SF_NodeConnection nc in inputs ) {
 				if( !nc.IsConnected() )
 					nc.valueType = vt;

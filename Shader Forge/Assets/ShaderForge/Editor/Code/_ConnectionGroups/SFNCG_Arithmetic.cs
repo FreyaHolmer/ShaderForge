@@ -38,20 +38,33 @@ namespace ShaderForge {
 			ValueType genericInType = GetGenericInputType();
 			AssignToEmptyInputs( genericInType );
 
-			Debug.Log("Refreshing connection group of " + output.node.nodeName );
+			//Debug.Log("Refreshing connection group of " + output.node.nodeName );
 
 			// Output:
-			if( !lockedOutput )
+			if( !lockedOutput ){
 				if( InputsMissing() ) {
 					if( baseInType == ValueType.VTv1 )
 						output.valueType = ValueType.VTvPending;
 					else
 						output.valueType = baseInType;
 				} else {
-					output.valueType = GetDominantInputType();
-					Debug.Log("Setting output type of " + output.node.nodeName + " to " + output.valueType);
+				//	Debug.Log("SEARCHING:");
+					ValueType vtDom = GetDominantInputType();
+					//Debug.Log("Dominant = " + vtDom);
+					SetOutputValueType(vtDom);
+
 					UpdateTypecasts();
 				}
+			}
+		}
+
+
+		public void SetOutputValueType(ValueType vt){
+
+			//Debug.Log("Trying to set to " + vt);
+			output.SetValueType(vt);
+
+			//Debug.Log("Setting output type of " + output.node.nodeName + " to " + output.valueType); // THIS IS SET TO PENDING VOR VEC1 INPUTS
 		}
 		
 		
@@ -89,9 +102,13 @@ namespace ShaderForge {
 
 		public ValueType GetGenericInputType() {
 			ValueType vt = GetBaseInputType();
+			Debug.Log("Getting base input type on "+output.node.nodeName+" = " + vt);
 			switch( vt ) {
 				case ValueType.VTv1:
-					return ValueType.VTvPending;
+					if(inputs.Length > 1)
+						return ValueType.VTvPending; // TODO: Really?
+					else
+						return ValueType.VTv1; // TODO: This feels weird
 				case ValueType.VTv2:
 					return ValueType.VTv1v2;
 				case ValueType.VTv3:
@@ -105,9 +122,15 @@ namespace ShaderForge {
 		}
 
 		public ValueType GetDominantInputType() {
+
 			ValueType dom = inputs[0].valueType;
+
+
+			//ValueType dom = inputs[0].valueType;
 			//Debug.Log("Val 0 is " + inputs[0].valueType.ToString());
 			//Debug.Log("Val 1 is " + inputs[1].valueType.ToString());
+
+
 			for( int i = 1; i < inputs.Length; i++ ) {
 				dom = GetDominantType( dom, inputs[i].valueType );
 			}
@@ -117,7 +140,7 @@ namespace ShaderForge {
 
 		public ValueType GetDominantType( ValueType a, ValueType b ) {
 			
-			//Debug.Log("Checking dominancy between a:" + a.ToString() + " b:" + b.ToString());
+			//Debug.Log("Checking dominancy between a:" + a.ToString() + " b:" + b.ToString() + " on " + output.node.nodeName);
 			
 			if( a == b )
 				return a;
@@ -155,7 +178,7 @@ namespace ShaderForge {
 			
 			
 
-			Debug.LogWarning( "You should not be able to get here! Dominant pending type returned" );
+		//	Debug.LogWarning( "You should not be able to get here! Dominant pending type returned" );
 			return ValueType.VTvPending;
 		}
 

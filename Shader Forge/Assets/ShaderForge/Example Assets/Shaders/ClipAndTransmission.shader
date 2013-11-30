@@ -1,7 +1,7 @@
 // Shader created with Shader Forge Alpha 0.15 
 // Shader Forge (c) Joachim 'Acegikmo' Holmer
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:3,blpr:0,bsrc:3,bdst:7,culm:2,dpts:2,wrdp:True,uamb:True,ufog:True,aust:True,igpj:False,qofs:0,lico:0,qpre:2,flbk:Transparent/Cutout/Diffuse,rntp:3,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False;n:type:ShaderForge.SFN_Final,id:0,x:32886,y:32683|diff-1-RGB,diffpow-5-OUT,spec-3-OUT,normal-2-RGB,clip-1-A,transm-7-OUT,lwrap-6-OUT;n:type:ShaderForge.SFN_Tex2d,id:1,x:33193,y:32683,ptlb:Diffuse,tex:66321cc856b03e245ac41ed8a53e0ecc;n:type:ShaderForge.SFN_Tex2d,id:2,x:33193,y:32825,ptlb:Normal,tex:cb6c5165ed180c543be39ed70e72abc8;n:type:ShaderForge.SFN_Vector1,id:3,x:33193,y:32602,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:5,x:33193,y:32538,v1:2;n:type:ShaderForge.SFN_Vector3,id:6,x:33193,y:33054,v1:0.9,v2:0.9,v3:0.8;n:type:ShaderForge.SFN_Vector3,id:7,x:33193,y:32955,v1:0.9,v2:1,v3:0.5;proporder:1-2;pass:END;sub:END;*/
+/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:3,blpr:0,bsrc:3,bdst:7,culm:2,dpts:2,wrdp:True,uamb:True,ufog:True,aust:True,igpj:False,qofs:0,lico:0,qpre:2,flbk:Transparent/Cutout/Diffuse,rntp:3,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True;n:type:ShaderForge.SFN_Final,id:0,x:32886,y:32683|diff-1-RGB,diffpow-5-OUT,spec-3-OUT,normal-2-RGB,clip-1-A,transm-7-OUT,lwrap-6-OUT;n:type:ShaderForge.SFN_Tex2d,id:1,x:33193,y:32683,ptlb:Diffuse,tex:66321cc856b03e245ac41ed8a53e0ecc;n:type:ShaderForge.SFN_Tex2d,id:2,x:33193,y:32825,ptlb:Normal,tex:cb6c5165ed180c543be39ed70e72abc8;n:type:ShaderForge.SFN_Vector1,id:3,x:33193,y:32602,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:5,x:33193,y:32538,v1:2;n:type:ShaderForge.SFN_Vector3,id:6,x:33193,y:33054,v1:0.9,v2:0.9,v3:0.8;n:type:ShaderForge.SFN_Vector3,id:7,x:33193,y:32955,v1:0.9,v2:1,v3:0.5;proporder:1-2;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/ClipAndTransmission" {
     Properties {
@@ -72,21 +72,22 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
 //////// DEBUG - Lighting()
-                float3 attenuation = LIGHT_ATTENUATION(i) * _LightColor0.xyz;
+                float attenuation = LIGHT_ATTENUATION(i);
+                float3 attenColor = attenuation * _LightColor0.xyz;
 //////// DEBUG - CalcDiffuse()
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 w = float3(0.9,0.9,0.8)*0.5; // Light wrapping
                 float3 NdotLWrap = NdotL * ( 1.0 - w );
                 float3 forwardLight = pow( max(float3(0.0,0.0,0.0), NdotLWrap + w ), 2.0 );
                 float3 backLight = pow( max(float3(0.0,0.0,0.0), -NdotLWrap + w ), 2.0 ) * float3(0.9,1,0.5);
-                float3 diffuse = forwardLight+backLight * attenuation;
-                float gloss = 10;
+                float3 diffuse = forwardLight+backLight * attenColor;
+                float gloss = exp2(0.5*10.0+1.0);
 //////// DEBUG - CalcSpecular()
                 float node_3 = 0.3;
-                float3 specular = attenuation * float3(node_3,node_3,node_3) * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss);
-                float3 lightFinal = diffuse;
-                return fixed4(lightFinal * node_1.rgb + specular,1);
-                return fixed4(lightFinal * node_1.rgb,1);
+                float3 specular = attenColor * float3(node_3,node_3,node_3) * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss);
+                float3 lightFinal = diffuse * node_1.rgb + specular;
+//////// DEBUG - Final output color
+                return fixed4(lightFinal,1);
             }
             ENDCG
         }

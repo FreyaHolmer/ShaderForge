@@ -35,6 +35,8 @@ namespace ShaderForge{
 
 		public void Parse(ShaderProgram prog, string line, bool ignoreMin ) {
 
+			Debug.Log("Parsing instruction count: line = " + line);
+
 			// String style:
 			// "//   opengl - ALU: 29 to 35"
 			// "//   opengl - ALU: 7 to 15, TEX: 1 to 3"

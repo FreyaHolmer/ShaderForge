@@ -175,12 +175,19 @@ namespace ShaderForge {
 
 			int primPlat = (int)GetPrimaryPlatform();
 
+			Debug.Log("Primary platform: " + (RenderPlatform)primPlat);
+
+
+
 			foreach( SFIns_Pass p in passes ) {
 				vCount += p.plats[primPlat].vert;	// Only d3d9 for now // TODO
 				fCount += p.plats[primPlat].frag;
 				vtCount += p.plats[primPlat].vTex;
 				ftCount += p.plats[primPlat].fTex;
 			}
+
+
+			Debug.Log("vCount = " + vCount);
 
 
 

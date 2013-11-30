@@ -52,8 +52,8 @@ namespace ShaderForge {
 
 
 		public override float NodeOperator( int x, int y, int c ) {
-			if( c + 1 > GetEvaluatedComponentCount() )
-				return 0f;
+			//if( c + 1 > GetEvaluatedComponentCount() && GetEvaluatedComponentCount() > 1 ) // Why was this needed before?
+			//	return 0f;
 			return Mathf.Clamp( GetInputData( "IN", x, y, c ), GetInputData( "MIN", x, y, c ), GetInputData( "MAX", x, y, c ) );
 		}
 

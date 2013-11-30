@@ -1,13 +1,13 @@
 // Shader created with Shader Forge Alpha 0.15 
 // Shader Forge (c) Joachim 'Acegikmo' Holmer
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:2,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,ufog:True,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True;n:type:ShaderForge.SFN_Final,id:1,x:32759,y:32639|diff-2-RGB,spec-4-RGB,gloss-5-OUT;n:type:ShaderForge.SFN_Color,id:2,x:33034,y:32505,ptlb:Color,c1:0.5,c2:0.5,c3:0.5,c4:1;n:type:ShaderForge.SFN_Color,id:4,x:33034,y:32679,ptlb:SpecColor,c1:0.5,c2:0.5,c3:0.5,c4:1;n:type:ShaderForge.SFN_Slider,id:5,x:33034,y:32853,ptlb:Shininess,min:1.28,cur:20,max:128;proporder:2-4-5;pass:END;sub:END;*/
+/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:2,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,ufog:True,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True;n:type:ShaderForge.SFN_Final,id:1,x:32759,y:32639|diff-2-RGB,spec-4-RGB,gloss-5-OUT;n:type:ShaderForge.SFN_Color,id:2,x:33034,y:32505,ptlb:Color,c1:0.5,c2:0.5,c3:0.5,c4:1;n:type:ShaderForge.SFN_Color,id:4,x:33034,y:32679,ptlb:SpecColor,c1:0.5,c2:0.5,c3:0.5,c4:1;n:type:ShaderForge.SFN_Slider,id:5,x:33034,y:32853,ptlb:Shininess,min:0,cur:0.4511278,max:1;proporder:2-4-5;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/ColorSpec" {
     Properties {
         _Color ("Color", Color) = (0.5,0.5,0.5,1)
         _SpecColor ("SpecColor", Color) = (0.5,0.5,0.5,1)
-        _Shininess ("Shininess", Range(1.28, 128)) = 1.28
+        _Shininess ("Shininess", Range(0, 1)) = 0
     }
     SubShader {
         Tags {
@@ -28,7 +28,6 @@ Shader "Shader Forge/Examples/ColorSpec" {
             #pragma multi_compile_fwdbase_fullshadows
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            #pragma glsl
             #ifndef LIGHTMAP_OFF
                 sampler2D unity_Lightmap;
                 float4 unity_LightmapST;
@@ -96,21 +95,22 @@ Shader "Shader Forge/Examples/ColorSpec" {
                     float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 #endif
                 float3 halfDirection = normalize(viewDirection+lightDirection);
-//////// DEBUG - Lighting()
+////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
-//////// DEBUG - CalcDiffuse()
+/////// Diffuse:
                 #ifndef LIGHTMAP_OFF
                     float3 diffuse = lightmap;
                 #else
                     float3 diffuse = max( 0.0, dot(normalDirection,lightDirection )) * attenColor;
                 #endif
+///////// Gloss:
                 float gloss = exp2(_Shininess*10.0+1.0);
-//////// DEBUG - CalcSpecular()
+////// Specular:
                 float3 specular = attenColor * _SpecColor.rgb * pow(max(0,dot(halfDirection,normalDirection)),gloss);
-                float3 lightFinal = diffuse + specular;
-//////// DEBUG - Final output color
-                return fixed4(lightFinal * _Color.rgb,1);
+                float3 lightFinal = diffuse * _Color.rgb + specular;
+/// Final Color:
+                return fixed4(lightFinal,1);
             }
             ENDCG
         }
@@ -131,7 +131,6 @@ Shader "Shader Forge/Examples/ColorSpec" {
             #pragma multi_compile_fwdadd_fullshadows
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            #pragma glsl
             #ifndef LIGHTMAP_OFF
                 sampler2D unity_Lightmap;
                 float4 unity_LightmapST;
@@ -172,17 +171,18 @@ Shader "Shader Forge/Examples/ColorSpec" {
                 float3 normalDirection = normalize(i.normalDir);
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
-//////// DEBUG - Lighting()
+////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
-//////// DEBUG - CalcDiffuse()
+/////// Diffuse:
                 float3 diffuse = max( 0.0, dot(normalDirection,lightDirection )) * attenColor;
+///////// Gloss:
                 float gloss = exp2(_Shininess*10.0+1.0);
-//////// DEBUG - CalcSpecular()
+////// Specular:
                 float3 specular = attenColor * _SpecColor.rgb * pow(max(0,dot(halfDirection,normalDirection)),gloss);
-                float3 lightFinal = diffuse + specular;
-//////// DEBUG - Final output color
-                return fixed4(lightFinal * _Color.rgb,1);
+                float3 lightFinal = diffuse * _Color.rgb + specular;
+/// Final Color:
+                return fixed4(lightFinal,1);
             }
             ENDCG
         }

@@ -43,7 +43,7 @@ namespace ShaderForge {
 
 
 			this.connectors = new SF_NodeConnection[]{
-				diffuse 				= SF_NodeConnection.Create(this,"diff",				   "Diffuse",	ConType.cInput, ValueType.VTvPending	,true,"float3(1,1,1)"	).Skip(PassType.ShadColl, PassType.ShadCast, PassType.Outline).TypecastTo(3),
+				diffuse 				= SF_NodeConnection.Create(this,"diff",				   "Diffuse",	ConType.cInput, ValueType.VTvPending	,true,"float3(0,0,0)"	).Skip(PassType.ShadColl, PassType.ShadCast, PassType.Outline).TypecastTo(3),
 				diffusePower 			= SF_NodeConnection.Create(this,"diffpow",		 "Diffuse Power",   ConType.cInput, ValueType.VTvPending	,true,"1"				).Skip(PassType.ShadColl, PassType.ShadCast, PassType.Outline),
 				specular 				= SF_NodeConnection.Create(this,"spec",				  "Specular",	ConType.cInput, ValueType.VTvPending	,true					).Skip(PassType.ShadColl, PassType.ShadCast, PassType.Outline).TypecastTo(3),
 				gloss 					= SF_NodeConnection.Create(this,"gloss",                 "Gloss",	ConType.cInput, ValueType.VTv1			,true,"0.5"				).Skip(PassType.ShadColl, PassType.ShadCast, PassType.Outline),

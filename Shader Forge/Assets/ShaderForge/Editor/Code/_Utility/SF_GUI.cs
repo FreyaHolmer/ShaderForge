@@ -24,8 +24,17 @@ namespace ShaderForge {
 		public static Texture2D Logo {
 			get {
 				if( logo == null )
-					logo = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + SkinSuffix("logo") + ".tga", typeof( Texture2D ) );
+					logo = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + SkinSuffix("logo") + ".png", typeof( Texture2D ) );
 				return logo;
+			}
+		}
+
+		private static Texture2D icon;
+		public static Texture2D Icon {
+			get {
+				if( icon == null )
+					icon = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + SkinSuffix( "icon" ) + ".png", typeof( Texture2D ) );
+				return icon;
 			}
 		}
 
@@ -64,6 +73,8 @@ namespace ShaderForge {
 				return inst_frag_tex;
 			}
 		}
+
+
 
 
 		public static string SkinSuffix(string s) {

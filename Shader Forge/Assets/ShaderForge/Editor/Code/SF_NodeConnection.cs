@@ -263,6 +263,10 @@ namespace ShaderForge {
 			return IsConnected() && enableState == EnableState.Enabled;
 		}
 
+		public bool IsConnectedEnabledAndAvailable(){
+			return IsConnected() && enableState == EnableState.Enabled && availableState == AvailableState.Available;
+		}
+
 
 
 		public bool ConnectionInProgress() {
@@ -404,7 +408,7 @@ namespace ShaderForge {
 		}
 
 		public bool CanEvaluate() {
-			if( !IsConnected() )
+			if( !IsConnectedAndEnabled() )
 				if( !string.IsNullOrEmpty( unconnectedEvaluationValue ) )
 					return true;
 				else
@@ -429,7 +433,7 @@ namespace ShaderForge {
 			
 			//Debug.Log("TryEvaluate " + label + " typecast = " + typecastTarget);
 			
-			if( !IsConnected() )
+			if( !IsConnectedAndEnabled() )
 				if( !string.IsNullOrEmpty( unconnectedEvaluationValue ) )
 					return unconnectedEvaluationValue;
 			if( !CanEvaluate() )
@@ -654,9 +658,24 @@ namespace ShaderForge {
 			if( linkMethod == LinkingMethod.Default ) {
 				node.RefreshValue();// OnUpdateNode( NodeUpdateType.Soft, false ); // Update this value
 				other.node.OnUpdateNode(); // Update other, and following
-				
+
 			}
 			
+		}
+
+
+		// This is currenly meant to propagate its value type to its link partner
+		public void SetValueType(ValueType vt){
+			if(conType == ConType.cOutput){
+
+				this.valueType = vt;
+				foreach(SF_NodeConnection con in this.outputCons){
+					if(con.valueTypeDefault == ValueType.VTvPending){
+						con.valueType = this.valueType;
+						con.node.OnUpdateNode();
+					}
+				}
+			}
 		}
 
 		public Color GetConnectorColorRGB() {
@@ -795,7 +814,7 @@ namespace ShaderForge {
 		}
 
 		public bool HasErrors() {
-			if( required && !IsConnected() ) {
+			if( required && !IsConnectedAndEnabled() ) {
 				return true;
 			}
 			return false;

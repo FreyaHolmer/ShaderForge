@@ -2,7 +2,7 @@
 ## Super ignore and unignore
 #################
 
-/*
+*
 !BUILDS/*
 !ICON_SOURCE/*
 !OLD_FILES/*

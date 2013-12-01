@@ -131,7 +131,7 @@ namespace UnityEditor {
 		
 
 
-		public void OpenCompiledShader(Shader s) {
+		public static void OpenCompiledShader(Shader s) {
 			Type shaderUtil = Type.GetType( "UnityEditor.ShaderUtil,UnityEditor" );
 			BindingFlags bfs = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 			MethodInfo ocs = shaderUtil.GetMethod( "OpenCompiledShader", bfs );

@@ -753,6 +753,10 @@ namespace ShaderForge {
 
 			lmbStr = "float3 diffuse = " + lmbStr + " * attenColor";
 
+			if(ps.useAmbient && currentPass == PassType.FwdBase){
+				lmbStr += " + UNITY_LIGHTMODEL_AMBIENT.xyz";
+			}
+			
 			lmbStr += ";";
 
 
@@ -1533,6 +1537,10 @@ namespace ShaderForge {
 				App( "FallBack \"Diffuse\"" ); // Needed for shadows!
 		}
 
+		void WriteCustomEditor(){
+			App("CustomEditor \"ShaderForgeMaterialInspector\"");
+		}
+
 
 		public void GrabPass() {
 			if( !dependencies.grabPass )
@@ -1880,6 +1888,7 @@ namespace ShaderForge {
 				}
 				End();
 				Fallback();
+				WriteCustomEditor();
 			}
 			End();
 			
@@ -1895,6 +1904,9 @@ namespace ShaderForge {
 			//		shaderString.Replace( "_SinTime", "_SinTimeEditor" );
 			//return shaderString;
 		//}
+
+
+
 
 		void SaveShaderAsset() {
 

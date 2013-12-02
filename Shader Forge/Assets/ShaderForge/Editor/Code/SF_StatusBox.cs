@@ -175,7 +175,7 @@ namespace ShaderForge {
 
 			int primPlat = (int)GetPrimaryPlatform();
 
-			Debug.Log("Primary platform: " + (RenderPlatform)primPlat);
+		//	Debug.Log("Primary platform: " + (RenderPlatform)primPlat);
 
 
 
@@ -187,7 +187,7 @@ namespace ShaderForge {
 			}
 
 
-			Debug.Log("vCount = " + vCount);
+			//Debug.Log("vCount = " + vCount);
 
 
 

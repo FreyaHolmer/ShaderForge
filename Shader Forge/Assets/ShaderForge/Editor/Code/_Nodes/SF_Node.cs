@@ -62,7 +62,7 @@ namespace ShaderForge {
 
 		//public int depth = 0; // Used to sort variable initialization
 
-		public static bool DEBUG = true;
+		public static bool DEBUG = false;
 
 
 		public SF_NodePreview texture;

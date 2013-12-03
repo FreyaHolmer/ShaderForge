@@ -99,10 +99,11 @@ Shader "Shader Forge/Examples/ColorSpec" {
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 /////// Diffuse:
+                float NdotL = dot( normalDirection, lightDirection );
                 #ifndef LIGHTMAP_OFF
                     float3 diffuse = lightmap;
                 #else
-                    float3 diffuse = max( 0.0, dot(normalDirection,lightDirection )) * attenColor;
+                    float3 diffuse = max( 0.0, NdotL) * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
                 #endif
 ///////// Gloss:
                 float gloss = exp2(_Shininess*10.0+1.0);
@@ -175,7 +176,8 @@ Shader "Shader Forge/Examples/ColorSpec" {
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 /////// Diffuse:
-                float3 diffuse = max( 0.0, dot(normalDirection,lightDirection )) * attenColor;
+                float NdotL = dot( normalDirection, lightDirection );
+                float3 diffuse = max( 0.0, NdotL) * attenColor;
 ///////// Gloss:
                 float gloss = exp2(_Shininess*10.0+1.0);
 ////// Specular:
@@ -188,4 +190,5 @@ Shader "Shader Forge/Examples/ColorSpec" {
         }
     }
     FallBack "Diffuse"
+    CustomEditor "ShaderForgeMaterialInspector"
 }

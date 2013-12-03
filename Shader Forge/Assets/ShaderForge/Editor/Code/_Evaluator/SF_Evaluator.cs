@@ -686,9 +686,11 @@ namespace ShaderForge {
 
 			string lmbStr;
 
+			App( "float NdotL = dot( "+VarNormalDir()+", lightDirection );" );
+
 			if( ps.HasTransmission() || ps.HasLightWrapping() ) {
 
-				App( "float NdotL = dot( "+VarNormalDir()+", lightDirection );" );
+
 
 				if(ps.HasLightWrapping()){
 					App( "float3 w = " + ps.n_lightWrap + "*0.5; // Light wrapping" );
@@ -734,7 +736,7 @@ namespace ShaderForge {
 					scope++;
 				}
 
-				lmbStr = "max( 0.0, dot("+VarNormalDir()+",lightDirection ))";
+				lmbStr = "max( 0.0, NdotL)";
 
 				if( ps.n_diffusePower != "1" ) {
 					lmbStr = "pow(" + lmbStr + "," + ps.n_diffusePower + ")";
@@ -754,7 +756,7 @@ namespace ShaderForge {
 			lmbStr = "float3 diffuse = " + lmbStr + " * attenColor";
 
 			if(ps.useAmbient && currentPass == PassType.FwdBase){
-				lmbStr += " + UNITY_LIGHTMODEL_AMBIENT.xyz";
+				lmbStr += " + " + GetAmbientStr();
 			}
 			
 			lmbStr += ";";
@@ -819,8 +821,6 @@ namespace ShaderForge {
 				}
 			}
 			if( ps.IsDoubleSided() ) {
-
-
 				App( "" );
 				App( "float nSign = sign( dot( viewDirection, normalDirection ) ); // Reverse normal if this is a backface" );
 				App( "i.normalDir *= nSign;" );
@@ -878,7 +878,7 @@ namespace ShaderForge {
 				
 				// VISIBILITY TERM
 				if( ps.visibilityTerm ) {
-					App( "float NdotL = max(0.0,dot( "+VarNormalDir()+", lightDirection ));" );
+					//App( "float NdotL = max(0.0,dot( "+VarNormalDir()+", lightDirection ));" ); // This should already be defined in the diffuse calc. TODO: Redefine if diffuse is not used
 					App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
 					App( "float alpha = 1.0 / ( sqrt( (Pi/4.0) * gloss + Pi/2.0 ) );" );
 					App( "float visTerm = ( NdotL * ( 1.0 - alpha ) + alpha ) * ( NdotV * ( 1.0 - alpha ) + alpha );" );
@@ -989,6 +989,19 @@ namespace ShaderForge {
 			
 		}
 
+
+		string GetAmbientStr(){
+
+			string s = "UNITY_LIGHTMODEL_AMBIENT.xyz";
+
+			if(ps.doubleIncomingLight)
+				s += "*2";
+
+
+			return s;
+
+		}
+
 		void Lighting() {
 
 			if( IsShadowOrOutlinePass() )
@@ -1055,7 +1068,7 @@ namespace ShaderForge {
 					lgFinal += " + emissive";
 				lgFinal += ";";
 				App( lgFinal );
-			}
+			}	
 			if(currentProgram == ShaderProgram.Frag){
 
 				/*

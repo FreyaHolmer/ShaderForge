@@ -1,7 +1,7 @@
 // Shader created with Shader Forge Alpha 0.15 
 // Shader Forge (c) Joachim 'Acegikmo' Holmer
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:4,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,ufog:True,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,enco:False,frtr:True,vitr:False,dbil:True,rmgx:True;n:type:ShaderForge.SFN_Final,id:1,x:32540,y:32732|diff-4-OUT,spec-35-OUT,gloss-41-OUT,normal-51-RGB,emission-58-OUT;n:type:ShaderForge.SFN_Slider,id:2,x:33229,y:32911,ptlb:Gloss,min:0,cur:0.3834587,max:1;n:type:ShaderForge.SFN_Color,id:3,x:33342,y:32601,ptlb:Color,c1:1,c2:1,c3:1,c4:1;n:type:ShaderForge.SFN_Multiply,id:4,x:33114,y:32537|A-5-RGB,B-3-RGB;n:type:ShaderForge.SFN_Tex2d,id:5,x:33342,y:32431,ptlb:MainTex,tex:b66bceaf0cc0ace4e9bdc92f14bba709|UVIN-47-OUT;n:type:ShaderForge.SFN_TexCoord,id:27,x:33986,y:32460,uv:0;n:type:ShaderForge.SFN_Vector4Property,id:28,x:34205,y:32656,ptlb:Tiling,v1:1,v2:1,v3:0,v4:0;n:type:ShaderForge.SFN_Cubemap,id:29,x:33752,y:33147,ptlb:Shine,cube:2f821dbbb5e173e468876ef2e4eaa490,pvfc:0;n:type:ShaderForge.SFN_ValueProperty,id:30,x:33539,y:33351,ptlb:Emission,v1:8;n:type:ShaderForge.SFN_Multiply,id:35,x:33041,y:32679|A-5-R,B-79-OUT;n:type:ShaderForge.SFN_Multiply,id:41,x:33041,y:32844|A-5-R,B-2-OUT;n:type:ShaderForge.SFN_Add,id:47,x:33598,y:32674|A-49-OUT,B-48-OUT;n:type:ShaderForge.SFN_Append,id:48,x:33986,y:32753|A-28-Z,B-28-W;n:type:ShaderForge.SFN_Multiply,id:49,x:33790,y:32534|A-27-UVOUT,B-50-OUT;n:type:ShaderForge.SFN_Append,id:50,x:33986,y:32611|A-28-X,B-28-Y;n:type:ShaderForge.SFN_Tex2d,id:51,x:33385,y:33007,ptlb:Normals,tex:bbab0a6f7bae9cf42bf057d8ee2755f6|UVIN-47-OUT;n:type:ShaderForge.SFN_Multiply,id:52,x:33041,y:33012|A-5-R,B-56-OUT;n:type:ShaderForge.SFN_Multiply,id:55,x:33539,y:33201|A-29-RGB,B-29-A;n:type:ShaderForge.SFN_Multiply,id:56,x:33359,y:33231|A-55-OUT,B-30-OUT;n:type:ShaderForge.SFN_Multiply,id:58,x:32883,y:32913|A-41-OUT,B-52-OUT;n:type:ShaderForge.SFN_Vector1,id:79,x:33386,y:32779,v1:0.7;proporder:3-5-2-30-28-51-29;pass:END;sub:END;*/
+/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:2,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,ufog:True,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True;n:type:ShaderForge.SFN_Final,id:1,x:32570,y:32733|diff-4-OUT,spec-35-OUT,normal-51-RGB,emission-58-OUT;n:type:ShaderForge.SFN_Slider,id:2,x:33229,y:32911,ptlb:Gloss,min:0,cur:0.5037594,max:1;n:type:ShaderForge.SFN_Color,id:3,x:33342,y:32601,ptlb:Color,c1:1,c2:1,c3:1,c4:1;n:type:ShaderForge.SFN_Multiply,id:4,x:33114,y:32537|A-5-RGB,B-3-RGB;n:type:ShaderForge.SFN_Tex2d,id:5,x:33342,y:32431,ptlb:MainTex,tex:b66bceaf0cc0ace4e9bdc92f14bba709|UVIN-47-OUT;n:type:ShaderForge.SFN_TexCoord,id:27,x:33986,y:32460,uv:0;n:type:ShaderForge.SFN_Vector4Property,id:28,x:34205,y:32656,ptlb:Tiling,v1:1,v2:1,v3:0,v4:0;n:type:ShaderForge.SFN_Cubemap,id:29,x:33762,y:33121,ptlb:Shine,cube:a596436b21c6d484bb9b3b6385e3e666,pvfc:0;n:type:ShaderForge.SFN_ValueProperty,id:30,x:33565,y:33271,ptlb:Emission,v1:12;n:type:ShaderForge.SFN_Multiply,id:35,x:33041,y:32679|A-5-R,B-79-OUT;n:type:ShaderForge.SFN_Multiply,id:41,x:33041,y:32844|A-5-R,B-2-OUT;n:type:ShaderForge.SFN_Add,id:47,x:33598,y:32674|A-49-OUT,B-48-OUT;n:type:ShaderForge.SFN_Append,id:48,x:33986,y:32753|A-28-Z,B-28-W;n:type:ShaderForge.SFN_Multiply,id:49,x:33790,y:32534|A-27-UVOUT,B-50-OUT;n:type:ShaderForge.SFN_Append,id:50,x:33986,y:32611|A-28-X,B-28-Y;n:type:ShaderForge.SFN_Tex2d,id:51,x:33385,y:33007,ptlb:Normals,tex:bbab0a6f7bae9cf42bf057d8ee2755f6|UVIN-47-OUT;n:type:ShaderForge.SFN_Multiply,id:52,x:33041,y:33012|A-5-R,B-56-OUT;n:type:ShaderForge.SFN_Multiply,id:55,x:33565,y:33121|A-29-RGB,B-29-A;n:type:ShaderForge.SFN_Multiply,id:56,x:33385,y:33151|A-55-OUT,B-30-OUT;n:type:ShaderForge.SFN_Multiply,id:58,x:32883,y:32913|A-41-OUT,B-52-OUT;n:type:ShaderForge.SFN_Vector1,id:79,x:33342,y:32763,v1:0.7;proporder:3-5-2-30-28-51-29;pass:END;sub:END;*/
 
 Shader "Shader Forge/NewShader" {
     Properties {
@@ -28,10 +28,17 @@ Shader "Shader Forge/NewShader" {
             #define UNITY_PASS_FORWARDBASE
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
+            #include "Lighting.cginc"
             #pragma multi_compile_fwdbase_fullshadows
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
-            uniform float4 _LightColor0;
+            #ifndef LIGHTMAP_OFF
+                sampler2D unity_Lightmap;
+                float4 unity_LightmapST;
+                #ifndef DIRLIGHTMAP_OFF
+                    sampler2D unity_LightmapInd;
+                #endif
+            #endif
             uniform float _Gloss;
             uniform float4 _Color;
             uniform sampler2D _MainTex;
@@ -44,6 +51,7 @@ Shader "Shader Forge/NewShader" {
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
                 float4 uv0 : TEXCOORD0;
+                float4 uv1 : TEXCOORD1;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
@@ -53,6 +61,9 @@ Shader "Shader Forge/NewShader" {
                 float3 tangentDir : TEXCOORD3;
                 float3 binormalDir : TEXCOORD4;
                 LIGHTING_COORDS(5,6)
+                #ifndef LIGHTMAP_OFF
+                    float2 uvLM : TEXCOORD7;
+                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
@@ -62,6 +73,9 @@ Shader "Shader Forge/NewShader" {
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(_Object2World, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+                #ifndef LIGHTMAP_OFF
+                    o.uvLM = v.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+                #endif
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
             }
@@ -73,29 +87,48 @@ Shader "Shader Forge/NewShader" {
                 float3 normalLocal = UnpackNormal(tex2D(_Normals,node_47)).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
-                float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
+                #ifndef LIGHTMAP_OFF
+                    float4 lmtex = tex2D(unity_Lightmap,i.uvLM);
+                    #ifndef DIRLIGHTMAP_OFF
+                        float3 lightmap = DecodeLightmap(lmtex);
+                        float3 scalePerBasisVector = DecodeLightmap(tex2D(unity_LightmapInd,i.uvLM));
+                        UNITY_DIRBASIS
+                        half3 normalInRnmBasis = saturate (mul (unity_DirBasis, normalLocal));
+                        lightmap *= dot (normalInRnmBasis, scalePerBasisVector);
+                    #else
+                        float3 lightmap = DecodeLightmap(tex2D(unity_Lightmap,i.uvLM));
+                    #endif
+                #endif
+                #ifndef LIGHTMAP_OFF
+                    #ifdef DIRLIGHTMAP_OFF
+                        float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
+                    #else
+                        float3 lightDirection = normalize (scalePerBasisVector.x * unity_DirBasis[0] + scalePerBasisVector.y * unity_DirBasis[1] + scalePerBasisVector.z * unity_DirBasis[2]);
+                        lightDirection = mul(lightDirection,tangentTransform); // Tangent to world
+                    #endif
+                #else
+                    float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
+                #endif
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i)*2;
+                float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 /////// Diffuse:
-                float Pi = 3.141592654;
-                float InvPi = 0.31830988618;
-                float3 diffuse = max( 0.0, dot(normalDirection,lightDirection ))*InvPi * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
+                float NdotL = dot( normalDirection, lightDirection );
+                #ifndef LIGHTMAP_OFF
+                    float3 diffuse = lightmap;
+                #else
+                    float3 diffuse = max( 0.0, NdotL) * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
+                #endif
 ////// Emissive:
                 float4 node_5 = tex2D(_MainTex,node_47);
-                float node_41 = (node_5.r*_Gloss);
                 float4 node_29 = texCUBE(_Shine,viewReflectDirection);
-                float3 emissive = (node_41*(node_5.r*((node_29.rgb*node_29.a)*_Emission)));
+                float3 emissive = ((node_5.r*_Gloss)*(node_5.r*((node_29.rgb*node_29.a)*_Emission)));
 ///////// Gloss:
-                float gloss = exp2(node_41*10.0+1.0);
+                float gloss = exp2(0.5*10.0+1.0);
 ////// Specular:
                 float node_35 = (node_5.r*0.7);
-                float3 specularColor = float3(node_35,node_35,node_35);
-                float HdotL = max(0.0,dot(halfDirection,lightDirection));
-                float3 fresnelTerm = specularColor + ( 1.0 - specularColor ) * pow((1.0 - HdotL),5);
-                float normTerm = (gloss + 8.0 ) / (8.0 * Pi);
-                float3 specular = attenColor * float3(node_35,node_35,node_35)*NdotL * pow(max(0,dot(halfDirection,normalDirection)),gloss)*fresnelTerm*normTerm;
+                float3 specular = attenColor * float3(node_35,node_35,node_35) * pow(max(0,dot(halfDirection,normalDirection)),gloss);
                 float3 lightFinal = diffuse * (node_5.rgb*_Color.rgb) + specular + emissive;
 /// Final Color:
                 return fixed4(lightFinal,1);
@@ -115,10 +148,17 @@ Shader "Shader Forge/NewShader" {
             #define UNITY_PASS_FORWARDADD
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
+            #include "Lighting.cginc"
             #pragma multi_compile_fwdadd_fullshadows
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
-            uniform float4 _LightColor0;
+            #ifndef LIGHTMAP_OFF
+                sampler2D unity_Lightmap;
+                float4 unity_LightmapST;
+                #ifndef DIRLIGHTMAP_OFF
+                    sampler2D unity_LightmapInd;
+                #endif
+            #endif
             uniform float _Gloss;
             uniform float4 _Color;
             uniform sampler2D _MainTex;
@@ -131,6 +171,7 @@ Shader "Shader Forge/NewShader" {
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
                 float4 uv0 : TEXCOORD0;
+                float4 uv1 : TEXCOORD1;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
@@ -163,23 +204,17 @@ Shader "Shader Forge/NewShader" {
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i)*2;
+                float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 /////// Diffuse:
-                float Pi = 3.141592654;
-                float InvPi = 0.31830988618;
-                float3 diffuse = max( 0.0, dot(normalDirection,lightDirection ))*InvPi * attenColor;
+                float NdotL = dot( normalDirection, lightDirection );
+                float3 diffuse = max( 0.0, NdotL) * attenColor;
 ///////// Gloss:
-                float4 node_5 = tex2D(_MainTex,node_47);
-                float node_41 = (node_5.r*_Gloss);
-                float gloss = exp2(node_41*10.0+1.0);
+                float gloss = exp2(0.5*10.0+1.0);
 ////// Specular:
+                float4 node_5 = tex2D(_MainTex,node_47);
                 float node_35 = (node_5.r*0.7);
-                float3 specularColor = float3(node_35,node_35,node_35);
-                float HdotL = max(0.0,dot(halfDirection,lightDirection));
-                float3 fresnelTerm = specularColor + ( 1.0 - specularColor ) * pow((1.0 - HdotL),5);
-                float normTerm = (gloss + 8.0 ) / (8.0 * Pi);
-                float3 specular = attenColor * float3(node_35,node_35,node_35)*NdotL * pow(max(0,dot(halfDirection,normalDirection)),gloss)*fresnelTerm*normTerm;
+                float3 specular = attenColor * float3(node_35,node_35,node_35) * pow(max(0,dot(halfDirection,normalDirection)),gloss);
                 float3 lightFinal = diffuse * (node_5.rgb*_Color.rgb) + specular;
 /// Final Color:
                 return fixed4(lightFinal,1);

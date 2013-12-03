@@ -102,7 +102,7 @@ namespace ShaderForge {
 
 		public ValueType GetGenericInputType() {
 			ValueType vt = GetBaseInputType();
-			Debug.Log("Getting base input type on "+output.node.nodeName+" = " + vt);
+//			Debug.Log("Getting base input type on "+output.node.nodeName+" = " + vt);
 			switch( vt ) {
 				case ValueType.VTv1:
 					if(inputs.Length > 1)

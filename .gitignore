@@ -132,7 +132,6 @@ publish
 
 # Others
 [Bb]in
-[Oo]bj
 sql
 TestResults
 *.Cache
@@ -199,4 +198,3 @@ dittochar.sh
 dittohome.sh
 dittoproperties.sh
 dittovehicles.sh
-redball.apk

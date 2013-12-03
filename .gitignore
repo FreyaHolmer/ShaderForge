@@ -198,3 +198,7 @@ dittochar.sh
 dittohome.sh
 dittoproperties.sh
 dittovehicles.sh
+
+
+# Hack, but is needed for some reason:
+!*.obj

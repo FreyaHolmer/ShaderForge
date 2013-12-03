@@ -52,8 +52,8 @@ namespace ShaderForge {
 		public ShaderProgram program = ShaderProgram.Any;
 
 		// User typed comment
-		public string comment;
-		public bool hasComment;
+		public string comment = "";
+		//public bool hasComment;
 
 		public bool showLowerPropertyBox;
 		public bool showLowerPropertyBoxAlways;
@@ -504,18 +504,21 @@ namespace ShaderForge {
 
 
 		bool isDragging = false;
-
+		bool isEditingComment = false;
 
 		public void ContextClick( object o ) {
 			string picked = o as string;
 			switch(picked){
-			case "cmt_add":
-				hasComment = true;
-				break;
-			case "cmt_remove":
-				hasComment = false;
+			case "cmt_edit":
+				editor.Defocus(deselectNodes:true);
+				GUI.FocusControl("node_comment_" + id);
+				isEditingComment = true;
 				break;
 			}
+		}
+
+		public bool HasComment(){
+			return !string.IsNullOrEmpty(comment);
 		}
 
 
@@ -549,12 +552,8 @@ namespace ShaderForge {
 					// Now create the menu, add items and show it
 					GenericMenu menu = new GenericMenu();
 
-					if(hasComment)
-						menu.AddItem( new GUIContent("Remove comment"), false, ContextClick, "cmt_remove" );
-					else
-						menu.AddItem( new GUIContent("Add comment"), false, ContextClick, "cmt_add" );
-						
-					
+					menu.AddItem( new GUIContent("Edit Comment"), false, ContextClick, "cmt_edit" );
+
 					menu.ShowAsContext();
 					Event.current.Use();
 				}
@@ -626,7 +625,7 @@ namespace ShaderForge {
 
 
 
-			if(hasComment){
+			if(HasComment() || isEditingComment){
 				GUI.color = Color.white;
 				Rect cr = rect;
 				cr.height = 32;
@@ -636,7 +635,36 @@ namespace ShaderForge {
 					cr.y -= 26;
 				}
 
-				GUI.Label(cr, "// Test comment", SF_Styles.GetNodeCommentLabelText());
+				if(isEditingComment){
+
+
+					bool clicked = Event.current.rawType == EventType.mouseDown && Event.current.button == 0;
+					bool clickedOutside = clicked && !cr.Contains(Event.current.mousePosition);
+					bool pressedReturn = Event.current.rawType == EventType.KeyDown && Event.current.keyCode == KeyCode.Return;
+
+					bool defocus = pressedReturn || clickedOutside;
+
+					if( defocus ){
+						isEditingComment = false;
+						editor.Defocus();
+					}
+					string fieldStr = "node_comment_" + id;
+					GUI.SetNextControlName(fieldStr);
+					Rect tmp = cr;
+					tmp.width = 256;
+					comment = GUI.TextField(tmp, comment, SF_Styles.GetNodeCommentLabelTextField());
+					SF_Tools.FormatSerializableComment(ref comment);
+
+
+					if(!defocus){
+						GUI.FocusControl(fieldStr);
+					}
+
+				} else {
+					GUI.Label(cr, "// " + comment, SF_Styles.GetNodeCommentLabelText());
+				}
+
+
 
 			}
 
@@ -1157,6 +1185,8 @@ namespace ShaderForge {
 			s += "y:" + (int)rect.y;
 			if(IsProperty())
 				s += ",ptlb:" + property.nameDisplay;
+			if(HasComment())
+				s += ",cmnt:" + comment;
 			
 			
 			//

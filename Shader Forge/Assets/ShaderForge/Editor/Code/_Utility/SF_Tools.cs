@@ -222,6 +222,11 @@ namespace ShaderForge {
 			s = rgx.Replace( s, "" );
 		}
 
+		public static void FormatSerializableComment(ref string s){
+			Regex rgx = new Regex( "[^\\w\\s_\\?\\.-]" ); // Only allow Alphanumeric, dot, dash, underscore and questionmark
+			s = rgx.Replace( s, "" );
+		}
+
 		public static void FormatSerializable( ref string s ) {
 			s = s.Replace( ":", "" )
 				 .Replace( ";", "" )

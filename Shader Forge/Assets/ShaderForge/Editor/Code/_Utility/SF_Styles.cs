@@ -76,6 +76,20 @@ namespace ShaderForge {
 		}
 
 
+
+		private static GUIStyle nodeCommentLabelTextField;
+		public static GUIStyle GetNodeCommentLabelTextField() {
+			if( nodeCommentLabelTextField == null ) {
+				nodeCommentLabelTextField = new GUIStyle( EditorStyles.textField );
+				nodeCommentLabelTextField.fontStyle = FontStyle.Italic;
+				nodeCommentLabelTextField.fontSize = 20;
+				nodeCommentLabelTextField.alignment = TextAnchor.LowerLeft;
+				nodeCommentLabelTextField.normal.textColor = new Color( 1f, 1f, 1f, 0.3f );
+			}
+			return nodeCommentLabelTextField;
+		}
+
+
 		private static GUIStyle nodeNameLabelBackground;
 		public static Color nodeNameLabelBackgroundColor = new Color( 0.7f, 0.7f, 0.7f );
 		public static GUIStyle GetNodeNameLabelBackground() {

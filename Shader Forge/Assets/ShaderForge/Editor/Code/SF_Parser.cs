@@ -205,6 +205,9 @@ namespace ShaderForge {
 					case "ptlb":
 						node.property.SetName( dValue );
 						break;
+					case "cmnt":
+						node.comment = dValue;
+						break;
 					default:
 						//Debug.Log("Deserializing KeyValue: " +dKey + " v: " + dValue);
 						node.DeserializeSpecialData( dKey, dValue );

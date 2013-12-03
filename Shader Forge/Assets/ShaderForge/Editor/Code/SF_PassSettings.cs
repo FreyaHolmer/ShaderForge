@@ -1181,14 +1181,6 @@ namespace ShaderForge {
 				fogRange.y = EditorGUI.FloatField(r,"Override Fog Range Far",fogRange.y); //SF_GUI.LabeledVector2Field(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
 				CheckboxEnableLineEnd(ref r);
 
-				/*
-				CheckboxEnableLine(ref fogOverrideMode, ref r);
-				SF_GUI.LabeledEnumField(r,"Override fog mode",fogMode,EditorStyles.miniLabel);
-				CheckboxEnableLineEnd(ref r);
-
-			*/
-
-
 
 			}
 			GUI.enabled = prevGUI;

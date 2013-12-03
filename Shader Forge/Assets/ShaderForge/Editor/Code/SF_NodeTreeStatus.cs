@@ -34,12 +34,12 @@ namespace ShaderForge {
 		}
 
 		public void DeserializeProps( string s ) {
-			Debug.Log("Deserializing properties = " + s);
+			//Debug.Log("Deserializing properties = " + s);
 			string[] split = s.Split( '-' );
 			propertyList = new System.Collections.Generic.List<SF_Node>();
 			for( int i = 0; i < split.Length; i++ ) {
-				Debug.Log("Found " + GetNodeByID( int.Parse( split[i] )).nodeName);
-				Debug.Log ("Attempting deserialization. int parse of ["+split[i]+"]");
+				//Debug.Log("Found " + GetNodeByID( int.Parse( split[i] )).nodeName);
+				//Debug.Log ("Attempting deserialization. int parse of ["+split[i]+"]");
 				propertyList.Add( GetNodeByID( int.Parse( split[i] ) ) );
 			}
 		}

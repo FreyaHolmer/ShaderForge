@@ -63,6 +63,19 @@ namespace ShaderForge {
 		}
 
 
+		private static GUIStyle nodeCommentLabelText;
+		public static GUIStyle GetNodeCommentLabelText() {
+			if( nodeCommentLabelText == null ) {
+				nodeCommentLabelText = new GUIStyle( EditorStyles.largeLabel );
+				nodeCommentLabelText.fontStyle = FontStyle.Italic;
+				nodeCommentLabelText.fontSize = 20;
+				nodeCommentLabelText.alignment = TextAnchor.LowerLeft;
+				nodeCommentLabelText.normal.textColor = new Color( 1f, 1f, 1f, 0.3f );
+			}
+			return nodeCommentLabelText;
+		}
+
+
 		private static GUIStyle nodeNameLabelBackground;
 		public static Color nodeNameLabelBackgroundColor = new Color( 0.7f, 0.7f, 0.7f );
 		public static GUIStyle GetNodeNameLabelBackground() {

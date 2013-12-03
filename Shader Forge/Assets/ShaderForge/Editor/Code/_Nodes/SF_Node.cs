@@ -53,6 +53,7 @@ namespace ShaderForge {
 
 		// User typed comment
 		public string comment;
+		public bool hasComment;
 
 		public bool showLowerPropertyBox;
 		public bool showLowerPropertyBoxAlways;
@@ -504,6 +505,20 @@ namespace ShaderForge {
 
 		bool isDragging = false;
 
+
+		public void ContextClick( object o ) {
+			string picked = o as string;
+			switch(picked){
+			case "cmt_add":
+				hasComment = true;
+				break;
+			case "cmt_remove":
+				hasComment = false;
+				break;
+			}
+		}
+
+
 		public void DrawWindow() {
 
 
@@ -528,7 +543,23 @@ namespace ShaderForge {
 				OnPress();
 			} else if( SF_GUI.ReleasedRawLMB() ) {
 				OnRelease();
+			} else if( Event.current.type == EventType.ContextClick ) {
+				Vector2 mousePos = Event.current.mousePosition;
+				if( rect.Contains( mousePos ) ) {
+					// Now create the menu, add items and show it
+					GenericMenu menu = new GenericMenu();
+
+					if(hasComment)
+						menu.AddItem( new GUIContent("Remove comment"), false, ContextClick, "cmt_remove" );
+					else
+						menu.AddItem( new GUIContent("Add comment"), false, ContextClick, "cmt_add" );
+						
+					
+					menu.ShowAsContext();
+					Event.current.Use();
+				}
 			}
+
 
 
 
@@ -592,6 +623,28 @@ namespace ShaderForge {
 				ResetWindowColor();
 				
 			}
+
+
+
+			if(hasComment){
+				GUI.color = Color.white;
+				Rect cr = rect;
+				cr.height = 32;
+				cr.width = 2048;
+				cr.y -= cr.height + 2;
+				if( IsProperty() ){
+					cr.y -= 26;
+				}
+
+				GUI.Label(cr, "// Test comment", SF_Styles.GetNodeCommentLabelText());
+
+			}
+
+
+
+
+
+
 
 			
 			//GUI.Label( nameRect, "Test", EditorStyles.toolbarTextField );

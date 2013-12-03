@@ -18,8 +18,7 @@ namespace ShaderForge {
 
 
 		public override string GetInitializationLine() {
-			string defaultValue = "0";
-			// name ("display name", Range (min, max)) = number
+			string defaultValue = base.node.texture.dataUniform.r.ToString();
 			return GetVariable() + " (\"" + nameDisplay + "\", Float ) = " + defaultValue;
 		}
 

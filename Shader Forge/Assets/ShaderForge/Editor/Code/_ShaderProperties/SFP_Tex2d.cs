@@ -22,10 +22,11 @@ namespace ShaderForge {
 		}
 
 		public override string GetVariableLine() {
-			return "uniform sampler2D " + GetVariable() + ";";
+			string varName = GetVariable();
+			return "uniform sampler2D " + varName + "; uniform float4 " + varName + "_ST;"; // TODO: Check if texture wants to use offsets or not
 		}
 
-		// TODO: UVs
+
 		public override string GetFragmentPrepare() {
 			return "fixed4 " + GetVariable() + " = " + node.Evaluate() + ";";
 		}

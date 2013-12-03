@@ -148,7 +148,7 @@ namespace ShaderForge {
 		//}
 
 		public string GetFilteredVariableLine() {
-			if( this.nameInternal == "_SpecColor" ) {
+			if( this.nameInternal == "_SpecColor" ) { // TODO: Why?
 				return null;
 			}
 

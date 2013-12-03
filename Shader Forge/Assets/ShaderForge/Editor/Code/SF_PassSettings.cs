@@ -1182,8 +1182,8 @@ namespace ShaderForge {
 			if( lightMode == LightMode.Unlit )
 				GUI.enabled = false;
 			{
-				lightPrecision = (LightPrecision)ContentScaledToolbar(r, "Light Quality", (int)lightPrecision, strLightPrecision );
-				r.y += 20;	
+				//lightPrecision = (LightPrecision)ContentScaledToolbar(r, "Light Quality", (int)lightPrecision, strLightPrecision ); // TODO: Too unstable for release
+				//r.y += 20;	
 				normalQuality = (NormalQuality)ContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality );
 				r.y += 20;
 				lightmapped = GUI.Toggle( r, lightmapped, "Lightmap support" );

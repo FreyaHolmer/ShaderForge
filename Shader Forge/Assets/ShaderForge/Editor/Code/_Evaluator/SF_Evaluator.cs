@@ -506,11 +506,21 @@ namespace ShaderForge {
 			}
 
 			
-
-			if( !ps.useFog || !(currentPass == PassType.FwdBase || currentPass == PassType.Outline))
-				App( "Fog {Mode Off}" ); // Turn off fog is user doesn't want it
-			else if(currentPass == PassType.FwdAdd)
+			if(currentPass == PassType.FwdAdd){
 				App ("Fog { Color (0,0,0,0) }");
+			} else if( !ps.useFog || !(currentPass == PassType.FwdBase || currentPass == PassType.Outline)) {
+				App( "Fog {Mode Off}" ); // Turn off fog is user doesn't want it
+			} else {
+				// Fog overrides!
+				if(ps.fogOverrideMode)
+					App( "Fog {Mode "+ps.fogMode.ToString()+"}" ); 
+				if(ps.fogOverrideColor)
+					App ("Fog { Color ("+ps.fogColor.r+","+ps.fogColor.g+","+ps.fogColor.b+","+ps.fogColor.a+") }");
+				if(ps.fogOverrideDensity)
+					App( "Fog {Density "+ps.fogDensity+"}" ); 
+				if(ps.fogOverrideRange)
+					App( "Fog {Range "+ps.fogRange.x+","+ps.fogRange.y+"}" ); 
+			}
 
 		}
 

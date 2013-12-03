@@ -41,6 +41,8 @@ namespace ShaderForge {
 			Multiplicative, 
 			Custom
 		};
+
+		public enum ShaderFogMode{ Global, Linear, Exp, Exp2 };
 		
 		public enum BlendMode { One, Zero, SrcColor, SrcAlpha, DstColor, DstAlpha, OneMinusSrcColor, OneMinusSrcAlpha, OneMinusDstColor, OneMinusDstAlpha };
 
@@ -76,6 +78,24 @@ namespace ShaderForge {
 		public bool energyConserving = false;
 		public bool remapGlossExponentially = true;
 		//
+
+
+
+		// Fog
+		public bool fogOverrideMode = false;
+		public ShaderFogMode fogMode = ShaderFogMode.Global;
+
+		public bool fogOverrideColor = false;
+		public Color fogColor = RenderSettings.fogColor;
+	
+		public bool fogOverrideDensity = false;
+		public float fogDensity = RenderSettings.fogDensity;
+
+		public bool fogOverrideRange = false;
+		public Vector2 fogRange = new Vector2(RenderSettings.fogStartDistance, RenderSettings.fogEndDistance);
+		//
+
+
 
 		// Shader vars
 		/* = new bool[7]{
@@ -118,8 +138,24 @@ namespace ShaderForge {
 			s += Serialize( "frtr", fresnelTerm.ToString() );
 			s += Serialize( "vitr", visibilityTerm.ToString() );
 			s += Serialize( "dbil", doubleIncomingLight.ToString() );
-			s += Serialize( "rmgx", remapGlossExponentially.ToString(), true );
-			
+			s += Serialize( "rmgx", remapGlossExponentially.ToString());
+
+			s += Serialize( "fgom", fogOverrideMode.ToString()); 	// bool
+			s += Serialize( "fgoc", fogOverrideColor.ToString());	// bool
+			s += Serialize( "fgod", fogOverrideDensity.ToString());	// bool
+			s += Serialize( "fgor", fogOverrideRange.ToString());	// bool
+
+			s += Serialize( "fgmd", ((int)fogMode).ToString()); 	// FogMode
+			s += Serialize( "fgcr", fogColor.r.ToString());			// Fog Color
+			s += Serialize( "fgcg", fogColor.g.ToString());			// Fog Color
+			s += Serialize( "fgcb", fogColor.b.ToString());			// Fog Color
+			s += Serialize( "fgca", fogColor.a.ToString());			// Fog Color
+			s += Serialize( "fgde", fogDensity.ToString());			// float
+			s += Serialize( "fgrn", fogRange.x.ToString());			// Fog range X (Near)
+			s += Serialize( "fgrf", fogRange.y.ToString(), true);	// Fog range Y (Far)
+
+
+
 			return s;
 		}
 
@@ -138,79 +174,120 @@ namespace ShaderForge {
 
 		public void Deserialize( string key, string value ) {
 			switch( key ) {
-				case "lgpr":
-					lightPrecision = (LightPrecision)int.Parse( value );
-					break;
-				case "nrmq":
-					normalQuality = (NormalQuality)int.Parse( value );
-					break;
-				case "limd":
-					lightMode = (LightMode)int.Parse( value );
-					break;
-				case "blpr":
-					blendModePreset = (BlendModePreset)int.Parse( value );
-					break;
-				case "bsrc":
-					blendSrc = (BlendMode)int.Parse( value );
-					break;
-				case "bdst":
-					blendDst = (BlendMode)int.Parse( value );
-					break;
-				case "culm":
-					cullMode = (CullMode)int.Parse( value );
-					break;
-				case "dpts":
-					depthTest = (DepthTest)int.Parse( value );
-					break;
-				case "wrdp":
-					writeDepth = bool.Parse( value );
-					break;
-				case "uamb":
-					useAmbient = bool.Parse( value );
-					break;
-				case "ufog":
-					useFog = bool.Parse( value );
-					break;
-				case "aust":
-					autoSort = bool.Parse( value );
-					break;
-				case "igpj":
-					ignoreProjector = bool.Parse( value );
-					break;
-				case "qofs":
-					queueOffset = int.Parse( value );
-					break;
-				case "lico":
-					lightCount = (LightCount)int.Parse( value );
-					break;
-				case "qpre":
-					queuePreset = (Queue)int.Parse( value );
-					break;
-				case "flbk":
-					fallback = value;
-					break;
-				case "rntp":
-					renderType = (RenderType)int.Parse( value );
-					break;
-				case "lmpd":
-					lightmapped = bool.Parse( value );
-					break;
-				case "enco":
-					energyConserving = bool.Parse( value );
-					break;
-				case "frtr":
-					fresnelTerm = bool.Parse( value );
-					break;
-				case "vitr":
-					visibilityTerm = bool.Parse( value );
-					break;
-				case "dbil":
-					doubleIncomingLight = bool.Parse( value );
-					break;
-				case "rmgx":
-					remapGlossExponentially = bool.Parse( value );
-					break;
+			case "lgpr":
+				lightPrecision = (LightPrecision)int.Parse( value );
+				break;
+			case "nrmq":
+				normalQuality = (NormalQuality)int.Parse( value );
+				break;
+			case "limd":
+				lightMode = (LightMode)int.Parse( value );
+				break;
+			case "blpr":
+				blendModePreset = (BlendModePreset)int.Parse( value );
+				break;
+			case "bsrc":
+				blendSrc = (BlendMode)int.Parse( value );
+				break;
+			case "bdst":
+				blendDst = (BlendMode)int.Parse( value );
+				break;
+			case "culm":
+				cullMode = (CullMode)int.Parse( value );
+				break;
+			case "dpts":
+				depthTest = (DepthTest)int.Parse( value );
+				break;
+			case "wrdp":
+				writeDepth = bool.Parse( value );
+				break;
+			case "uamb":
+				useAmbient = bool.Parse( value );
+				break;
+			case "ufog":
+				useFog = bool.Parse( value );
+				break;
+			case "aust":
+				autoSort = bool.Parse( value );
+				break;
+			case "igpj":
+				ignoreProjector = bool.Parse( value );
+				break;
+			case "qofs":
+				queueOffset = int.Parse( value );
+				break;
+			case "lico":
+				lightCount = (LightCount)int.Parse( value );
+				break;
+			case "qpre":
+				queuePreset = (Queue)int.Parse( value );
+				break;
+			case "flbk":
+				fallback = value;
+				break;
+			case "rntp":
+				renderType = (RenderType)int.Parse( value );
+				break;
+			case "lmpd":
+				lightmapped = bool.Parse( value );
+				break;
+			case "enco":
+				energyConserving = bool.Parse( value );
+				break;
+			case "frtr":
+				fresnelTerm = bool.Parse( value );
+				break;
+			case "vitr":
+				visibilityTerm = bool.Parse( value );
+				break;
+			case "dbil":
+				doubleIncomingLight = bool.Parse( value );
+				break;
+			case "rmgx":
+				remapGlossExponentially = bool.Parse( value );
+				break;
+
+			// Fog booleans
+			case "fgom":
+				fogOverrideMode = bool.Parse( value );
+				break;
+			case "fgoc":
+				fogOverrideColor = bool.Parse( value );
+				break;
+			case "fgod":
+				fogOverrideDensity = bool.Parse( value );
+				break;
+			case "fgor":
+				fogOverrideRange = bool.Parse( value );
+				break;
+			
+			// Fog values
+			case "fgmd":
+				fogMode = (ShaderFogMode)int.Parse( value );
+				break;
+			case "fgcr":
+				fogColor.r = float.Parse( value );
+				break;
+			case "fgcg":
+				fogColor.g = float.Parse( value );
+				break;
+			case "fgcb":
+				fogColor.b = float.Parse( value );
+				break;
+			case "fgca":
+				fogColor.a = float.Parse( value );
+				break;
+			case "fgde":
+				fogDensity = float.Parse( value );
+				break;
+			case "fgrn":
+				fogRange.x = float.Parse( value );
+				break;
+			case "fgrf":
+				fogRange.y = float.Parse( value );
+				break;
 			}
+
 		}
 
 
@@ -985,8 +1062,9 @@ namespace ShaderForge {
 
 			cullMode = (CullMode)SF_GUI.LabeledEnumField( r, "Face Culling", cullMode, EditorStyles.miniLabel );
 			r.y += 20;
-			useFog = GUI.Toggle( r, useFog, "Receive Fog" );
-			r.y += 20;
+
+
+			FogBlock(ref r);
 
 			SortingBlock(ref r);
 
@@ -1061,6 +1139,74 @@ namespace ShaderForge {
 			}
 			GUI.enabled = prevGUI;
 
+			r.xMin -= 20;
+
+		}
+
+
+		public void FogBlock(ref Rect r) {
+
+			useFog = GUI.Toggle( r, useFog, "Receive Fog" );
+			r.y += 20;
+			
+			if(!useFog)
+				return;
+
+			r.xMin += 20; // Indent
+			
+			bool prevGUI = GUI.enabled;
+			GUI.enabled = useFog;
+			{
+		
+				CheckboxEnableLine(ref fogOverrideMode, ref r);
+				fogMode = (ShaderFogMode)SF_GUI.LabeledEnumField(r,"Override Fog Mode",fogMode,EditorStyles.label);
+				CheckboxEnableLineEnd(ref r);
+
+				CheckboxEnableLine(ref fogOverrideColor, ref r);
+				r.height = 17;
+				fogColor = EditorGUI.ColorField(r,"Override Fog Color",fogColor);//SF_GUI.LabeledColorField(r,"Override Fog Color",fogDensity,EditorStyles.miniLabel);
+				r.height = 20;
+				CheckboxEnableLineEnd(ref r);
+
+
+				CheckboxEnableLine(ref fogOverrideDensity, ref r);
+				fogDensity = EditorGUI.FloatField(r,"Override Fog Density",fogDensity);//SF_GUI.LabeledFloatField(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
+				CheckboxEnableLineEnd(ref r);
+
+
+
+				CheckboxEnableLine(ref fogOverrideRange, ref r);
+				fogRange.x = EditorGUI.FloatField(r,"Override Fog Range Near",fogRange.x); //SF_GUI.LabeledVector2Field(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
+				r.y += 20;
+				fogRange.y = EditorGUI.FloatField(r,"Override Fog Range Far",fogRange.y); //SF_GUI.LabeledVector2Field(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
+				CheckboxEnableLineEnd(ref r);
+
+				/*
+				CheckboxEnableLine(ref fogOverrideMode, ref r);
+				SF_GUI.LabeledEnumField(r,"Override fog mode",fogMode,EditorStyles.miniLabel);
+				CheckboxEnableLineEnd(ref r);
+
+			*/
+
+
+
+			}
+			GUI.enabled = prevGUI;
+			r.xMin -= 20;
+		}
+
+		public void CheckboxEnableLine(ref bool b, ref Rect r){
+			Rect rCopy = r;
+			rCopy.width = r.height;
+			b = GUI.Toggle(rCopy,b,string.Empty);
+			GUI.enabled = b;
+			r.xMin += 20;
+		}
+
+		public void CheckboxEnableLineEnd(ref Rect r){
+			r.y += 20;
+			r.xMin -= 20;
+			GUI.enabled = true;
 		}
 
 		public void SetQueuePreset(Queue in_queue) {

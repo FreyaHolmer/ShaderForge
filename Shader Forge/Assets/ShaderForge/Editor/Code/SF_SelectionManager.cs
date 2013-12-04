@@ -286,6 +286,7 @@ namespace ShaderForge {
 		}
 
 		public void DeselectAll() {
+			editor.ResetRunningOutdatedTimer();
 			foreach( SF_Node n in editor.nodes ) {
 				n.Deselect();
 			}

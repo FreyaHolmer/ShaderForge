@@ -10,6 +10,12 @@ namespace ShaderForge {
 
 		static Matrix4x4 prevMatrix;
 
+		public static Color[] outdatedStateColors = new Color[]{
+			new Color(0.7f, 1f, 0.7f),
+			new Color(1f, 1f, 0.7f),
+			new Color(1f,0.7f,0.7f)
+		};
+
 
 		private static Texture2D handle_drag;
 		public static Texture2D Handle_drag {

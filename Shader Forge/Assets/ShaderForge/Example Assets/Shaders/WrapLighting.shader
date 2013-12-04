@@ -1,7 +1,7 @@
 // Shader created with Shader Forge Alpha 0.15 
 // Shader Forge (c) Joachim 'Acegikmo' Holmer
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:2,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,ufog:False,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True;n:type:ShaderForge.SFN_Final,id:0,x:32833,y:32427|diff-1-OUT,spec-6-OUT,gloss-4-OUT,normal-9-RGB,lwrap-2-OUT;n:type:ShaderForge.SFN_Vector3,id:1,x:33544,y:32425,v1:0.9,v2:0.7,v3:0.4;n:type:ShaderForge.SFN_Vector3,id:2,x:33143,y:32844,v1:0.9,v2:0.5,v3:0.5;n:type:ShaderForge.SFN_Vector1,id:3,x:33333,y:32629,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:4,x:33143,y:32637,v1:2;n:type:ShaderForge.SFN_OneMinus,id:5,x:33333,y:32486|IN-1-OUT;n:type:ShaderForge.SFN_Multiply,id:6,x:33143,y:32486|A-5-OUT,B-3-OUT;n:type:ShaderForge.SFN_Tex2d,id:9,x:33143,y:32717,ptlb:Normal,tex:80286949e259c2d44876306923857245;proporder:9;pass:END;sub:END;*/
+/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:2,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,ufog:False,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300;n:type:ShaderForge.SFN_Final,id:0,x:32833,y:32427|diff-1-OUT,spec-6-OUT,gloss-4-OUT,normal-9-RGB,lwrap-2-OUT;n:type:ShaderForge.SFN_Vector3,id:1,x:33544,y:32425,v1:0.9,v2:0.7,v3:0.4;n:type:ShaderForge.SFN_Vector3,id:2,x:33143,y:32844,v1:0.9,v2:0.5,v3:0.5;n:type:ShaderForge.SFN_Vector1,id:3,x:33333,y:32629,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:4,x:33143,y:32637,v1:2;n:type:ShaderForge.SFN_OneMinus,id:5,x:33333,y:32486|IN-1-OUT;n:type:ShaderForge.SFN_Multiply,id:6,x:33143,y:32486|A-5-OUT,B-3-OUT;n:type:ShaderForge.SFN_Tex2d,id:9,x:33143,y:32717,ptlb:Normal,tex:80286949e259c2d44876306923857245;proporder:9;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/WrapLighting" {
     Properties {
@@ -26,9 +26,8 @@ Shader "Shader Forge/Examples/WrapLighting" {
             #pragma multi_compile_fwdbase_fullshadows
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            #pragma glsl
             uniform float4 _LightColor0;
-            uniform sampler2D _Normal;
+            uniform sampler2D _Normal; uniform float4 _Normal_ST;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -58,26 +57,27 @@ Shader "Shader Forge/Examples/WrapLighting" {
             fixed4 frag(VertexOutput i) : COLOR {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,i.uv0.xy)).rgb;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(i.uv0.xy, _Normal))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
-//////// DEBUG - Lighting()
+////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
-//////// DEBUG - CalcDiffuse()
+/////// Diffuse:
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 w = float3(0.9,0.5,0.5)*0.5; // Light wrapping
                 float3 NdotLWrap = NdotL * ( 1.0 - w );
                 float3 forwardLight = pow( max(float3(0.0,0.0,0.0), NdotLWrap + w ), 1 );
-                float3 diffuse = forwardLight * attenColor;
+                float3 diffuse = forwardLight * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
+///////// Gloss:
                 float gloss = exp2(2.0*10.0+1.0);
-//////// DEBUG - CalcSpecular()
+////// Specular:
                 float3 node_1 = float3(0.9,0.7,0.4);
                 float3 specular = attenColor * ((1.0 - node_1)*0.3) * pow(max(0,dot(halfDirection,normalDirection)),gloss);
-                float3 lightFinal = diffuse + specular;
-//////// DEBUG - Final output color
-                return fixed4(lightFinal * node_1,1);
+                float3 lightFinal = diffuse * node_1 + specular;
+/// Final Color:
+                return fixed4(lightFinal,1);
             }
             ENDCG
         }
@@ -87,7 +87,7 @@ Shader "Shader Forge/Examples/WrapLighting" {
             }
             Blend One One
             
-            Fog {Mode Off}
+            Fog { Color (0,0,0,0) }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -97,9 +97,8 @@ Shader "Shader Forge/Examples/WrapLighting" {
             #pragma multi_compile_fwdadd_fullshadows
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            #pragma glsl
             uniform float4 _LightColor0;
-            uniform sampler2D _Normal;
+            uniform sampler2D _Normal; uniform float4 _Normal_ST;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -129,29 +128,31 @@ Shader "Shader Forge/Examples/WrapLighting" {
             fixed4 frag(VertexOutput i) : COLOR {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,i.uv0.xy)).rgb;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(i.uv0.xy, _Normal))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
-//////// DEBUG - Lighting()
+////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
-//////// DEBUG - CalcDiffuse()
+/////// Diffuse:
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 w = float3(0.9,0.5,0.5)*0.5; // Light wrapping
                 float3 NdotLWrap = NdotL * ( 1.0 - w );
                 float3 forwardLight = pow( max(float3(0.0,0.0,0.0), NdotLWrap + w ), 1 );
                 float3 diffuse = forwardLight * attenColor;
+///////// Gloss:
                 float gloss = exp2(2.0*10.0+1.0);
-//////// DEBUG - CalcSpecular()
+////// Specular:
                 float3 node_1 = float3(0.9,0.7,0.4);
                 float3 specular = attenColor * ((1.0 - node_1)*0.3) * pow(max(0,dot(halfDirection,normalDirection)),gloss);
-                float3 lightFinal = diffuse + specular;
-//////// DEBUG - Final output color
-                return fixed4(lightFinal * node_1,1);
+                float3 lightFinal = diffuse * node_1 + specular;
+/// Final Color:
+                return fixed4(lightFinal,1);
             }
             ENDCG
         }
     }
     FallBack "Diffuse"
+    CustomEditor "ShaderForgeMaterialInspector"
 }

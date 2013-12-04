@@ -315,7 +315,7 @@ namespace ShaderForge {
 			//( property as SFP_Tex2d ).isBumpmap = ;
 			RenderToTexture();
 			editor.shaderEvaluator.ApplyProperty( this );
-			OnUpdateNode();
+			OnUpdateNode(NodeUpdateType.Soft);
 		}
 
 

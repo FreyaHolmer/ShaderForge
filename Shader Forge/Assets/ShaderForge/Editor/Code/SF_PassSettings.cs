@@ -7,8 +7,7 @@ namespace ShaderForge {
 	
 	[System.Serializable]
 	public class SF_PassSettings : ScriptableObject {
-
-
+		
 		// Mat ed
 		public SF_Editor editor;
 		public SF_FeatureChecker fChecker;
@@ -38,7 +37,7 @@ namespace ShaderForge {
 			AlphaBlended, 
 			Additive,
 			Screen,
-			Multiplicative, 
+			Multiplicative,
 			Custom
 		};
 

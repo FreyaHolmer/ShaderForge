@@ -859,6 +859,8 @@ namespace ShaderForge {
 
 			AppDebug("Specular");
 
+			App ("NdotL = max(0.0, NdotL);");
+
 			string s = "float3 specular = attenColor * " + ps.n_specular;
 			if( ps.IsPBL() ) {
 				s += "*NdotL"; // TODO: Really? Is this the cosine part?
@@ -1880,8 +1882,8 @@ namespace ShaderForge {
 
 		public void Evaluate() {
 			//Debug.Log( "Evaluating" );
+
 			editor.ps.fChecker.UpdateAvailability();
-			editor.shaderOutdated = false;
 			currentPass = PassType.FwdBase;
 			PrepareEvaluation();
 			UpdateDependencies();
@@ -1917,6 +1919,7 @@ namespace ShaderForge {
 			
 			SaveShaderAsset();
 			ApplyPropertiesToMaterial();
+			editor.ShaderOutdated = UpToDateState.UpToDate;
 		}
 
 

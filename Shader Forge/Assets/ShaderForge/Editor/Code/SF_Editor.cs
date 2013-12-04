@@ -8,9 +8,15 @@ using System.Linq;
 using System.Xml;
 
 
-public delegate T Func<T>();
+
 
 namespace ShaderForge {
+
+
+	public delegate T Func<T>();
+	
+	public enum UpToDateState{UpToDate, OutdatedSoft, OutdatedHard};
+
 	[Serializable]
 	public class SF_Editor : EditorWindow {
 		[SerializeField]
@@ -66,7 +72,18 @@ namespace ShaderForge {
 		public List<SF_EditorNodeData> nodeTemplates;
 
 		[SerializeField]
-		public bool shaderOutdated = false;
+		private UpToDateState shaderOutdated = UpToDateState.UpToDate;
+		public UpToDateState ShaderOutdated{
+			get{
+				return shaderOutdated;
+			}
+			set{
+				if(shaderOutdated != value){
+					Debug.Log("Changed outdated state to " + value);
+					shaderOutdated = value;
+				}
+			}
+		}
 
 		[NonSerialized]
 		public bool initialized = false;
@@ -253,14 +270,29 @@ namespace ShaderForge {
 
 
 		public void OnShaderModified(NodeUpdateType updType) {
-			if( updType == NodeUpdateType.Hard && nodeView.treeStatus.CheckCanCompile() )
-				shaderOutdated = true;
+			//Debug.Log("OnShaderModified: " + updType.ToString() );
+			if( updType == NodeUpdateType.Hard && nodeView.treeStatus.CheckCanCompile() ){
+				nodeView.lastChangeTime = (float)EditorApplication.timeSinceStartup;
+				ShaderOutdated = UpToDateState.OutdatedHard;
+			}
+			if(updType == NodeUpdateType.Soft && ShaderOutdated == UpToDateState.UpToDate)
+				ShaderOutdated = UpToDateState.OutdatedSoft;
+
 			ps.fChecker.UpdateAvailability();
 			ps.UpdateAutoSettings();
 		}
 
+		public void ResetRunningOutdatedTimer(){
+			if(ShaderOutdated == UpToDateState.UpToDate)
+				return;
+			if(ShaderOutdated == UpToDateState.OutdatedSoft) // Might not want to have this later
+				return;
 
+			nodeView.lastChangeTime = (float)EditorApplication.timeSinceStartup;
 
+		}
+
+		/*
 		public Vector3 GetMouseWorldPos( Vector3 playerPos ) {
 
 			Vector3 camDir = Camera.main.transform.forward;
@@ -274,7 +306,7 @@ namespace ShaderForge {
 
 			Debug.LogError( "Mouse ray did not hit the plane" );
 			return Vector3.zero;
-		}
+		}*/
 
 		public void InitializeInstance( Shader initShader = null ) {
 			//Debug.Log( "[SF_LOG] - SF_Editor InitializeInstance(" + initShader + ")" );
@@ -444,7 +476,7 @@ namespace ShaderForge {
 			}
 				
 
-			if( shaderOutdated && nodeView.autoRecompile) {
+			if( ShaderOutdated == UpToDateState.OutdatedHard && nodeView.autoRecompile && nodeView.GetTimeSinceChanged() >= 1f) {
 				shaderEvaluator.Evaluate();
 			}
 

@@ -360,6 +360,11 @@ namespace ShaderForge {
 				return;
 			}
 
+
+			// Active connection:
+
+			editor.ResetRunningOutdatedTimer();
+
 			node.Repaint();
 
 			if( conType == ConType.cInput )

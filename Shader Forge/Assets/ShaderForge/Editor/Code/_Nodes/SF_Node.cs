@@ -462,7 +462,7 @@ namespace ShaderForge {
 
 		public void OnPress(){
 			if( MouseOverNode( world: true ) && Event.current.isMouse ) {
-
+				editor.ResetRunningOutdatedTimer();
 				if( !selected && !SF_GUI.MultiSelectModifierHeld() )
 					editor.nodeView.selection.DeselectAll();
 				
@@ -551,7 +551,7 @@ namespace ShaderForge {
 				if( rect.Contains( mousePos ) ) {
 					// Now create the menu, add items and show it
 					GenericMenu menu = new GenericMenu();
-
+					editor.ResetRunningOutdatedTimer();
 					menu.AddItem( new GUIContent("Edit Comment"), false, ContextClick, "cmt_edit" );
 
 					menu.ShowAsContext();
@@ -694,6 +694,9 @@ namespace ShaderForge {
 		public Vector2 dragDelta;
 
 		public void OnDraggedWindow( Vector2 delta ) {
+
+			editor.ResetRunningOutdatedTimer();
+
 			dragDelta += delta;
 			Vector2 finalDelta = new Vector2( rect.x, rect.y );
 			rect.x = dragStart.x + dragDelta.x;

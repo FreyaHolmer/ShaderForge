@@ -164,7 +164,7 @@ namespace ShaderForge {
 					for( int i = 0; i < editor.nodeTemplates.Count; i++ ) {
 						menu.AddItem( new GUIContent( editor.nodeTemplates[i].fullPath ), false, ContextClick, editor.nodeTemplates[i] );
 					}
-
+					editor.ResetRunningOutdatedTimer();
 					menu.ShowAsContext();
 					Event.current.Use();
 				}
@@ -404,9 +404,28 @@ namespace ShaderForge {
 			return ( header + sData + footer );
 		}
 
+		public float lastChangeTime;
 
+		float GetTime(){
+			return (float)EditorApplication.timeSinceStartup;
+		}
+
+		public float GetTimeSinceChanged(){
+			return GetTime() - lastChangeTime;
+		}
 		
+		private void DrawRecompileTimer(Rect r){
 
+			float delta = GetTimeSinceChanged();
+
+			if(delta > 1.12f)
+				return;
+
+			r.width *= Mathf.Clamp01(delta);
+			GUI.Box(r,string.Empty);
+			GUI.Box(r,string.Empty);
+			GUI.Box(r,string.Empty);
+		}
 
 		void DrawToolbar( Rect r ) {
 			GUI.color = Color.white;
@@ -414,10 +433,16 @@ namespace ShaderForge {
 			r.x += 6;
 
 			r.width = 108;
+
+		
+			GUI.color = SF_GUI.outdatedStateColors[(int)editor.ShaderOutdated];
 			if( GUI.Button( r, "Compile shader", EditorStyles.toolbarButton ) ) {
 				if(treeStatus.CheckCanCompile())
 					editor.shaderEvaluator.Evaluate();
 			}
+			GUI.color = Color.white;
+
+			DrawRecompileTimer(r);
 
 			r.x += r.width + 4;
 			r.width = 100;

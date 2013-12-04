@@ -1,8 +1,7 @@
 // Shader created with Shader Forge Alpha 0.15 
 // Shader Forge (c) Joachim 'Acegikmo' Holmer
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:3,blpr:0,bsrc:3,bdst:7,culm:2,dpts:2,wrdp:True,uamb:True,ufog:True,aust:True,igpj:False,qofs:0,lico:0,qpre:2,flbk:Transparent/Cutout/Diffuse,rntp:3,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True;n:type:ShaderForge.SFN_Final,id:0,x:32886,y:32683|diff-1-RGB,diffpow-5-OUT,spec-3-OUT,normal-2-RGB,clip-1-A,transm-7-OUT,lwrap-6-OUT;n:type:ShaderForge.SFN_Tex2d,id:1,x:33193,y:32683,ptlb:Diffuse,tex:66321cc856b03e245ac41ed8a53e0ecc;n:type:ShaderForge.SFN_Tex2d,id:2,x:33193,y:32825,ptlb:Normal,tex:cb6c5165ed180c543be39ed70e72abc8;n:type:ShaderForge.SFN_Vector1,id:3,x:33193,y:32602,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:5,x:33193,y:32538,v1:2;n:type:ShaderForge.SFN_Vector3,id:6,x:33193,y:33054,v1:0.9,v2:0.9,v3:0.8;n:type:ShaderForge.SFN_Vector3,id:7,x:33193,y:32955,v1:0.9,v2:1,v3:0.5;proporder:1-2;pass:END;sub:END;*/
-
+/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:3,blpr:0,bsrc:3,bdst:7,culm:2,dpts:2,wrdp:True,uamb:True,ufog:True,aust:True,igpj:False,qofs:0,lico:0,qpre:2,flbk:Transparent/Cutout/Diffuse,rntp:3,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300;n:type:ShaderForge.SFN_Final,id:0,x:32757,y:32619|diff-1-RGB,spec-3-OUT,normal-2-RGB,clip-1-A,transm-7-OUT,lwrap-6-OUT;n:type:ShaderForge.SFN_Tex2d,id:1,x:33193,y:32683,ptlb:Diffuse,tex:66321cc856b03e245ac41ed8a53e0ecc;n:type:ShaderForge.SFN_Tex2d,id:2,x:33193,y:32825,ptlb:Normal,tex:cb6c5165ed180c543be39ed70e72abc8;n:type:ShaderForge.SFN_Vector1,id:3,x:33060,y:32602,v1:0.3;n:type:ShaderForge.SFN_Vector3,id:6,x:33193,y:33054,v1:0.9,v2:0.9,v3:0.8;n:type:ShaderForge.SFN_Vector3,id:7,x:33193,y:32955,v1:0.9,v2:1,v3:0.5;proporder:1-2;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/ClipAndTransmission" {
     Properties {
@@ -29,10 +28,9 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
             #pragma multi_compile_fwdbase_fullshadows
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            #pragma glsl
             uniform float4 _LightColor0;
-            uniform sampler2D _Diffuse;
-            uniform sampler2D _Normal;
+            uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
+            uniform sampler2D _Normal; uniform float4 _Normal_ST;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -60,11 +58,11 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float4 node_1 = tex2D(_Diffuse,i.uv0.xy);
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(i.uv0.xy, _Diffuse));
                 clip(node_1.a - 0.5);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,i.uv0.xy)).rgb;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(i.uv0.xy, _Normal))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 
                 float nSign = sign( dot( viewDirection, normalDirection ) ); // Reverse normal if this is a backface
@@ -72,22 +70,23 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 normalDirection *= nSign;
                 
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
-//////// DEBUG - Lighting()
+////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
-//////// DEBUG - CalcDiffuse()
+/////// Diffuse:
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 w = float3(0.9,0.9,0.8)*0.5; // Light wrapping
                 float3 NdotLWrap = NdotL * ( 1.0 - w );
-                float3 forwardLight = pow( max(float3(0.0,0.0,0.0), NdotLWrap + w ), 2.0 );
-                float3 backLight = pow( max(float3(0.0,0.0,0.0), -NdotLWrap + w ), 2.0 ) * float3(0.9,1,0.5);
-                float3 diffuse = forwardLight+backLight * attenColor;
+                float3 forwardLight = pow( max(float3(0.0,0.0,0.0), NdotLWrap + w ), 1 );
+                float3 backLight = pow( max(float3(0.0,0.0,0.0), -NdotLWrap + w ), 1 ) * float3(0.9,1,0.5);
+                float3 diffuse = forwardLight+backLight * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
+///////// Gloss:
                 float gloss = exp2(0.5*10.0+1.0);
-//////// DEBUG - CalcSpecular()
+////// Specular:
                 float node_3 = 0.3;
                 float3 specular = attenColor * float3(node_3,node_3,node_3) * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss);
                 float3 lightFinal = diffuse * node_1.rgb + specular;
-//////// DEBUG - Final output color
+/// Final Color:
                 return fixed4(lightFinal,1);
             }
             ENDCG
@@ -110,9 +109,8 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
             #pragma multi_compile_shadowcollector
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            #pragma glsl
-            uniform sampler2D _Diffuse;
-            uniform sampler2D _Normal;
+            uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
+            uniform sampler2D _Normal; uniform float4 _Normal_ST;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float4 uv0 : TEXCOORD0;
@@ -129,7 +127,7 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float4 node_1 = tex2D(_Diffuse,i.uv0.xy);
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(i.uv0.xy, _Diffuse));
                 clip(node_1.a - 0.5);
                 SHADOW_COLLECTOR_FRAGMENT(i)
             }
@@ -153,9 +151,8 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
             #pragma multi_compile_shadowcaster
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            #pragma glsl
-            uniform sampler2D _Diffuse;
-            uniform sampler2D _Normal;
+            uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
+            uniform sampler2D _Normal; uniform float4 _Normal_ST;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float4 uv0 : TEXCOORD0;
@@ -172,7 +169,7 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float4 node_1 = tex2D(_Diffuse,i.uv0.xy);
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(i.uv0.xy, _Diffuse));
                 clip(node_1.a - 0.5);
                 SHADOW_CASTER_FRAGMENT(i)
             }

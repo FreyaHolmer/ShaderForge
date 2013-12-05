@@ -114,6 +114,31 @@ namespace ShaderForge {
 
 		}
 
+		void OnDisable(){
+
+
+
+			if(shaderOutdated != UpToDateState.UpToDate){
+
+				fullscreenMessage = "Saving...";
+				Repaint();
+				shaderEvaluator.Evaluate();
+			}
+
+			Debug.Log("OnDisable editor window");
+
+		}
+
+
+		void OnDestroy(){
+
+			Debug.Log ("Destroyed the editor window");
+
+
+
+
+		}
+
 		public static void Init( Shader initShader = null ) {
 			//Debug.Log( "[SF_LOG] - SF_Editor Init(" + initShader + ")" );
 			SF_Editor materialEditor = (SF_Editor)EditorWindow.GetWindow( typeof( SF_Editor ) );
@@ -131,6 +156,8 @@ namespace ShaderForge {
 				
 		}
 		 * */
+
+
 
 		public void InitializeNodeTemplates() {
 			nodeTemplates = new List<SF_EditorNodeData>();
@@ -520,6 +547,7 @@ namespace ShaderForge {
 			GUIUtility.ExitGUI();
 		}
 
+		string fullscreenMessage = "";
 		public Rect previousPosition;
 		public bool closeMe = false;
 		void OnGUI() {
@@ -541,6 +569,10 @@ namespace ShaderForge {
 				return;
 			}
 
+			if(!string.IsNullOrEmpty(fullscreenMessage)){
+				GUI.Box(fullRect,fullscreenMessage);
+				return;
+			}
 
 
 			UpdateKeyHoldEvents();

@@ -83,6 +83,7 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
 ///////// Gloss:
                 float gloss = exp2(0.5*10.0+1.0);
 ////// Specular:
+                NdotL = max(0.0, NdotL);
                 float node_3 = 0.3;
                 float3 specular = attenColor * float3(node_3,node_3,node_3) * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss);
                 float3 lightFinal = diffuse * node_1.rgb + specular;

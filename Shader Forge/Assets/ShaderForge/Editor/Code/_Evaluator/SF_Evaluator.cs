@@ -721,7 +721,10 @@ namespace ShaderForge {
 
 				if(ps.HasTransmission()){
 					lmbStr += "+backLight";
+					lmbStr = "("+lmbStr+")";
 				}
+
+			
 
 				/*
 				if( ps.n_diffusePower == "1" )

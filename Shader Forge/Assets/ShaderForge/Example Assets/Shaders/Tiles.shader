@@ -79,6 +79,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_124, _Diffuse));
                 float gloss = exp2((pow(node_138.r,2.0)*_Gloss)*10.0+1.0);
 ////// Specular:
+                NdotL = max(0.0, NdotL);
                 float _Specular_var = _Specular;
                 float3 specularColor = float3(_Specular_var,_Specular_var,_Specular_var);
                 float HdotL = max(0.0,dot(halfDirection,lightDirection));
@@ -162,6 +163,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_124, _Diffuse));
                 float gloss = exp2((pow(node_138.r,2.0)*_Gloss)*10.0+1.0);
 ////// Specular:
+                NdotL = max(0.0, NdotL);
                 float _Specular_var = _Specular;
                 float3 specularColor = float3(_Specular_var,_Specular_var,_Specular_var);
                 float HdotL = max(0.0,dot(halfDirection,lightDirection));

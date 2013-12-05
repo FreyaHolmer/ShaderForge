@@ -219,6 +219,8 @@ namespace ShaderForge {
 		// When evaluating nodes, run the overridden operator from the node itself
 		public void Combine( /*SF_NodePreview a, SF_NodePreview b */) {
 
+			if(SF_Parser.quickLoad)
+				return;
 	
 			// Check if it can combine first
 			if( !node.CanEvaluate() ) {

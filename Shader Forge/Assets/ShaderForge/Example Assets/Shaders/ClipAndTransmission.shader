@@ -79,7 +79,7 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 float3 NdotLWrap = NdotL * ( 1.0 - w );
                 float3 forwardLight = pow( max(float3(0.0,0.0,0.0), NdotLWrap + w ), 1 );
                 float3 backLight = pow( max(float3(0.0,0.0,0.0), -NdotLWrap + w ), 1 ) * float3(0.9,1,0.5);
-                float3 diffuse = forwardLight+backLight * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
+                float3 diffuse = (forwardLight+backLight) * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
 ///////// Gloss:
                 float gloss = exp2(0.5*10.0+1.0);
 ////// Specular:

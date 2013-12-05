@@ -127,19 +127,19 @@ namespace ShaderForge {
 					continue;
 				}
 			}
-
+			SF_Parser.quickLoad = true;
 			// Create all node links
 			for( int i = 0; i < links.Count; i++ ) {
 				links[i].Establish( editor );
 			}
-
+			SF_Parser.quickLoad = false;
 			
 
 			//Debug.Log("All links established, hierarchally refreshing...");
 			// Refresh hierarchally
-			SF_Parser.quickLoad = true;
+		
 			editor.nodeView.HierarchalRefresh();
-			SF_Parser.quickLoad = false;
+
 
 			//Debug.Log( "Reconnect pending..." );
 			editor.nodeView.ReconnectConnectedPending();

@@ -22,7 +22,7 @@ namespace ShaderForge {
 
 			//SF_NodeConnection lerpCon;
 			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTv3,false),
+				SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false),
 				SF_NodeConnection.Create(this,"COL","Col",ConType.cInput,ValueType.VTvPending,false).SetRequired(true).TypecastTo(3),
 				SF_NodeConnection.Create(this,"DES","Des",ConType.cInput,ValueType.VTv1,false).SetRequired(false)
 			};
@@ -44,7 +44,7 @@ namespace ShaderForge {
 		}
 
 		public override int GetEvaluatedComponentCount() {
-			return 3;
+			return 1;
 		}
 
 

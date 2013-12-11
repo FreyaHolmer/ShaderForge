@@ -47,7 +47,7 @@ namespace ShaderForge {
 
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return "lerp(" + GetConnectorByStringID( "A" ).TryEvaluate() + "," + GetConnectorByStringID( "B" ).TryEvaluate() + "," + GetInputCon( "T" ).Evaluate() + ")";
+			return "lerp(" + GetConnectorByStringID( "A" ).TryEvaluateAs(GetEvaluatedComponentCount()) + "," + GetConnectorByStringID( "B" ).TryEvaluateAs(GetEvaluatedComponentCount()) + "," + GetInputCon( "T" ).Evaluate() + ")";
 		}
 
 		// TODO Expose more out here!

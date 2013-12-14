@@ -178,7 +178,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Round ), catArithmetic + "Round" );
 			AddTemplate( typeof( SFN_Floor ), catArithmetic + "Floor" );
 			AddTemplate( typeof( SFN_Trunc ), catArithmetic + "Trunc" );
-			AddTemplate( typeof( SFN_Step ), catArithmetic + "Step (A <= B)" );
+			AddTemplate( typeof( SFN_Step ), catArithmetic + "Step (A <= B)", KeyCode.None, "Step"  );
 			AddTemplate( typeof( SFN_If ), catArithmetic + "If", KeyCode.I );
 			AddTemplate( typeof( SFN_Frac ), catArithmetic + "Frac" );
 			AddTemplate( typeof( SFN_Fmod ), catArithmetic + "Fmod" );
@@ -235,7 +235,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Binormal ), catGeoData + "Binormal Dir.", KeyCode.B );
 			AddTemplate( typeof( SFN_Tangent ), catGeoData + "Tangent Dir." );
 			AddTemplate( typeof( SFN_ViewVector ), catGeoData + "View Dir." );
-			AddTemplate( typeof( SFN_ViewReflectionVector ), catGeoData + "View Refl. Dir.", KeyCode.R );
+			AddTemplate( typeof( SFN_ViewReflectionVector ), catGeoData + "View Refl. Dir.", KeyCode.R, "View Reflection"  );
 
 			string catLighting = "Lighting/";
 			AddTemplate( typeof( SFN_LightColor ), catLighting + "Light Color" );
@@ -257,10 +257,10 @@ namespace ShaderForge {
 
 			string catMathConst = "Math Constants/";
 			AddTemplate( typeof( SFN_Pi ), catMathConst + "Pi" );
-			AddTemplate( typeof( SFN_Tau ), catMathConst + "Tau (2 Pi)" );
+			AddTemplate( typeof( SFN_Tau ), catMathConst + "Tau (2 Pi)", KeyCode.None, "Tau" );
 			AddTemplate( typeof( SFN_Phi ), catMathConst+"Phi" );
 			AddTemplate( typeof( SFN_Root2 ), catMathConst + "Root 2" );
-			AddTemplate( typeof( SFN_E ), catMathConst + "e" );
+			AddTemplate( typeof( SFN_E ), catMathConst + "e", KeyCode.None, "EulersConstant" );
 
 			string catTrig = "Trigonometry/";
 			AddTemplate( typeof( SFN_Sin ), catTrig + "Sin" );
@@ -273,11 +273,21 @@ namespace ShaderForge {
 
 		}
 
-		public SF_EditorNodeData AddTemplate( Type type, string label, KeyCode keyCode = KeyCode.None ) {
+		public SF_EditorNodeData AddTemplate( Type type, string label, KeyCode keyCode = KeyCode.None, string searchName = null ) {
 			SF_EditorNodeData item = ScriptableObject.CreateInstance<SF_EditorNodeData>().Initialize( type.FullName, label, keyCode );
+
+			if(!string.IsNullOrEmpty(searchName)){
+				item.SearchName = searchName;
+			}
+
 			this.nodeTemplates.Add( item );
 			return item;
 		}
+
+
+
+
+
 
 		public SF_EditorNodeData GetTemplate<T>() {
 			foreach( SF_EditorNodeData sft in nodeTemplates ) {

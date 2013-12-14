@@ -14,6 +14,7 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Scrn. Params" );
+			base.SearchName = "Screen Parameters";
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.icon = Resources.LoadAssetAtPath( SF_Paths.pInterface+"Nodes/screen_parameters.png", typeof( Texture2D ) ) as Texture2D;

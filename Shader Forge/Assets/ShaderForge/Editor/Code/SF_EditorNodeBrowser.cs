@@ -101,6 +101,8 @@ namespace ShaderForge {
 		[SerializeField]
 		string prevCategory;
 
+		const string searchBoxName = "sf_search_box";
+
 		public void OnLocalGUI( Rect rect ) {
 
 			if( IsPlacing() && Event.current.type == EventType.mouseUp && Event.current.button == 1 ) {
@@ -127,11 +129,26 @@ namespace ShaderForge {
 			searchCancelRect.x += searchCancelRect.width;
 			searchCancelRect.width = 19;
 
+			// Command/ctrl + F // TODO
+			/*
+			if( SF_GUI.HoldingControl() &&
+			    Event.current.keyCode == KeyCode.F && 
+			    Event.current.type == EventType.keyDown && 
+			    GUI.GetNameOfFocusedControl() != searchBoxName){
+
+				Event.current.character = (char)0; // We're done using F now
+				Event.current.Use();
+				GUI.FocusControl(searchBoxName); // Focus search field
+				Event.current.character = (char)0; // Stop! No more characters! Please!
+			}
+			*/
+
 
 			// Draw Toolbar
 			GUI.Box( toolbarRect, "", styleToolbar );
 
 			prevString = searchString.Trim();
+			GUI.SetNextControlName( searchBoxName );
 			searchString = GUI.TextField( searchRect, searchString, styleSearchField );
 			if( GUI.Button(searchCancelRect, "", styleSearchCancel ) ) {
 				searchString = "";
@@ -139,6 +156,9 @@ namespace ShaderForge {
 			}
 			if( searchString.Trim() != prevString )
 				OnSearchStringChanged();
+
+
+
 
 
 			// Scroll view stuff
@@ -202,7 +222,20 @@ namespace ShaderForge {
 			GUI.Label( btnRect, entry.nodeName, styleButton );
 			if( mouseOver && Event.current.type == EventType.mouseDown && Event.current.button == 0) {
 				OnStartDrag( entry );
+			} else if( Event.current.type == EventType.ContextClick ) {
+				Vector2 mousePos = Event.current.mousePosition;
+				if( btnRect.Contains( mousePos ) ) {
+					// Now create the menu, add items and show it
+					GenericMenu menu = new GenericMenu();
+					editor.ResetRunningOutdatedTimer();
+					//menu.AddItem( new GUIContent("Edit Comment"), false, ContextClick, "cmt_edit" );
+					menu.AddItem( new GUIContent("What does " + entry.nodeName + " do?"), false, ContextClick, entry );
+					menu.ShowAsContext();
+					Event.current.Use();
+				}
 			}
+
+
 			GUI.color = Color.white;
 			if( entry.isNew ) {
 				GUIStyle miniStyle = new GUIStyle( EditorStyles.miniBoldLabel );
@@ -214,6 +247,13 @@ namespace ShaderForge {
 			SF_GUI.AssignCursor( btnRect, MouseCursor.Pan );
 			btnRect.y += btnRect.height;
 		}
+
+		public void ContextClick( object o ) {
+			SF_EditorNodeData entry = o as SF_EditorNodeData;
+			SF_Web.OpenDocumentationForNode(entry);
+		}
+
+
 
 		public void OnStartDrag( SF_EditorNodeData nodeData ) {
 			//if( IsPlacing() )

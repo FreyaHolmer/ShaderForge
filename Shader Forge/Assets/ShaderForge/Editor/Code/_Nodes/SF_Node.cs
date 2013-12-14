@@ -74,6 +74,20 @@ namespace ShaderForge {
 		public int id;
 
 		public string nodeName;
+		private string nodeNameSearch;
+		public string SearchName{
+			get{
+				if(string.IsNullOrEmpty(nodeNameSearch)){
+					return nodeName;
+				} else {
+					return nodeNameSearch;
+				}
+			}
+			set{
+				nodeNameSearch = value;
+			}
+		}
+
 		public Rect rect;
 		public Rect rectInner;
 		public Rect lowerRect;
@@ -509,6 +523,9 @@ namespace ShaderForge {
 		public void ContextClick( object o ) {
 			string picked = o as string;
 			switch(picked){
+			case "doc_open":
+				SF_Web.OpenDocumentationForNode(this);
+				break;
 			case "cmt_edit":
 				editor.Defocus(deselectNodes:true);
 				GUI.FocusControl("node_comment_" + id);
@@ -553,7 +570,7 @@ namespace ShaderForge {
 					GenericMenu menu = new GenericMenu();
 					editor.ResetRunningOutdatedTimer();
 					menu.AddItem( new GUIContent("Edit Comment"), false, ContextClick, "cmt_edit" );
-
+					menu.AddItem( new GUIContent("What does " + nodeName + " do?"), false, ContextClick, "doc_open" );
 					menu.ShowAsContext();
 					Event.current.Use();
 				}

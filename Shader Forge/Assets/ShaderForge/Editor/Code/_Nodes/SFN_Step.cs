@@ -10,6 +10,7 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Step (A <= B)" );
+			base.SearchName = "Step";
 			base.PrepareArithmetic(2);
 			base.showLowerReadonlyValues = false;
 			base.connectors[0].label = "<=";

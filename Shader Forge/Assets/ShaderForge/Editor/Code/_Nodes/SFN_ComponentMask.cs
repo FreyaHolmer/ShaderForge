@@ -60,6 +60,7 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Comp. Mask" );
+			base.SearchName = "ComponentMask";
 			base.showColor = true;
 			UseLowerReadonlyValues( true );
 			UseLowerPropertyBox( true, true );

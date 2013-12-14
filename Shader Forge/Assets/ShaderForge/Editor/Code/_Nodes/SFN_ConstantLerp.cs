@@ -21,6 +21,7 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Const. Lerp" );
+			base.SearchName = "Constant Lerp";
 			base.showColor = true;
 			UseLowerReadonlyValues( true );
 			base.UseLowerPropertyBox( true, true );

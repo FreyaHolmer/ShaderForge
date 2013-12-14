@@ -14,6 +14,22 @@ namespace ShaderForge {
 		[SerializeField]
 		public string nodeName;
 		[SerializeField]
+		private string nodeNameSearch;
+
+		public string SearchName{
+			get{
+				if(string.IsNullOrEmpty(nodeNameSearch)){
+					return nodeName;
+				} else {
+					return nodeNameSearch;
+				}
+			}
+			set{
+				nodeNameSearch = value;
+			}
+		}
+
+		[SerializeField]
 		public string type;
 		[SerializeField]
 		public bool isNew = false;
@@ -23,6 +39,8 @@ namespace ShaderForge {
 		public string category;
 		[SerializeField]
 		public bool isProperty = false;
+
+
 
 		public SF_EditorNodeData() {
 

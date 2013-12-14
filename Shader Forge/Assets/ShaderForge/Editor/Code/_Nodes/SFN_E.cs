@@ -12,6 +12,7 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "e" );
+			base.SearchName = "EulersConstant";
 			base.PrepareConstant( "const_e", "2.718281828459" );
 		}
 

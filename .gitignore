@@ -7,6 +7,8 @@
 !ICON_SOURCE/*
 !OLD_FILES/*
 !Shader Forge/Assets/ShaderForge/*
+!Shader Forge/Assets/Interface/*
+!Shader Forge/Assets/Interface/Nodes/*
 
 #################
 ## Unity

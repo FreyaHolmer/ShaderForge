@@ -280,7 +280,7 @@ namespace ShaderForge {
 			Color prev = GUI.color;
 			if( textureAsset ) {
 				GUI.color = Color.white;
-				GUI.DrawTexture( rectInner, texture.Texture, ScaleMode.StretchToFill, texture.Texture.alphaIsTransparency ); // TODO: DOesn't seem to work
+				GUI.DrawTexture( rectInner, texture.Texture, ScaleMode.StretchToFill, texture.Texture.alphaIsTransparency ); // TODO: Doesn't seem to work
 			}
 
 			if( showLowerPropertyBox ) {

@@ -3,13 +3,24 @@ using UnityEditor;
 using System.Collections;
 
 
+
+
 namespace ShaderForge {
+
+
+	public enum NoTexValue{White, Gray, Black, Bump};
+
 	[System.Serializable]
 	public class SFN_Tex2d : SF_Node {
 
 
 		public Texture textureAsset;
+		//public bool unpackNormal = false;
+		public NoTexValue noTexValue = NoTexValue.White;
+		public bool markedAsNormalMap = false;
+
 		public SF_ShaderProperty shelvedProperty;
+
 
 		public SFN_Tex2d() {
 
@@ -17,8 +28,10 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Texture 2D" );
-			base.UseLowerPropertyBox( false );
-			
+			node_height = (int)(rect.height - 6f); // Odd, but alright...
+			base.UseLowerPropertyBox( true, true );
+
+		
 			property = ScriptableObject.CreateInstance<SFP_Tex2d>().Initialize( this );
 		
 
@@ -41,6 +54,7 @@ namespace ShaderForge {
 
 		public bool IsNormalMap() {
 
+			/*
 			if( textureAsset != null ) {
 				string path = AssetDatabase.GetAssetPath( textureAsset );
 				if( string.IsNullOrEmpty( path ) )
@@ -52,13 +66,32 @@ namespace ShaderForge {
 
 			if( property == null ) {
 				if( GetInputIsConnected( "TEX" ) )
-					return ( GetInputCon( "TEX" ).node.property as SFP_Tex2d ).isBumpmap;
+					return ( GetInputCon( "TEX" ).node as SFN_Tex2d ).IsNormalMap();
 			} else {
 				return ( property as SFP_Tex2d ).isBumpmap;
-			}
-			
+			}*/
+			// TODO: Is this right?
 
-			return false;
+			if( property == null ) {
+				if( GetInputIsConnected( "TEX" ) )
+					return ( GetInputCon( "TEX" ).node as SFN_Tex2d ).IsNormalMap();
+			}
+
+			return markedAsNormalMap;
+		}
+
+
+
+		public override void DrawLowerPropertyBox() {
+			GUI.color = Color.white;
+			EditorGUI.BeginChangeCheck();
+			Rect tmp = lowerRect;
+			tmp.height = 16f;
+			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
+			tmp.y += tmp.height;
+			markedAsNormalMap = EditorGUI.ToggleLeft(tmp, "Normal map", markedAsNormalMap);
+			if(EditorGUI.EndChangeCheck())
+				OnUpdateNode();
 		}
 
 
@@ -189,6 +222,7 @@ namespace ShaderForge {
 			ProcessInput();
 			DrawHighlight();
 			PrepareWindowColor();
+
 			DrawWindow();
 			ResetWindowColor();
 			return !CheckIfDeleted();
@@ -246,7 +280,12 @@ namespace ShaderForge {
 			Color prev = GUI.color;
 			if( textureAsset ) {
 				GUI.color = Color.white;
-				GUI.DrawTexture( rectInner, texture.Texture );
+				GUI.DrawTexture( rectInner, texture.Texture, ScaleMode.StretchToFill, texture.Texture.alphaIsTransparency ); // TODO: DOesn't seem to work
+			}
+
+			if( showLowerPropertyBox ) {
+				GUI.color = Color.white;
+				DrawLowerPropertyBox();
 			}
 			
 			//else {
@@ -312,7 +351,27 @@ namespace ShaderForge {
 				base.texture.CompCount = 3;
 			}*/
 
-			//( property as SFP_Tex2d ).isBumpmap = ;
+
+
+
+			bool newAssetIsNormalMap = false;
+
+
+			string path = AssetDatabase.GetAssetPath( textureAsset );
+			if( string.IsNullOrEmpty( path ) )
+				newAssetIsNormalMap = false;
+			else
+				newAssetIsNormalMap = ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).normalmap;
+
+			if(newAssetIsNormalMap){
+				noTexValue = NoTexValue.Bump;
+				markedAsNormalMap = true;
+			} else if( noTexValue == NoTexValue.Bump){
+				noTexValue = NoTexValue.Black;
+				markedAsNormalMap = false;
+			}
+
+
 			RenderToTexture();
 			editor.shaderEvaluator.ApplyProperty( this );
 			OnUpdateNode(NodeUpdateType.Soft);
@@ -320,17 +379,30 @@ namespace ShaderForge {
 
 
 		public override string SerializeSpecialData() {
-			if( textureAsset == null )
-				return null;
-			return "tex:" + SF_Tools.AssetToGUID( textureAsset );
+
+			string s = "";
+
+			if( textureAsset != null )
+				s += "tex:" + SF_Tools.AssetToGUID( textureAsset ) + ",";
+			s += "ntxv:" + ((int)noTexValue).ToString() + ",";
+			s += "isnm:" + markedAsNormalMap.ToString();
+
+			return s;
+
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
 			switch( key ) {
-				case "tex":
-					textureAsset = (Texture)SF_Tools.GUIDToAsset( value, typeof( Texture ) );
-					OnAssignedTexture();
-					break;
+			case "tex":
+				textureAsset = (Texture)SF_Tools.GUIDToAsset( value, typeof( Texture ) );
+				OnAssignedTexture();
+				break;
+			case "ntxv":
+				noTexValue = (NoTexValue)int.Parse(value);
+				break;
+			case "isnm":
+				markedAsNormalMap = bool.Parse(value);
+				break;
 			}
 		}
 

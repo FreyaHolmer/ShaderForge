@@ -7,7 +7,7 @@ namespace ShaderForge {
 	public class SFP_Tex2d : SF_ShaderProperty {
 
 
-		public bool isBumpmap = false;
+		//public bool isBumpmap = false; // TODO: Is this even used?
 
 		public new SFP_Tex2d Initialize( SF_Node node ) {
 			base.nameType = "Texture (2D)";
@@ -17,8 +17,8 @@ namespace ShaderForge {
 
 
 		public override string GetInitializationLine() {
-			string defaultValue = isBumpmap ? "\"bump\"" : "\"white\"";
-			return GetVariable() + " (\"" + nameDisplay + "\", 2D) = " + defaultValue + " {}";
+			//string defaultValue = isBumpmap ? "\"bump\"" : "\"white\"";
+			return GetVariable() + " (\"" + nameDisplay + "\", 2D) = \"" + (base.node as SFN_Tex2d).noTexValue.ToString().ToLower() + "\" {}";
 		}
 
 		public override string GetVariableLine() {

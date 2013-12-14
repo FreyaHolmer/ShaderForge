@@ -29,23 +29,19 @@ namespace ShaderForge {
 			return false;
 		}
 
-		public bool IsNormalMap() {
 
-			bool retBool = false;
+		public bool IsAssetNormalMap() {
 
 			if( textureAsset == null ){
-				retBool = false;
+				return false;
 			} else {
 				string path = AssetDatabase.GetAssetPath( textureAsset );
 				if( string.IsNullOrEmpty( path ) )
-					retBool = false;
+					return false;
 				else
-					retBool = ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).normalmap;
+					return ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).normalmap;
 			}
 
-			( property as SFP_Tex2d ).isBumpmap = retBool;
-
-			return retBool;
 		}
 
 		public bool HasAlpha() {
@@ -102,7 +98,7 @@ namespace ShaderForge {
 			temp.wrapMode = textureAsset.wrapMode;
 			temp.ReadPixels( new Rect( 0, 0, textureAsset.width, textureAsset.height ), 0, 0 );
 
-			if( IsNormalMap() ) {
+			if( IsAssetNormalMap() ) {
 				UnpackNormals( ref temp );
 			}
 

@@ -2,21 +2,43 @@
 ## Super ignore and unignore
 #################
 
-/*
-!BUILDS/*
-!ICON_SOURCE/*
-!OLD_FILES/*
-!Shader Forge/Assets/ShaderForge/*
-!Shader Forge/Assets/ShaderForge/Editor/*
-!Shader Forge/Assets/ShaderForge/Editor/Interface/*
-!Shader Forge/Assets/ShaderForge/Editor/Interface/Nodes/*
+
+#!BUILDS/*
+#!ICON_SOURCE/*
+#!OLD_FILES/*
+#!Shader Forge/Assets/ShaderForge/*
+#!Shader Forge/Assets/ShaderForge/Editor/*
+#!Shader Forge/Assets/ShaderForge/Editor/Interface/*
+#!Shader Forge/Assets/ShaderForge/Editor/Interface/Nodes/*
+
+
+###########
+#SF ignores
+###########
+*ShaderForgeInternal.mat
+*NewShader.shader
+
+Shader Forge/Assets/LightmapTestNew/*
+Shader Forge/Assets/LightmapTestNew.meta
+Shader Forge/Assets/Marmoset/*
+Shader Forge/Assets/Marmoset.meta
+Shader Forge/Assets/FG13/*
+Shader Forge/Assets/FG13.meta
+Shader Forge/Assets/Misc/*
+Shader Forge/Assets/Misc.meta
+Shader Forge/Assets/Downloaded/*
+Shader Forge/Assets/Downloaded.meta
+Shader Forge/Assets/TemporaryTests/*
+Shader Forge/Assets/TemporaryTests.meta
+Shader Forge/Assets/Gizmos/*
+Shader Forge/Assets/Gizmos.meta
+
 
 #################
 ## Unity
 #################
 
-*ShaderForgeInternal.mat
-*NewShader.shader
+
 
 Library/
 Temp/
@@ -196,11 +218,10 @@ pip-log.txt
 .mr.developer.cfg
 
 # Mac crap
-.DS_Store
+*.DS_Store
 dittochar.sh
 dittohome.sh
 dittoproperties.sh
 dittovehicles.sh
 
 
-!Shader Forge/Assets/ShaderForge/*

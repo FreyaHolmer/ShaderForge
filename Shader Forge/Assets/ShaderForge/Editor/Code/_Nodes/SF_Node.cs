@@ -214,8 +214,8 @@ namespace ShaderForge {
 
 
 			editor.OnShaderModified( NodeUpdateType.Soft );
-
-			Repaint();
+			if(!SF_Parser.quickLoad)
+				Repaint();
 
 		}
 
@@ -302,8 +302,8 @@ namespace ShaderForge {
 		
 			
 			texture.Combine();
-
-			SF_Editor.instance.Repaint();
+			if(!SF_Parser.quickLoad)
+				SF_Editor.instance.Repaint();
 		}
 
 		public virtual bool IsUniformOutput() {

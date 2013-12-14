@@ -416,6 +416,9 @@ namespace ShaderForge {
 		
 		private void DrawRecompileTimer(Rect r){
 
+			if(!autoRecompile)
+				return; // Don't draw recompile timer when autoRecompile is unchecked
+
 			float delta = GetTimeSinceChanged();
 
 			if(delta > 1.12f)

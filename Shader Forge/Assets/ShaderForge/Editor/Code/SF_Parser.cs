@@ -132,13 +132,17 @@ namespace ShaderForge {
 			for( int i = 0; i < links.Count; i++ ) {
 				links[i].Establish( editor );
 			}
-			SF_Parser.quickLoad = false;
+
 			
 
 			//Debug.Log("All links established, hierarchally refreshing...");
 			// Refresh hierarchally
-		
+
+			//Profiler.BeginSample ("MyPieceOfCode");
+
 			editor.nodeView.HierarchalRefresh();
+
+			//Profiler.EndSample();
 
 
 			//Debug.Log( "Reconnect pending..." );
@@ -154,6 +158,7 @@ namespace ShaderForge {
 			// Center camera
 			editor.nodeView.CenterCamera();
 			SF_Parser.settingUp = false;
+			SF_Parser.quickLoad = false;
 			//Debug.Log( "Centered camera, recompiling shader..." );
 			editor.materialOutput.OnUpdateNode( NodeUpdateType.Hard, true );
 

@@ -117,8 +117,9 @@ namespace ShaderForge {
 
 
 		public void InitializeTexture() {
-			texture = new Texture2D( 128, 128, TextureFormat.ARGB32, false, false/*LINEAR, true?*/);
+			texture = new Texture2D( 128, 128, TextureFormat.ARGB32, false, false/*LINEAR, true?*/); // TODO: Gamma/Linear?
 			texture.wrapMode = TextureWrapMode.Clamp;
+			//texture.hideFlags = HideFlags.HideAndDontSave;
 		}
 
 
@@ -219,8 +220,7 @@ namespace ShaderForge {
 		// When evaluating nodes, run the overridden operator from the node itself
 		public void Combine( /*SF_NodePreview a, SF_NodePreview b */) {
 
-			if(SF_Parser.quickLoad)
-				return;
+
 	
 			// Check if it can combine first
 			if( !node.CanEvaluate() ) {
@@ -236,15 +236,16 @@ namespace ShaderForge {
 
 			uniform = node.IsUniformOutput();
 
-			// Combine the node textures
-			for( int y = 0; y < 128; y++ ) {
-				for( int x = 0; x < 128; x++ ) {
-					Color retVector = node.NodeOperator( x, y );
-					for( int c = 0; c < 4; c++ ) {
-						data[x, y, c] = retVector[c];
-					}
+			// Combine the node textures, unless we're quickloading
+			if(!SF_Parser.quickLoad)
+				for( int y = 0; y < 128; y++ ) {
+					for( int x = 0; x < 128; x++ ) {
+						Color retVector = node.NodeOperator( x, y );
+						for( int c = 0; c < 4; c++ ) {
+							data[x, y, c] = retVector[c];
+						}
+					} 
 				}
-			}
 
 			// Combine uniform
 			/*for( int i = 0; i < 4; i++ ) {

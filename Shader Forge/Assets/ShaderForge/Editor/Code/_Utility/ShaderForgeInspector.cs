@@ -88,7 +88,8 @@ namespace UnityEditor {
 
 			if( hasShaderForgeData ) {
 				if( GUILayout.Button( "Open in Shader Forge" ) ) {
-					SF_Editor.Init( shader );
+					if(Event.current.rawType != EventType.mouseDown)
+						SF_Editor.Init( shader );
 				}
 			} else {
 				GUILayout.BeginHorizontal();

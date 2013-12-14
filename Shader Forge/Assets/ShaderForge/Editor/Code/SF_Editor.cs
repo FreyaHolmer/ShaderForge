@@ -125,14 +125,14 @@ namespace ShaderForge {
 				shaderEvaluator.Evaluate();
 			}
 
-			Debug.Log("OnDisable editor window");
+			//Debug.Log("OnDisable editor window");
 
 		}
 
 
 		void OnDestroy(){
 
-			Debug.Log ("Destroyed the editor window");
+			//Debug.Log ("Destroyed the editor window");
 
 
 
@@ -523,7 +523,8 @@ namespace ShaderForge {
 
 
 			//UpdateCameraZoomValue();
-			Repaint(); // Update GUI every frame
+			if(focusedWindow == this)
+				Repaint(); // Update GUI every frame if focused
 
 		}
 		

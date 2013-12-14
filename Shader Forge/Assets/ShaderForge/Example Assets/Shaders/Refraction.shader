@@ -94,7 +94,7 @@ Shader "Shader Forge/Examples/Refraction" {
                 float node_75 = 3.0;
                 float3 specular = attenColor * float3(node_75,node_75,node_75) * pow(max(0,dot(halfDirection,normalDirection)),gloss);
                 float2 node_27 = (i.uv0.rg*1.0);
-                float node_66 = round(frac((2.0*node_27)));
+                float2 node_66 = round(frac((2.0*node_27)));
                 float3 lightFinal = diffuse * lerp(_TileA.rgb,_TileB.rgb,abs((1.0 - (node_66.r+node_66.r)))) + specular;
 /// Final Color:
                 return fixed4(lerp(tex2D(_GrabTexture, float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + (UnpackNormal(tex2D(_Refraction,TRANSFORM_TEX(node_27, _Refraction))).rgb.rg*_RefractionIntensity)).rgb, lightFinal,0.3),1);

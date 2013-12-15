@@ -319,7 +319,7 @@ namespace ShaderForge {
 			tmp.height = 16f;
 			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
 			tmp.y += tmp.height;
-			markedAsNormalMap = EditorGUI.ToggleLeft(tmp, "Normal map", markedAsNormalMap);
+			markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
 			if(EditorGUI.EndChangeCheck())
 				OnUpdateNode();
 		}

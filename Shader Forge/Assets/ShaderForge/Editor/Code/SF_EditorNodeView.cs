@@ -12,6 +12,7 @@ namespace ShaderForge {
 	public class SF_EditorNodeView : ScriptableObject {
 
 		SF_Editor editor;
+
 		const int TOOLBAR_HEIGHT = 18;
 		[SerializeField]
 		Vector2 cameraPos = Vector3.zero;

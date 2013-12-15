@@ -79,7 +79,7 @@ namespace ShaderForge {
 			}
 			set{
 				if(shaderOutdated != value){
-					Debug.Log("Changed outdated state to " + value);
+					//Debug.Log("Changed outdated state to " + value);
 					shaderOutdated = value;
 				}
 			}

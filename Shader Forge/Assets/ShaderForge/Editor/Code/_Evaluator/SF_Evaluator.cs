@@ -1995,7 +1995,7 @@ namespace ShaderForge {
 			switch( node.GetType().ToString() ) {
 				case ( "ShaderForge.SFN_Tex2d" ):
 					SFN_Tex2d texNode = (SFN_Tex2d)node;
-					m.SetTexture( texNode.property.GetVariable(), texNode.textureAsset );
+					m.SetTexture( texNode.property.GetVariable(), texNode.TextureAsset );
 					break;
 				case ( "ShaderForge.SFN_Tex2dAsset" ):
 					SFN_Tex2dAsset texAssetNode = (SFN_Tex2dAsset)node;

@@ -178,7 +178,7 @@ namespace ShaderForge {
 			if( Event.current.type == EventType.DragPerform ) {
 				if( DragAndDrop.objectReferences[0] is Texture2D ) {
 					SFN_Tex2d texNode = editor.nodeBrowser.OnStopDrag() as SFN_Tex2d;
-					texNode.textureAsset = DragAndDrop.objectReferences[0] as Texture2D;
+					texNode.TextureAsset = DragAndDrop.objectReferences[0] as Texture2D;
 					texNode.OnAssignedTexture();
 					Event.current.Use();
 				}

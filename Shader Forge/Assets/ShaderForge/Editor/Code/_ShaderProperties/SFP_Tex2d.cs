@@ -18,7 +18,15 @@ namespace ShaderForge {
 
 		public override string GetInitializationLine() {
 			//string defaultValue = isBumpmap ? "\"bump\"" : "\"white\"";
-			return GetVariable() + " (\"" + nameDisplay + "\", 2D) = \"" + (base.node as SFN_Tex2d).noTexValue.ToString().ToLower() + "\" {}";
+
+			NoTexValue noTexValue = NoTexValue.Black;
+
+			if(base.node is SFN_Tex2d)
+				noTexValue = (base.node as SFN_Tex2d).noTexValue;
+			else if(base.node is SFN_Tex2dAsset)
+				noTexValue = (base.node as SFN_Tex2dAsset).noTexValue;
+
+			return GetVariable() + " (\"" + nameDisplay + "\", 2D) = \"" + noTexValue.ToString().ToLower() + "\" {}";
 		}
 
 		public override string GetVariableLine() {

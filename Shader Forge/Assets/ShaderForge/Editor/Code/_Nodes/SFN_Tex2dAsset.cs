@@ -8,7 +8,9 @@ namespace ShaderForge {
 	public class SFN_Tex2dAsset : SF_Node {
 
 
-		public Texture textureAsset;
+		public Texture textureAsset;					// TODO: Use a parent class, this looks ridiculous
+		public NoTexValue noTexValue = NoTexValue.White;// TODO: Use a parent class, this looks ridiculous
+		public bool markedAsNormalMap = false; 			// TODO: Use a parent class, this looks ridiculous
 
 		public SFN_Tex2dAsset() {
 
@@ -16,7 +18,8 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Texture Asset" );
-			base.UseLowerPropertyBox( false );
+			node_height = (int)(rect.height - 6f); // Odd, but alright...
+			base.UseLowerPropertyBox( true, true );
 			base.texture.CompCount = 4;
 			property = ScriptableObject.CreateInstance<SFP_Tex2d>().Initialize( this );
 
@@ -27,6 +30,12 @@ namespace ShaderForge {
 
 		public override bool IsUniformOutput() {
 			return false;
+		}
+
+
+
+		public bool IsNormalMap() {
+			return markedAsNormalMap;
 		}
 
 
@@ -80,9 +89,40 @@ namespace ShaderForge {
 		// TODO: EditorUtility.SetTemporarilyAllowIndieRenderTexture(true);
 		public void RenderToTexture() {
 			if( textureAsset == null ) {
-				Debug.Log("Texture asset missing");
+				//Debug.Log("Texture asset missing");
+
+				// TODO: Use a parent class, this looks ridiculous
+				// TODO: Use a parent class, this looks ridiculous
+				texture.uniform = true;
+
+				Color c = new Color(0f,0f,0f,0f);
+				switch(noTexValue){
+				case NoTexValue.Black:
+					c = new Color(0f,0f,0f,1f);
+					break;
+				case NoTexValue.Gray:
+					c = new Color(0.5f,0.5f,0.5f,1f);
+					break;
+				case NoTexValue.White:
+					c = new Color(1f,1f,1f,1f);
+					break;
+				case NoTexValue.Bump:
+					c = new Color(0.5f,0.5f,1f,1f);
+					break;
+				}
+				texture.dataUniform = c;
+				 
+
+
 				return;
 			}
+
+			texture.uniform = false;
+			// TODO: Use a parent class, this looks ridiculous
+			// TODO: Use a parent class, this looks ridiculous
+
+
+
 
 			SF_GUI.AllowIndieRenderTextures();
 
@@ -182,6 +222,12 @@ namespace ShaderForge {
 			//GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b,0.5f);
 			//GUI.Label( rectInner, "Empty");
 			//}
+
+			if( showLowerPropertyBox ) {
+				GUI.color = Color.white;
+				DrawLowerPropertyBox();
+			}
+
 			GUI.color = prev;
 
 
@@ -235,10 +281,47 @@ namespace ShaderForge {
 				connectors[6].enableState = EnableState.Hidden;
 				base.texture.CompCount = 3;
 			}*/
-
+			RefreshNoTexValueAndNormalUnpack();
 			RenderToTexture();
 			editor.shaderEvaluator.ApplyProperty( this );
 			OnUpdateNode();
+		}
+
+
+
+		// TODO: Use a parent class, this looks ridiculous
+		// TODO: Use a parent class, this looks ridiculous
+		// TODO: Use a parent class, this looks ridiculous
+		public void RefreshNoTexValueAndNormalUnpack(){
+			bool newAssetIsNormalMap = false;
+			
+			string path = AssetDatabase.GetAssetPath( textureAsset );
+			if( string.IsNullOrEmpty( path ) )
+				newAssetIsNormalMap = false;
+			else
+				newAssetIsNormalMap = ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).normalmap;
+			
+			if(newAssetIsNormalMap){
+				noTexValue = NoTexValue.Bump;
+				markedAsNormalMap = true;
+			} else if( noTexValue == NoTexValue.Bump){
+				noTexValue = NoTexValue.Black;
+				markedAsNormalMap = false;
+			}
+			
+		}
+
+
+		public override void DrawLowerPropertyBox() {
+			GUI.color = Color.white;
+			EditorGUI.BeginChangeCheck();
+			Rect tmp = lowerRect;
+			tmp.height = 16f;
+			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
+			tmp.y += tmp.height;
+			markedAsNormalMap = EditorGUI.ToggleLeft(tmp, "Normal map", markedAsNormalMap);
+			if(EditorGUI.EndChangeCheck())
+				OnUpdateNode();
 		}
 
 

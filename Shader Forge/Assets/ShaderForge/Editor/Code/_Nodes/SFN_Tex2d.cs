@@ -15,6 +15,20 @@ namespace ShaderForge {
 
 
 		public Texture textureAsset;
+
+		public Texture TextureAsset {
+			get {
+				if(TexAssetConnected()){
+					textureAsset = null;
+					return ( GetInputCon( "TEX" ).node as SFN_Tex2dAsset ).textureAsset;
+				}
+				return textureAsset;
+			}
+			set {
+				textureAsset = value;
+			}
+		}
+
 		//public bool unpackNormal = false;
 		public NoTexValue noTexValue = NoTexValue.White;
 		public bool markedAsNormalMap = false;
@@ -28,7 +42,7 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Texture 2D" );
-			node_height = (int)(rect.height - 6f); // Odd, but alright...
+			//node_height = (int)(rect.height - 6f); // Odd, but alright...
 			base.UseLowerPropertyBox( true, true );
 
 		
@@ -70,14 +84,19 @@ namespace ShaderForge {
 			} else {
 				return ( property as SFP_Tex2d ).isBumpmap;
 			}*/
-			// TODO: Is this right?
+			// TODO: Is this right?¨
 
-			if( property == null ) {
-				if( GetInputIsConnected( "TEX" ) )
-					return ( GetInputCon( "TEX" ).node as SFN_Tex2d ).IsNormalMap();
-			}
-
+			if(TexAssetConnected())
+				return ( GetInputCon( "TEX" ).node as SFN_Tex2dAsset ).IsNormalMap();
 			return markedAsNormalMap;
+		}
+
+
+		public bool TexAssetConnected(){
+			if( property == null )
+				if( GetInputIsConnected( "TEX" ) )
+					return true;
+			return false;
 		}
 
 
@@ -96,8 +115,8 @@ namespace ShaderForge {
 
 
 		public bool HasAlpha() {
-			if( textureAsset == null ) return false;
-			string path = AssetDatabase.GetAssetPath( textureAsset );
+			if( TextureAsset == null ) return false;
+			string path = AssetDatabase.GetAssetPath( TextureAsset );
 			if( string.IsNullOrEmpty( path ) ) return false;
 			return ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).DoesSourceTextureHaveAlpha();
 		}
@@ -139,24 +158,47 @@ namespace ShaderForge {
 
 		// TODO: EditorUtility.SetTemporarilyAllowIndieRenderTexture(true);
 		public void RenderToTexture() {
-			if( textureAsset == null ) {
+			if( TextureAsset == null ) {
 				//Debug.Log("Texture asset missing");
+				texture.uniform = true;
+				
+				Color c = new Color(0f,0f,0f,0f);
+				switch(noTexValue){
+				case NoTexValue.Black:
+					c = new Color(0f,0f,0f,1f);
+					break;
+				case NoTexValue.Gray:
+					c = new Color(0.5f,0.5f,0.5f,1f);
+					break;
+				case NoTexValue.White:
+					c = new Color(1f,1f,1f,1f);
+					break;
+				case NoTexValue.Bump:
+					c = new Color(0.5f,0.5f,1f,1f);
+					break;
+				}
+				texture.dataUniform = c;
+				
+				
+				
 				return;
 			}
+			
+			texture.uniform = false;
 
 			SF_GUI.AllowIndieRenderTextures();
 
-			RenderTexture rt = new RenderTexture( textureAsset.width, textureAsset.height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default );
-			rt.wrapMode = textureAsset.wrapMode;
+			RenderTexture rt = new RenderTexture( TextureAsset.width, TextureAsset.height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default );
+			rt.wrapMode = TextureAsset.wrapMode;
 			rt.Create();
-			Graphics.Blit( textureAsset, rt );
+			Graphics.Blit( TextureAsset, rt );
 			RenderTexture.active = rt;
 			// The data is now in the RT, in an arbitrary res
 			// TODO: Sample it with normalized coords down into a 128x128
 			// Save it temporarily in a texture
-			Texture2D temp = new Texture2D( textureAsset.width, textureAsset.height, TextureFormat.ARGB32, false );
-			temp.wrapMode = textureAsset.wrapMode;
-			temp.ReadPixels( new Rect( 0, 0, textureAsset.width, textureAsset.height ), 0, 0 );
+			Texture2D temp = new Texture2D( TextureAsset.width, TextureAsset.height, TextureFormat.ARGB32, false );
+			temp.wrapMode = TextureAsset.wrapMode;
+			temp.ReadPixels( new Rect( 0, 0, TextureAsset.width, TextureAsset.height ), 0, 0 );
 
 			if( IsNormalMap() ) {
 				UnpackNormals( ref temp );
@@ -206,14 +248,14 @@ namespace ShaderForge {
 				SFN_Tex2dAsset inTex = ( GetInputCon( "TEX" ).node as SFN_Tex2dAsset );
 
 				bool refresh = false;
-				if( this.textureAsset == null )
+				if( this.TextureAsset == null )
 					refresh = true;
 				if(!refresh)
-					if( inTex.textureAsset != this.textureAsset )
+					if( inTex.textureAsset != this.TextureAsset )
 						refresh = true;
 
 				if( refresh ) {
-					this.textureAsset = inTex.textureAsset;
+					this.TextureAsset = inTex.textureAsset;
 					RenderToTexture();
 				}
 			}
@@ -245,10 +287,12 @@ namespace ShaderForge {
 
 
 		public override void OnDelete() {
-			textureAsset = null;
+			TextureAsset = null;
 		}
 
 		public override void NeatWindow(  ) {
+
+			rect.height = TexAssetConnected() ? NODE_HEIGHT : NODE_HEIGHT + 34;
 
 			GUI.skin.box.clipping = TextClipping.Overflow;
 			GUI.BeginGroup( rect );
@@ -256,7 +300,7 @@ namespace ShaderForge {
 			if( IsProperty() && Event.current.type == EventType.DragPerform && rectInner.Contains(Event.current.mousePosition) ) {
 				if( DragAndDrop.objectReferences[0].GetType() == typeof( Texture2D ) ) {
 					Event.current.Use();
-					textureAsset = DragAndDrop.objectReferences[0] as Texture2D;
+					TextureAsset = DragAndDrop.objectReferences[0] as Texture2D;
 					OnAssignedTexture();
 				}
 			}
@@ -278,12 +322,12 @@ namespace ShaderForge {
 
 
 			Color prev = GUI.color;
-			if( textureAsset ) {
+			if( TextureAsset ) {
 				GUI.color = Color.white;
 				GUI.DrawTexture( rectInner, texture.Texture, ScaleMode.StretchToFill, texture.Texture.alphaIsTransparency ); // TODO: Doesn't seem to work
 			}
 
-			if( showLowerPropertyBox ) {
+			if( showLowerPropertyBox && !TexAssetConnected()) {
 				GUI.color = Color.white;
 				DrawLowerPropertyBox();
 			}
@@ -302,7 +346,7 @@ namespace ShaderForge {
 				selectRect.xMin += 40;
 
 				if(GUI.Button( selectRect, "Select", EditorStyles.miniButton )){
-					EditorGUIUtility.ShowObjectPicker<Texture2D>( textureAsset, false, "", this.id );
+					EditorGUIUtility.ShowObjectPicker<Texture2D>( TextureAsset, false, "", this.id );
 					Event.current.Use();
 				}
 
@@ -311,7 +355,7 @@ namespace ShaderForge {
 
 			if( IsProperty() && Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == this.id ) {
 				Event.current.Use();
-				textureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
+				TextureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
 				OnAssignedTexture();
 			}
 
@@ -353,16 +397,24 @@ namespace ShaderForge {
 
 
 
+			RefreshNoTexValueAndNormalUnpack();
 
+
+
+			RenderToTexture();
+			editor.shaderEvaluator.ApplyProperty( this );
+			OnUpdateNode(NodeUpdateType.Soft);
+		}
+
+		public void RefreshNoTexValueAndNormalUnpack(){
 			bool newAssetIsNormalMap = false;
-
-
-			string path = AssetDatabase.GetAssetPath( textureAsset );
+			
+			string path = AssetDatabase.GetAssetPath( TextureAsset );
 			if( string.IsNullOrEmpty( path ) )
 				newAssetIsNormalMap = false;
 			else
 				newAssetIsNormalMap = ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).normalmap;
-
+			
 			if(newAssetIsNormalMap){
 				noTexValue = NoTexValue.Bump;
 				markedAsNormalMap = true;
@@ -371,10 +423,6 @@ namespace ShaderForge {
 				markedAsNormalMap = false;
 			}
 
-
-			RenderToTexture();
-			editor.shaderEvaluator.ApplyProperty( this );
-			OnUpdateNode(NodeUpdateType.Soft);
 		}
 
 
@@ -382,8 +430,8 @@ namespace ShaderForge {
 
 			string s = "";
 
-			if( textureAsset != null )
-				s += "tex:" + SF_Tools.AssetToGUID( textureAsset ) + ",";
+			if( TextureAsset != null )
+				s += "tex:" + SF_Tools.AssetToGUID( TextureAsset ) + ",";
 			s += "ntxv:" + ((int)noTexValue).ToString() + ",";
 			s += "isnm:" + markedAsNormalMap.ToString();
 
@@ -394,7 +442,7 @@ namespace ShaderForge {
 		public override void DeserializeSpecialData( string key, string value ) {
 			switch( key ) {
 			case "tex":
-				textureAsset = (Texture)SF_Tools.GUIDToAsset( value, typeof( Texture ) );
+				TextureAsset = (Texture)SF_Tools.GUIDToAsset( value, typeof( Texture ) );
 				OnAssignedTexture();
 				break;
 			case "ntxv":

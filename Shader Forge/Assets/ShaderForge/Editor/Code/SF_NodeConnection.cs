@@ -133,11 +133,15 @@ namespace ShaderForge {
 		// They are instantiated when the shader is being evaluated, and then removed again
 		public void DefineGhostIfNeeded(ref List<SF_Node> ghosts) {
 
-			//Debug.Log("Checking ghosts on " + node.nodeName + "["+this.label+"]" );
+			//SF_Debug.Log(DebugType.GhostNodes, "Checking ghosts on " + node.nodeName + "["+this.label+"]" );
 
 			// Skip nodes without ghosts
 			if( string.IsNullOrEmpty(ghostType) ) {
-				//Debug.Log("Ghost type not defined");
+
+				if(SF_Debug.The(DebugType.GhostNodes)){
+					Debug.Log("Ghost type not defined");
+				}
+
 				return;
 			}
 				
@@ -153,6 +157,9 @@ namespace ShaderForge {
 				if( exisGhost.GetType().FullName == ghostType ) { // TODO: Make sure serialized data matches too!
 					// Found!
 					ghost = exisGhost;
+
+					if(SF_Debug.The(DebugType.GhostNodes))
+						Debug.Log("Found matching existing ghost");
 					break;
 				}
 			} 
@@ -161,7 +168,11 @@ namespace ShaderForge {
 			if( ghost == null ) {
 				ghost = node.editor.AddNode( ghostType );
 				ghosts.Add( ghost );
-				//Debug.Log( "Adding ghost of type " + ghostType );
+				if(SF_Debug.The(DebugType.GhostNodes)){
+					Debug.Log("Adding ghost " + ghostType);
+					Debug.Log("Linked to " + node.nodeName + "["+this.label+"]" );
+				}
+					//Debug.Log( "Adding ghost of type " + ghostType );
 				//Debug.Log( "Ghost in main node list = " + node.editor.nodes.Contains( ghost ) );
 			}
 

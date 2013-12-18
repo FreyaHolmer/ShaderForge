@@ -62,7 +62,10 @@ namespace ShaderForge {
 		}
 
 		public override bool IsUniformOutput() {
-			return ( GetInputData( "UVIN" ).uniform && GetInputData( "DIST" ).uniform );
+			if(this["UVIN"].IsConnectedAndEnabled() && this["DIST"].IsConnectedAndEnabled()){
+				return ( GetInputData( "UVIN" ).uniform && GetInputData( "DIST" ).uniform );
+			}
+			return false;
 		}
 
 		public override int GetEvaluatedComponentCount() {

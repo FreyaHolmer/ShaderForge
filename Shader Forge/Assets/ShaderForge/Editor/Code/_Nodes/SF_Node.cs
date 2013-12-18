@@ -92,7 +92,9 @@ namespace ShaderForge {
 		public Rect rectInner;
 		public Rect lowerRect;
 
+		[SerializeField]
 		public SF_NodeConnection[] connectors;
+
 		public SF_NodeConnectionGroup conGroup;
 
 		public float extraWidthOutput = 0f;
@@ -334,7 +336,6 @@ namespace ShaderForge {
 
 		public float GetInputData( string id, int x, int y, int c ) {
 
-
 			switch( GetConnectorByStringID(id).inputCon.outputChannel ) {
 				case OutChannel.R:
 					c = 0;
@@ -349,7 +350,6 @@ namespace ShaderForge {
 					c = 3;
 					break;
 			}
-
 
 			return GetInputData( id )[x, y, c];
 		}
@@ -367,10 +367,22 @@ namespace ShaderForge {
 		public SF_NodePreview GetInputData( string id ) {
 
 			SF_NodeConnection con = GetConnectorByStringID(id);
+			SF_Node n;
 
 			if( con.inputCon == null ) {
+
+				List<SF_Node> tmpGhosts = new List<SF_Node>();
+				con.DefineGhostIfNeeded(ref tmpGhosts);
+				n = tmpGhosts[0];
+				tmpGhosts = null;
+
 				Debug.LogWarning( "Attempt to find input node of connector " + id + " of " + this.nodeName );
 			}
+
+			SF_NodePreview ret = con.inputCon.node.texture;
+
+
+
 
 			return con.inputCon.node.texture;
 		}
@@ -645,7 +657,7 @@ namespace ShaderForge {
 			if(HasComment() || isEditingComment){
 				GUI.color = Color.white;
 				Rect cr = rect;
-				cr.height = 32;
+				cr.height = SF_Styles.GetNodeCommentLabelTextField().fontSize + 4;
 				cr.width = 2048;
 				cr.y -= cr.height + 2;
 				if( IsProperty() ){
@@ -1064,6 +1076,10 @@ namespace ShaderForge {
 			if( this is SFN_Final )
 				return;
 
+
+			if(SF_Debug.The(DebugType.GhostNodes))
+				Debug.Log("Deleting node " + nodeName);
+
 			OnDelete();
 
 
@@ -1132,6 +1148,31 @@ namespace ShaderForge {
 
 
 		public void DefineGhostsIfNeeded(ref List<SF_Node> ghosts) {
+
+			//Debug.Log("Checking if ghosts should be defined on " + nodeName + "...");
+
+
+			// Super duper ultra weird and shouldn't be here. Find real issue later // TODO
+			if(this == null)
+				return;
+			
+			// TODO: This will prevent multi-ghosting
+			/*
+			if( editor.shaderEvaluator.ghostNodes.Contains(this) ){
+				if(SF_Debug.The(DebugType.GhostNodes))
+					Debug.Log("Skipping ghost define for " + nodeName);
+				return;
+			}
+
+			if(Connectors == null){
+				Debug.Log("CHK. GHOST: [" + nodeName + "] Connector count = NULL");
+				Debug.Log("WHAT? this = " + this);
+				if(this == null)
+					return;
+			} else
+				Debug.Log("CHK. GHOST: [" + nodeName + "] Connector count = " + Connectors.Length);
+				*/
+
 			foreach(SF_NodeConnection con in connectors){
 				if( con.conType == ConType.cOutput) {
 					//Debug.LogError("Ghost node defined on an output: "+nodeName+"[" + con.label + "]");

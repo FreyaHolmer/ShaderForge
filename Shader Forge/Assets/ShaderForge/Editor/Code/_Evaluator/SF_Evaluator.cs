@@ -83,6 +83,9 @@ namespace ShaderForge {
 		}
 
 		public void RemoveGhostNodes() {
+			if(ghostNodes == null)
+				return;
+
 			if(SF_Debug.The(DebugType.GhostNodes))
 				Debug.Log( "Removing ghost nodes. Count: " + ghostNodes.Count );
 			for( int i = ghostNodes.Count - 1; i >= 0; i-- ) {
@@ -98,7 +101,7 @@ namespace ShaderForge {
 
 			dependencies = new SF_Dependencies( editor.ps );
 
-			//Debug.Log("UPDATING DEPENDENCIES");
+			Debug.Log("UPDATING DEPENDENCIES: Pass = " + currentPass + " Prog = " + currentProgram);
 			cNodes = editor.nodeView.treeStatus.GetListOfConnectedNodesWithGhosts( out ghostNodes );
 
 
@@ -329,9 +332,9 @@ namespace ShaderForge {
 
 			}
 
-			RemoveGhostNodes(); // TODO: Maybe not here?
+			//RemoveGhostNodes(); // TODO: Maybe not here?
 			
-			//Debug.Log( "DONE UPDATING DEPENDENCIES" );
+			Debug.Log( "DONE UPDATING DEPENDENCIES" );
 		}
 
 
@@ -1885,7 +1888,7 @@ namespace ShaderForge {
 
 
 		public void Evaluate() {
-			//Debug.Log( "Evaluating" );
+			Debug.Log( "SHADER EVALUATING" );
 
 			editor.ps.fChecker.UpdateAvailability();
 			currentPass = PassType.FwdBase;

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -169,6 +169,7 @@ namespace ShaderForge {
 			}
 
 			// Now that's done, let's return the ghost nodes too, if any
+			editor.shaderEvaluator.RemoveGhostNodes(); // TODO: Really?
 			ghosts = new List<SF_Node>();
 
 			foreach( SF_Node n in filtered ) {

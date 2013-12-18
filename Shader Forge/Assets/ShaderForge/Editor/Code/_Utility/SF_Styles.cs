@@ -68,7 +68,7 @@ namespace ShaderForge {
 			if( nodeCommentLabelText == null ) {
 				nodeCommentLabelText = new GUIStyle( EditorStyles.largeLabel );
 				nodeCommentLabelText.fontStyle = FontStyle.Italic;
-				nodeCommentLabelText.fontSize = 20;
+				nodeCommentLabelText.fontSize = 16;
 				nodeCommentLabelText.alignment = TextAnchor.LowerLeft;
 				nodeCommentLabelText.normal.textColor = new Color( 1f, 1f, 1f, 0.3f );
 			}
@@ -82,7 +82,7 @@ namespace ShaderForge {
 			if( nodeCommentLabelTextField == null ) {
 				nodeCommentLabelTextField = new GUIStyle( EditorStyles.textField );
 				nodeCommentLabelTextField.fontStyle = FontStyle.Italic;
-				nodeCommentLabelTextField.fontSize = 20;
+				nodeCommentLabelTextField.fontSize = 16;
 				nodeCommentLabelTextField.alignment = TextAnchor.LowerLeft;
 				nodeCommentLabelTextField.normal.textColor = new Color( 1f, 1f, 1f, 0.3f );
 			}

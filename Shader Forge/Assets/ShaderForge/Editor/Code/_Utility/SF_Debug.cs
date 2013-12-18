@@ -17,7 +17,7 @@ namespace ShaderForge{
 
 
 		public static Dictionary<DebugType,bool> debugFlags = new Dictionary<DebugType, bool>(){
-			{ DebugType.GhostNodes, true }
+			{ DebugType.GhostNodes, false }
 		};
 		
 	}

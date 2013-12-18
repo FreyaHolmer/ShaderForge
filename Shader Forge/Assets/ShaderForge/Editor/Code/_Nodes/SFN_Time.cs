@@ -28,6 +28,8 @@ namespace ShaderForge {
 				SF_NodeConnection.Create(this,"TDB","t*2",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.B),
 				SF_NodeConnection.Create(this,"TTR","t*3",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.A)
 			};
+		
+			Debug.Log("Time node! connector count: " + connectors.Length);
 		}
 
 		public override bool IsUniformOutput() {

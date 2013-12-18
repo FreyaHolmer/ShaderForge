@@ -74,11 +74,7 @@ namespace ShaderForge {
 
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-
 			string distEval = this["DIST"].TryEvaluate();
-
-			Debug.Log("Panner dist = " + distEval);
-
 			return "(" + GetInputCon( "UVIN" ).Evaluate() + "+" + distEval + "*float2(" + speed.x + "," + speed.y + "))";
 		}
 

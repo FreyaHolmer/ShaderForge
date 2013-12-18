@@ -152,7 +152,7 @@ namespace ShaderForge {
 					// Found!
 					ghost = exisGhost;
 
-					if(SF_Debug.The(DebugType.GhostNodes))
+					if(SF_Debug.ghostNodes)
 						Debug.Log("Found matching existing ghost");
 					break;
 				}
@@ -162,7 +162,7 @@ namespace ShaderForge {
 			if( ghost == null ) {
 				ghost = node.editor.AddNode( ghostType );
 				ghosts.Add( ghost );
-				if(SF_Debug.The(DebugType.GhostNodes)){
+				if(SF_Debug.ghostNodes){
 					Debug.Log("Adding ghost " + ghostType + " with connection count " + ghost.connectors.Length);
 					Debug.Log("Linked to " + node.nodeName + "["+this.label+"]" );
 					Debug.Log("Ghost Count = " + node.editor.shaderEvaluator.ghostNodes.Count);

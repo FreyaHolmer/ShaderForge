@@ -1077,7 +1077,7 @@ namespace ShaderForge {
 				return;
 
 
-			if(SF_Debug.The(DebugType.GhostNodes))
+			if(SF_Debug.ghostNodes)
 				Debug.Log("Deleting node " + nodeName);
 
 			OnDelete();

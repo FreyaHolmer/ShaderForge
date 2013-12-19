@@ -38,17 +38,26 @@ namespace ShaderForge {
 		public void UpdateAvailability() {
 
 
-			editor.materialOutput.diffuse.SetAvailable( ps.lightMode != SF_PassSettings.LightMode.Unlit );
-			editor.materialOutput.diffusePower.SetAvailable( ps.lightMode != SF_PassSettings.LightMode.Unlit );
-			editor.materialOutput.specular.SetAvailable( ps.lightMode != SF_PassSettings.LightMode.Unlit && ps.lightMode != SF_PassSettings.LightMode.Lambert );
-			editor.materialOutput.gloss.SetAvailable( ps.lightMode != SF_PassSettings.LightMode.Unlit && ps.lightMode != SF_PassSettings.LightMode.Lambert );
+			bool unlit = (ps.lightMode == SF_PassSettings.LightMode.Unlit);
+			bool lit = !unlit;
+			bool lambert = (ps.lightMode == SF_PassSettings.LightMode.Lambert);
+
+			editor.materialOutput.diffuse.SetAvailable( lit );
+			editor.materialOutput.diffusePower.SetAvailable( lit );
+			editor.materialOutput.specular.SetAvailable( lit && !lambert );
+			editor.materialOutput.gloss.SetAvailable( lit && !lambert );
 			editor.materialOutput.normal.SetAvailable( true );
 			editor.materialOutput.alpha.SetAvailable( true );
 			editor.materialOutput.alphaClip.SetAvailable( true );
 			editor.materialOutput.refraction.SetAvailable( true );
 			editor.materialOutput.emissive.SetAvailable( true );
-			editor.materialOutput.transmission.SetAvailable( ps.lightMode != SF_PassSettings.LightMode.Unlit );
-			editor.materialOutput.lightWrap.SetAvailable( ps.lightMode != SF_PassSettings.LightMode.Unlit );
+			editor.materialOutput.transmission.SetAvailable( lit );
+
+			editor.materialOutput.ambientDiffuse.SetAvailable( lit );
+			editor.materialOutput.ambientSpecular.SetAvailable( lit && !lambert );
+			editor.materialOutput.customLighting.SetAvailable( !lit );
+
+			editor.materialOutput.lightWrap.SetAvailable( lit );
 			editor.materialOutput.displacement.SetAvailable( editor.materialOutput.tessellation.IsConnectedAndEnabled() );
 			editor.materialOutput.outlineColor.SetAvailable( editor.materialOutput.outlineWidth.IsConnectedAndEnabled() );
 

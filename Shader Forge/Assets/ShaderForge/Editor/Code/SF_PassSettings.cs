@@ -325,6 +325,17 @@ namespace ShaderForge {
 		public string n_lightWrap {
 			get { return mOut.lightWrap.TryEvaluate(); }
 		}
+
+		public string n_ambientDiffuse {
+			get { return mOut.ambientDiffuse.TryEvaluate(); }
+		}
+		public string n_ambientSpecular {
+			get { return mOut.ambientSpecular.TryEvaluate(); }
+		}
+		public string n_customLighting {
+			get { return mOut.customLighting.TryEvaluate(); }
+		}
+
 		public string n_outlineWidth {
 			get { return mOut.outlineWidth.TryEvaluate(); }
 		}

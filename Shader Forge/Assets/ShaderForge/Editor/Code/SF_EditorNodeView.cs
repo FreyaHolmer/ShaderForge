@@ -142,7 +142,7 @@ namespace ShaderForge {
 				
 
 				// END NODES
-				if( SF_Node.DEBUG )
+				if( SF_Debug.nodes )
 					UpdateDebugInput();
 				UpdateCameraPanning();
 

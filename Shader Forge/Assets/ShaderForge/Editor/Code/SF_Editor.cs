@@ -90,7 +90,8 @@ namespace ShaderForge {
 
 
 		public SF_Editor() {
-			//Debug.Log( "[SF_LOG] - SF_Editor CONSTRUCTOR SF_Editor()" );
+			if(SF_Debug.window)
+				Debug.Log( "[SF_LOG] - SF_Editor CONSTRUCTOR SF_Editor()" );
 			SF_Editor.instance = this;
 			//Texture tabIcon = (Texture2D)Resources.LoadAssetAtPath( SF_Paths.pInterface + "icon_normal.tga", typeof( Texture2D ) );
 			HOPanelUtils.SetWindowTitle( this, (Texture)SF_GUI.Icon, "Shader Forge" );
@@ -140,7 +141,8 @@ namespace ShaderForge {
 		}
 
 		public static void Init( Shader initShader = null ) {
-			//Debug.Log( "[SF_LOG] - SF_Editor Init(" + initShader + ")" );
+			if(SF_Debug.evalFlow)
+				Debug.Log( "[SF_LOG] - SF_Editor Init(" + initShader + ")" );
 			SF_Editor materialEditor = (SF_Editor)EditorWindow.GetWindow( typeof( SF_Editor ) );
 			SF_Editor.instance = materialEditor;
 			materialEditor.InitializeInstance( initShader );
@@ -270,6 +272,14 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_ArcCos ), catTrig + "ArcCos" );
 			AddTemplate( typeof( SFN_ArcTan ), catTrig + "ArcTan" );
 			AddTemplate( typeof( SFN_ArcTan2 ), catTrig + "ArcTan2" );
+
+			Type marmosetType = Type.GetType("ShaderForge.SFN_Skyshop");
+
+			if(marmosetType != null){
+				AddTemplate( marmosetType, "Marmoset/" + "Skyshop" );
+			}
+
+
 
 		}
 
@@ -564,7 +574,7 @@ namespace ShaderForge {
 		void OnGUI() {
 			//Debug.Log("SF_Editor OnGUI()");
 			
-			if(SF_Node.DEBUG)
+			if(SF_Debug.performance)
 				GUI.Label(new Rect(500,64,128,64),"fps: "+fps.ToString());
 
 			if( position != previousPosition ) {
@@ -641,7 +651,7 @@ namespace ShaderForge {
 			pRect.width = separatorRight.rect.x - separatorLeft.rect.x - separatorLeft.rect.width;
 			//GUI.Box( new Rect( 300, 0, 512, 32 ), pRect.ToString() );
 
-			if( SF_Node.DEBUG ) {
+			if( SF_Debug.nodes ) {
 				Rect r = pRect; r.width = 256; r.height = 16;
 				for( int i = 0; i < nodes.Count; i++ ) {
 					GUI.Label( r, "Node[" + i + "] at {" + nodes[i].rect.x + ", " + nodes[i].rect.y + "}", EditorStyles.label );// nodes[i]
@@ -941,7 +951,7 @@ namespace ShaderForge {
 			int previewOffset = preview.OnGUI( SF_GUI.Logo.height, (int)r.width );
 			int statusBoxOffset = statusBox.OnGUI( previewOffset, (int)r.width );
 			ps.OnLocalGUI(statusBoxOffset, (int)r.width );
-			if( SF_Node.DEBUG ) {
+			if( SF_Debug.nodes ) {
 				GUILayout.Label( "Node count: " + nodes.Count );
 			}
 

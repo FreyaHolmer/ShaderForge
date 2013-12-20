@@ -33,12 +33,12 @@ namespace ShaderForge {
 		}
 
 
-		//public override string[] GetPreDefineRows() {
-		//	return new string[] {
-		//		"float " + StA() + " = step(" + this["A"].TryEvaluate() + "," + this["B"].TryEvaluate() + ");",
-		//		"float " + StB() + " = step(" + this["B"].TryEvaluate() + "," + this["A"].TryEvaluate() + ");"
-		//	};
-		//}
+		public override string[] GetPreDefineRows() {
+			return new string[] {
+				"float " + StA() + " = step(" + this["A"].TryEvaluate() + "," + this["B"].TryEvaluate() + ");",
+				"float " + StB() + " = step(" + this["B"].TryEvaluate() + "," + this["A"].TryEvaluate() + ");"
+			};
+		}
 
 		public override bool IsUniformOutput() {
 			foreach(SF_NodeConnection con in connectors){
@@ -54,7 +54,7 @@ namespace ShaderForge {
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 
-			if(!ShouldDefineVariable())
+			if(!ShouldDefineVariable()) // TODO: Isn't this already handled on the node level?
 				this.PreDefine();
 
 			string less = "(" + StA() + "*" + GetInputCon( "LT" ).Evaluate() + ")";

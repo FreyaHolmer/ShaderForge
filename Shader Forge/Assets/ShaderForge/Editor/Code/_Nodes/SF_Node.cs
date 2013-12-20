@@ -24,6 +24,7 @@ namespace ShaderForge {
 		public bool selected = false;
 
 		public bool varDefined = false; // Whether or not this node has had its variable defined already.
+		public bool varPreDefined = false; // Whether or not this variable has done its prefefs
 		public bool alwaysDefineVariable = false;
 
 		public static Color colorExposed = new Color( 0.8f, 1f, 0.9f );
@@ -63,7 +64,7 @@ namespace ShaderForge {
 
 		//public int depth = 0; // Used to sort variable initialization
 
-		public static bool DEBUG = false;
+		// public static bool DEBUG = false;
 
 
 		public SF_NodePreview texture;
@@ -150,7 +151,7 @@ namespace ShaderForge {
 			Vector2 pos = editor.mousePosition; // TODO: check where to spawn first
 			AssignID();
 			this.nodeName = name;
-			if( DEBUG )
+			if( SF_Debug.nodes )
 				this.nodeName = ( "[" + id + "] " + this.nodeName );
 			texture = ScriptableObject.CreateInstance<SF_NodePreview>().Initialize( this );
 			texture.Fill( Color.black );
@@ -332,6 +333,7 @@ namespace ShaderForge {
 				editor.shaderEvaluator.ApplyProperty( this );
 			}
 			varDefined = false;
+			varPreDefined = false;
 		}
 
 		public float GetInputData( string id, int x, int y, int c ) {
@@ -367,19 +369,19 @@ namespace ShaderForge {
 		public SF_NodePreview GetInputData( string id ) {
 
 			SF_NodeConnection con = GetConnectorByStringID(id);
-			SF_Node n;
+			//SF_Node n; // TODO: What was this? Quite recent too. Define and undefine ghosts?
 
 			if( con.inputCon == null ) {
 
 				List<SF_Node> tmpGhosts = new List<SF_Node>();
 				con.DefineGhostIfNeeded(ref tmpGhosts);
-				n = tmpGhosts[0];
+				//n = tmpGhosts[0];
 				tmpGhosts = null;
 
 				Debug.LogWarning( "Attempt to find input node of connector " + id + " of " + this.nodeName );
 			}
 
-			SF_NodePreview ret = con.inputCon.node.texture;
+			//SF_NodePreview ret = con.inputCon.node.texture;
 
 
 
@@ -930,7 +932,7 @@ namespace ShaderForge {
 
 				texture.Draw( rectInner );
 
-				if( DEBUG ) {
+				if( SF_Debug.nodes ) {
 					Rect r = new Rect( 0, 16, 96, 20 );
 					GUI.color = Color.white;
 					GUI.skin.box.normal.textColor = Color.white;
@@ -1077,7 +1079,7 @@ namespace ShaderForge {
 				return;
 
 
-			if(SF_Debug.ghostNodes)
+			if(SF_Debug.nodeActions)
 				Debug.Log("Deleting node " + nodeName);
 
 			OnDelete();
@@ -1184,7 +1186,7 @@ namespace ShaderForge {
 
 
 		public void PreDefine() {
-			if( varDefined )
+			if( varDefined || varPreDefined )
 				return;
 
 			string[] preDefs = GetPreDefineRows();
@@ -1193,6 +1195,7 @@ namespace ShaderForge {
 					SF_Editor.instance.shaderEvaluator.App( row );
 				}
 			}
+			varPreDefined = true;
 		}
 
 		public virtual string[] GetPreDefineRows() {
@@ -1202,7 +1205,7 @@ namespace ShaderForge {
 
 
 		public bool ShouldDefineVariable() {
-			return (UsedMultipleTimes() || alwaysDefineVariable);
+			return ((UsedMultipleTimes() || alwaysDefineVariable) /*&& !varDefined*/);
 		}
 
 

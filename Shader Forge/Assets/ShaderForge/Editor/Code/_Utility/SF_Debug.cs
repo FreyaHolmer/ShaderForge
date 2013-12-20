@@ -6,8 +6,14 @@ namespace ShaderForge{
 
 	public static class SF_Debug {
 
+		public static bool nodes = false;
+		public static bool window = false;
 		public static bool evalFlow = false;
 		public static bool ghostNodes = false;
+		public static bool nodeActions = false;
+		public static bool performance = false;
+
 		
 	}
+
 }

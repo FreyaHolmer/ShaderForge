@@ -792,7 +792,7 @@ namespace ShaderForge {
 			Rect labelRect = rect;
 
 
-			if( SF_Node.DEBUG ) {
+			if( SF_Debug.nodes ) {
 				Rect typeRect = rect;
 				typeRect.width *= 3f;
 

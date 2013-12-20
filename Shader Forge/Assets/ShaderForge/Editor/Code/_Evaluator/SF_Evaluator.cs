@@ -861,6 +861,10 @@ namespace ShaderForge {
 			}
 		}
 
+		bool DoAmbientSpecThisPass(){
+			return (mOut.ambientSpecular.IsConnectedEnabledAndAvailable() && currentPass == PassType.FwdBase);
+		}
+
 
 		void CalcSpecular() {
 
@@ -870,9 +874,30 @@ namespace ShaderForge {
 
 			App ("NdotL = max(0.0, NdotL);");
 
-			string s = "float3 specular = attenColor * " + ps.n_specular;
+			//if(DoAmbientSpecThisPass() && ps.IsPBL())
+				//App ("float NdotR = max(0, dot(viewReflectDirection, normalDirection));"); // WIP
+
+			string s = "float3 specular = attenColor"; /* * " + ps.n_specular;*/ // TODO: Doesn't this double the spec? Removed for now. Shouldn't evaluate spec twice when using PBL
+
+
+
+			//if( mOut.ambientSpecular.IsConnectedEnabledAndAvailable() && currentPass == PassType.FwdBase){
+			//	s += "(attenColor + " + ps.n_ambientSpecular + ")";
+			//} else {
+			//	s += "attenColor";
+			//}
+			string sAmb = "";
+			if(DoAmbientSpecThisPass()){
+				sAmb = "float3 specularAmb = " + ps.n_ambientSpecular+" * specularColor"; // TODO: Vis and fresnel
+			}
+
+
 			if( ps.IsPBL() ) {
 				s += "*NdotL"; // TODO: Really? Is this the cosine part?
+
+				//if(DoAmbientSpecThisPass())
+					//sAmb += " * NdotR";
+
 			}
 			
 			
@@ -882,16 +907,28 @@ namespace ShaderForge {
 				s += " * pow(max(0,dot(halfDirection,"+VarNormalDir()+"))";
 			}
 			s += ",gloss)";
-			
+
+
+			App( "float3 specularColor = " + ps.n_specular + ";" );
+
 			// PBL SHADING, normalization term comes after this
 			if( ps.IsPBL() ) {
 				
 				// FRESNEL TERM
-				App( "float3 specularColor = " + ps.n_specular + ";" );
+				//App( "float3 specularColor = " + ps.n_specular + ";" );
 				if( ps.fresnelTerm ) {
 					App( "float HdotL = max(0.0,dot(halfDirection,lightDirection));" );
-					App( "float3 fresnelTerm = specularColor + ( 1.0 - specularColor ) * pow((1.0 - HdotL),5);" );
+					string fTermDef = "float3 fresnelTerm = specularColor + ( 1.0 - specularColor ) * pow((1.0 - HdotL),5);";
+					App( fTermDef );
 					s += "*fresnelTerm";
+
+
+					//if(DoAmbientSpecThisPass()){
+					//	App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
+					//	App (fTermDef.Replace("HdotL","NdotV").Replace("fresnelTerm","fresnelTermAmb"));
+					//	sAmb += " * fresnelTermAmb";
+					//}
+
 				} else {
 					s += "*specularColor";
 				}
@@ -900,13 +937,24 @@ namespace ShaderForge {
 				// VISIBILITY TERM
 				if( ps.visibilityTerm ) {
 					//App( "float NdotL = max(0.0,dot( "+VarNormalDir()+", lightDirection ));" ); // This should already be defined in the diffuse calc. TODO: Redefine if diffuse is not used
-					App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
+					//if(!DoAmbientSpecThisPass() && ps.fresnelTerm) // Already defined in that case
+						App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
 					App( "float alpha = 1.0 / ( sqrt( (Pi/4.0) * gloss + Pi/2.0 ) );" );
-					App( "float visTerm = ( NdotL * ( 1.0 - alpha ) + alpha ) * ( NdotV * ( 1.0 - alpha ) + alpha );" );
+					string vTermDef = "float visTerm = ( NdotL * ( 1.0 - alpha ) + alpha ) * ( NdotV * ( 1.0 - alpha ) + alpha );";
+					App( vTermDef );
 					App( "visTerm = 1.0 / visTerm;" );
 					s += "*visTerm";
+
+					// Ambient Specular
+					//if(DoAmbientSpecThisPass()){
+					//	App ( vTermDef.Replace( "NdotL","NdotR" ).Replace("visTerm","visTermAmb") ); // Define the same, but use reflection dir instead of light dir
+					//	App ("visTermAmb = 1.0 / visTermAmb;" );
+					//	sAmb += " * visTermAmb";
+					//}
 				}
 				
+			} else {
+				s += " * specularColor";
 			}
 			
 			
@@ -918,12 +966,28 @@ namespace ShaderForge {
 				} else if( ps.lightMode == SF_PassSettings.LightMode.BlinnPhong || ps.lightMode == SF_PassSettings.LightMode.PBL ) {
 					App( "float normTerm = (gloss + 8.0 ) / (8.0 * Pi);" );
 				}
+
+				if(DoAmbientSpecThisPass()){
+					//sAmb += " * normTerm";
+				}
+
 				s += "*normTerm";
+
+
+			}
+
+			if( DoAmbientSpecThisPass() ){
+				App (sAmb + ";");
+				s += " + specularAmb";
 			}
 
 			s += ";";
 
 			App(s); // Specular
+
+
+
+
 		}
 		
 		// Spec & emissive
@@ -1046,11 +1110,25 @@ namespace ShaderForge {
 				InitAttenuation();
 
 			if( !ps.IsLit() && SF_Evaluator.inFrag ) {
+
+				string s = "float3 lightFinal = " + ps.n_customLighting;
+
+				if(DoPassEmissive()){
+					CalcEmissive();
+					s += " + emissive";
+				}
+
+				if(currentPass == ShaderForge.PassType.FwdBase && ps.useAmbient)
+					s += " + " + GetAmbientStr();
+
+				s += ";";
 	
-				if( ps.useAmbient && currentPass == PassType.FwdBase )
-					App( "float3 lightFinal = " + ps.n_emissive + "+UNITY_LIGHTMODEL_AMBIENT.xyz;");
-				else
-					App( "float3 lightFinal = " + ps.n_emissive + ";"); // Kinda weird, but emissive = light when unlit is on, so it's needed in additional passes too
+				App( s );
+
+				//if( ps.useAmbient && currentPass == PassType.FwdBase )
+				//	App( "float3 lightFinal = " + ps.n_emissive + "+UNITY_LIGHTMODEL_AMBIENT.xyz;"); // TODO; THIS IS SUPER WEIRD
+				//else
+				//	App( "float3 lightFinal = " + ps.n_emissive + ";"); // Kinda weird, but emissive = light when unlit is on, so it's needed in additional passes too
 				return;
 
 			}
@@ -1073,11 +1151,20 @@ namespace ShaderForge {
 				CalcSpecular();
 			}
 			
-				
+			/*if(!ps.IsLit() && ps.mOut.customLighting.IsConnectedEnabledAndAvailable() ){
 
+				App("float3 lightFinal = " + ps.n_customLighting );
+
+			}*/
 			if( !ps.IsVertexLit() && currentProgram == ShaderProgram.Frag ) {
 
-				string lgFinal = "float3 lightFinal = diffuse";
+				string lgFinal = "float3 lightFinal = ";
+
+				if(ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailable()){
+					lgFinal += "(diffuse + " + ps.n_ambientDiffuse +  " )";
+				} else {
+					lgFinal += "diffuse";
+				}
 
 				if(ps.mOut.diffuse.IsConnectedEnabledAndAvailable()){
 					lgFinal += " * " + ps.n_diffuse;

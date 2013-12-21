@@ -1,7 +1,7 @@
-// Shader created with Shader Forge Beta 0.15 
+// Shader created with Shader Forge Beta 0.16 
 // Shader Forge (c) Joachim 'Acegikmo' Holmer
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.15;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:0,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,ufog:False,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300;n:type:ShaderForge.SFN_Final,id:0,x:32153,y:31966|normal-83-RGB,emission-64-OUT;n:type:ShaderForge.SFN_LightAttenuation,id:37,x:32735,y:32052;n:type:ShaderForge.SFN_Multiply,id:38,x:32567,y:32099|A-37-OUT,B-55-OUT;n:type:ShaderForge.SFN_Dot,id:40,x:33071,y:32255,dt:1|A-42-OUT,B-41-OUT;n:type:ShaderForge.SFN_NormalVector,id:41,x:33239,y:32323,pt:True;n:type:ShaderForge.SFN_LightVector,id:42,x:33239,y:32199;n:type:ShaderForge.SFN_Dot,id:52,x:33071,y:32397,dt:1|A-41-OUT,B-62-OUT;n:type:ShaderForge.SFN_Add,id:55,x:32735,y:32172|A-81-OUT,B-58-OUT;n:type:ShaderForge.SFN_Power,id:58,x:32905,y:32418|VAL-52-OUT,EXP-59-OUT;n:type:ShaderForge.SFN_Vector1,id:59,x:33071,y:32539,v1:50;n:type:ShaderForge.SFN_HalfVector,id:62,x:33239,y:32462;n:type:ShaderForge.SFN_LightColor,id:63,x:32567,y:32225;n:type:ShaderForge.SFN_Multiply,id:64,x:32399,y:32155|A-38-OUT,B-63-RGB;n:type:ShaderForge.SFN_Color,id:80,x:33239,y:32062,ptlb:Color,c1:0.6544118,c2:0.8426978,c3:1,c4:1;n:type:ShaderForge.SFN_Multiply,id:81,x:32904,y:32015|A-84-OUT,B-40-OUT;n:type:ShaderForge.SFN_Tex2d,id:82,x:33239,y:31906,ptlb:Diffuse,tex:b66bceaf0cc0ace4e9bdc92f14bba709,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:83,x:32399,y:31966,ptlb:Normals,tex:bbab0a6f7bae9cf42bf057d8ee2755f6,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Multiply,id:84,x:33071,y:31968|A-82-RGB,B-80-RGB;proporder:80-82-83;pass:END;sub:END;*/
+/*SF_DATA;ver:0.16;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:0,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,ufog:False,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300;n:type:ShaderForge.SFN_Final,id:0,x:32153,y:31966|normal-83-RGB,custl-64-OUT;n:type:ShaderForge.SFN_LightAttenuation,id:37,x:32735,y:32052;n:type:ShaderForge.SFN_Multiply,id:38,x:32567,y:32099|A-37-OUT,B-55-OUT;n:type:ShaderForge.SFN_Dot,id:40,x:33071,y:32255,dt:1|A-42-OUT,B-41-OUT;n:type:ShaderForge.SFN_NormalVector,id:41,x:33239,y:32323,pt:True;n:type:ShaderForge.SFN_LightVector,id:42,x:33239,y:32199;n:type:ShaderForge.SFN_Dot,id:52,x:33071,y:32397,dt:1|A-41-OUT,B-62-OUT;n:type:ShaderForge.SFN_Add,id:55,x:32735,y:32172|A-81-OUT,B-58-OUT;n:type:ShaderForge.SFN_Power,id:58,x:32905,y:32418|VAL-52-OUT,EXP-59-OUT;n:type:ShaderForge.SFN_Vector1,id:59,x:33071,y:32539,v1:50;n:type:ShaderForge.SFN_HalfVector,id:62,x:33239,y:32462;n:type:ShaderForge.SFN_LightColor,id:63,x:32567,y:32225;n:type:ShaderForge.SFN_Multiply,id:64,x:32399,y:32155|A-38-OUT,B-63-RGB;n:type:ShaderForge.SFN_Color,id:80,x:33239,y:32062,ptlb:Color,c1:0.6544118,c2:0.8426978,c3:1,c4:1;n:type:ShaderForge.SFN_Multiply,id:81,x:32904,y:32015|A-84-OUT,B-40-OUT;n:type:ShaderForge.SFN_Tex2d,id:82,x:33239,y:31906,ptlb:Diffuse,tex:b66bceaf0cc0ace4e9bdc92f14bba709,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:83,x:32399,y:31966,ptlb:Normals,tex:bbab0a6f7bae9cf42bf057d8ee2755f6,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Multiply,id:84,x:33071,y:31968|A-82-RGB,B-80-RGB;proporder:80-82-83;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Custom Lighting" {
     Properties {
@@ -61,7 +61,8 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             fixed4 frag(VertexOutput i) : COLOR {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(i.uv0.xy, _Normals))).rgb;
+                float2 node_1691 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_1691.rg, _Normals))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
@@ -69,7 +70,7 @@ Shader "Shader Forge/Examples/Custom Lighting" {
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
                 float3 node_41 = normalDirection;
-                float3 lightFinal = ((attenuation*(((tex2D(_Diffuse,TRANSFORM_TEX(i.uv0.xy, _Diffuse)).rgb*_Color.rgb)*max(0,dot(lightDirection,node_41)))+pow(max(0,dot(node_41,halfDirection)),50.0)))*_LightColor0.rgb)+UNITY_LIGHTMODEL_AMBIENT.xyz;
+                float3 lightFinal = UNITY_LIGHTMODEL_AMBIENT.xyz + ((attenuation*(((tex2D(_Diffuse,TRANSFORM_TEX(node_1691.rg, _Diffuse)).rgb*_Color.rgb)*max(0,dot(lightDirection,node_41)))+pow(max(0,dot(node_41,halfDirection)),50.0)))*_LightColor0.rgb);
 /// Final Color:
                 return fixed4(lightFinal,1);
             }
@@ -124,7 +125,8 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             fixed4 frag(VertexOutput i) : COLOR {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(i.uv0.xy, _Normals))).rgb;
+                float2 node_1692 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_1692.rg, _Normals))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
@@ -132,7 +134,7 @@ Shader "Shader Forge/Examples/Custom Lighting" {
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
                 float3 node_41 = normalDirection;
-                float3 lightFinal = ((attenuation*(((tex2D(_Diffuse,TRANSFORM_TEX(i.uv0.xy, _Diffuse)).rgb*_Color.rgb)*max(0,dot(lightDirection,node_41)))+pow(max(0,dot(node_41,halfDirection)),50.0)))*_LightColor0.rgb);
+                float3 lightFinal = ((attenuation*(((tex2D(_Diffuse,TRANSFORM_TEX(node_1692.rg, _Diffuse)).rgb*_Color.rgb)*max(0,dot(lightDirection,node_41)))+pow(max(0,dot(node_41,halfDirection)),50.0)))*_LightColor0.rgb);
 /// Final Color:
                 return fixed4(lightFinal,1);
             }

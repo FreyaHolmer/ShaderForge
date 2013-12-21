@@ -121,11 +121,14 @@ namespace ShaderForge {
 			return ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).DoesSourceTextureHaveAlpha();
 		}
 
-		// TODO: MIP selection
+		private void UpdateCompCount(){
+			texture.CompCount = IsNormalMap() ? 3 : 4; // TODO: This doesn't work when opening shaders. Why?
+		}
+
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 
 
-			texture.CompCount = IsNormalMap() ? 3 : 4;
+			UpdateCompCount();
 
 			if( varDefined )
 				return GetVariableName();
@@ -450,6 +453,7 @@ namespace ShaderForge {
 				break;
 			case "isnm":
 				markedAsNormalMap = bool.Parse(value);
+				UpdateCompCount();
 				break;
 			}
 		}

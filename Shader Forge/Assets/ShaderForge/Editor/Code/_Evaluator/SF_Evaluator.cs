@@ -1111,15 +1111,39 @@ namespace ShaderForge {
 
 			if( !ps.IsLit() && SF_Evaluator.inFrag ) {
 
-				string s = "float3 lightFinal = " + ps.n_customLighting;
 
-				if(DoPassEmissive()){
+				string s = "float3 lightFinal = ";
+
+
+
+				bool doAmbient = (currentPass == ShaderForge.PassType.FwdBase && ps.useAmbient);
+				bool doEmissive = DoPassEmissive();
+				bool doCustomLight = mOut.customLighting.IsConnectedEnabledAndAvailable();
+
+				bool didAddLight = doAmbient || doEmissive || doCustomLight;
+
+				bool somethingAdded = false;
+				if(doAmbient){
+					s += somethingAdded ? " + ":"";
+					s += GetAmbientStr();
+					somethingAdded = true;
+				}
+				if(doEmissive){
 					CalcEmissive();
-					s += " + emissive";
+					s += somethingAdded ? " + ":"";
+					s += "emissive";
+					somethingAdded = true;
+				}
+				if( doCustomLight ){
+					s += somethingAdded ? " + ":"";
+					s += ps.n_customLighting; // TODO
+					somethingAdded = true;
 				}
 
-				if(currentPass == ShaderForge.PassType.FwdBase && ps.useAmbient)
-					s += " + " + GetAmbientStr();
+
+				if(!didAddLight)
+					s += "0"; // TODO: Don't do lighting at all if this is the case
+
 
 				s += ";";
 	

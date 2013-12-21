@@ -117,9 +117,9 @@ namespace ShaderForge {
 
 
 		public void InitializeTexture() {
-			texture = new Texture2D( 128, 128, TextureFormat.ARGB32, false, false/*LINEAR, true?*/); // TODO: Gamma/Linear?
+			texture = new Texture2D( SF_NodeData.RES, SF_NodeData.RES, TextureFormat.ARGB32, false, false/*LINEAR, true?*/); // TODO: Gamma/Linear?
 			texture.wrapMode = TextureWrapMode.Clamp;
-			//texture.hideFlags = HideFlags.HideAndDontSave;
+			texture.hideFlags = HideFlags.HideAndDontSave;
 		}
 
 
@@ -134,10 +134,11 @@ namespace ShaderForge {
 
 		public void GenerateTexcoord() {
 			//		Color[] colors = new Color[16384];
-			for( int y = 0; y < 128; y++ ) {
-				for( int x = 0; x < 128; x++ ) {
-					data[x, y, 0] = x / 128f;
-					data[x, y, 1] = y / 128f;
+
+			for( int y = 0; y < SF_NodeData.RES; y++ ) {
+				for( int x = 0; x < SF_NodeData.RES; x++ ) {
+					data[x, y, 0] = x / SF_NodeData.RESf;
+					data[x, y, 1] = y / SF_NodeData.RESf;
 					data[x, y, 2] = 0f;
 					data[x, y, 3] = 0f;
 				}
@@ -149,8 +150,8 @@ namespace ShaderForge {
 
 		public void ReadData( Texture2D tex, SF_NodePreview uvTex = null ) {
 
-			for( int y = 0; y < 128; y++ ) {
-				for( int x = 0; x < 128; x++ ) {
+			for( int y = 0; y < SF_NodeData.RES; y++ ) {
+				for( int x = 0; x < SF_NodeData.RES; x++ ) {
 
 					Color col;
 					float U;
@@ -161,8 +162,8 @@ namespace ShaderForge {
 						U = c.r;
 						V = c.g;
 					} else {
-						U = x / 128f;
-						V = y / 128f;
+						U = x / SF_NodeData.RESf;
+						V = y / SF_NodeData.RESf;
 					}
 
 					col = tex.GetPixelBilinear( U, V );
@@ -190,8 +191,8 @@ namespace ShaderForge {
 			//if(data == null)
 			//data = new float[128, 128, 4]; // DEBUG
 
-			for( int y = 0; y < 128; y++ ) {
-				for( int x = 0; x < 128; x++ ) {
+			for( int y = 0; y < SF_NodeData.RES; y++ ) {
+				for( int x = 0; x < SF_NodeData.RES; x++ ) {
 					for( int c = 0; c < 4; c++ ) { // Channels
 						data[x, y, c] = col[c];
 					}
@@ -203,13 +204,15 @@ namespace ShaderForge {
 
 
 		public void UpdateColorPreview() {
-			Color[] texCols = new Color[128 * 128];
-			for( int y = 0; y < 128; y++ ) {
-				for( int x = 0; x < 128; x++ ) {
-					texCols[y * 128 + x] = new Color( data[x, y, 0], data[x, y, 1], data[x, y, 2], data[x, y, 3] );
+			Color[] texCols = new Color[SF_NodeData.RES * SF_NodeData.RES];
+			for( int y = 0; y < SF_NodeData.RES; y++ ) {
+				for( int x = 0; x < SF_NodeData.RES; x++ ) {
+					texCols[y * SF_NodeData.RES + x] = new Color( data[x, y, 0], data[x, y, 1], data[x, y, 2], data[x, y, 3] );
 				}
 			}
 			if( texture == null )
+				InitializeTexture();
+			else if(texture.width != SF_NodeData.RES)
 				InitializeTexture();
 
 			texture.SetPixels( texCols );
@@ -238,8 +241,8 @@ namespace ShaderForge {
 
 			// Combine the node textures, unless we're quickloading
 			if(!SF_Parser.quickLoad)
-				for( int y = 0; y < 128; y++ ) {
-					for( int x = 0; x < 128; x++ ) {
+				for( int y = 0; y < SF_NodeData.RES; y++ ) {
+					for( int x = 0; x < SF_NodeData.RES; x++ ) {
 						Color retVector = node.NodeOperator( x, y );
 						for( int c = 0; c < 4; c++ ) {
 							data[x, y, c] = retVector[c];

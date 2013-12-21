@@ -24,7 +24,6 @@ namespace ShaderForge {
 			constStr = constant;
 			constFloat = float.Parse( constant );
 
-			base.texture.icon = Resources.LoadAssetAtPath( SF_Paths.pInterface + "Nodes/" + icon + ".png", typeof( Texture2D ) ) as Texture2D;
 			connectors = new SF_NodeConnection[]{
 				SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false)
 			};

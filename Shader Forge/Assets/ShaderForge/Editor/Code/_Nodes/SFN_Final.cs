@@ -42,7 +42,6 @@ namespace ShaderForge {
 			base.showColor = true;
 			this.id = ( editor.idIncrement++ );
 			base.nodeName = "Main";
-			base.texture.icon = Resources.LoadAssetAtPath( SF_Paths.pInterface+"Nodes/main.png", typeof( Texture2D ) ) as Texture2D;
 			Vector2 pos = new Vector2( 32768, 32768 );
 			base.rect = new Rect( pos.x - NODE_WIDTH / 2, pos.y - NODE_HEIGHT / 2, NODE_WIDTH * 1.7f, 400 );
 

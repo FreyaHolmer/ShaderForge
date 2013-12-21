@@ -30,6 +30,8 @@ namespace ShaderForge {
 		public static Color colorExposed = new Color( 0.8f, 1f, 0.9f );
 		public static Color colorExposedDark = new Color( 0.24f, 0.32f, 0.30f ) * 1.25f;
 		public static Color colorExposedDarker = new Color( 0.24f, 0.32f, 0.30f ) * 0.75f;
+
+
 		
 
 		public Color colorDefault{
@@ -155,6 +157,12 @@ namespace ShaderForge {
 				this.nodeName = ( "[" + id + "] " + this.nodeName );
 			texture = ScriptableObject.CreateInstance<SF_NodePreview>().Initialize( this );
 			texture.Fill( Color.black );
+
+
+			// Try to find icon
+
+			texture.LoadAndInitializeIcons(this.GetType());
+
 
 			pos = editor.nodeView.SubtractNodeWindowOffset( pos );
 			InitializeDefaultRect( pos );

@@ -58,12 +58,12 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float2 node_285 = i.uv0;
-                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_285.rg, _Diffuse));
+                float2 node_298 = i.uv0;
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_298.rg, _Diffuse));
                 clip(node_1.a - 0.5);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_285.rg, _Normal))).rgb;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_298.rg, _Normal))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 
                 float nSign = sign( dot( viewDirection, normalDirection ) ); // Reverse normal if this is a backface
@@ -141,12 +141,12 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float2 node_286 = i.uv0;
-                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_286.rg, _Diffuse));
+                float2 node_299 = i.uv0;
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_299.rg, _Diffuse));
                 clip(node_1.a - 0.5);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_286.rg, _Normal))).rgb;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_299.rg, _Normal))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 
                 float nSign = sign( dot( viewDirection, normalDirection ) ); // Reverse normal if this is a backface
@@ -213,8 +213,8 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float2 node_287 = i.uv0;
-                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_287.rg, _Diffuse));
+                float2 node_300 = i.uv0;
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_300.rg, _Diffuse));
                 clip(node_1.a - 0.5);
                 SHADOW_COLLECTOR_FRAGMENT(i)
             }
@@ -256,8 +256,8 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float2 node_288 = i.uv0;
-                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_288.rg, _Diffuse));
+                float2 node_301 = i.uv0;
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_301.rg, _Diffuse));
                 clip(node_1.a - 0.5);
                 SHADOW_CASTER_FRAGMENT(i)
             }

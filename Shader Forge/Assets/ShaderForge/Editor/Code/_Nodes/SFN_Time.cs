@@ -16,7 +16,6 @@ namespace ShaderForge {
 			base.Initialize( "Time" );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
-			base.texture.icon = Resources.LoadAssetAtPath( SF_Paths.pInterface+"Nodes/time.png", typeof( Texture2D ) ) as Texture2D;
 			base.texture.uniform = true;
 			base.texture.CompCount = 4;
 

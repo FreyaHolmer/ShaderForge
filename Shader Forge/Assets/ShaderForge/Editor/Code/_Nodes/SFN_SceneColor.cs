@@ -16,7 +16,6 @@ namespace ShaderForge {
 			base.Initialize( "Scene Color" );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
-			base.texture.icon = Resources.LoadAssetAtPath( SF_Paths.pInterface+"Nodes/scene_color.png", typeof( Texture2D ) ) as Texture2D;
 			base.texture.CompCount = 4;
 			connectors = new SF_NodeConnection[]{
 				SF_NodeConnection.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2),

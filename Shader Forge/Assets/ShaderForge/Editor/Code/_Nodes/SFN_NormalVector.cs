@@ -9,8 +9,6 @@ namespace ShaderForge {
 
 
 		public bool perturbed;
-		Texture2D[] icons;
-
 
 		public SFN_NormalVector() {
 
@@ -21,10 +19,6 @@ namespace ShaderForge {
 			base.Initialize( "Normal Dir." );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
-			icons = new Texture2D[] { 
-				Resources.LoadAssetAtPath( SF_Paths.pInterface + "Nodes/vector_normal.png", typeof( Texture2D ) ) as Texture2D,
-				Resources.LoadAssetAtPath( SF_Paths.pInterface + "Nodes/vector_normal_px.png", typeof( Texture2D ) ) as Texture2D
-			};
 			UpdateIcon();
 			base.texture.CompCount = 3;
 			connectors = new SF_NodeConnection[]{
@@ -43,7 +37,7 @@ namespace ShaderForge {
 		}
 
 		public void UpdateIcon() {
-			base.texture.icon = perturbed ? icons[1] : icons[0];
+			base.texture.SetIconId( perturbed ? 1 : 0 );
 		}
 
 		public override void DrawLowerPropertyBox() {

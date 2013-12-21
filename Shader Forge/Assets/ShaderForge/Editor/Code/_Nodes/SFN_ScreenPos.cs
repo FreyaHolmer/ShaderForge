@@ -10,9 +10,6 @@ namespace ShaderForge {
 
 		public enum ScreenPosType { Normalized = 0, Tiled = 1 };
 		public ScreenPosType currentType = ScreenPosType.Normalized;
-		Texture2D[] icons;
-
-		
 
 		public SFN_ScreenPos() {
 
@@ -22,10 +19,6 @@ namespace ShaderForge {
 			base.Initialize( "Screen Pos." );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
-			icons = new Texture2D[] { 
-				Resources.LoadAssetAtPath( SF_Paths.pInterface + "Nodes/screenpos_normalized.png", typeof( Texture2D ) ) as Texture2D,
-				Resources.LoadAssetAtPath( SF_Paths.pInterface + "Nodes/screenpos_tiled.png", typeof( Texture2D ) ) as Texture2D
-			};
 			UpdateIcon();
 			base.texture.CompCount = 2;
 			connectors = new SF_NodeConnection[]{
@@ -36,7 +29,7 @@ namespace ShaderForge {
 		}
 
 		public void UpdateIcon() {
-			base.texture.icon = icons[(int)currentType];
+			base.texture.SetIconId( (int)currentType );
 		}
 
 		public override Color NodeOperator( int x, int y ) {

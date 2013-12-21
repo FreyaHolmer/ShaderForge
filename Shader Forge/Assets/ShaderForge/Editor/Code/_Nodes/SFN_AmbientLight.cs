@@ -16,7 +16,6 @@ namespace ShaderForge {
 			base.Initialize( "Ambient Light" );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
-			base.texture.icon = Resources.LoadAssetAtPath( SF_Paths.pInterface + "Nodes/light_ambient.png", typeof( Texture2D ) ) as Texture2D;
 			base.texture.CompCount = 4;
 			base.texture.uniform = true;
 			connectors = new SF_NodeConnection[]{

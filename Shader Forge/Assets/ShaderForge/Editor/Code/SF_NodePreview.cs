@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEditor;
+using System;
 
 namespace ShaderForge {
 	[System.Serializable]
@@ -21,8 +23,14 @@ namespace ShaderForge {
 			}
 		}
 
-		// Icon, if any
-		public Texture2D icon;
+		// Icons, if any
+		public Texture2D[] icons;
+		public Texture2D iconActive;
+		
+		public void SetIconId(int id){
+			iconActive = icons[id];
+		}
+
 
 		public Color iconColor = Color.white;
 
@@ -126,8 +134,50 @@ namespace ShaderForge {
 
 		public void DestroyTexture() {
 			DestroyImmediate( texture );
-			icon = null;
+			iconActive = null;
 			texture = null;
+		}
+
+
+		public Texture2D GetIcon(string type){
+			return Resources.Load<Texture2D>( "Interface/Nodes/"+ type );
+		}
+
+
+		public void LoadAndInitializeIcons(Type type){
+			string nodeNameLower = type.Name.ToLower();
+
+
+			iconActive = GetIcon(nodeNameLower); // Main icon
+
+
+
+
+			 
+
+
+			
+			if(iconActive == null){
+				//Debug.Log("No icon found for: " + nodeNameLower);
+			} else {
+				// See if additional ones exist, if it found the first
+
+				List<Texture2D> iconList = new List<Texture2D>();
+				iconList.Add(iconActive);
+
+				Texture2D tmp;
+				for(int i = 2;i<16;i++){ // max 16, to prevent while-loop locking
+					tmp = GetIcon(nodeNameLower + "_" + i); // Search for more
+					if(tmp == null)
+						break;
+					iconList.Add(tmp);
+				}
+
+				if(iconList.Count > 1)
+					icons = iconList.ToArray();
+
+				//while( tmp =
+			}
 		}
 
 
@@ -273,15 +323,15 @@ namespace ShaderForge {
 
 		public void Draw( Rect r ) {
 
-			if( icon != null ) {
+			if( iconActive != null ) {
 
 				if(node is SFN_Final){ // Large node image
-					Rect tmp = new Rect(r.x,r.y-1, icon.width, icon.height);
+					Rect tmp = new Rect(r.x,r.y-1, iconActive.width, iconActive.height);
 					GUI.color = new Color(1f,1f,1f,node.selected ? 1f : 0.5f);
-					GUI.DrawTexture( tmp, icon, ScaleMode.ScaleToFit, true );
+					GUI.DrawTexture( tmp, iconActive, ScaleMode.ScaleToFit, true );
 				} else {
 					GUI.color = iconColor;
-					GUI.DrawTexture( r, icon );
+					GUI.DrawTexture( r, iconActive );
 				}
 
 				GUI.color = Color.white;

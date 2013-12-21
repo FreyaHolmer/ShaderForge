@@ -76,6 +76,7 @@ namespace ShaderForge {
 		public bool lightmapped = false;
 		public bool energyConserving = false;
 		public bool remapGlossExponentially = true;
+		public bool highQualityScreenCoords = true;
 		//
 
 
@@ -138,6 +139,7 @@ namespace ShaderForge {
 			s += Serialize( "vitr", visibilityTerm.ToString() );
 			s += Serialize( "dbil", doubleIncomingLight.ToString() );
 			s += Serialize( "rmgx", remapGlossExponentially.ToString());
+			s += Serialize( "hqsc", highQualityScreenCoords.ToString());
 
 			s += Serialize( "fgom", fogOverrideMode.ToString()); 	// bool
 			s += Serialize( "fgoc", fogOverrideColor.ToString());	// bool
@@ -244,6 +246,9 @@ namespace ShaderForge {
 				break;
 			case "rmgx":
 				remapGlossExponentially = bool.Parse( value );
+				break;
+			case "hqsc":
+				highQualityScreenCoords = bool.Parse( value );
 				break;
 
 			// Fog booleans
@@ -364,6 +369,7 @@ namespace ShaderForge {
 		private bool foldMeta = false;
 		private bool foldProps = false;
 		private bool foldLighting = false;
+		private bool foldQuality = false;
 		private bool foldBlending = false;
 		
 		
@@ -431,6 +437,8 @@ namespace ShaderForge {
 				offset = SettingsProperties( offset );
 				offset = GUISeparator( offset ); // ----------------------------------------------
 				offset = SettingsLighting( offset );
+				offset = GUISeparator( offset ); // ----------------------------------------------
+				offset = SettingsQuality( offset );
 				offset = GUISeparator( offset ); // ----------------------------------------------
 				offset = SettingsBlendingDepth( offset );
 				offset = GUISeparator( offset ); // ----------------------------------------------
@@ -1018,6 +1026,37 @@ namespace ShaderForge {
 			return (int)r.yMax;
 
 		}
+
+
+
+
+
+		public int SettingsQuality( int yOffset ) {
+			Rect topRect = new Rect( 0f, yOffset, maxWidth, 20 );
+			Rect r = new Rect( topRect );
+			
+			if( !StartExpanderChangeCheck( r, ref foldQuality, " Quality...", " Quality" ) ) {
+				return (int)r.yMax;
+			}
+			r.y += 20;
+			r.xMin += 20; // Indent
+			
+			
+			highQualityScreenCoords = GUI.Toggle( r, highQualityScreenCoords, "Per-pixel screen coordinates" );
+
+
+			r.y += 20;
+		
+			if( EndExpanderChangeCheck() )
+				guiChanged = true;
+
+			return (int)r.yMax;
+			
+		}
+
+
+
+
 
 
 		public int SettingsBlendingDepth(int yOffset) {

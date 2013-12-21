@@ -1401,8 +1401,13 @@ namespace ShaderForge {
 		
 
 			if( dependencies.vert_out_screenPos ) { // TODO: Select screen pos accuracy etc
-				App( "o.screenPos = float4( o.pos.xy / o.pos.w, 0, 0 );" );
-				App( "o.screenPos.y *= _ProjectionParams.x;" );
+
+				if(ps.highQualityScreenCoords){
+					App( "o.screenPos = o.pos;" ); // Unpacked per-pixel
+				} else {
+					App( "o.screenPos = float4( o.pos.xy / o.pos.w, 0, 0 );" );
+					App( "o.screenPos.y *= _ProjectionParams.x;" );
+				}
 			}
 			if( LightmapThisPass() ) {
 				App( "#ifndef LIGHTMAP_OFF" );
@@ -1446,6 +1451,16 @@ namespace ShaderForge {
 			InitNormalDirFrag();
 			InitReflectionDir();
 			PrepareLightmapVars();
+
+
+
+			if( dependencies.vert_out_screenPos && ps.highQualityScreenCoords ) {
+				App( "i.screenPos = float4( i.screenPos.xy / i.screenPos.w, 0, 0 );" );
+				App( "i.screenPos.y *= _ProjectionParams.x;" );
+			}
+
+
+
 			if( dependencies.frag_lightDirection ) {
 				InitLightDir();
 			}

@@ -58,12 +58,12 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float2 node_298 = i.uv0;
-                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_298.rg, _Diffuse));
+                float2 node_332 = i.uv0;
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_332.rg, _Diffuse));
                 clip(node_1.a - 0.5);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_298.rg, _Normal))).rgb;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_332.rg, _Normal))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 
                 float nSign = sign( dot( viewDirection, normalDirection ) ); // Reverse normal if this is a backface
@@ -88,9 +88,9 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 float node_3 = 0.1;
                 float3 specularColor = float3(node_3,node_3,node_3);
                 float3 specular = attenColor * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss) * specularColor;
-                float3 lightFinal = diffuse * (0.8*lerp(node_1.rgb,dot(node_1.rgb,float3(0.3,0.59,0.11)),0.4)) + specular;
+                float3 finalColor = diffuse * (0.8*lerp(node_1.rgb,dot(node_1.rgb,float3(0.3,0.59,0.11)),0.4)) + specular;
 /// Final Color:
-                return fixed4(lightFinal,1);
+                return fixed4(finalColor,1);
             }
             ENDCG
         }
@@ -141,12 +141,12 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float2 node_299 = i.uv0;
-                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_299.rg, _Diffuse));
+                float2 node_333 = i.uv0;
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_333.rg, _Diffuse));
                 clip(node_1.a - 0.5);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_299.rg, _Normal))).rgb;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_333.rg, _Normal))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 
                 float nSign = sign( dot( viewDirection, normalDirection ) ); // Reverse normal if this is a backface
@@ -171,9 +171,9 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 float node_3 = 0.1;
                 float3 specularColor = float3(node_3,node_3,node_3);
                 float3 specular = attenColor * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss) * specularColor;
-                float3 lightFinal = diffuse * (0.8*lerp(node_1.rgb,dot(node_1.rgb,float3(0.3,0.59,0.11)),0.4)) + specular;
+                float3 finalColor = diffuse * (0.8*lerp(node_1.rgb,dot(node_1.rgb,float3(0.3,0.59,0.11)),0.4)) + specular;
 /// Final Color:
-                return fixed4(lightFinal,1);
+                return fixed4(finalColor,1);
             }
             ENDCG
         }
@@ -213,8 +213,8 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float2 node_300 = i.uv0;
-                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_300.rg, _Diffuse));
+                float2 node_334 = i.uv0;
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_334.rg, _Diffuse));
                 clip(node_1.a - 0.5);
                 SHADOW_COLLECTOR_FRAGMENT(i)
             }
@@ -256,8 +256,8 @@ Shader "Shader Forge/Examples/ClipAndTransmission" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
-                float2 node_301 = i.uv0;
-                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_301.rg, _Diffuse));
+                float2 node_335 = i.uv0;
+                float4 node_1 = tex2D(_Diffuse,TRANSFORM_TEX(node_335.rg, _Diffuse));
                 clip(node_1.a - 0.5);
                 SHADOW_CASTER_FRAGMENT(i)
             }

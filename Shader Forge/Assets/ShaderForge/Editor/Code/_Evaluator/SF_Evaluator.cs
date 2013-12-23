@@ -643,27 +643,9 @@ namespace ShaderForge {
 
 				return;
 			}
-			
-			//App( "float3 lightDirection;");
 
 			// Point vs directional
 			App ("float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - "+WithProgramPrefix("posWorld.xyz")+",_WorldSpaceLightPos0.w));");
-
-			/*
-			App("if (0.0 == _WorldSpaceLightPos0.w){"); // TODO: Switch to lerp instead?
-			{
-				scope++;
-				App("lightDirection = normalize( _WorldSpaceLightPos0.xyz );");
-				scope--;
-			}
-			App("} else {");
-			{
-				scope++;
-				App( "lightDirection = normalize( _WorldSpaceLightPos0 - i.posWorld.xyz );" );
-				scope--;
-			}
-			App( "}" );
-			*/
 			
 		}
 
@@ -877,7 +859,14 @@ namespace ShaderForge {
 			//if(DoAmbientSpecThisPass() && ps.IsPBL())
 				//App ("float NdotR = max(0, dot(viewReflectDirection, normalDirection));"); // WIP
 
-			string s = "float3 specular = attenColor"; /* * " + ps.n_specular;*/ // TODO: Doesn't this double the spec? Removed for now. Shouldn't evaluate spec twice when using PBL
+			string s = "float3 specular = ";
+
+			if(ps.maskedSpec && currentPass == PassType.FwdBase){
+				s += "(floor(attenuation) * _LightColor0.xyz)"; // TODO; This only works well with directional lights : <
+			} else {
+				s += "attenColor"; /* * " + ps.n_specular;*/ // TODO: Doesn't this double the spec? Removed for now. Shouldn't evaluate spec twice when using PBL
+			}
+
 
 
 
@@ -1032,7 +1021,7 @@ namespace ShaderForge {
 
 
 		bool DoPassDiffuse(){
-			return currentPass == PassType.FwdBase || currentPass == PassType.FwdAdd;
+			return ps.HasDiffuse() && (currentPass == PassType.FwdBase || currentPass == PassType.FwdAdd);
 		}
 		bool DoPassEmissive(){ // Emissive should always be in the base pass
 			return ps.HasEmissive() && currentPass == PassType.FwdBase;
@@ -1093,6 +1082,7 @@ namespace ShaderForge {
 				return;
 			AppDebug ("Lighting");
 
+			/*
 			if( ps.IsVertexLit() && SF_Evaluator.inFrag ) {
 				string finalLightStr = "float3 lightFinal = i.vtxLight";
 
@@ -1103,16 +1093,17 @@ namespace ShaderForge {
 				App( finalLightStr ); // TODO: Emissive and other frag effects? TODO: Separate vtx spec and vtx diffuse
 				return;
 			}
+			*/
 
 
 
-			if(ps.IsLit() || dependencies.frag_attenuation && SF_Evaluator.inFrag )
+			if( (ps.IsLit() || dependencies.frag_attenuation && SF_Evaluator.inFrag) && ( ps.HasDiffuse() || ps.HasSpecular() ) )
 				InitAttenuation();
 
 			if( !ps.IsLit() && SF_Evaluator.inFrag ) {
 
 
-				string s = "float3 lightFinal = ";
+				string s = "float3 finalColor = ";
 
 
 
@@ -1123,12 +1114,12 @@ namespace ShaderForge {
 				bool didAddLight = doAmbient || doEmissive || doCustomLight;
 
 				bool somethingAdded = false;
-				if(doAmbient){
+				if( doAmbient ){
 					s += somethingAdded ? " + ":"";
 					s += GetAmbientStr();
 					somethingAdded = true;
 				}
-				if(doEmissive){
+				if( doEmissive ){
 					CalcEmissive();
 					s += somethingAdded ? " + ":"";
 					s += "emissive";
@@ -1136,9 +1127,10 @@ namespace ShaderForge {
 				}
 				if( doCustomLight ){
 					s += somethingAdded ? " + ":"";
-					s += ps.n_customLighting; // TODO
+					s += ps.n_customLighting;
 					somethingAdded = true;
 				}
+
 
 
 				if(!didAddLight)
@@ -1180,28 +1172,42 @@ namespace ShaderForge {
 				App("float3 lightFinal = " + ps.n_customLighting );
 
 			}*/
-			if( !ps.IsVertexLit() && currentProgram == ShaderProgram.Frag ) {
+			if( /*!ps.IsVertexLit() &&*/ currentProgram == ShaderProgram.Frag ) {
 
-				string lgFinal = "float3 lightFinal = ";
+				string lgFinal = "float3 finalColor = ";
 
-				if(ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailable()){
-					lgFinal += "(diffuse + " + ps.n_ambientDiffuse +  " )";
-				} else {
-					lgFinal += "diffuse";
-				}
+				bool addedSomething = false;
 
-				if(ps.mOut.diffuse.IsConnectedEnabledAndAvailable()){
+				if( ps.HasDiffuse() ){
+					if(ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailable()){
+						lgFinal += "(diffuse + " + ps.n_ambientDiffuse +  " )";
+					} else {
+						lgFinal += "diffuse";
+					}
+
 					lgFinal += " * " + ps.n_diffuse;
+					addedSomething = true;
 				}
 
-				if(DoPassSpecular())
-					lgFinal += " + specular";
-				if(DoPassEmissive())
-					lgFinal += " + emissive";
+				if(DoPassSpecular()){
+					lgFinal += addedSomething ? " + ":"";
+					lgFinal += "specular";
+					addedSomething = true;
+				}
+				if(DoPassEmissive()){
+					lgFinal += addedSomething ? " + ":"";
+					lgFinal += "emissive";
+					addedSomething = true;
+				}
+
+				if(!addedSomething)
+					lgFinal += "0"; // TODO: Don't do lighting at all if this is the case
+
+
 				lgFinal += ";";
 				App( lgFinal );
 			}	
-			if(currentProgram == ShaderProgram.Frag){
+			/*if(currentProgram == ShaderProgram.Frag){*/
 
 				/*
 				string finalRGB = "lightFinal * " + ps.n_diffuse;
@@ -1221,7 +1227,7 @@ namespace ShaderForge {
 					AppFinalOutput( "lightFinal * " + ps.n_diffuse, ps.n_alpha );
 				*/
 
-			} else if ( currentProgram == ShaderProgram.Vert){
+			/*} else if ( currentProgram == ShaderProgram.Vert){
 
 				string vtxLightOut = "o.vtxLight = diffuse"; // Diffuse light
 
@@ -1239,6 +1245,7 @@ namespace ShaderForge {
 
 
 			}
+			*/
 		}
 
 		void InitReflectionDir() {
@@ -1505,7 +1512,7 @@ namespace ShaderForge {
 				//if(ps.mOut.diffuse.IsConnectedEnabledAndAvailable()){
 				//	AppFinalOutput("lightFinal + " + "diffuse", ps.n_alpha); // This is really weird, it should already be included in the light calcs. Do more research // TODO
 				//}else
-					AppFinalOutput("lightFinal", ps.n_alpha);
+				AppFinalOutput("finalColor", ps.n_alpha);
 				
 			}
 
@@ -1741,8 +1748,25 @@ namespace ShaderForge {
 		}
 
 		public void LightPass() {
-			if( !( ( ps.IsLit() || dependencies.UsesLightNodes() ) && ps.UseMultipleLights() ) )
+
+			// TODO: FIX
+
+
+			// Only when real-time light things are connected. These are:
+			// Diffuse
+			// Specular
+			// Although could be any D:
+
+			bool customLit = dependencies.UsesLightNodes();
+			bool builtinLit = ps.IsLit() && (ps.HasDiffuse() || ps.HasSpecular());
+
+			bool needsLightPass = ( builtinLit || customLit ) && ps.UseMultipleLights();
+
+			if( !needsLightPass )
 				return;
+
+
+
 			currentPass = PassType.FwdAdd;
 			UpdateDependencies();
 			ResetDefinedState();
@@ -1771,7 +1795,7 @@ namespace ShaderForge {
 		// This is a custom shadow thing!
 		// Only needed when using alpha clip and/or vertex offset (May be needed with Tessellation as well)
 		public void ShadowCollectorPass() {
-			bool shouldUse = ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled();
+			bool shouldUse = /*ps.shadowReceive &&*/ ( ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled() );
 			if( !shouldUse )
 				return;
 			currentPass = PassType.ShadColl;
@@ -1802,7 +1826,7 @@ namespace ShaderForge {
 		
 		// Only needed when using alpha clip and/or vertex offset (May be needed with Tessellation as well)
 		public void ShadowCasterPass() {
-			bool shouldUse = ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled();
+			bool shouldUse = /*ps.shadowCast &&*/ (ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled());
 			if( !shouldUse )
 				return;
 			currentPass = PassType.ShadCast;
@@ -1862,149 +1886,6 @@ namespace ShaderForge {
 
 
 
-
-
-		/* BELOW IS CODE TO DO CUSTOM SHADOW CASTING AND RECEIVING
-		 * 
-		 * 
-		 * 		///////////////////////////////////////
-		// SHADOW RECEIVE BELOW
-
-		Pass {
-			Name "ShadowCollector"
-			Tags { "LightMode" = "ShadowCollector" }
-			Fog {Mode Off}
-			ZWrite On ZTest LEqual
-
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			#pragma fragmentoption ARB_precision_hint_fastest
-			#pragma multi_compile_shadowcollector
-			#include "HLSLSupport.cginc"
-			#include "UnityShaderVariables.cginc"
-			#define UNITY_PASS_SHADOWCOLLECTOR
-			#define SHADOW_COLLECTOR_PASS
-			#include "UnityCG.cginc"
-			#include "Lighting.cginc"
-
-			#define INTERNAL_DATA
-			#define WorldReflectionVector(data,normal) data.worldRefl
-			#define WorldNormalVector(data,normal) normal
-
-
-
-			float _Sharpness;
-			float4 _TimeEditor;
-			uniform float _Magnitude;
-
-			struct VertexInput {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float4 uv0 : TEXCOORD0; 
-			};
-
-			struct VertexOutput {
-				V2F_SHADOW_COLLECTOR;
-			};
-
-
-			VertexOutput vert (VertexInput v) {
-				VertexOutput o;
-				float node_58 = 3;
-				float node_49 = abs(pow(((frac((v.uv0.r+(_TimeEditor.g*0.5)))-0.5)*2),_Sharpness));
-				float node_59 = 2;
-				v.vertex += float4(((_Magnitude*((node_58*pow(node_49,node_59))-(node_59*pow(node_49,node_58))))*v.normal),0.0);
-				TRANSFER_SHADOW_COLLECTOR(o)
-				return o;
-			}
-
-
-			fixed4 frag (VertexOutput i) : COLOR {
-				SHADOW_COLLECTOR_FRAGMENT(i)
-			}
-
-			ENDCG
-
-		}
-
-
-		// END OF SHADOW RECEIVE
-		///////////////////////////
-
-
-
-		///////////////////////////
-		// SHADOW CASTING BELOW
-
-
-
-		Pass {
-			Name "ShadowCaster"
-			Tags { "LightMode" = "ShadowCaster" }
-			Fog {Mode Off}
-			ZWrite On ZTest LEqual Cull Off
-			Offset 1, 1
-
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			#pragma fragmentoption ARB_precision_hint_fastest
-			#pragma multi_compile_shadowcaster
-			#include "HLSLSupport.cginc"
-			#include "UnityShaderVariables.cginc"
-			#define UNITY_PASS_SHADOWCASTER
-			#include "UnityCG.cginc"
-			#include "Lighting.cginc"
-
-			#define INTERNAL_DATA
-			#define WorldReflectionVector(data,normal) data.worldRefl
-			#define WorldNormalVector(data,normal) normal
-
-
-			float _Sharpness;
-			float4 _TimeEditor;
-			uniform float _Magnitude;
-
-
-
-			struct VertexInput {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float4 uv0 : TEXCOORD0; 
-			};
-
-			struct VertexOutput {
-				V2F_SHADOW_CASTER;
-			};
-
-			VertexOutput vert (VertexInput v) {
-				VertexOutput o;
-
-				float node_58 = 3;
-				float node_49 = abs(pow(((frac((v.uv0.r+(_TimeEditor.g*0.5)))-0.5)*2),_Sharpness));
-				float node_59 = 2;
-				v.vertex += float4(((_Magnitude*((node_58*pow(node_49,node_59))-(node_59*pow(node_49,node_58))))*v.normal),0.0);
-
-
-				TRANSFER_SHADOW_CASTER(o)
-				return o;
-			}
-
-			fixed4 frag (VertexOutput o) : COLOR {
-				SHADOW_CASTER_FRAGMENT(o)
-			}
-
-			ENDCG
-		}
-
-
-
-		// END OF SHADOW CASTING
-		///////////////////////////
-
-
-		*/
 
 
 		public void ResetDefinedState() {

@@ -60,6 +60,9 @@ namespace ShaderForge {
 
 		public bool writeDepth = true;
 		public bool useAmbient = true;
+		public bool maskedSpec = true;
+		//public bool shadowCast = true;
+		//public bool shadowReceive = true;
 		public bool useFog = true;
 		public bool doubleIncomingLight = false;
 
@@ -125,6 +128,9 @@ namespace ShaderForge {
 			s += Serialize( "dpts", ( (int)depthTest ).ToString() );
 			s += Serialize( "wrdp", writeDepth.ToString() );
 			s += Serialize( "uamb", useAmbient.ToString() );
+			s += Serialize( "mssp", maskedSpec.ToString() );
+			//s += Serialize( "shdc", shadowCast.ToString() );
+			//s += Serialize( "shdr", shadowReceive.ToString() );
 			s += Serialize( "ufog", useFog.ToString() );
 			s += Serialize( "aust", autoSort.ToString() );
 			s += Serialize( "igpj", ignoreProjector.ToString() );
@@ -205,6 +211,15 @@ namespace ShaderForge {
 			case "uamb":
 				useAmbient = bool.Parse( value );
 				break;
+			case "mssp":
+				maskedSpec = bool.Parse( value );
+				break;
+			/*case "shdc":
+				shadowCast = bool.Parse( value );
+				break;
+			case "shdr":
+				shadowReceive = bool.Parse( value );
+				break;*/
 			case "ufog":
 				useFog = bool.Parse( value );
 				break;
@@ -1377,6 +1392,12 @@ namespace ShaderForge {
 				r.y += 20;
 				GUI.enabled = true;
 			}
+			/*shadowCast = GUI.Toggle( r, shadowCast, "Cast shadows" );
+			r.y += 20;
+			shadowReceive = GUI.Toggle( r, shadowReceive, "Receive shadows" );
+			r.y += 20;*/
+			maskedSpec = GUI.Toggle( r, maskedSpec, "Mask directional light specular by shadows" );
+			r.y += 20;
 			useAmbient = GUI.Toggle( r, useAmbient, "Receive Ambient Light" );
 			r.y += 20;
 			
@@ -1554,7 +1575,7 @@ namespace ShaderForge {
 
 
 		public bool IsLit() {
-			return ( lightMode != LightMode.Unlit );
+			return ( lightMode != LightMode.Unlit && ( HasDiffuse() || HasSpecular()) );
 		}
 
 		public bool IsEnergyConserving() {
@@ -1587,6 +1608,10 @@ namespace ShaderForge {
 
 		public bool HasEmissive() {
 			return mOut.emissive.IsConnectedAndEnabled();
+		}
+
+		public bool HasDiffuse(){
+			return mOut.diffuse.IsConnectedAndEnabled();
 		}
 
 		public bool HasTransmission() {

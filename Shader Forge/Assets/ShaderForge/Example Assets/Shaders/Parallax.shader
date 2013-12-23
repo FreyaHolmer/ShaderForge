@@ -77,9 +77,9 @@ Shader "Shader Forge/Examples/Parallax" {
                 float node_46 = 0.8;
                 float3 specularColor = float3(node_46,node_46,node_46);
                 float3 specular = attenColor * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss) * specularColor;
-                float3 lightFinal = diffuse * tex2D(_AORGBHeightA,TRANSFORM_TEX(node_110.rg, _AORGBHeightA)).rgb + specular;
+                float3 finalColor = diffuse * tex2D(_AORGBHeightA,TRANSFORM_TEX(node_110.rg, _AORGBHeightA)).rgb + specular;
 /// Final Color:
-                return fixed4(lightFinal,1);
+                return fixed4(finalColor,1);
             }
             ENDCG
         }
@@ -149,9 +149,9 @@ Shader "Shader Forge/Examples/Parallax" {
                 float node_46 = 0.8;
                 float3 specularColor = float3(node_46,node_46,node_46);
                 float3 specular = attenColor * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss) * specularColor;
-                float3 lightFinal = diffuse * tex2D(_AORGBHeightA,TRANSFORM_TEX(node_110.rg, _AORGBHeightA)).rgb + specular;
+                float3 finalColor = diffuse * tex2D(_AORGBHeightA,TRANSFORM_TEX(node_110.rg, _AORGBHeightA)).rgb + specular;
 /// Final Color:
-                return fixed4(lightFinal,1);
+                return fixed4(finalColor,1);
             }
             ENDCG
         }

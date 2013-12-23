@@ -87,9 +87,9 @@ Shader "Shader Forge/Examples/Cubemaps" {
                 float3 specularColor = float3(_Specular_var.r,_Specular_var.r,_Specular_var.r);
                 float3 specular = attenColor * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss) * specularColor;
                 float node_286 = lerp(0.4,0,node_223);
-                float3 lightFinal = diffuse * float3(node_286,node_286,node_286) + specular + emissive;
+                float3 finalColor = diffuse * float3(node_286,node_286,node_286) + specular + emissive;
 /// Final Color:
-                return fixed4(lightFinal,1);
+                return fixed4(finalColor,1);
             }
             ENDCG
         }
@@ -163,9 +163,9 @@ Shader "Shader Forge/Examples/Cubemaps" {
                 float3 specular = attenColor * pow(max(0,dot(reflect(-lightDirection, normalDirection),viewDirection)),gloss) * specularColor;
                 float node_223 = pow(1.0-max(0,dot(normalDirection, viewDirection)),_FresnelExponent);
                 float node_286 = lerp(0.4,0,node_223);
-                float3 lightFinal = diffuse * float3(node_286,node_286,node_286) + specular;
+                float3 finalColor = diffuse * float3(node_286,node_286,node_286) + specular;
 /// Final Color:
-                return fixed4(lightFinal,1);
+                return fixed4(finalColor,1);
             }
             ENDCG
         }

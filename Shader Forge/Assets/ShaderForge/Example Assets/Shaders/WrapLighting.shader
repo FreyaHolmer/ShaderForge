@@ -77,9 +77,9 @@ Shader "Shader Forge/Examples/WrapLighting" {
                 float3 node_1 = float3(0.9,0.7,0.4);
                 float3 specularColor = ((1.0 - node_1)*0.3);
                 float3 specular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor;
-                float3 lightFinal = diffuse * node_1 + specular;
+                float3 finalColor = diffuse * node_1 + specular;
 /// Final Color:
-                return fixed4(lightFinal,1);
+                return fixed4(finalColor,1);
             }
             ENDCG
         }
@@ -150,9 +150,9 @@ Shader "Shader Forge/Examples/WrapLighting" {
                 float3 node_1 = float3(0.9,0.7,0.4);
                 float3 specularColor = ((1.0 - node_1)*0.3);
                 float3 specular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor;
-                float3 lightFinal = diffuse * node_1 + specular;
+                float3 finalColor = diffuse * node_1 + specular;
 /// Final Color:
-                return fixed4(lightFinal,1);
+                return fixed4(finalColor,1);
             }
             ENDCG
         }

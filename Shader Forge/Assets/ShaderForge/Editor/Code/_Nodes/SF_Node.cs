@@ -1113,6 +1113,9 @@ namespace ShaderForge {
 			ScriptableObject.DestroyImmediate( status );
 			
 			ScriptableObject.DestroyImmediate(this);
+
+			editor.ShaderOutdated = UpToDateState.OutdatedHard;
+			editor.ps.fChecker.UpdateAvailability();
 		}
 
 

@@ -137,24 +137,14 @@ namespace ShaderForge {
 			iconActive = null;
 			texture = null;
 		}
-
-
-		public Texture2D GetIcon(string type){
-			return Resources.Load<Texture2D>( "Interface/Nodes/"+ type );
-		}
+	
 
 
 		public void LoadAndInitializeIcons(Type type){
 			string nodeNameLower = type.Name.ToLower();
 
 
-			iconActive = GetIcon(nodeNameLower); // Main icon
-
-
-
-
-			 
-
+			iconActive = SF_Paths.GetIcon(nodeNameLower); // Main icon
 
 			
 			if(iconActive == null){
@@ -167,7 +157,7 @@ namespace ShaderForge {
 
 				Texture2D tmp;
 				for(int i = 2;i<16;i++){ // max 16, to prevent while-loop locking
-					tmp = GetIcon(nodeNameLower + "_" + i); // Search for more
+					tmp = SF_Paths.GetIcon(nodeNameLower + "_" + i); // Search for more
 					if(tmp == null)
 						break;
 					iconList.Add(tmp);

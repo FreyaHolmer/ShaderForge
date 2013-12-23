@@ -21,7 +21,7 @@ namespace ShaderForge {
 		public static Texture2D Handle_drag {
 			get {
 				if( handle_drag == null )
-					handle_drag = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + "handle_drag.tga", typeof(Texture2D) );
+					handle_drag = Resources.Load<Texture2D>( SF_Paths.pInterface + "handle_drag" );
 				return handle_drag;
 			}
 		}
@@ -30,7 +30,7 @@ namespace ShaderForge {
 		public static Texture2D Logo {
 			get {
 				if( logo == null )
-					logo = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + SkinSuffix("logo") + ".png", typeof( Texture2D ) );
+					logo = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix("logo") );
 				return logo;
 			}
 		}
@@ -39,7 +39,7 @@ namespace ShaderForge {
 		public static Texture2D Icon {
 			get {
 				if( icon == null )
-					icon = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + SkinSuffix( "icon" ) + ".png", typeof( Texture2D ) );
+					icon = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix( "icon" ) );
 				return icon;
 			}
 		}
@@ -48,7 +48,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_vert {
 			get {
 				if( inst_vert == null )
-					inst_vert = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + SkinSuffix( "inst_vert" ) + ".png", typeof( Texture2D ) );
+					inst_vert = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix( "inst_vert" ) );
 				return inst_vert;
 			}
 		}
@@ -57,7 +57,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_vert_tex {
 			get {
 				if( inst_vert_tex == null )
-					inst_vert_tex = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + SkinSuffix( "inst_vert_tex" ) + ".png", typeof( Texture2D ) );
+					inst_vert_tex = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix( "inst_vert_tex" ) );
 				return inst_vert_tex;
 			}
 		}
@@ -66,7 +66,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_frag {
 			get {
 				if( inst_frag == null )
-					inst_frag = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + SkinSuffix("inst_frag" ) + ".png", typeof( Texture2D ) );
+					inst_frag = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix("inst_frag" ) );
 				return inst_frag;
 			}
 		}
@@ -75,7 +75,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_frag_tex {
 			get {
 				if( inst_frag_tex == null )
-					inst_frag_tex = (Texture2D)AssetDatabase.LoadAssetAtPath( SF_Paths.pInterface + SkinSuffix( "inst_frag_tex" ) + ".png", typeof( Texture2D ) );
+					inst_frag_tex = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix( "inst_frag_tex" ) );
 				return inst_frag_tex;
 			}
 		}

@@ -63,17 +63,17 @@ namespace ShaderForge {
 			UpdatePreviewBackgroundColor();
 
 			this.editor = editor;
-			this.material = (Material)AssetDatabase.LoadAssetAtPath( SF_Paths.pInternal + "ShaderForgeInternal.mat", typeof( Material ) );
+			//this.material = (Material)AssetDatabase.LoadAssetAtPath( SF_Paths.pInternal + "ShaderForgeInternal.mat", typeof( Material ) );
+			this.material = Resources.Load<Material>("ShaderForgeInternal");
 			this.mesh = GetSFMesh( "sphere" );
 
 			SetupPreview();
-
 
 		}
 
 
 		public Mesh GetSFMesh(string find_name) {
-			UnityEngine.Object[] objs = AssetDatabase.LoadAllAssetsAtPath( SF_Paths.pMeshes+"sf_meshes.fbx" );
+			UnityEngine.Object[] objs = Resources.LoadAll( SF_Paths.pMeshes+"sf_meshes" );
 			if( objs == null ) {
 				Debug.LogError( "sf_meshes.fbx missing" );
 				return null;

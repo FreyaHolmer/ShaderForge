@@ -3,9 +3,14 @@ using System.Collections;
 
 public static class SF_Paths {
 
-	public const string pInternal = "Assets/ShaderForge/Editor/";
-	public const string pInterface = pInternal+"Resources/Interface/";
-	public const string pMeshes = pInternal + "Resources/Meshes/";
+	public const string pInterface = "Interface/";
+	public const string pMeshes = "Meshes/";
 
+
+
+	
+	public static Texture2D GetIcon(string type){
+		return Resources.Load<Texture2D>( "Interface/Nodes/"+ type );
+	}
 
 }

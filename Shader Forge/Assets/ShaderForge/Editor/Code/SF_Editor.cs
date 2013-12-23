@@ -93,7 +93,6 @@ namespace ShaderForge {
 			if(SF_Debug.window)
 				Debug.Log( "[SF_LOG] - SF_Editor CONSTRUCTOR SF_Editor()" );
 			SF_Editor.instance = this;
-			//Texture tabIcon = (Texture2D)Resources.LoadAssetAtPath( SF_Paths.pInterface + "icon_normal.tga", typeof( Texture2D ) );
 			HOPanelUtils.SetWindowTitle( this, (Texture)SF_GUI.Icon, "Shader Forge" );
 		}
 

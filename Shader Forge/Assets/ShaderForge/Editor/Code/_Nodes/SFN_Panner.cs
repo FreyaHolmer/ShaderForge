@@ -80,7 +80,16 @@ namespace ShaderForge {
 
 		// TODO Expose more out here!
 		public override Color NodeOperator( int x, int y ) {
-			Vector2 inputVec = new Vector2( GetInputData( "UVIN", x, y, 0 ), GetInputData( "UVIN", x, y, 1 ) );
+
+			Vector2 inputVec;
+
+			if(GetInputIsConnected("UVIN")){
+				inputVec = new Vector2( GetInputData( "UVIN", x, y, 0 ), GetInputData( "UVIN", x, y, 1 ) );
+			} else {
+				inputVec = new Vector2( x/SF_NodeData.RESf, y/SF_NodeData.RESf ); // TODO: should use ghost nodes... 
+			}
+
+
 			float distance = GetInputIsConnected( "DIST" ) ? GetInputData( "DIST", x, y, 0 ) : 0f;
 			return (Vector4)( inputVec + speed * distance );
 		}

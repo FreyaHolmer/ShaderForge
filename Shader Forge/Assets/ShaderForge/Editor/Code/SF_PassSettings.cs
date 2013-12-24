@@ -1616,6 +1616,10 @@ namespace ShaderForge {
 			return mOut.diffuse.IsConnectedAndEnabled();
 		}
 
+		public bool HasDiffusePower(){
+			return mOut.diffusePower.IsConnectedAndEnabled();
+		}
+
 		public bool HasTransmission() {
 			return mOut.transmission.IsConnectedAndEnabled();
 		}

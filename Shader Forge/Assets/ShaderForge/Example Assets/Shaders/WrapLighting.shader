@@ -68,7 +68,7 @@ Shader "Shader Forge/Examples/WrapLighting" {
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 w = float3(0.9,0.5,0.5)*0.5; // Light wrapping
                 float3 NdotLWrap = NdotL * ( 1.0 - w );
-                float3 forwardLight = pow( max(float3(0.0,0.0,0.0), NdotLWrap + w ), 1 );
+                float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
                 float3 diffuse = forwardLight * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
 ///////// Gloss:
                 float gloss = exp2(2.0*10.0+1.0);
@@ -141,7 +141,7 @@ Shader "Shader Forge/Examples/WrapLighting" {
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 w = float3(0.9,0.5,0.5)*0.5; // Light wrapping
                 float3 NdotLWrap = NdotL * ( 1.0 - w );
-                float3 forwardLight = pow( max(float3(0.0,0.0,0.0), NdotLWrap + w ), 1 );
+                float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
                 float3 diffuse = forwardLight * attenColor;
 ///////// Gloss:
                 float gloss = exp2(2.0*10.0+1.0);

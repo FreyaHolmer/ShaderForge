@@ -669,6 +669,16 @@ namespace ShaderForge {
 			App( "float3 attenColor = attenuation * _LightColor0.xyz;" );
 		}
 
+
+		string GetWithDiffPow(string s){
+			if(ps.HasDiffusePower()){
+				return "pow(" + s + ", " + ps.n_diffusePower + ")";
+			}
+			return s;
+		}
+
+
+
 		void CalcDiffuse() {
 
 			//App( "float atten = 1.0;" );
@@ -688,20 +698,22 @@ namespace ShaderForge {
 
 			if( ps.HasTransmission() || ps.HasLightWrapping() ) {
 
+				string fwdLight = "float3 forwardLight = "; // TODO
+				string backLight = "float3 backLight = "; // TODO
 
 
 				if(ps.HasLightWrapping()){
 					App( "float3 w = " + ps.n_lightWrap + "*0.5; // Light wrapping" );
 					App( "float3 NdotLWrap = NdotL * ( 1.0 - w );" );
-					App( "float3 forwardLight = pow( max(float3(0.0,0.0,0.0), NdotLWrap + w ), " + ps.n_diffusePower + " );" );
+					App( fwdLight + GetWithDiffPow("max(float3(0.0,0.0,0.0), NdotLWrap + w )") + ";" );
 					if(ps.HasTransmission()){
-						App( "float3 backLight = pow( max(float3(0.0,0.0,0.0), -NdotLWrap + w ), " + ps.n_diffusePower + " ) * " + ps.n_transmission + ";" );
+						App( backLight + GetWithDiffPow("max(float3(0.0,0.0,0.0), -NdotLWrap + w )") + " * " + ps.n_transmission + ";" );
 					}
 						
 				} else {
-					App( "float3 forwardLight = pow( max(0.0, NdotL ), " + ps.n_diffusePower + " );" );
+					App( fwdLight + GetWithDiffPow("max(0.0, NdotL )") + ";" );
 					if(ps.HasTransmission()){
-						App( "float3 backLight = pow( max(0.0, -NdotL ), " + ps.n_diffusePower + " ) * " + ps.n_transmission + ";" );
+						App( backLight + GetWithDiffPow( "max(0.0, -NdotL )") + " * " + ps.n_transmission + ";" );
 					}
 				}
 
@@ -737,11 +749,13 @@ namespace ShaderForge {
 					scope++;
 				}
 
-				lmbStr = "max( 0.0, NdotL)";
+				lmbStr = GetWithDiffPow("max( 0.0, NdotL)");
 
-				if( ps.n_diffusePower != "1" ) {
-					lmbStr = "pow(" + lmbStr + "," + ps.n_diffusePower + ")";
-				}
+
+
+				//if( ps.n_diffusePower != "1" ) {
+				//	lmbStr = "pow(" + lmbStr + "," + ps.n_diffusePower + ")";
+				//}
 
 			}
 

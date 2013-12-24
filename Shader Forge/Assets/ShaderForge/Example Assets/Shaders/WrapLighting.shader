@@ -1,7 +1,7 @@
 // Shader created with Shader Forge Beta 0.16 
 // Shader Forge (c) Joachim 'Acegikmo' Holmer
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.16;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:2,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,ufog:False,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300;n:type:ShaderForge.SFN_Final,id:0,x:32833,y:32427|diff-1-OUT,spec-6-OUT,gloss-4-OUT,normal-9-RGB,lwrap-2-OUT;n:type:ShaderForge.SFN_Vector3,id:1,x:33544,y:32425,v1:0.9,v2:0.7,v3:0.4;n:type:ShaderForge.SFN_Vector3,id:2,x:33143,y:32844,v1:0.9,v2:0.5,v3:0.5;n:type:ShaderForge.SFN_Vector1,id:3,x:33333,y:32629,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:4,x:33143,y:32637,v1:2;n:type:ShaderForge.SFN_OneMinus,id:5,x:33333,y:32486|IN-1-OUT;n:type:ShaderForge.SFN_Multiply,id:6,x:33143,y:32486|A-5-OUT,B-3-OUT;n:type:ShaderForge.SFN_Tex2d,id:9,x:33143,y:32717,ptlb:Normal,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;proporder:9;pass:END;sub:END;*/
+/*SF_DATA;ver:0.16;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:2,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,mssp:True,ufog:False,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300;n:type:ShaderForge.SFN_Final,id:0,x:32833,y:32427|diff-1-OUT,spec-6-OUT,gloss-4-OUT,normal-9-RGB,lwrap-2-OUT;n:type:ShaderForge.SFN_Vector3,id:1,x:33544,y:32425,v1:0.9,v2:0.7,v3:0.4;n:type:ShaderForge.SFN_Vector3,id:2,x:33143,y:32844,v1:0.9,v2:0.5,v3:0.5;n:type:ShaderForge.SFN_Vector1,id:3,x:33333,y:32629,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:4,x:33143,y:32637,v1:2;n:type:ShaderForge.SFN_OneMinus,id:5,x:33333,y:32486|IN-1-OUT;n:type:ShaderForge.SFN_Multiply,id:6,x:33143,y:32486|A-5-OUT,B-3-OUT;n:type:ShaderForge.SFN_Tex2d,id:9,x:33143,y:32717,ptlb:Normal,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;proporder:9;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/WrapLighting" {
     Properties {
@@ -76,7 +76,7 @@ Shader "Shader Forge/Examples/WrapLighting" {
                 NdotL = max(0.0, NdotL);
                 float3 node_1 = float3(0.9,0.7,0.4);
                 float3 specularColor = ((1.0 - node_1)*0.3);
-                float3 specular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor;
+                float3 specular = (floor(attenuation) * _LightColor0.xyz) * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor;
                 float3 finalColor = diffuse * node_1 + specular;
 /// Final Color:
                 return fixed4(finalColor,1);

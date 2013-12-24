@@ -161,6 +161,7 @@ namespace ShaderForge {
 			// If no ghost was found, create one
 			if( ghost == null ) {
 				ghost = node.editor.AddNode( ghostType );
+				ghost.isGhost = true;
 				ghosts.Add( ghost );
 				if(SF_Debug.ghostNodes){
 					Debug.Log("Adding ghost " + ghostType + " with connection count " + ghost.connectors.Length);
@@ -357,8 +358,6 @@ namespace ShaderForge {
 				editor.nodeView.selection.DeselectAll();
 				Event.current.Use();
 			}
-
-
 
 			if( !ConnectionInProgress() ) {
 				if( Released() )
@@ -599,6 +598,9 @@ namespace ShaderForge {
 
 		public void TryMakeConnection() {
 
+			if(SF_NodeConnection.pendingConnectionSource == null)
+				return;
+
 			if( !CanConnectTo( SF_NodeConnection.pendingConnectionSource ) ) {
 				return; // TODO: Display message
 			}
@@ -622,6 +624,9 @@ namespace ShaderForge {
 
 		public void LinkTo( SF_NodeConnection other, LinkingMethod linkMethod = LinkingMethod.Default ) {
 
+
+
+
 			if( this.conType == other.conType ) {
 				Debug.Log("Invalid IO linking: " + other.node.nodeName);
 				return;
@@ -631,6 +636,9 @@ namespace ShaderForge {
 				other.LinkTo( this, linkMethod ); // Reverse connection if dragged other way
 				return;
 			}
+
+			if(this.node.isGhost)
+				linkMethod = LinkingMethod.NoUpdate;
 
 			// Other is the input node
 			// [other] <---- [this]
@@ -677,7 +685,7 @@ namespace ShaderForge {
 
 		// This is currenly meant to propagate its value type to its link partner
 		public void SetValueType(ValueType vt){
-			if(conType == ConType.cOutput){
+			if(conType == ConType.cOutput && this.valueType != vt){
 
 				this.valueType = vt;
 				foreach(SF_NodeConnection con in this.outputCons){

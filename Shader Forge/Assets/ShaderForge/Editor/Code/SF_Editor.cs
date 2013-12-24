@@ -572,6 +572,9 @@ namespace ShaderForge {
 		public bool closeMe = false;
 		void OnGUI() {
 			//Debug.Log("SF_Editor OnGUI()");
+
+			if(SF_Parser.quickLoad) // Don't draw while loading
+				return;
 			
 			if(SF_Debug.performance)
 				GUI.Label(new Rect(500,64,128,64),"fps: "+fps.ToString());

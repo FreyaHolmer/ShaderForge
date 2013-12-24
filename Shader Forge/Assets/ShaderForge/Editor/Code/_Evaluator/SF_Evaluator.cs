@@ -1095,9 +1095,9 @@ namespace ShaderForge {
 			}
 			*/
 
+			bool attenBuiltin = ps.IsLit()&& ( ps.HasDiffuse() || ps.HasSpecular() );
 
-
-			if( (ps.IsLit() || dependencies.frag_attenuation && SF_Evaluator.inFrag) && ( ps.HasDiffuse() || ps.HasSpecular() ) )
+			if( attenBuiltin || (dependencies.frag_attenuation && SF_Evaluator.inFrag))
 				InitAttenuation();
 
 			if( !ps.IsLit() && SF_Evaluator.inFrag ) {
@@ -1107,18 +1107,18 @@ namespace ShaderForge {
 
 
 
-				bool doAmbient = (currentPass == ShaderForge.PassType.FwdBase && ps.useAmbient);
+				//bool doAmbient = (currentPass == ShaderForge.PassType.FwdBase && ps.useAmbient);
 				bool doEmissive = DoPassEmissive();
 				bool doCustomLight = mOut.customLighting.IsConnectedEnabledAndAvailable();
 
-				bool didAddLight = doAmbient || doEmissive || doCustomLight;
+				bool didAddLight = /*doAmbient || */doEmissive || doCustomLight;
 
 				bool somethingAdded = false;
-				if( doAmbient ){
-					s += somethingAdded ? " + ":"";
-					s += GetAmbientStr();
-					somethingAdded = true;
-				}
+				//if( doAmbient ){
+				//	s += somethingAdded ? " + ":"";
+				//	s += GetAmbientStr();
+				//	somethingAdded = true;
+				//}
 				if( doEmissive ){
 					CalcEmissive();
 					s += somethingAdded ? " + ":"";

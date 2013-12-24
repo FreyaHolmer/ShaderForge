@@ -21,6 +21,8 @@ namespace ShaderForge {
 
 		public int depth = 0; // Used when deserializing and updating
 
+		public bool isGhost = false;
+
 		public bool selected = false;
 
 		public bool varDefined = false; // Whether or not this node has had its variable defined already.
@@ -239,7 +241,7 @@ namespace ShaderForge {
 
 
 			editor.OnShaderModified( NodeUpdateType.Soft );
-			if(!SF_Parser.quickLoad)
+			if(!SF_Parser.quickLoad && !isGhost)
 				Repaint();
 
 		}
@@ -327,7 +329,7 @@ namespace ShaderForge {
 		
 			
 			texture.Combine();
-			if(!SF_Parser.quickLoad)
+			if(!SF_Parser.quickLoad && !isGhost)
 				SF_Editor.instance.Repaint();
 		}
 
@@ -1086,6 +1088,8 @@ namespace ShaderForge {
 			if( this is SFN_Final )
 				return;
 
+			bool leadsToFinal = status.leadsToFinal;
+
 
 			if(SF_Debug.nodeActions)
 				Debug.Log("Deleting node " + nodeName);
@@ -1114,8 +1118,10 @@ namespace ShaderForge {
 			
 			ScriptableObject.DestroyImmediate(this);
 
-			editor.ShaderOutdated = UpToDateState.OutdatedHard;
-			editor.ps.fChecker.UpdateAvailability();
+			//if(leadsToFinal){
+			//	editor.ShaderOutdated = UpToDateState.OutdatedHard; // TODO: Only if connected
+			//	editor.ps.fChecker.UpdateAvailability();
+			//}
 		}
 
 

@@ -62,8 +62,8 @@ Shader "Shader Forge/Examples/Tiles" {
             fixed4 frag(VertexOutput i) : COLOR {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float2 node_165 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_165.rg, _Normal))).rgb;
+                float2 node_157 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_157.rg, _Normal))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
@@ -76,7 +76,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 diffuse = max( 0.0, NdotL)*InvPi * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz*2;
 ///////// Gloss:
-                float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_165.rg, _Diffuse));
+                float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_157.rg, _Diffuse));
                 float gloss = exp2((pow(node_138.r,2.0)*_Gloss)*10.0+1.0);
 ////// Specular:
                 NdotL = max(0.0, NdotL);
@@ -146,8 +146,8 @@ Shader "Shader Forge/Examples/Tiles" {
             fixed4 frag(VertexOutput i) : COLOR {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float2 node_166 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_166.rg, _Normal))).rgb;
+                float2 node_158 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_158.rg, _Normal))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
@@ -160,7 +160,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 diffuse = max( 0.0, NdotL)*InvPi * attenColor;
 ///////// Gloss:
-                float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_166.rg, _Diffuse));
+                float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_158.rg, _Diffuse));
                 float gloss = exp2((pow(node_138.r,2.0)*_Gloss)*10.0+1.0);
 ////// Specular:
                 NdotL = max(0.0, NdotL);

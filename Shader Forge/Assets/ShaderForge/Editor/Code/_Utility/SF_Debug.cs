@@ -12,7 +12,7 @@ namespace ShaderForge{
 		public static bool ghostNodes = false;
 		public static bool nodeActions = false;
 		public static bool performance = false;
-
+		public static bool nodePreviews = false;
 		
 	}
 

@@ -47,7 +47,8 @@ namespace ShaderForge {
 		public override void RefreshValue() {
 			if( connectors.Length == 3 )
 				RefreshValue( 1, 2 );
-			RefreshValue( 1, 1 );
+			else
+				RefreshValue( 1, 1 );
 		}
 
 	}

@@ -18,7 +18,7 @@ namespace ShaderForge {
 		public Texture2D Texture {
 			get {
 				if( texture == null )
-					UpdateColorPreview();
+					UpdateColorPreview("TexInit");
 				return texture;
 			}
 		}
@@ -53,11 +53,13 @@ namespace ShaderForge {
 		public int CompCount {
 			get { return compCount; }
 			set {
+				if(compCount == value)
+					return;
 				if( value > 4 || value < 1 ) {
 					Debug.LogError( "Component count out of range: " + value + " on " + node.nodeName + " " + node.id );
 				} else {
 					compCount = value;
-					UpdateColorPreview();
+					UpdateColorPreview("CompCountChange");
 				}
 			}
 		}
@@ -183,7 +185,7 @@ namespace ShaderForge {
 					data[x, y, 3] = 0f;
 				}
 			}
-			UpdateColorPreview();
+			UpdateColorPreview("Texcoord");
 		}
 
 
@@ -215,7 +217,7 @@ namespace ShaderForge {
 				}
 			}
 
-			UpdateColorPreview();
+			UpdateColorPreview("ReadData");
 
 		}
 
@@ -238,12 +240,19 @@ namespace ShaderForge {
 					}
 				}
 			}
-			UpdateColorPreview();
+			UpdateColorPreview("fill");
 		}
 
 
 
-		public void UpdateColorPreview() {
+		public void UpdateColorPreview(string msg = "") {
+
+			if(texture != null && SF_Parser.quickLoad)
+				return;
+
+			if(SF_Debug.nodePreviews)
+				Debug.Log("UpdateColorPreview[" + msg + "] = " + node.nodeName);
+
 			Color[] texCols = new Color[SF_NodeData.RES * SF_NodeData.RES];
 			for( int y = 0; y < SF_NodeData.RES; y++ ) {
 				for( int x = 0; x < SF_NodeData.RES; x++ ) {
@@ -280,7 +289,7 @@ namespace ShaderForge {
 			uniform = node.IsUniformOutput();
 
 			// Combine the node textures, unless we're quickloading
-			if(!SF_Parser.quickLoad)
+			if(!SF_Parser.quickLoad){
 				for( int y = 0; y < SF_NodeData.RES; y++ ) {
 					for( int x = 0; x < SF_NodeData.RES; x++ ) {
 						Color retVector = node.NodeOperator( x, y );
@@ -289,6 +298,7 @@ namespace ShaderForge {
 						}
 					} 
 				}
+			}
 
 			// Combine uniform
 			/*for( int i = 0; i < 4; i++ ) {
@@ -299,7 +309,7 @@ namespace ShaderForge {
 
 
 			// After assigning data, update the visible preview
-			UpdateColorPreview();
+			UpdateColorPreview("Node Operator");
 
 
 		}

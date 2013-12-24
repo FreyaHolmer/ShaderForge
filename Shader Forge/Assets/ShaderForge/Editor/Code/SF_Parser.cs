@@ -127,7 +127,7 @@ namespace ShaderForge {
 					continue;
 				}
 			}
-			SF_Parser.quickLoad = true;
+
 			// Create all node links
 			for( int i = 0; i < links.Count; i++ ) {
 				links[i].Establish( editor );
@@ -146,6 +146,7 @@ namespace ShaderForge {
 
 
 			//Debug.Log( "Reconnect pending..." );
+			SF_Parser.quickLoad = false;
 			editor.nodeView.ReconnectConnectedPending();
 			
 			//Debug.Log( "Reconnect done, updating auto settings..." );

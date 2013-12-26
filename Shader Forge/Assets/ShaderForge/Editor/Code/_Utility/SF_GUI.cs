@@ -21,7 +21,7 @@ namespace ShaderForge {
 		public static Texture2D Handle_drag {
 			get {
 				if( handle_drag == null )
-					handle_drag = Resources.Load<Texture2D>( SF_Paths.pInterface + "handle_drag" );
+					handle_drag = (Texture2D)Resources.Load( SF_Paths.pInterface + "handle_drag", typeof(Texture2D) );
 				return handle_drag;
 			}
 		}
@@ -30,7 +30,7 @@ namespace ShaderForge {
 		public static Texture2D Logo {
 			get {
 				if( logo == null )
-					logo = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix("logo") );
+					logo = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix("logo"), typeof(Texture2D) );
 				return logo;
 			}
 		}
@@ -39,7 +39,7 @@ namespace ShaderForge {
 		public static Texture2D Icon {
 			get {
 				if( icon == null )
-					icon = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix( "icon" ) );
+					icon = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "icon" ), typeof(Texture2D) );
 				return icon;
 			}
 		}
@@ -48,7 +48,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_vert {
 			get {
 				if( inst_vert == null )
-					inst_vert = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix( "inst_vert" ) );
+					inst_vert = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "inst_vert" ), typeof(Texture2D) );
 				return inst_vert;
 			}
 		}
@@ -57,7 +57,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_vert_tex {
 			get {
 				if( inst_vert_tex == null )
-					inst_vert_tex = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix( "inst_vert_tex" ) );
+					inst_vert_tex = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "inst_vert_tex" ), typeof(Texture2D) );
 				return inst_vert_tex;
 			}
 		}
@@ -66,7 +66,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_frag {
 			get {
 				if( inst_frag == null )
-					inst_frag = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix("inst_frag" ) );
+					inst_frag = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix("inst_frag" ), typeof(Texture2D) );
 				return inst_frag;
 			}
 		}
@@ -75,7 +75,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_frag_tex {
 			get {
 				if( inst_frag_tex == null )
-					inst_frag_tex = Resources.Load<Texture2D>( SF_Paths.pInterface + SkinSuffix( "inst_frag_tex" ) );
+					inst_frag_tex = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "inst_frag_tex" ), typeof(Texture2D) );
 				return inst_frag_tex;
 			}
 		}

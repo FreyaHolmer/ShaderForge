@@ -10,7 +10,7 @@ public static class SF_Paths {
 
 	
 	public static Texture2D GetIcon(string type){
-		return Resources.Load<Texture2D>( "Interface/Nodes/"+ type );
+		return (Texture2D)Resources.Load( "Interface/Nodes/"+ type, typeof(Texture2D) );
 	}
 
 }

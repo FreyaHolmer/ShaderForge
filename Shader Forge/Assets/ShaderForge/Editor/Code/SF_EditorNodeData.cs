@@ -102,11 +102,14 @@ namespace ShaderForge {
 				return false;
 
 			if( Event.current.keyCode == key ) {
-				if( Event.current.type == EventType.keyDown && !SF_GUI.HoldingControl() )
+				if( Event.current.type == EventType.keyDown && !SF_GUI.HoldingControl() ){
+					Event.current.Use();
 					holding = true;
+				}
 				if( Event.current.type == EventType.keyUp )
 					holding = false;
 			}
+
 			bool clicked = Event.current.type == EventType.mouseDown;
 			return ( holding && clicked );
 		}

@@ -107,13 +107,12 @@ namespace ShaderForge {
 				EditorWindow.GetWindow( typeof( SF_Editor ) ); // Focus
 				//Debug.Log( "[SF_LOG] - AFTER EditorWindow.GetWindow( typeof(SF_Editor) )" );
 			}
-				
 		}
 
-		[MenuItem( "Assets/Create/Shader Forge Shader", false, 90 )]
-		public static void CreateGO() {
-
-		}
+		//[MenuItem( "Assets/Create/Shader Forge Shader", false, 90 )]
+		//public static void CreateGO() {
+		//
+		//}
 
 		void OnDisable(){
 

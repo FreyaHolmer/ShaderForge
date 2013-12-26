@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using System.Reflection;
 
 
 
@@ -506,7 +507,7 @@ namespace ShaderForge {
 			float now = Now();
 			fps = 1f/(now-prevFrameTime);
 			
-			if(fps > 30)
+			if(fps > 40)
 				return; // Wait for target FPS
 			
 			prevFrameTime = now;
@@ -522,7 +523,7 @@ namespace ShaderForge {
 			}
 				
 
-			if( ShaderOutdated == UpToDateState.OutdatedHard && nodeView.autoRecompile && nodeView.GetTimeSinceChanged() >= 1f) {
+			if( ShaderOutdated == UpToDateState.OutdatedHard && SF_Settings.AutoRecompile && nodeView.GetTimeSinceChanged() >= 1f) {
 				shaderEvaluator.Evaluate();
 			}
 
@@ -721,7 +722,12 @@ namespace ShaderForge {
 		}
 
 		
-		
+
+		public void FlexHorizontal(Action func){
+			GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
+			func();
+			GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+		}
 		
 		
 
@@ -738,35 +744,28 @@ namespace ShaderForge {
 				GUILayout.FlexibleSpace();
 
 
-				GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-				{
+				FlexHorizontal(()=>{
 					GUILayout.Label( SF_GUI.Logo );
 					GUILayout.Label( SF_Tools.versionStage + " " + SF_Tools.version, EditorStyles.boldLabel );
-				}
-				GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+				});
 
 
-				GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-				{
+				FlexHorizontal(()=>{
 					GUI.color = new Color( 0.7f, 0.7f, 0.7f );
 					GUILayout.Label( '\u00a9' + " Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel );
 					GUI.color = Color.white;
-				}
-				GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+				});
 
 				EditorGUILayout.Separator();
 
-				GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-				{
+				FlexHorizontal(()=>{
 					if( GUILayout.Button(SF_Tools.manualLabel , GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
 						Application.OpenURL( SF_Tools.manualURL );
 					}
-				}
-				GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+				});
 				
 
-				GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-				{
+				FlexHorizontal(()=>{
 					
 					if(SF_Tools.CanRunShaderForge()){
 						if( GUILayout.Button( "New Shader", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
@@ -782,11 +781,9 @@ namespace ShaderForge {
 						SF_Tools.UnityOutOfDateGUI();
 						GUILayout.EndVertical();
 					}
-				}
-				GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+				});
 
-				GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-				{
+				FlexHorizontal(()=>{
 					if( GUILayout.Button( "Polycount thread" ) ) {
 						Application.OpenURL( "http://www.polycount.com/forum/showthread.php?t=123439" );
 					}
@@ -796,16 +793,13 @@ namespace ShaderForge {
 					if( GUILayout.Button( SF_Tools.featureListLabel ) ) {
 						Application.OpenURL( SF_Tools.featureListURL );
 					}
-				}
-				GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+				});
 
-				GUILayout.BeginHorizontal(); GUILayout.FlexibleSpace();
-				{
+				FlexHorizontal(()=>{
 					if( GUILayout.Button( SF_Tools.bugReportLabel, GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
 						Application.OpenURL( SF_Tools.bugReportURL );
 					}
-				}
-				GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+				});
 				
 				
 

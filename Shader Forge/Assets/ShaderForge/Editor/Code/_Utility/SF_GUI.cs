@@ -193,7 +193,7 @@ namespace ShaderForge {
 		public static bool HoldingControl() {
 #if UNITY_EDITOR_OSX
 			return ( Event.current.modifiers & EventModifiers.Command ) != 0; // Command is held
-#elif UNITY_EDITOR
+#else
 			return ( Event.current.modifiers & EventModifiers.Control ) != 0 ; // Control is held
 #endif
 		}

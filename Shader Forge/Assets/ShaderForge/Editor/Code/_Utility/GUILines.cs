@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
@@ -137,7 +137,7 @@ namespace ShaderForge {
 
 
 		public static void DrawStyledConnection( SF_Editor editor, Vector2 a, Vector2 b, int cc, Color col ) {
-			switch( editor.nodeView.connectionLineStyle ) {
+			switch( SF_Settings.ConnectionLineStyle ) {
 				case ConnectionLineStyle.Bezier:
 					DrawMultiBezierConnection( editor, a, b, cc, col );
 					break;

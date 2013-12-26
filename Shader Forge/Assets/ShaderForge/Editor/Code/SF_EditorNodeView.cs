@@ -31,13 +31,7 @@ namespace ShaderForge {
 
 		public SF_NodeTreeStatus treeStatus;
 
-
-
-		// Settings:
-		public bool autoRecompile = true;
-		public bool hierarcyMove = false;
-		public ConnectionLineStyle connectionLineStyle = ConnectionLineStyle.Bezier;
-
+	
 
 		public SF_EditorNodeView() {
 
@@ -417,7 +411,7 @@ namespace ShaderForge {
 		
 		private void DrawRecompileTimer(Rect r){
 
-			if(!autoRecompile)
+			if(!SF_Settings.AutoRecompile)
 				return; // Don't draw recompile timer when autoRecompile is unchecked
 
 			float delta = GetTimeSinceChanged();
@@ -450,16 +444,16 @@ namespace ShaderForge {
 
 			r.x += r.width + 4;
 			r.width = 100;
-			autoRecompile = GUI.Toggle( r, autoRecompile, "Auto-compile" );
+			SF_Settings.AutoRecompile = GUI.Toggle( r, SF_Settings.AutoRecompile, "Auto-compile" );
 			
 			r.x += r.width + 20;
 			r.width = 140;
-			hierarcyMove = GUI.Toggle( r, hierarcyMove, "Hierarchal Node Move" );
+			SF_Settings.HierarcyMove = GUI.Toggle( r, SF_Settings.HierarcyMove, "Hierarchal Node Move" );
 			r.x += r.width + 20;
 			r.width = 60;
 			//GUI.Label( r, "Con. style:", EditorStyles.miniLabel );
 			//r.x += r.width + 2;
-			connectionLineStyle = (ConnectionLineStyle)EditorGUI.EnumPopup( r, connectionLineStyle, EditorStyles.toolbarPopup);
+			SF_Settings.ConnectionLineStyle = (ConnectionLineStyle)EditorGUI.EnumPopup( r, SF_Settings.ConnectionLineStyle, EditorStyles.toolbarPopup);
 
 
 			//GUILayout.FlexibleSpace();

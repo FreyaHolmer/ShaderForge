@@ -746,7 +746,7 @@ namespace ShaderForge {
 
 			
 
-			if(!editor.nodeView.hierarcyMove) // TODO: Snap toggle + make it work properly with hierarchal on
+			if(!SF_Settings.HierarcyMove) // TODO: Snap toggle + make it work properly with hierarchal on
 				foreach(SF_Node n in editor.nodes){
 					if( n == this )
 						continue;
@@ -783,7 +783,7 @@ namespace ShaderForge {
 			
 			editor.nodeView.selection.MoveSelection(finalDelta, ignore:this);
 
-			if( delta != Vector2.zero && editor.nodeView.hierarcyMove && ( GetType() != typeof( SFN_Final ) ) ) {
+			if( delta != Vector2.zero && SF_Settings.HierarcyMove && ( GetType() != typeof( SFN_Final ) ) ) {
 				MoveUnselectedChildren( delta );
 			}
 
@@ -1088,7 +1088,7 @@ namespace ShaderForge {
 			if( this is SFN_Final )
 				return;
 
-			bool leadsToFinal = status.leadsToFinal;
+			//bool leadsToFinal = status.leadsToFinal;
 
 
 			if(SF_Debug.nodeActions)

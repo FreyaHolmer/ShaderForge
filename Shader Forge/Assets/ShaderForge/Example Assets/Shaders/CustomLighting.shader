@@ -61,8 +61,8 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             fixed4 frag(VertexOutput i) : COLOR {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float2 node_425 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_425.rg, _Normals))).rgb;
+                float2 node_94 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_94.rg, _Normals))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
@@ -70,7 +70,7 @@ Shader "Shader Forge/Examples/Custom Lighting" {
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
                 float3 node_41 = normalDirection;
-                float3 finalColor = ((attenuation*(((tex2D(_Diffuse,TRANSFORM_TEX(node_425.rg, _Diffuse)).rgb*_Color.rgb)*max(0,dot(lightDirection,node_41)))+pow(max(0,dot(node_41,halfDirection)),50.0)))*_LightColor0.rgb);
+                float3 finalColor = ((attenuation*(((tex2D(_Diffuse,TRANSFORM_TEX(node_94.rg, _Diffuse)).rgb*_Color.rgb)*max(0,dot(lightDirection,node_41)))+pow(max(0,dot(node_41,halfDirection)),50.0)))*_LightColor0.rgb);
 /// Final Color:
                 return fixed4(finalColor,1);
             }
@@ -125,8 +125,8 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             fixed4 frag(VertexOutput i) : COLOR {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float2 node_426 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_426.rg, _Normals))).rgb;
+                float2 node_95 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_95.rg, _Normals))).rgb;
                 float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
@@ -134,7 +134,7 @@ Shader "Shader Forge/Examples/Custom Lighting" {
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
                 float3 node_41 = normalDirection;
-                float3 finalColor = ((attenuation*(((tex2D(_Diffuse,TRANSFORM_TEX(node_426.rg, _Diffuse)).rgb*_Color.rgb)*max(0,dot(lightDirection,node_41)))+pow(max(0,dot(node_41,halfDirection)),50.0)))*_LightColor0.rgb);
+                float3 finalColor = ((attenuation*(((tex2D(_Diffuse,TRANSFORM_TEX(node_95.rg, _Diffuse)).rgb*_Color.rgb)*max(0,dot(lightDirection,node_41)))+pow(max(0,dot(node_41,halfDirection)),50.0)))*_LightColor0.rgb);
 /// Final Color:
                 return fixed4(finalColor,1);
             }

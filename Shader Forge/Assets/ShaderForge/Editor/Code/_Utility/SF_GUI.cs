@@ -191,7 +191,11 @@ namespace ShaderForge {
 		}
 
 		public static bool HoldingControl() {
-			return ( Event.current.modifiers & EventModifiers.Control ) != 0 || ( Event.current.modifiers & EventModifiers.Command ) != 0; // Control/Command is held
+#if UNITY_EDITOR_OSX
+			return ( Event.current.modifiers & EventModifiers.Command ) != 0; // Command is held
+#elif UNITY_EDITOR
+			return ( Event.current.modifiers & EventModifiers.Control ) != 0 ; // Control is held
+#endif
 		}
 		
 		public static bool PressedDelete(){

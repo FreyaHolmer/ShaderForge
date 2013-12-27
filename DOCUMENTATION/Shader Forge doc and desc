@@ -60,6 +60,35 @@ DOC
 
 
 
+
+TUTORIAL VIDS:
+--------------
+
+
+Shader Forge Introduction
+	Moving the camera
+	Placing nodes (3 ways - Sidebar, context menu or hotkeys)
+	Connecting nodes
+	Deleting connections (Alt + RMB)
+	Placing property nodes
+	Tweaking properties
+	Shader settings
+	Properties
+
+Shader Forge workflow
+	Creating a shader with properties
+	Creating a material
+
+Introduction to node-based shader creation
+	Nodes flow right to left
+	Colors 0-1, you can go out side if you want
+	Math is handled per-channel
+
+Using custom lighting
+
+
+
+
 LEFT PANEL:
 -----------
 	

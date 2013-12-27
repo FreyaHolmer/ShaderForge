@@ -543,6 +543,7 @@ namespace ShaderForge {
 
 		bool isDragging = false;
 		bool isEditingComment = false;
+		public static bool isEditingAnyComment = false;
 
 		public void ContextClick( object o ) {
 			string picked = o as string;
@@ -554,6 +555,7 @@ namespace ShaderForge {
 				editor.Defocus(deselectNodes:true);
 				GUI.FocusControl("node_comment_" + id);
 				isEditingComment = true;
+				SF_Node.isEditingAnyComment = true;
 				break;
 			}
 		}
@@ -687,6 +689,7 @@ namespace ShaderForge {
 
 					if( defocus ){
 						isEditingComment = false;
+						SF_Node.isEditingAnyComment = false;
 						editor.Defocus();
 					}
 					string fieldStr = "node_comment_" + id;

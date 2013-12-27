@@ -70,7 +70,8 @@ namespace ShaderForge {
 				nodeCommentLabelText.fontStyle = FontStyle.Italic;
 				nodeCommentLabelText.fontSize = 16;
 				nodeCommentLabelText.alignment = TextAnchor.LowerLeft;
-				nodeCommentLabelText.normal.textColor = new Color( 1f, 1f, 1f, 0.3f );
+				float col = SF_GUI.ProSkin ? 1f : 0f;
+				nodeCommentLabelText.normal.textColor = new Color( col, col, col, 0.3f );
 			}
 			return nodeCommentLabelText;
 		}

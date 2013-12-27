@@ -513,13 +513,13 @@ namespace ShaderForge {
 
 		const float propertyHeight = 60f;
 		public int SettingsProperties( int yOffset ) {
-			GUI.color = SF_Node.colorExposedDark;
+
 			Rect topRect = new Rect( 0f, yOffset, maxWidth, 20 );
 			Rect r = new Rect( topRect );
 
 			int propCount = editor.nodeView.treeStatus.propertyList.Count;
 
-			GUI.color = SF_Node.colorExposedDarker;
+			GUI.color = SF_GUI.ProSkin ? SF_Node.colorExposedDarker : SF_Node.colorExposedDim;
 			if( foldProps ) {
 				Rect fullArea = new Rect( r );
 				fullArea.height += 23 + propertyHeight * propCount;

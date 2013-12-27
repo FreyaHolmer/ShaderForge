@@ -164,34 +164,34 @@ namespace ShaderForge {
 			nodeTemplates = new List<SF_EditorNodeData>();
 
 			string catArithmetic = "Arithmetic/";
-			AddTemplate( typeof( SFN_Add ), catArithmetic + "Add", KeyCode.A );
-			AddTemplate( typeof( SFN_Subtract ), catArithmetic + "Subtract", KeyCode.S );
-			AddTemplate( typeof( SFN_Multiply ), catArithmetic + "Multiply", KeyCode.M );
-			AddTemplate( typeof( SFN_Divide ), catArithmetic + "Divide", KeyCode.D );
-			AddTemplate( typeof( SFN_Power ), catArithmetic + "Power", KeyCode.E );
-			AddTemplate( typeof( SFN_Sqrt ), catArithmetic + "Sqrt" );
-			AddTemplate( typeof( SFN_Log ), catArithmetic + "Log" );
-			AddTemplate( typeof( SFN_Min ), catArithmetic + "Min" );
-			AddTemplate( typeof( SFN_Max ), catArithmetic + "Max" );
 			AddTemplate( typeof( SFN_Abs ), catArithmetic + "Abs" );
-			AddTemplate( typeof( SFN_Sign ), catArithmetic + "Sign" );
+			AddTemplate( typeof( SFN_Add ), catArithmetic + "Add", KeyCode.A );
 			AddTemplate( typeof( SFN_Ceil ), catArithmetic + "Ceil" );
-			AddTemplate( typeof( SFN_Round ), catArithmetic + "Round" );
-			AddTemplate( typeof( SFN_Floor ), catArithmetic + "Floor" );
-			AddTemplate( typeof( SFN_Trunc ), catArithmetic + "Trunc" );
-			AddTemplate( typeof( SFN_Step ), catArithmetic + "Step (A <= B)", KeyCode.None, "Step"  );
-			AddTemplate( typeof( SFN_If ), catArithmetic + "If", KeyCode.I );
-			AddTemplate( typeof( SFN_Frac ), catArithmetic + "Frac" );
-			AddTemplate( typeof( SFN_Fmod ), catArithmetic + "Fmod" );
 			AddTemplate( typeof( SFN_Clamp ), catArithmetic + "Clamp" );
-			AddTemplate( typeof( SFN_ConstantClamp ), catArithmetic + "Constant Clamp" );
 			AddTemplate( typeof( SFN_Clamp01 ), catArithmetic + "Clamp 0-1" );
-			AddTemplate( typeof( SFN_Lerp ), catArithmetic + "Lerp", KeyCode.L );
+			AddTemplate( typeof( SFN_ConstantClamp ), catArithmetic + "Constant Clamp" );
 			AddTemplate( typeof( SFN_ConstantLerp ), catArithmetic + "Constant Lerp" );
-			AddTemplate( typeof( SFN_OneMinus ), catArithmetic + "One Minus", KeyCode.O );
-			AddTemplate( typeof( SFN_Negate ), catArithmetic + "Negate" );
+			AddTemplate( typeof( SFN_Divide ), catArithmetic + "Divide", KeyCode.D );
 			AddTemplate( typeof( SFN_Exp ), catArithmetic + "Exp" );
-			
+			AddTemplate( typeof( SFN_Floor ), catArithmetic + "Floor" );
+			AddTemplate( typeof( SFN_Fmod ), catArithmetic + "Fmod" );
+			AddTemplate( typeof( SFN_Frac ), catArithmetic + "Frac" );
+			AddTemplate( typeof( SFN_If ), catArithmetic + "If", KeyCode.I );
+			AddTemplate( typeof( SFN_Lerp ), catArithmetic + "Lerp", KeyCode.L );
+			AddTemplate( typeof( SFN_Log ), catArithmetic + "Log" );
+			AddTemplate( typeof( SFN_Max ), catArithmetic + "Max" );
+			AddTemplate( typeof( SFN_Min ), catArithmetic + "Min" );
+			AddTemplate( typeof( SFN_Multiply ), catArithmetic + "Multiply", KeyCode.M );
+			AddTemplate( typeof( SFN_Negate ), catArithmetic + "Negate" );
+			AddTemplate( typeof( SFN_OneMinus ), catArithmetic + "One Minus", KeyCode.O );
+			AddTemplate( typeof( SFN_Power ), catArithmetic + "Power", KeyCode.E );
+			AddTemplate( typeof( SFN_Round ), catArithmetic + "Round" );
+			AddTemplate( typeof( SFN_Sign ), catArithmetic + "Sign" );
+			AddTemplate( typeof( SFN_Sqrt ), catArithmetic + "Sqrt" );
+			AddTemplate( typeof( SFN_Step ), catArithmetic + "Step (A <= B)", KeyCode.None, "Step"  );
+			AddTemplate( typeof( SFN_Subtract ), catArithmetic + "Subtract", KeyCode.S );
+			AddTemplate( typeof( SFN_Trunc ), catArithmetic + "Trunc" );
+
 			string catConstVecs = "Constant Vectors/";
 			AddTemplate( typeof( SFN_Vector1 ), catConstVecs+"Value", KeyCode.Alpha1 );
 			AddTemplate( typeof( SFN_Vector2 ), catConstVecs+"Vector 2", KeyCode.Alpha2 );
@@ -199,78 +199,77 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Vector4 ), catConstVecs+"Vector 4", KeyCode.Alpha4 );
 
 			string catProps = "Properties/";
-			
+			AddTemplate( typeof( SFN_Color ), catProps + "Color" );
+			AddTemplate( typeof( SFN_Cubemap ), catProps + "Cubemap" );
+			AddTemplate( typeof( SFN_Slider ), catProps + "Slider" );
 			AddTemplate( typeof( SFN_Tex2d ), catProps + "Texture 2D", KeyCode.T );
 			AddTemplate( typeof( SFN_Tex2dAsset ), catProps + "Texture Asset" );
 			AddTemplate( typeof( SFN_ValueProperty ), catProps + "Value" );
 			AddTemplate( typeof( SFN_Vector4Property ), catProps + "Vector 4" );
-			AddTemplate( typeof( SFN_Color ), catProps + "Color" );
-			AddTemplate( typeof( SFN_Cubemap ), catProps + "Cubemap" );
-			AddTemplate( typeof( SFN_Slider ), catProps + "Slider" );
 
 			string catVecOps = "Vector Operations/";
-			AddTemplate( typeof( SFN_Dot ), catVecOps+"Dot Product" );
-			AddTemplate( typeof( SFN_Cross ), catVecOps + "Cross Product" );
-			AddTemplate( typeof( SFN_Reflect ), catVecOps + "Reflect" );
-			AddTemplate( typeof( SFN_Normalize ), catVecOps + "Normalize", KeyCode.N );
 			AddTemplate( typeof( SFN_Append ), catVecOps + "Append", KeyCode.Q );
+			AddTemplate( typeof( SFN_ComponentMask ), catVecOps + "Component Mask", KeyCode.C );
+			AddTemplate( typeof( SFN_Cross ), catVecOps + "Cross Product" );
 			AddTemplate( typeof( SFN_Desaturate ), catVecOps + "Desaturate" );
 			AddTemplate( typeof( SFN_Distance ), catVecOps + "Distance" );
+			AddTemplate( typeof( SFN_Dot ), catVecOps+"Dot Product" );
 			AddTemplate( typeof( SFN_Length ), catVecOps + "Length" );
-			AddTemplate( typeof( SFN_ComponentMask ), catVecOps + "Component Mask", KeyCode.C );
+			AddTemplate( typeof( SFN_Normalize ), catVecOps + "Normalize", KeyCode.N );
+			AddTemplate( typeof( SFN_Reflect ), catVecOps + "Reflect" );
 			AddTemplate( typeof( SFN_Transform ), catVecOps + "Transform" );
-			
+
 			string catUvOps = "UV Operations/";
 			AddTemplate( typeof( SFN_Panner ), catUvOps + "Panner", KeyCode.P );
-			AddTemplate( typeof( SFN_Rotator ), catUvOps + "Rotator" );
 			AddTemplate( typeof( SFN_Parallax ), catUvOps + "Parallax" );
-			
+			AddTemplate( typeof( SFN_Rotator ), catUvOps + "Rotator" );
+
 			string catGeoData = "Geometry Data/";
-			AddTemplate( typeof( SFN_TexCoord ), catGeoData + "UV Coordinates", KeyCode.U );
-			AddTemplate( typeof( SFN_ObjectPosition ), catGeoData + "Object Position");
-			AddTemplate( typeof( SFN_ScreenPos ), catGeoData + "Screen Position" );
-			AddTemplate( typeof( SFN_FragmentPosition ), catGeoData + "World Position" );
-			AddTemplate( typeof( SFN_VertexColor ), catGeoData + "Vertex Color", KeyCode.V );
+			AddTemplate( typeof( SFN_Binormal ), catGeoData + "Binormal Dir.", KeyCode.B );
 			AddTemplate( typeof( SFN_Fresnel ), catGeoData + "Fresnel", KeyCode.F );
 			AddTemplate( typeof( SFN_NormalVector ), catGeoData + "Normal Dir." );
-			AddTemplate( typeof( SFN_Binormal ), catGeoData + "Binormal Dir.", KeyCode.B );
+			AddTemplate( typeof( SFN_ObjectPosition ), catGeoData + "Object Position");
+			AddTemplate( typeof( SFN_ScreenPos ), catGeoData + "Screen Position" );
 			AddTemplate( typeof( SFN_Tangent ), catGeoData + "Tangent Dir." );
+			AddTemplate( typeof( SFN_TexCoord ), catGeoData + "UV Coordinates", KeyCode.U );
+			AddTemplate( typeof( SFN_VertexColor ), catGeoData + "Vertex Color", KeyCode.V );
 			AddTemplate( typeof( SFN_ViewVector ), catGeoData + "View Dir." );
 			AddTemplate( typeof( SFN_ViewReflectionVector ), catGeoData + "View Refl. Dir.", KeyCode.R, "View Reflection"  );
+			AddTemplate( typeof( SFN_FragmentPosition ), catGeoData + "World Position" );
 
 			string catLighting = "Lighting/";
-			AddTemplate( typeof( SFN_LightColor ), catLighting + "Light Color" );
-			AddTemplate( typeof( SFN_LightAttenuation ), catLighting + "Light Attenuation" );
 			AddTemplate( typeof( SFN_AmbientLight ), catLighting + "Ambient Light" );
-			AddTemplate( typeof( SFN_LightVector ), catLighting + "Light Direction" );
 			AddTemplate( typeof( SFN_HalfVector ), catLighting + "Half Direction" );
+			AddTemplate( typeof( SFN_LightAttenuation ), catLighting + "Light Attenuation" );
+			AddTemplate( typeof( SFN_LightColor ), catLighting + "Light Color" );
+			AddTemplate( typeof( SFN_LightVector ), catLighting + "Light Direction" );
 			AddTemplate( typeof( SFN_LightPosition ), catLighting + "Light Position" );
 			
 			string catExtData = "External Data/";
-			AddTemplate( typeof( SFN_Time ), catExtData + "Time" );
-			AddTemplate( typeof( SFN_ViewPosition ), catExtData + "View Position" );
 			AddTemplate( typeof( SFN_ProjectionParameters ), catExtData + "Projection Parameters" );
 			AddTemplate( typeof( SFN_ScreenParameters ), catExtData + "Screen Parameters" );
+			AddTemplate( typeof( SFN_Time ), catExtData + "Time" );
+			AddTemplate( typeof( SFN_ViewPosition ), catExtData + "View Position" );
 
 			string catSceneData = "Scene Data/";
 			AddTemplate( typeof(SFN_SceneColor), catSceneData + "Scene Color" ).MarkAsNewNode();
-			
 
 			string catMathConst = "Math Constants/";
-			AddTemplate( typeof( SFN_Pi ), catMathConst + "Pi" );
-			AddTemplate( typeof( SFN_Tau ), catMathConst + "Tau (2 Pi)", KeyCode.None, "Tau" );
-			AddTemplate( typeof( SFN_Phi ), catMathConst+"Phi" );
-			AddTemplate( typeof( SFN_Root2 ), catMathConst + "Root 2" );
 			AddTemplate( typeof( SFN_E ), catMathConst + "e", KeyCode.None, "EulersConstant" );
+			AddTemplate( typeof( SFN_Phi ), catMathConst+"Phi" );
+			AddTemplate( typeof( SFN_Pi ), catMathConst + "Pi" );
+			AddTemplate( typeof( SFN_Root2 ), catMathConst + "Root 2" );
+			AddTemplate( typeof( SFN_Tau ), catMathConst + "Tau (2 Pi)", KeyCode.None, "Tau" );
 
 			string catTrig = "Trigonometry/";
-			AddTemplate( typeof( SFN_Sin ), catTrig + "Sin" );
-			AddTemplate( typeof( SFN_Cos ), catTrig + "Cos" );
-			AddTemplate( typeof( SFN_Tan ), catTrig + "Tan" );
-			AddTemplate( typeof( SFN_ArcSin ), catTrig + "ArcSin" );
 			AddTemplate( typeof( SFN_ArcCos ), catTrig + "ArcCos" );
+			AddTemplate( typeof( SFN_ArcSin ), catTrig + "ArcSin" );
 			AddTemplate( typeof( SFN_ArcTan ), catTrig + "ArcTan" );
 			AddTemplate( typeof( SFN_ArcTan2 ), catTrig + "ArcTan2" );
+			AddTemplate( typeof( SFN_Cos ), catTrig + "Cos" );
+			AddTemplate( typeof( SFN_Sin ), catTrig + "Sin" );
+			AddTemplate( typeof( SFN_Tan ), catTrig + "Tan" );
+
 
 			Type marmosetType = Type.GetType("ShaderForge.SFN_Skyshop");
 

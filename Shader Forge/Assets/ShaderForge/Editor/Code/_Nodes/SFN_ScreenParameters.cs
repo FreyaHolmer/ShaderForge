@@ -18,11 +18,11 @@ namespace ShaderForge {
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 4;
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"PXW","pxW",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R),
-				SF_NodeConnection.Create(this,"PXH","pxH",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.G),
-				SF_NodeConnection.Create(this,"RCW","1+1/W",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.B),
-				SF_NodeConnection.Create(this,"RCH","1+1/H",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.A)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"PXW","pxW",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R),
+				SF_NodeConnector.Create(this,"PXH","pxH",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.G),
+				SF_NodeConnector.Create(this,"RCW","1+1/W",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.B),
+				SF_NodeConnector.Create(this,"RCH","1+1/H",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.A)
 			};
 			base.extraWidthOutput = 12;
 		}

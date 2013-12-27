@@ -29,7 +29,7 @@ namespace ShaderForge {
 		public void SetLeadsToFinalRecursively(bool all = false) {
 			leadsToFinal = true;
 			//Debug.Log("Checking if " + node.nodeName + " leads to final...");
-			foreach( SF_NodeConnection con in node.connectors ) {
+			foreach( SF_NodeConnector con in node.connectors ) {
 				if( con.conType == ConType.cOutput )
 					continue;
 				if( !con.IsConnected() )

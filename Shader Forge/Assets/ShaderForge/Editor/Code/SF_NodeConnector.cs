@@ -19,10 +19,10 @@ namespace ShaderForge {
 	public enum ValueType { VTvPending, VTv1, VTv2, VTv3, VTv4, VTv1v2, VTv1v3, VTv1v4, TexAsset };
 
 	[System.Serializable]
-	public class SF_NodeConnection : ScriptableObject {
+	public class SF_NodeConnector : ScriptableObject {
 
 
-		public static SF_NodeConnection pendingConnectionSource = null;
+		public static SF_NodeConnector pendingConnectionSource = null;
 		public AvailableState availableState = AvailableState.Available;
 		public EnableState enableState = EnableState.Enabled;
 		public bool required = false;
@@ -32,8 +32,8 @@ namespace ShaderForge {
 		public ValueType valueType;
 		public ValueType valueTypeDefault;
 		public string label;
-		public SF_NodeConnection inputCon;
-		public List<SF_NodeConnection> outputCons;
+		public SF_NodeConnector inputCon;
+		public List<SF_NodeConnector> outputCons;
 		public SF_Node node;
 		public bool outerLabel = false;
 		public Rect rect;
@@ -69,16 +69,16 @@ namespace ShaderForge {
 			base.hideFlags = HideFlags.HideAndDontSave;
 		}
 
-		public SF_NodeConnection() {
+		public SF_NodeConnector() {
 			//Debug.Log("NODE CONNECTION ");
 		}
 
 
-		public static SF_NodeConnection Create( SF_Node node, string strID, string label, ConType conType, ValueType valueType, bool outerLabel = false, string unconnectedEvaluationValue = null ) {
-			return ScriptableObject.CreateInstance< SF_NodeConnection>().Initialize(node, strID, label, conType,valueType, outerLabel, unconnectedEvaluationValue);
+		public static SF_NodeConnector Create( SF_Node node, string strID, string label, ConType conType, ValueType valueType, bool outerLabel = false, string unconnectedEvaluationValue = null ) {
+			return ScriptableObject.CreateInstance< SF_NodeConnector>().Initialize(node, strID, label, conType,valueType, outerLabel, unconnectedEvaluationValue);
 		}
 
-		public SF_NodeConnection Initialize( SF_Node node, string strID, string label, ConType conType, ValueType valueType, bool outerLabel = false, string unconnectedEvaluationValue = null ) {
+		public SF_NodeConnector Initialize( SF_Node node, string strID, string label, ConType conType, ValueType valueType, bool outerLabel = false, string unconnectedEvaluationValue = null ) {
 			this.node = node;
 			this.strID = strID;
 			this.label = label;
@@ -86,33 +86,33 @@ namespace ShaderForge {
 			this.valueType = this.valueTypeDefault = valueType;
 			this.outerLabel = outerLabel;
 			this.unconnectedEvaluationValue = unconnectedEvaluationValue;
-			outputCons = new List<SF_NodeConnection>();
+			outputCons = new List<SF_NodeConnector>();
 			return this;
 		}
 
 		// Chaining
-		public SF_NodeConnection SetRequired( bool b ) {
+		public SF_NodeConnector SetRequired( bool b ) {
 			required = b;
 			return this;
 		}
-		public SF_NodeConnection WithColor( Color c ) {
+		public SF_NodeConnector WithColor( Color c ) {
 			color = c;
 			return this;
 		}
-		public SF_NodeConnection Outputting( OutChannel channel ) {
+		public SF_NodeConnector Outputting( OutChannel channel ) {
 			outputChannel = channel;
 			return this;
 		}
-		public SF_NodeConnection TypecastTo(int target) {
+		public SF_NodeConnector TypecastTo(int target) {
 			typecastTarget = target;
 			//Debug.Log("Typecasting " + label + " to " + target);
 			return this;
 		}
-		public SF_NodeConnection Skip( params PassType[] passes ) {
+		public SF_NodeConnector Skip( params PassType[] passes ) {
 			SkipPasses.AddRange( passes );
 			return this;
 		}
-		public SF_NodeConnection ForceBlock(ShaderProgram block) {
+		public SF_NodeConnector ForceBlock(ShaderProgram block) {
 			forcedProgram = block;
 			return this;
 		}
@@ -122,7 +122,7 @@ namespace ShaderForge {
 
 		public string ghostType = null;
 		public string ghostLinkStrId = null;
-		public SF_NodeConnection SetGhostNodeLink( Type ghostType, string ghostLinkStrId ) {
+		public SF_NodeConnector SetGhostNodeLink( Type ghostType, string ghostLinkStrId ) {
 			this.ghostType = ghostType.FullName;
 			this.ghostLinkStrId = ghostLinkStrId;
 			return this;
@@ -277,11 +277,11 @@ namespace ShaderForge {
 
 
 		public bool ConnectionInProgress() {
-			return ( SF_NodeConnection.pendingConnectionSource == this && IsConnecting() );
+			return ( SF_NodeConnector.pendingConnectionSource == this && IsConnecting() );
 		}
 
 		public static bool IsConnecting() {
-			if( SF_NodeConnection.pendingConnectionSource == null )
+			if( SF_NodeConnector.pendingConnectionSource == null )
 				return false;
 			/*else if( string.IsNullOrEmpty( SF_NodeConnection.pendingConnectionSource.node.name ) ) {
 				SF_NodeConnection.pendingConnectionSource=null;
@@ -327,7 +327,7 @@ namespace ShaderForge {
 		}
 
 		// TODO: Pass nodes into actual line draw thingy
-		public float GetConnectionCenterY( SF_NodeConnection cA, SF_NodeConnection cB ) {
+		public float GetConnectionCenterY( SF_NodeConnector cA, SF_NodeConnector cB ) {
 			Rect a = cA.node.rect;
 			Rect b = cB.node.rect;
 			if( cA.GetConnectionPoint().y > cB.GetConnectionPoint().y )
@@ -354,7 +354,7 @@ namespace ShaderForge {
 				return;
 
 			if( Clicked() ) {
-				SF_NodeConnection.pendingConnectionSource = this;
+				SF_NodeConnector.pendingConnectionSource = this;
 				editor.nodeView.selection.DeselectAll();
 				Event.current.Use();
 			}
@@ -549,7 +549,7 @@ namespace ShaderForge {
 					node.OnUpdateNode();
 			} else {
 				//Debug.Log( "Output disconnecting " + node.name + "[" + label + "]" );
-				SF_NodeConnection[] outputsArr = outputCons.ToArray();
+				SF_NodeConnector[] outputsArr = outputCons.ToArray();
 				for( int i = 0; i < outputsArr.Length; i++ ) {
 					//Debug.Log( "Disconnecting " + outputsArr[i].label + "<--" + label );
 					outputsArr[i].Disconnect( true, callback );
@@ -570,7 +570,7 @@ namespace ShaderForge {
 		}
 
 
-		public bool CanConnectTo(SF_NodeConnection other) {
+		public bool CanConnectTo(SF_NodeConnector other) {
 			if( other == null )
 				return false;
 
@@ -583,7 +583,7 @@ namespace ShaderForge {
 			return true;
 		}
 
-		public bool CanValidlyConnectTo(SF_NodeConnection other) {
+		public bool CanValidlyConnectTo(SF_NodeConnector other) {
 			if(!CanConnectTo(other))
 				return false;
 
@@ -598,16 +598,16 @@ namespace ShaderForge {
 
 		public void TryMakeConnection() {
 
-			if(SF_NodeConnection.pendingConnectionSource == null)
+			if(SF_NodeConnector.pendingConnectionSource == null)
 				return;
 
-			if( !CanConnectTo( SF_NodeConnection.pendingConnectionSource ) ) {
+			if( !CanConnectTo( SF_NodeConnector.pendingConnectionSource ) ) {
 				return; // TODO: Display message
 			}
 
-			LinkTo( SF_NodeConnection.pendingConnectionSource );
+			LinkTo( SF_NodeConnector.pendingConnectionSource );
 
-			SF_NodeConnection.pendingConnectionSource = null;
+			SF_NodeConnector.pendingConnectionSource = null;
 		}
 
 		public void ThrowLinkError() {
@@ -622,7 +622,7 @@ namespace ShaderForge {
 			valueType = valueTypeDefault;
 		}
 
-		public void LinkTo( SF_NodeConnection other, LinkingMethod linkMethod = LinkingMethod.Default ) {
+		public void LinkTo( SF_NodeConnector other, LinkingMethod linkMethod = LinkingMethod.Default ) {
 
 
 
@@ -688,7 +688,7 @@ namespace ShaderForge {
 			if(conType == ConType.cOutput && this.valueType != vt){
 
 				this.valueType = vt;
-				foreach(SF_NodeConnection con in this.outputCons){
+				foreach(SF_NodeConnector con in this.outputCons){
 					if(con.valueTypeDefault == ValueType.VTvPending){
 						con.valueType = this.valueType;
 						con.node.OnUpdateNode();
@@ -727,9 +727,9 @@ namespace ShaderForge {
 
 
 		public bool UnconnectableToPending() {
-			if( SF_NodeConnection.pendingConnectionSource != null ) {
-				if( SF_NodeConnection.pendingConnectionSource != this )
-					if( !CanValidlyConnectTo( SF_NodeConnection.pendingConnectionSource ) )
+			if( SF_NodeConnector.pendingConnectionSource != null ) {
+				if( SF_NodeConnector.pendingConnectionSource != this )
+					if( !CanValidlyConnectTo( SF_NodeConnector.pendingConnectionSource ) )
 						return true;
 			}
 			return false;

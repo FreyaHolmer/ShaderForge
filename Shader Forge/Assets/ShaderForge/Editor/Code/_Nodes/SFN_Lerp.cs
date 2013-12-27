@@ -17,11 +17,11 @@ namespace ShaderForge {
 			UseLowerReadonlyValues( true );
 
 			//SF_NodeConnection lerpCon;
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTvPending,false),
-				SF_NodeConnection.Create(this,"A","A",ConType.cInput,ValueType.VTvPending,false).SetRequired(true),
-				SF_NodeConnection.Create(this,"B","B",ConType.cInput,ValueType.VTvPending,false).SetRequired(true),
-				SF_NodeConnection.Create(this,"T","T",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTvPending,false),
+				SF_NodeConnector.Create(this,"A","A",ConType.cInput,ValueType.VTvPending,false).SetRequired(true),
+				SF_NodeConnector.Create(this,"B","B",ConType.cInput,ValueType.VTvPending,false).SetRequired(true),
+				SF_NodeConnector.Create(this,"T","T",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
 			};
 
 			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2] );

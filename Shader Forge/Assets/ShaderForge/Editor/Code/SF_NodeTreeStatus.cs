@@ -115,7 +115,7 @@ namespace ShaderForge {
 
 
 
-				foreach( SF_NodeConnection con in n.connectors ) {
+				foreach( SF_NodeConnector con in n.connectors ) {
 					if( con.conType == ConType.cOutput )
 						continue;
 					if(con.required && !con.IsConnected()){

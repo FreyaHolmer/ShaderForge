@@ -23,8 +23,8 @@ namespace ShaderForge {
 			base.texture.CompCount = 4;
 			property = ScriptableObject.CreateInstance<SFP_Tex2d>().Initialize( this );
 
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"TEX","Tex",ConType.cOutput,ValueType.TexAsset).WithColor(SF_Node.colorExposed)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"TEX","Tex",ConType.cOutput,ValueType.TexAsset).WithColor(SF_Node.colorExposed)
 			};
 		}
 
@@ -232,7 +232,7 @@ namespace ShaderForge {
 
 
 
-			if( rectInner.Contains( Event.current.mousePosition ) && !SF_NodeConnection.IsConnecting() ) {
+			if( rectInner.Contains( Event.current.mousePosition ) && !SF_NodeConnector.IsConnecting() ) {
 				Rect selectRect = new Rect( rectInner );
 				selectRect.yMin += 80;
 				selectRect.xMin += 40;

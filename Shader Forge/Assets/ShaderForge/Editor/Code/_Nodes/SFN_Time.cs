@@ -21,11 +21,11 @@ namespace ShaderForge {
 
 			base.alwaysDefineVariable = true;
 
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"TSL","t/20",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R),
-				SF_NodeConnection.Create(this,"T","t",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.G),
-				SF_NodeConnection.Create(this,"TDB","t*2",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.B),
-				SF_NodeConnection.Create(this,"TTR","t*3",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.A)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"TSL","t/20",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R),
+				SF_NodeConnector.Create(this,"T","t",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.G),
+				SF_NodeConnector.Create(this,"TDB","t*2",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.B),
+				SF_NodeConnector.Create(this,"TTR","t*3",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.A)
 			};
 		
 		}

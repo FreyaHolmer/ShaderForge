@@ -21,12 +21,12 @@ namespace ShaderForge {
 
 			property = ScriptableObject.CreateInstance<SFP_Vector4Property>().Initialize( this );
 
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"XYZ","XYZ",ConType.cOutput,ValueType.VTv3)							.Outputting(OutChannel.RGB),
-				SF_NodeConnection.Create(this,"X","X",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.red)	.Outputting(OutChannel.R),
-				SF_NodeConnection.Create(this,"Y","Y",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.green)	.Outputting(OutChannel.G),
-				SF_NodeConnection.Create(this,"Z","Z",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.blue)	.Outputting(OutChannel.B),
-				SF_NodeConnection.Create(this,"W","W",ConType.cOutput,ValueType.VTv1)							.Outputting(OutChannel.A)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"XYZ","XYZ",ConType.cOutput,ValueType.VTv3)							.Outputting(OutChannel.RGB),
+				SF_NodeConnector.Create(this,"X","X",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.red)	.Outputting(OutChannel.R),
+				SF_NodeConnector.Create(this,"Y","Y",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.green)	.Outputting(OutChannel.G),
+				SF_NodeConnector.Create(this,"Z","Z",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.blue)	.Outputting(OutChannel.B),
+				SF_NodeConnector.Create(this,"W","W",ConType.cOutput,ValueType.VTv1)							.Outputting(OutChannel.A)
 			};
 		}
 

@@ -17,9 +17,9 @@ namespace ShaderForge {
 			base.showColor = true;
 			UseLowerReadonlyValues( true );
 
-			connectors = new SF_NodeConnection[]{
-			SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTvPending,false),
-			SF_NodeConnection.Create(this,"IN","",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
+			connectors = new SF_NodeConnector[]{
+			SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTvPending,false),
+			SF_NodeConnector.Create(this,"IN","",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
 		};
 
 			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1] );

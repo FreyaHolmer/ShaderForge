@@ -21,8 +21,8 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true, true );
 			UpdateIcon();
 			base.texture.CompCount = 3;
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTv3,false)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv3,false)
 			};
 		}
 

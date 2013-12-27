@@ -27,9 +27,9 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true, true );
 
 			//SF_NodeConnection lerpCon;
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTvPending,false),
-				SF_NodeConnection.Create(this,"IN","T",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTvPending,false),
+				SF_NodeConnector.Create(this,"IN","T",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
 			};
 
 			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1] );

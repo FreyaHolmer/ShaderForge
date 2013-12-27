@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 
@@ -6,7 +6,7 @@ namespace ShaderForge {
 	public class SF_ErrorEntry {
 
 		public SF_Node node;
-		public SF_NodeConnection con;
+		public SF_NodeConnector con;
 		public string error;
 
 
@@ -16,7 +16,7 @@ namespace ShaderForge {
 			this.error = error;
 		}
 
-		public SF_ErrorEntry( string error, SF_NodeConnection target ) {
+		public SF_ErrorEntry( string error, SF_NodeConnector target ) {
 			con = target;
 			node = target.node;
 			this.error = error;

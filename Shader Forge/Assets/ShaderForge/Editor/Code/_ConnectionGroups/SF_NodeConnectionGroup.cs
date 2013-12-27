@@ -9,8 +9,8 @@ namespace ShaderForge {
 	public class SF_NodeConnectionGroup : ScriptableObject {
 
 
-		public SF_NodeConnection output;
-		public SF_NodeConnection[] inputs;
+		public SF_NodeConnector output;
+		public SF_NodeConnector[] inputs;
 
 
 
@@ -37,14 +37,14 @@ namespace ShaderForge {
 
 		public void AssignToEmptyInputs( ValueType vt ) {
 			//Debug.Log("AssignToEmptInputs: " + vt + " on output of " + output.node.nodeName);
-			foreach( SF_NodeConnection nc in inputs ) {
+			foreach( SF_NodeConnector nc in inputs ) {
 				if( !nc.IsConnected() )
 					nc.valueType = vt;
 			}
 		}
 
 		public bool InputsMissing() {
-			foreach( SF_NodeConnection nc in inputs ) {
+			foreach( SF_NodeConnector nc in inputs ) {
 				if( !nc.IsConnected() )
 					return true;
 			}
@@ -53,13 +53,13 @@ namespace ShaderForge {
 
 		public void ResetValueTypes() {
 			output.ResetValueType();
-			foreach( SF_NodeConnection nc in inputs ) {
+			foreach( SF_NodeConnector nc in inputs ) {
 				nc.ResetValueType();
 			}
 		}
 
 		public bool NoInputsConnected() {
-			foreach( SF_NodeConnection nc in inputs ) {
+			foreach( SF_NodeConnector nc in inputs ) {
 				if( nc.IsConnected() )
 					return false;
 			}

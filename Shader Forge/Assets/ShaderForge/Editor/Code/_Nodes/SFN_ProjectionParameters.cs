@@ -18,11 +18,11 @@ namespace ShaderForge {
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 4;
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"SGN","Sign",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R),
-				SF_NodeConnection.Create(this,"NEAR","Near",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.G),
-				SF_NodeConnection.Create(this,"FAR","Far",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.B),
-				SF_NodeConnection.Create(this,"RFAR","1/Far",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.A)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"SGN","Sign",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R),
+				SF_NodeConnector.Create(this,"NEAR","Near",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.G),
+				SF_NodeConnector.Create(this,"FAR","Far",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.B),
+				SF_NodeConnector.Create(this,"RFAR","1/Far",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.A)
 			};
 			base.extraWidthOutput = 7;
 		}

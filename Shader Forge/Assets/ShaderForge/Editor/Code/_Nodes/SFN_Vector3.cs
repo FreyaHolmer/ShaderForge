@@ -20,8 +20,8 @@ namespace ShaderForge {
 			base.texture.uniform = true;
 			base.texture.CompCount = 3;
 			lowerRect.width /= 3;
-			connectors = new SF_NodeConnection[]{
-			SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTv3,false)
+			connectors = new SF_NodeConnector[]{
+			SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv3,false)
 		};
 		}
 

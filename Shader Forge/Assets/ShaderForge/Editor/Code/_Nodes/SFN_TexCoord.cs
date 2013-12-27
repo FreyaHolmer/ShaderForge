@@ -25,10 +25,10 @@ namespace ShaderForge {
 
 			texture.GenerateTexcoord();
 
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2).Outputting(OutChannel.RG),
-				SF_NodeConnection.Create(this,"U","U",ConType.cOutput,ValueType.VTv1).WithColor(Color.red).Outputting(OutChannel.R),
-				SF_NodeConnection.Create(this,"V","V",ConType.cOutput,ValueType.VTv1).WithColor(Color.green).Outputting(OutChannel.G)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2).Outputting(OutChannel.RG),
+				SF_NodeConnector.Create(this,"U","U",ConType.cOutput,ValueType.VTv1).WithColor(Color.red).Outputting(OutChannel.R),
+				SF_NodeConnector.Create(this,"V","V",ConType.cOutput,ValueType.VTv1).WithColor(Color.green).Outputting(OutChannel.G)
 			};
 		}
 

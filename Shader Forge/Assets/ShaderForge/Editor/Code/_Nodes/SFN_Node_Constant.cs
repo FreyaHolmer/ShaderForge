@@ -24,8 +24,8 @@ namespace ShaderForge {
 			constStr = constant;
 			constFloat = float.Parse( constant );
 
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false)
 			};
 			base.texture.CompCount = 1;
 			base.texture.dataUniform[0] = constFloat;

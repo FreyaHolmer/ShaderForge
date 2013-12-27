@@ -17,10 +17,10 @@ namespace ShaderForge {
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 1;
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false),
-				SF_NodeConnection.Create(this,"NRM","Nrm",ConType.cInput,ValueType.VTv3,false),
-				SF_NodeConnection.Create(this,"EXP","Exp",ConType.cInput,ValueType.VTv1,false)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false),
+				SF_NodeConnector.Create(this,"NRM","Nrm",ConType.cInput,ValueType.VTv3,false),
+				SF_NodeConnector.Create(this,"EXP","Exp",ConType.cInput,ValueType.VTv1,false)
 			};
 
 			this["NRM"].unconnectedEvaluationValue = "normalDirection";

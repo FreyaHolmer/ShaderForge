@@ -32,8 +32,8 @@ namespace ShaderForge {
 			centerFloatField = new GUIStyle( EditorStyles.numberField );
 			centerFloatField.alignment = TextAnchor.MiddleCenter;
 
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false)
 			};
 		}
 

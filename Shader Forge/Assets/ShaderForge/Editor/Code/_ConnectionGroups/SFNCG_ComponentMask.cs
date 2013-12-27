@@ -10,7 +10,7 @@ namespace ShaderForge {
 
 
 
-		public void Initialize( SF_NodeConnection output, params SF_NodeConnection[] inputs ) {
+		public void Initialize( SF_NodeConnector output, params SF_NodeConnector[] inputs ) {
 			this.output = output;
 			this.inputs = inputs;
 		}

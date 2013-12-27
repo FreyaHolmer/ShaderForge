@@ -23,10 +23,10 @@ namespace ShaderForge {
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
 			texture.CompCount = 2;
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2,false),
-				SF_NodeConnection.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_TexCoord),"UVOUT"),
-				SF_NodeConnection.Create(this,"DIST","Dist",ConType.cInput,ValueType.VTv1,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_Time),"T")
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2,false),
+				SF_NodeConnector.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_TexCoord),"UVOUT"),
+				SF_NodeConnector.Create(this,"DIST","Dist",ConType.cInput,ValueType.VTv1,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_Time),"T")
 			};
 
 		}

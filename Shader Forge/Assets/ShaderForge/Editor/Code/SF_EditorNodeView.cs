@@ -212,7 +212,7 @@ namespace ShaderForge {
 			}
 
 			if( SF_GUI.ReleasedRawLMB() ) {
-				SF_NodeConnection.pendingConnectionSource = null;
+				SF_NodeConnector.pendingConnectionSource = null;
 			}
 
 			// If press
@@ -352,7 +352,7 @@ namespace ShaderForge {
 				for( int i = 0; i < editor.nodes.Count; i++ ) {
 					SF_Node n = editor.nodes[i];
 					if( n.depth == depth ) {
-						foreach( SF_NodeConnection con in n.connectors ) {
+						foreach( SF_NodeConnector con in n.connectors ) {
 							if( con.conType == ConType.cOutput )
 								continue;
 							if( !con.IsConnectedAndEnabled() )
@@ -482,7 +482,7 @@ namespace ShaderForge {
 
 			bool insideNodeView = MouseInsideNodeView( true );
 			bool dragging = ( Event.current.type == EventType.MouseDrag && panCamera );
-			bool connecting = SF_NodeConnection.IsConnecting();
+			bool connecting = SF_NodeConnector.IsConnecting();
 			bool rotatingPreview = editor.preview.isDragging;
 			bool placingNode = editor.nodeBrowser.IsPlacing();
 			bool draggingSeparators = editor.DraggingAnySeparator();

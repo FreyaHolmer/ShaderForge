@@ -98,7 +98,7 @@ namespace ShaderForge {
 		public Rect lowerRect;
 
 		[SerializeField]
-		public SF_NodeConnection[] connectors;
+		public SF_NodeConnector[] connectors;
 
 		public SF_NodeConnectionGroup conGroup;
 
@@ -110,7 +110,7 @@ namespace ShaderForge {
 		}
 
 		// Quick retrieval of connectors
-		public SF_NodeConnection this[string s] {
+		public SF_NodeConnector this[string s] {
 			get {
 				return GetConnectorByStringID(s);
 			}
@@ -229,11 +229,11 @@ namespace ShaderForge {
 
 			if( cascade )
 				if( connectors != null && connectors.Length > 0 )
-					foreach( SF_NodeConnection mCon in connectors ) {
+					foreach( SF_NodeConnector mCon in connectors ) {
 						if( mCon == null )
 							continue;
 						if( mCon.conType == ConType.cOutput ) {
-							foreach( SF_NodeConnection mConOut in mCon.outputCons ) {
+							foreach( SF_NodeConnector mConOut in mCon.outputCons ) {
 								mConOut.node.OnUpdateNode( updType ); // TODO Null ref
 							}
 						}
@@ -266,7 +266,7 @@ namespace ShaderForge {
 
 
 		public bool InputsConnected() {
-			foreach( SF_NodeConnection con in connectors ) {
+			foreach( SF_NodeConnector con in connectors ) {
 				if( con == null )
 					break;
 				if( con.conType == ConType.cInput )
@@ -277,7 +277,7 @@ namespace ShaderForge {
 		}
 
 		public bool GetInputIsConnected( string id ) {
-			SF_NodeConnection con = GetConnectorByStringID(id);
+			SF_NodeConnector con = GetConnectorByStringID(id);
 			if( con == null ) {
 				Debug.LogError("Tried to find invalid connector by string ID [" + id + "] in node [" + this.GetType().ToString() + "]");
 				return false;
@@ -319,7 +319,7 @@ namespace ShaderForge {
 				return;
 			}
 
-			foreach( SF_NodeConnection nc in connectors ) {
+			foreach( SF_NodeConnector nc in connectors ) {
 				if( nc.required && nc.conType == ConType.cInput && !nc.IsConnected() ) { // Check only required inputs
 					texture.OnLostConnection();
 					return;
@@ -378,7 +378,7 @@ namespace ShaderForge {
 
 		public SF_NodePreview GetInputData( string id ) {
 
-			SF_NodeConnection con = GetConnectorByStringID(id);
+			SF_NodeConnector con = GetConnectorByStringID(id);
 			//SF_Node n; // TODO: What was this? Quite recent too. Define and undefine ghosts?
 
 			if( con.inputCon == null ) {
@@ -412,8 +412,8 @@ namespace ShaderForge {
 			return connectors[id].inputCon;
 		}*/
 
-		public SF_NodeConnection GetInputCon( string id ) {
-			SF_NodeConnection con = GetConnectorByStringID( id );
+		public SF_NodeConnector GetInputCon( string id ) {
+			SF_NodeConnector con = GetConnectorByStringID( id );
 			
 			if( con == null ) {
 				Debug.LogError( "Failed attempt to find connector [" + id + "] in " + this.nodeName );
@@ -446,7 +446,7 @@ namespace ShaderForge {
 
 
 		public void CheckForBrokenConnections() {
-			foreach( SF_NodeConnection con in connectors ) {
+			foreach( SF_NodeConnector con in connectors ) {
 				if( con.IsConnected() && con.conType == ConType.cInput ) {
 					if( con.inputCon.IsDeleted() )
 						con.inputCon = null;
@@ -466,7 +466,7 @@ namespace ShaderForge {
 
 
 		public void DrawConnections() {
-			foreach( SF_NodeConnection con in connectors )
+			foreach( SF_NodeConnector con in connectors )
 				con.CheckConnection( editor );
 		}
 
@@ -517,7 +517,7 @@ namespace ShaderForge {
 
 			isDragging = false;
 
-			if( SF_NodeConnection.pendingConnectionSource != null )
+			if( SF_NodeConnector.pendingConnectionSource != null )
 				return;
 
 			if( MouseOverNode( world: true ) && dragDelta.sqrMagnitude < SF_Tools.stationaryCursorRadius ) { // If you released on the node without dragging
@@ -847,7 +847,7 @@ namespace ShaderForge {
 
 		public int ConnectedOutputCount() {
 			int count = 0;
-			foreach( SF_NodeConnection nc in connectors ) {
+			foreach( SF_NodeConnector nc in connectors ) {
 				if(nc.conType == ConType.cInput)
 					continue;
 				count += nc.outputCons.Count;
@@ -1195,7 +1195,7 @@ namespace ShaderForge {
 				Debug.Log("CHK. GHOST: [" + nodeName + "] Connector count = " + Connectors.Length);
 				*/
 
-			foreach(SF_NodeConnection con in connectors){
+			foreach(SF_NodeConnector con in connectors){
 				if( con.conType == ConType.cOutput) {
 					//Debug.LogError("Ghost node defined on an output: "+nodeName+"[" + con.label + "]");
 					continue;
@@ -1235,7 +1235,7 @@ namespace ShaderForge {
 
 		public int GetOutputCount() {
 			int n = 0;
-			foreach( SF_NodeConnection con in connectors ) {
+			foreach( SF_NodeConnector con in connectors ) {
 				if( con.conType == ConType.cInput )
 					continue;
 				if( con.IsConnected() ) {
@@ -1284,7 +1284,7 @@ namespace ShaderForge {
 				s += "|";
 				int linkCount = 0;
 				int i = 0;
-				foreach( SF_NodeConnection con in connectors ) { // List connections, connected inputs only
+				foreach( SF_NodeConnector con in connectors ) { // List connections, connected inputs only
 					if( con.conType == ConType.cOutput ) { i++; continue; }
 					if( !con.IsConnected() ) { i++; continue; }
 					
@@ -1390,7 +1390,7 @@ namespace ShaderForge {
 
 		}
 
-		public SF_NodeConnection GetConnectorByID(string s) {
+		public SF_NodeConnector GetConnectorByID(string s) {
 			int number;
 			if( int.TryParse( s, out number ) ) {
 				return connectors[number];
@@ -1399,8 +1399,8 @@ namespace ShaderForge {
 			}
 		}
 
-		public SF_NodeConnection GetConnectorByStringID(string s) {
-			foreach( SF_NodeConnection con in connectors ) {
+		public SF_NodeConnector GetConnectorByStringID(string s) {
+			foreach( SF_NodeConnector con in connectors ) {
 				if( !con.HasID() )
 					continue;
 				if( s == con.strID )
@@ -1412,7 +1412,7 @@ namespace ShaderForge {
 		}
 
 		public bool HasAnyInputConnected(bool skipExternalLinks = false) {
-			foreach( SF_NodeConnection con in connectors )
+			foreach( SF_NodeConnector con in connectors )
 				if( con.IsConnected() && con.conType == ConType.cInput ){
 					if(skipExternalLinks){
 						if(con.inputCon.node.selected)
@@ -1427,7 +1427,7 @@ namespace ShaderForge {
 
 		public int CalcConnectionCount() {
 			int i = 0;
-			foreach( SF_NodeConnection con in connectors ) {
+			foreach( SF_NodeConnector con in connectors ) {
 				if( con.IsConnected() )
 					i++;
 			}

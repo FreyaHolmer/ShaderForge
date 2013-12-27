@@ -21,12 +21,12 @@ namespace ShaderForge {
 			UseLowerReadonlyValues( false );
 			texture.CompCount = 2;
 			//SF_NodeConnection lerpCon;
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2,false).Outputting(OutChannel.RG),
-				SF_NodeConnection.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2,false).SetGhostNodeLink(typeof(SFN_TexCoord),"UVOUT"),
-				SF_NodeConnection.Create(this,"HEI","Hei",ConType.cInput,ValueType.VTv1,false).SetRequired(true),
-				SF_NodeConnection.Create(this,"DEP","Dep",ConType.cInput,ValueType.VTv1,false),
-				SF_NodeConnection.Create(this,"REF","Ref",ConType.cInput,ValueType.VTv1,false)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2,false).Outputting(OutChannel.RG),
+				SF_NodeConnector.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2,false).SetGhostNodeLink(typeof(SFN_TexCoord),"UVOUT"),
+				SF_NodeConnector.Create(this,"HEI","Hei",ConType.cInput,ValueType.VTv1,false).SetRequired(true),
+				SF_NodeConnector.Create(this,"DEP","Dep",ConType.cInput,ValueType.VTv1,false),
+				SF_NodeConnector.Create(this,"REF","Ref",ConType.cInput,ValueType.VTv1,false)
 			};
 
 			//base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2] );

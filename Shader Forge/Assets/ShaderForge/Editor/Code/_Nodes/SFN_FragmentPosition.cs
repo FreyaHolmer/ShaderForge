@@ -17,12 +17,12 @@ namespace ShaderForge {
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 4;
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"XYZ","XYZ",ConType.cOutput,ValueType.VTv3,false).Outputting(OutChannel.RGB),
-				SF_NodeConnection.Create(this,"X","X",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R).WithColor(Color.red),
-				SF_NodeConnection.Create(this,"Y","Y",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.G).WithColor(Color.green),
-				SF_NodeConnection.Create(this,"Z","Z",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.B).WithColor(Color.blue),
-				SF_NodeConnection.Create(this,"W","W",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.A)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"XYZ","XYZ",ConType.cOutput,ValueType.VTv3,false).Outputting(OutChannel.RGB),
+				SF_NodeConnector.Create(this,"X","X",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R).WithColor(Color.red),
+				SF_NodeConnector.Create(this,"Y","Y",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.G).WithColor(Color.green),
+				SF_NodeConnector.Create(this,"Z","Z",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.B).WithColor(Color.blue),
+				SF_NodeConnector.Create(this,"W","W",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.A)
 			};
 		}
 

@@ -71,9 +71,9 @@ namespace ShaderForge {
 			popupStyle.fontSize = 12;
 			popupStyle.fontStyle = FontStyle.Bold;
 
-			connectors = new SF_NodeConnection[]{
-				SF_NodeConnection.Create(this,"OUT","-",ConType.cOutput,ValueType.VTvPending,false).Outputting(OutChannel.All),
-				SF_NodeConnection.Create(this,"IN","In",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
+			connectors = new SF_NodeConnector[]{
+				SF_NodeConnector.Create(this,"OUT","-",ConType.cOutput,ValueType.VTvPending,false).Outputting(OutChannel.All),
+				SF_NodeConnector.Create(this,"IN","In",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
 			};
 			outCompCount = 1;
 			UpdateOutput();

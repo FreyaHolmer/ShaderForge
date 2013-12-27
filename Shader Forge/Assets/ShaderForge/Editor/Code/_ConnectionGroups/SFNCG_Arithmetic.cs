@@ -15,7 +15,7 @@ namespace ShaderForge {
 
 		}
 
-		public SFNCG_Arithmetic Initialize( SF_NodeConnection output, params SF_NodeConnection[] inputs ) {
+		public SFNCG_Arithmetic Initialize( SF_NodeConnector output, params SF_NodeConnector[] inputs ) {
 			this.output = output;
 			this.inputs = inputs;
 			return this;
@@ -75,7 +75,7 @@ namespace ShaderForge {
 			
 			
 			// Reset typecasts
-			foreach(SF_NodeConnection con in inputs)
+			foreach(SF_NodeConnector con in inputs)
 				con.typecastTarget = 0;
 			
 			if(domType == ValueType.VTv1 || domType == ValueType.VTv1v2 || domType == ValueType.VTv2)
@@ -92,7 +92,7 @@ namespace ShaderForge {
 			}
 			
 			
-			foreach(SF_NodeConnection con in inputs){
+			foreach(SF_NodeConnector con in inputs){
 				if(con.GetCompCount() == 2)
 					con.TypecastTo(typeTarget);
 			}
@@ -187,7 +187,7 @@ namespace ShaderForge {
 
 			ValueType retType = ValueType.VTvPending;
 
-			foreach( SF_NodeConnection nc in inputs ) {
+			foreach( SF_NodeConnector nc in inputs ) {
 				retType = GetDominantType( retType, nc.valueType );
 			}
 

@@ -24,7 +24,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 0;
-		public static int versionNumSecondary = 16;
+		public static int versionNumSecondary = 17;
 		public static string versionStage = "Beta";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge " + versionStage + " " + version;

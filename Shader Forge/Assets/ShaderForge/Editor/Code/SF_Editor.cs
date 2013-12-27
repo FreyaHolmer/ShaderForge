@@ -597,8 +597,8 @@ namespace ShaderForge {
 				return;
 			}
 
-
-			UpdateKeyHoldEvents();
+			if(!SF_Node.isEditingAnyComment)
+				UpdateKeyHoldEvents();
 
 			//UpdateCameraZoomInput();
 

@@ -17,8 +17,8 @@ namespace ShaderForge {
 		public string[] strLightPrecision = new string[] { "Per-Vertex", "Per-Fragment" };
 		public enum NormalQuality { Interpolated, Normalized };
 		public string[] strNormalQuality = new string[] { "Interpolated", "Normalized" };
-		public enum LightMode { Unlit, Lambert, BlinnPhong, Phong, PBL };
-		public string[] strLightMode = new string[] { "Unlit", "Lambert", "Blinn-Phong", "Phong", "PBL" };
+		public enum LightMode { Unlit, BlinnPhong, Phong, PBL };
+		public string[] strLightMode = new string[] { "Unlit/Custom", "Blinn-Phong", "Phong", "PBL" };
 		public enum LightCount { Single, Multi };
 		public string[] strLightCount = new string[] { "Single Directional", "Multi-light"};
 		public enum CullMode { BackfaceCulling, FrontfaceCulling, DoubleSided };

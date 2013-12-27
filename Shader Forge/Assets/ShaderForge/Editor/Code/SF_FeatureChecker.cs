@@ -40,7 +40,6 @@ namespace ShaderForge {
 
 			bool unlit = (ps.lightMode == SF_PassSettings.LightMode.Unlit);
 			bool lit = !unlit;
-			bool lambert = (ps.lightMode == SF_PassSettings.LightMode.Lambert);
 
 			// Diffuse makes these available: Transmission, Light Wrapping, Ambient lighting, Diffuse Power
 			bool diffConnected = editor.materialOutput.diffuse.IsConnectedAndEnabled();
@@ -48,8 +47,8 @@ namespace ShaderForge {
 
 			editor.materialOutput.diffuse.SetAvailable( lit );
 			editor.materialOutput.diffusePower.SetAvailable( lit && diffConnected );
-			editor.materialOutput.specular.SetAvailable( lit && !lambert );
-			editor.materialOutput.gloss.SetAvailable( lit && !lambert && specConnected );
+			editor.materialOutput.specular.SetAvailable( lit );
+			editor.materialOutput.gloss.SetAvailable( lit && specConnected );
 			editor.materialOutput.normal.SetAvailable( true );
 			editor.materialOutput.alpha.SetAvailable( true );
 			editor.materialOutput.alphaClip.SetAvailable( true );
@@ -58,7 +57,7 @@ namespace ShaderForge {
 			editor.materialOutput.transmission.SetAvailable( lit && diffConnected );
 
 			editor.materialOutput.ambientDiffuse.SetAvailable( lit && diffConnected);
-			editor.materialOutput.ambientSpecular.SetAvailable( lit && !lambert && specConnected );
+			editor.materialOutput.ambientSpecular.SetAvailable( lit && specConnected );
 			editor.materialOutput.customLighting.SetAvailable( !lit );
 
 			editor.materialOutput.lightWrap.SetAvailable( lit && diffConnected );

@@ -492,7 +492,8 @@ namespace ShaderForge {
 		}
 		
 		float fps = 0;
-		float prevFrameTime = 1f;
+		double prevFrameTime = 1;
+		public double deltaTime = 0.02;
 
 		void Update() {
 			
@@ -502,14 +503,19 @@ namespace ShaderForge {
 			}
 			
 			
-			float now = Now();
-			fps = 1f/(now-prevFrameTime);
-			
+			double now = Now();
+			double deltaTime = now-prevFrameTime;
+			fps = 1f/(float)deltaTime;
+
+
+
 			if(fps > 40)
 				return; // Wait for target FPS
 			
+
 			prevFrameTime = now;
-			
+
+			preview.UpdateRot();
 			
 			
 			
@@ -529,10 +535,10 @@ namespace ShaderForge {
 			if( !Application.isPlaying ) { // In order to animate shaders when game is not running
 
 				Shader.SetGlobalVector( "_TimeEditor", new Vector4( // TODO: Make this only run if a Time node is present
-						now / 20f,
-						now,
-						now * 2f,
-						now * 3f
+						(float)now / 20f,
+				        (float)now,
+				        (float)now * 2f,
+				        (float)now * 3f
 					)
 				); 
 			}
@@ -547,9 +553,9 @@ namespace ShaderForge {
 		}
 		
 		
-		public float Now(){
+		public double Now(){
 			TimeSpan t = ( DateTime.UtcNow - startTime );
-			return (float)t.TotalSeconds;
+			return t.TotalSeconds;
 		}
 
 

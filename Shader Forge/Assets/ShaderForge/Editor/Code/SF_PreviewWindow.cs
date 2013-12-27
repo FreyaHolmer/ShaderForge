@@ -32,9 +32,9 @@ namespace ShaderForge {
 		[SerializeField]
 		Vector2 dragStartPos = Vector2.zero;
 		[SerializeField]
-		Vector2 rotMeshStart = Vector2.zero;
+		Vector2 rotMeshStart = new Vector2(-30f,0f);
 		[SerializeField]
-		Vector2 rotMesh = Vector2.zero;
+		Vector2 rotMesh = new Vector2(-30f,0f);
 
 		// Used for Reflection to get the preview render
 		[SerializeField]
@@ -147,6 +147,7 @@ namespace ShaderForge {
 			
 			//GUILayout.Label( "BG" );
 			r.x += r.width + 10;
+			bool bef = settings.previewAutoRotate;
 			settings.previewAutoRotate = GUI.Toggle( r, settings.previewAutoRotate, "Rotate" );
 			//}
 			//EditorGUILayout.EndHorizontal();
@@ -183,9 +184,17 @@ namespace ShaderForge {
 			return (int)previewRect.yMax;
 		}
 
+		public void UpdateRot(){
+			if(settings.previewAutoRotate){
+				rotMesh.y += (float)(editor.deltaTime * -22.5);
+			}
+		}
+
 		public void StartDrag() {
 			isDragging = true;
-			settings.previewAutoRotate = false;
+			if(settings.previewAutoRotate == true){
+				settings.previewAutoRotate = false;
+			}
 			dragStartPos = Event.current.mousePosition;
 			rotMeshStart = rotMesh;
 		}
@@ -203,7 +212,7 @@ namespace ShaderForge {
 		public bool MouseOverPreview() {
 			return previewRect.Contains( Event.current.mousePosition );
 		}
-
+	
 		[SerializeField]
 		Rect previewRect = new Rect(0f,0f,1f,1f);
 		public void DrawMesh( Rect previewRect ) {
@@ -240,7 +249,10 @@ namespace ShaderForge {
 
 
 			// Get rotation
-			float A = settings.previewAutoRotate ? Time.realtimeSinceStartup * -22.5f : rotMesh.y;
+
+
+
+			float A = rotMesh.y;
 			float B = rotMesh.x;
 			Quaternion rotA = Quaternion.Euler( 0f, A, 0f );
 			Quaternion rotB = Quaternion.Euler( B, 0f, 0f );
@@ -294,8 +306,10 @@ namespace ShaderForge {
 
 
 		public void UpdatePreviewBackgroundColor() {
-			if( backgroundTexture == null )
+			if( backgroundTexture == null ){
 				backgroundTexture = new Texture2D( 2, 2, TextureFormat.ARGB32, false );
+				backgroundTexture.hideFlags = HideFlags.HideAndDontSave;
+			}
 			Color c = settings.colorBg;
 			backgroundTexture.SetPixels( new Color[] { c, c, c, c } );
 			backgroundTexture.Apply();

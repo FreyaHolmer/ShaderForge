@@ -56,7 +56,39 @@ namespace ShaderForge {
 		}
 
 
+		// Erasing nodes with cut line: (alt+RMB)
 
+		public Vector2 cutStart = Vector3.zero;
+		public bool isCutting = false;
+
+		public void StartCutting(){
+			isCutting = true;
+			cutStart = editor.nodeView.GetNodeSpaceMousePos();
+		}
+
+		public void StopCutting(){
+			foreach(SF_Node n in editor.nodes){
+				foreach(SF_NodeConnector con in n.connectors){
+					if(con.IsConnected() && con.conType == ConType.cInput){
+						if(con.conLine.aboutToBeDeleted){
+							con.Disconnect();
+						}
+					}
+				}
+			}
+			isCutting = false;
+			UnmarkDeleteHighlights();
+		}
+
+		public void UnmarkDeleteHighlights(){
+			foreach(SF_Node n in editor.nodes){
+				foreach(SF_NodeConnector con in n.connectors){
+					if(con.IsConnected() && con.conType == ConType.cInput){
+						con.conLine.aboutToBeDeleted = false;
+					}
+				}
+			}
+		}
 
 
 
@@ -138,6 +170,78 @@ namespace ShaderForge {
 				// END NODES
 				if( SF_Debug.nodes )
 					UpdateDebugInput();
+
+
+
+				if(SF_GUI.HoldingAlt() && Event.current.type == EventType.mouseDown && Event.current.button == 1){ // Alt + RMB drag
+					StartCutting();
+				} else if(SF_GUI.ReleasedRawRMB()){
+					StopCutting();
+				}
+
+
+
+				// Deletion line
+				if(isCutting){
+
+					Vector2 cutEnd = GetNodeSpaceMousePos();
+
+					GUILines.DrawDashedLine(editor, cutStart, GetNodeSpaceMousePos(), Color.white, 5f);
+
+
+					foreach(SF_Node n in editor.nodes){
+						foreach(SF_NodeConnector con in n.connectors){
+							if(con.IsConnected() && con.conType == ConType.cInput){
+								Vector2 intersection = Vector2.zero;
+								if(con.conLine.Intersects(cutStart, cutEnd, out intersection)){
+
+									con.conLine.aboutToBeDeleted = true;
+
+									Vector2 hit = editor.nodeView.SubtractNodeWindowOffset(intersection);
+
+									float scale = 5f;
+									float scaleDiff = 0.95f;
+									//Vector2 rg, up, lf, dn;
+
+
+									//Vector2 localRight = (cutStart-cutEnd).normalized;
+									//Vector2 localUp = new Vector2(localRight.y,-localRight.x);
+
+									//rg = hit + localRight * scale;
+									//up = hit + localUp * scale;
+									//lf = hit - localRight * scale;
+									//dn = hit - localUp * scale;
+									Color c0 = new Color(1f,0.1f,0.1f,0.9f);
+									Color c1 = new Color(1f,0.1f,0.1f,0.7f);
+									Color c2 = new Color(1f,0.1f,0.1f,0.5f);
+									Color c3 = new Color(1f,0.1f,0.1f,0.3f);
+
+									GUILines.DrawDisc(hit,scale,c0);
+									GUILines.DrawDisc(hit,scale-scaleDiff,c1);
+									GUILines.DrawDisc(hit,scale-scaleDiff*2,c2);
+									GUILines.DrawDisc(hit,scale-scaleDiff*3,c3);
+
+									//GUILines.DrawLine(rg,up,Color.red,2f,true);
+									//GUILines.DrawLine(up,lf,Color.red,2f,true);
+									//GUILines.DrawLine(lf,dn,Color.red,2f,true);
+									//GUILines.DrawLine(dn,rg,Color.red,2f,true);
+
+
+
+
+
+									continue;
+								} else {
+									con.conLine.aboutToBeDeleted = false;
+								}
+							}
+						}
+					}
+
+
+				}
+
+
 				UpdateCameraPanning();
 
 				
@@ -151,7 +255,7 @@ namespace ShaderForge {
 
 
 
-			if( Event.current.type == EventType.ContextClick ) {
+			if( Event.current.type == EventType.ContextClick && !SF_GUI.HoldingAlt() ) {
 				Vector2 mousePos = Event.current.mousePosition;
 				if( rect.Contains( mousePos ) ) {
 					// Now create the menu, add items and show it
@@ -453,12 +557,12 @@ namespace ShaderForge {
 			r.width = 60;
 			//GUI.Label( r, "Con. style:", EditorStyles.miniLabel );
 			//r.x += r.width + 2;
-			SF_Settings.ConnectionLineStyle = (ConnectionLineStyle)EditorGUI.EnumPopup( r, SF_Settings.ConnectionLineStyle, EditorStyles.toolbarPopup);
+			//SF_Settings.ConnectionLineStyle = (ConnectionLineStyle)EditorGUI.EnumPopup( r, SF_Settings.ConnectionLineStyle, EditorStyles.toolbarPopup);
 
 
 			//GUILayout.FlexibleSpace();
 
-			r.x += r.width + 20;
+			//r.x += r.width + 20;
 			GUI.color = new Color(0.8f,1f,0.8f,1f);
 			r.width = 110;
 			SF_Tools.LinkButton( r, SF_Tools.manualLabel, SF_Tools.manualURL, EditorStyles.toolbarButton );

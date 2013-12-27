@@ -41,7 +41,7 @@ namespace ShaderForge {
 		}
 
 		public static ConnectionLineStyle ConnectionLineStyle {
-			get { return (ConnectionLineStyle)SF_Settings.LoadInt(SF_Setting.CurveShape); }
+			get { return ConnectionLineStyle.Bezier;/*return (ConnectionLineStyle)SF_Settings.LoadInt(SF_Setting.CurveShape);*/ }
 			set { SF_Settings.SetInt(SF_Setting.CurveShape, (int)value); }
 		}
 

@@ -27,6 +27,35 @@ namespace ShaderForge {
 			Handles.EndGUI();
 		}
 
+		public static void DrawDisc( Vector2 center, float radius, Color color) {
+			Handles.BeginGUI();
+			Handles.color = color;
+			Handles.DrawWireDisc(center,Vector3.forward,radius);
+			Handles.EndGUI();
+		}
+
+
+
+
+
+		public static void DrawLines( SF_Editor editor, Vector2[] points, Color color, float width, bool antiAlias ) {
+			Handles.BeginGUI();
+			Handles.color = color;
+		
+
+			Vector3[] v3Pts = new Vector3[points.Length];
+			for (int i = 0; i < points.Length; i++) {
+				points[i] = editor.nodeView.AddNodeWindowOffset( points[i] );
+				v3Pts[i] = new Vector3(points[i].x, points[i].y);
+			}
+
+			if( antiAlias )
+				Handles.DrawAAPolyLine( width, v3Pts );
+			else
+				Handles.DrawPolyLine( v3Pts );
+			Handles.EndGUI();
+		}
+
 
 		
 
@@ -102,7 +131,115 @@ namespace ShaderForge {
 			}
 		}
 
-		private static Vector2 CubicBezierOffset( float offset, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t ) {
+
+
+
+		public static Vector2[] ConnectionBezierOffsetArray(float offset, SF_NodeConnector startCon, SF_NodeConnector endCon, int segments){
+
+
+			Vector2 start = startCon.GetConnectionPoint();
+			Vector2 end = endCon.GetConnectionPoint();
+
+			bool reversed = (start.x > end.x);
+
+			Vector2[] points;
+
+			int pCount = (segments+1); // Point count per bezier
+
+			if(reversed)
+				points = new Vector2[pCount*2]; // Two curves
+			else
+				points = new Vector2[pCount];
+
+
+
+			if(reversed){
+
+				// Calculate new start/end positions!
+				// We want an S shape, which essentially is two curves with a connected center
+				// Let's define the new points!
+
+
+				float midVert;
+
+				if(startCon.node.rect.center.y > endCon.node.rect.center.y)
+					midVert = (startCon.node.BoundsTop() + endCon.node.BoundsBottom())/2;
+				else
+					midVert = (startCon.node.BoundsBottom() + endCon.node.BoundsTop())/2;
+
+
+
+				float deltaX = Mathf.Abs(start.x-end.x);
+				float mul = Mathf.InverseLerp(0f,100f,deltaX);
+				mul = SF_Tools.Smoother(mul) * 0.70710678118f;
+
+
+				Vector2 bAp0 = start;						// Start Point
+				Vector2 bAp3 = new Vector2(start.x, midVert); // End Point
+
+
+
+				float tangentMag = Mathf.Abs(bAp0.y-bAp3.y)*mul; // TODO: Scale based on length if smaller than something
+				Vector2 tangentVec = new Vector2(tangentMag, 0f);
+
+
+				Vector2 bAp1 = bAp0 + tangentVec; 			// Start Tangent
+				Vector2 bAp2 = bAp3 + tangentVec; 			// End Tangent
+
+
+				for(int i=0;i<pCount;i++){
+					float t = (float)i/(float)segments;
+					points[i] = CubicBezierOffset(offset, bAp0, bAp1, bAp2, bAp3, t);
+				}
+
+				// Second line! Let's go
+
+				Vector2 bBp0 = new Vector2(end.x, midVert);	// Start Point
+				Vector2 bBp3 = end; 						// End Point
+
+				tangentMag = Mathf.Abs(bBp0.y-bBp3.y)*mul; // TODO: Scale based on length if smaler than something
+				tangentVec = new Vector2(tangentMag, 0f);
+
+				Vector2 bBp1 = bBp0 - tangentVec; 			// Start Tangent
+				Vector2 bBp2 = bBp3 - tangentVec; 			// End Tangent
+
+				for(int i=0;i<pCount;i++){
+					float t = (float)i/(float)segments;
+					points[i+pCount] = CubicBezierOffset(offset, bBp0, bBp1, bBp2, bBp3, t);
+				}
+
+
+
+			} else {
+				for(int i=0;i<pCount;i++){
+					float t = (float)i/(float)segments;
+					points[i] = ConnectionBezierOffset(offset, start, end, t);
+				}
+			}
+
+
+
+
+
+			return points;
+		}
+
+
+
+
+		public static Vector2 ConnectionBezierOffset( float offset, Vector2 start, Vector2 end, float t){
+
+
+			float mult = (start.x < end.x) ? 1f : 4f;
+
+			float xHalfway = Mathf.Abs(end.x-start.x)*0.5f * mult;
+
+			Vector2 p1 = new Vector2(start.x+xHalfway, start.y);
+			Vector2 p2 = new Vector2(end.x-xHalfway, end.y);
+			return CubicBezierOffset(offset, start, p1, p2, end, t);
+		}
+
+		public static Vector2 CubicBezierOffset( float offset, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t ) {
 			Vector2 a = QuadBezier( p0, p1, p2, t );
 			Vector2 b = QuadBezier( p1, p2, p3, t );
 			Vector2 origin = Lerp( a, b, t );
@@ -111,20 +248,20 @@ namespace ShaderForge {
 			return origin + normal * offset;
 		}
 
-		private static Vector2 CubicBezier( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t ) {
+		public static Vector2 CubicBezier( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t ) {
 			Vector2 a = QuadBezier( p0, p1, p2, t );
 			Vector2 b = QuadBezier( p1, p2, p3, t );
 			return Lerp( a, b, t );
 		}
 
-		private static Vector2 QuadBezier( Vector2 p0, Vector2 p1, Vector2 p2, float t ) {
+		public static Vector2 QuadBezier( Vector2 p0, Vector2 p1, Vector2 p2, float t ) {
 			float tsq = t * t;
 			float t2 = t * 2;
 			return p0 * ( tsq - t2 + 1 ) + p1 * ( t2 - 2 * tsq ) + p2 * tsq;
 
 		}
 
-		private static Vector2 Lerp( Vector2 v0, Vector2 v1, float t ) {
+		public static Vector2 Lerp( Vector2 v0, Vector2 v1, float t ) {
 			return ( v0 * ( 1f - t ) + t * v1 );
 		}
 
@@ -213,6 +350,24 @@ namespace ShaderForge {
 			GUILines.DrawLine( p0, p1, col, connectionWidth, true );
 		}
 
+		public static void DrawDashedLine(SF_Editor editor, Vector2 p0, Vector2 p1, Color col, float dashLength ){
+			p0 = editor.nodeView.AddNodeWindowOffset( p0 );
+			p1 = editor.nodeView.AddNodeWindowOffset( p1 );
+
+			float frac = dashLength/(p0-p1).magnitude;
+
+			int segcount = Mathf.Max(1, Mathf.RoundToInt(1f/frac));
+
+			for(float t = 0; t < 1; t += frac*2f){
+
+				float tNext = Mathf.Min(1f,t + frac);
+
+				GUILines.DrawLine( Vector2.Lerp (p0,p1,t), Vector2.Lerp (p0,p1,tNext), col, connectionWidth, true );
+			}
+
+
+		}
+
 		public static void DrawBezierConnection( SF_Editor editor, Vector2 p0, Vector2 p1, float offset, Color col ) {
 
 			p0 = editor.nodeView.AddNodeWindowOffset( p0 );
@@ -246,7 +401,6 @@ namespace ShaderForge {
 					GUILines.DrawCubicBezierOffset( offset, p0, p0t, mid0t, mid, col, connectionWidth, true, segments );
 					GUILines.DrawCubicBezierOffset( offset, mid, mid1t, p1t, p1, col, connectionWidth, true, segments );
 				}
-
 			}
 		}
 

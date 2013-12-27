@@ -174,6 +174,10 @@ namespace ShaderForge {
 			return ( Event.current.rawType == EventType.mouseUp ) && ( Event.current.button == 0 );
 		}
 
+		public static bool ReleasedRawRMB() {
+			return ( Event.current.rawType == EventType.mouseUp ) && ( Event.current.button == 1 );
+		}
+
 		public static bool PressedRMB() {
 			return ( Event.current.type == EventType.mouseDown ) && ( Event.current.button == 1 );
 		}
@@ -182,8 +186,12 @@ namespace ShaderForge {
 			return ( Event.current.type == EventType.mouseUp ) && ( Event.current.button == 1 );
 		}
 
-		public static bool HoldingBoxSelect() {
+		public static bool HoldingAlt() {
 			return (Event.current.modifiers & EventModifiers.Alt) != 0; // Alt is held
+		}
+
+		public static bool HoldingBoxSelect() {
+			return HoldingAlt(); // Alt is held. TODO: Make a toggle for (Alt cam) vs (Alt select)
 		}
 
 		public static bool HoldingShift() {

@@ -263,5 +263,47 @@ namespace ShaderForge {
 		}
 
 
+		public static bool LineIntersection(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, out Vector2 intersection){
+
+			intersection = Vector2.zero;
+
+			Vector2 s1, s2;
+			s1.x = p1.x - p0.x;
+			s1.y = p1.y - p0.y;
+			s2.x = p3.x - p2.x;
+			s2.y = p3.y - p2.y;
+
+			float s, t, d;
+			d = -s2.x * s1.y + s1.x * s2.y;
+
+			if(d == 0){
+				return false; // Parallel lines, no intersection
+			}
+
+			Vector2 pDiff = p0 - p2;
+			s = (-s1.y * pDiff.x + s1.x * pDiff.y) / d;
+			t = ( s2.x * pDiff.y - s2.y * pDiff.x) / d;
+			
+			if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+			{
+				intersection = p0 + (t * s1);
+				return true; // Intersection!
+			}
+			
+			return false; // No intersection
+		}
+
+		// Returns the first intersection it can find
+		public static bool LineIntersection(Vector2 p0, Vector2 p1, Vector2[] points, out Vector2 intersection){
+			intersection = Vector2.zero;
+			for(int i=0;i<points.Length-1;i++){
+				if(LineIntersection(p0, p1, points[i], points[i+1], out intersection)){
+					return true;
+				}
+			}
+			return false;
+		}
+
+
 	}
 }

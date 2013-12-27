@@ -33,6 +33,7 @@ namespace ShaderForge {
 		public ValueType valueTypeDefault;
 		public string label;
 		public SF_NodeConnector inputCon;
+		public SF_NodeConnectionLine conLine;
 		public List<SF_NodeConnector> outputCons;
 		public SF_Node node;
 		public bool outerLabel = false;
@@ -83,6 +84,11 @@ namespace ShaderForge {
 			this.strID = strID;
 			this.label = label;
 			this.conType = conType;
+
+			if(conType == ConType.cInput){
+				conLine = ScriptableObject.CreateInstance<SF_NodeConnectionLine>().Initialize(node.editor, this);
+			}
+
 			this.valueType = this.valueTypeDefault = valueType;
 			this.outerLabel = outerLabel;
 			this.unconnectedEvaluationValue = unconnectedEvaluationValue;
@@ -298,11 +304,13 @@ namespace ShaderForge {
 			return r.Contains( world ? Event.current.mousePosition : MousePos() );
 		}
 
-		public bool Clicked() {
+
+
+		public bool Clicked(int button = 0) {
 
 
 			bool hovering = Hovering(world:false);
-			bool click = ( Event.current.type == EventType.mouseDown && Event.current.button == 0 );
+			bool click = ( Event.current.type == EventType.mouseDown && Event.current.button == button );
 			bool clickedCont = hovering && click;
 			//bool clickedCont=cont&&click;
 			//Debug.Log();
@@ -346,7 +354,7 @@ namespace ShaderForge {
 
 			
 
-			if( conType == ConType.cInput && inputCon != null ) {
+			if( conType == ConType.cInput ) {
 				DrawConnection( editor );
 			}
 
@@ -357,6 +365,10 @@ namespace ShaderForge {
 				SF_NodeConnector.pendingConnectionSource = this;
 				editor.nodeView.selection.DeselectAll();
 				Event.current.Use();
+			}
+
+			if( Clicked(1) && SF_GUI.HoldingAlt()){
+				Disconnect();
 			}
 
 			if( !ConnectionInProgress() ) {
@@ -382,7 +394,7 @@ namespace ShaderForge {
 
 		}
 
-		private Color GetConnectionLineColor() {
+		public Color GetConnectionLineColor() {
 
 			Color def = EditorGUIUtility.isProSkin ? new Color( 1f, 1f, 1f, 0.3f ) : new Color( 0f, 0f, 0f, 0.4f );
 
@@ -408,12 +420,17 @@ namespace ShaderForge {
 
 		void DrawConnection( SF_Editor editor ) {
 
+			conLine.Draw();
 
+			/*
 			Vector2 a = GetConnectionPoint();
 			Vector2 b = inputCon.GetConnectionPoint();
 			int cc = GetCompCount();
 
+
+
 			GUILines.DrawStyledConnection( editor, a, b, cc, GetConnectionLineColor() );
+			*/
 
 		}
 
@@ -665,6 +682,8 @@ namespace ShaderForge {
 			other.valueType = this.valueType;
 			other.inputCon = this;
 
+
+
 			// TODO: Force types in connector group!
 			//if( linkMethod == LinkingMethod.Default ) {
 				if( other.node.conGroup != null )
@@ -679,6 +698,8 @@ namespace ShaderForge {
 				other.node.OnUpdateNode(); // Update other, and following
 
 			}
+
+			other.conLine.ReconstructShapes();
 			
 		}
 
@@ -697,7 +718,16 @@ namespace ShaderForge {
 			}
 		}
 
+		public bool IsDeleteHovering(bool world = true){
+			return IsConnected() && Hovering(world) && SF_GUI.HoldingAlt();
+		}
+
 		public Color GetConnectorColorRGB() {
+
+			if(IsDeleteHovering()){
+				return Color.red;
+			}
+
 			if( enableState != EnableState.Enabled )
 				return Color.gray;
 
@@ -743,8 +773,6 @@ namespace ShaderForge {
 
 
 			// Don't draw if invalid
-			
-				
 
 			rect = new Rect( pos.x, pos.y, 25, 14 );
 

@@ -30,6 +30,7 @@ namespace ShaderForge {
 		public bool alwaysDefineVariable = false;
 
 		public static Color colorExposed = new Color( 0.8f, 1f, 0.9f );
+		public static Color colorExposedDim = new Color( 0.8f, 1f, 0.9f )*0.8f;
 		public static Color colorExposedDark = new Color( 0.24f, 0.32f, 0.30f ) * 1.25f;
 		public static Color colorExposedDarker = new Color( 0.24f, 0.32f, 0.30f ) * 0.75f;
 
@@ -427,6 +428,21 @@ namespace ShaderForge {
 		}
 
 
+		public float BoundsTop(){
+
+			float top = rect.yMin;
+
+			if(this.IsProperty())
+				top -= 20;
+			if(HasComment())
+				top -= 20;
+
+			return top;
+		}
+
+		public float BoundsBottom(){
+			return rect.yMax;
+		}
 
 
 		public virtual int GetEvaluatedComponentCount() {
@@ -724,6 +740,22 @@ namespace ShaderForge {
 		}
 
 
+
+		public void UpdateNeighboringConnectorLines(){
+			foreach(SF_NodeConnector con in connectors){
+				if(!con.IsConnected())
+					continue;
+				if(con.conType == ConType.cOutput){
+					foreach(SF_NodeConnector conOut in con.outputCons){
+						conOut.conLine.ReconstructShapes();
+					}
+				} else if(con.conType == ConType.cInput){
+					con.conLine.ReconstructShapes();
+				}
+			}
+		}
+
+
 		public void StartDragging() {
 			isDragging = true;
 			dragStart = new Vector2( rect.x, rect.y );
@@ -739,6 +771,8 @@ namespace ShaderForge {
 
 		public void OnDraggedWindow( Vector2 delta ) {
 
+
+
 			editor.ResetRunningOutdatedTimer();
 
 			dragDelta += delta;
@@ -746,6 +780,9 @@ namespace ShaderForge {
 			rect.x = dragStart.x + dragDelta.x;
 			rect.y = dragStart.y + dragDelta.y;
 			Event.current.Use();
+
+
+			UpdateNeighboringConnectorLines();
 
 			
 

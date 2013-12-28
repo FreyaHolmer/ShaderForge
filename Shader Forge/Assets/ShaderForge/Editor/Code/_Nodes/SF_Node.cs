@@ -349,7 +349,17 @@ namespace ShaderForge {
 
 		public float GetInputData( string id, int x, int y, int c ) {
 
-			switch( GetConnectorByStringID(id).inputCon.outputChannel ) {
+			SF_NodeConnector con = GetConnectorByStringID(id);
+
+			if(!con.IsConnected()){
+				Debug.LogError("GetInputData on " + nodeName + " with unconnected input " + con.strID);
+				return 0f;
+			}
+
+			SF_NodeConnector inCon = con.inputCon;
+
+
+			switch( inCon.outputChannel ) {
 				case OutChannel.R:
 					c = 0;
 					break;

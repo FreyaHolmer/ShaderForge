@@ -112,6 +112,7 @@ namespace ShaderForge {
 
 			// TODO: Subshaders etc
 			SF_Parser.settingUp = true;
+			SF_Parser.quickLoad = true;
 			foreach( string row in rows ) {
 				if( row.StartsWith( "n:" ) ) {
 					//Debug.Log("Deserializing node:" + row);
@@ -140,14 +141,15 @@ namespace ShaderForge {
 
 			//Profiler.BeginSample ("MyPieceOfCode");
 
-			editor.nodeView.HierarchalRefresh();
+			//editor.nodeView.HierarchalRefresh();
 
 			//Profiler.EndSample();
 
 
 			//Debug.Log( "Reconnect pending..." );
-			SF_Parser.quickLoad = false;
+
 			editor.nodeView.ReconnectConnectedPending();
+			SF_Parser.quickLoad = false;
 			
 			//Debug.Log( "Reconnect done, updating auto settings..." );
 
@@ -160,6 +162,11 @@ namespace ShaderForge {
 			editor.nodeView.CenterCamera();
 			SF_Parser.settingUp = false;
 			SF_Parser.quickLoad = false;
+
+
+			// Update preview images by refreshing all outermost nodes
+			editor.nodeView.HierarchalRefresh();
+
 			//Debug.Log( "Centered camera, recompiling shader..." );
 			editor.materialOutput.OnUpdateNode( NodeUpdateType.Hard, true );
 

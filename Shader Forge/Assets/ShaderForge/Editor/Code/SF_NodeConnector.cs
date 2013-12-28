@@ -562,7 +562,7 @@ namespace ShaderForge {
 					//Debug.Log( "Disconnecting " + label + "<--" + inputCon.label );
 				}
 				inputCon = null;
-				if( callback )
+				if( callback && !SF_Parser.quickLoad )
 					node.OnUpdateNode();
 			} else {
 				//Debug.Log( "Output disconnecting " + node.name + "[" + label + "]" );

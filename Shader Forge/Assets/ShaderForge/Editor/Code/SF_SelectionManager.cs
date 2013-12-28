@@ -27,7 +27,7 @@ namespace ShaderForge {
 		Rect selectionBox = new Rect(256,32,32,64);
 
 		[SerializeField]
-		bool boxSelecting = false;
+		public bool boxSelecting = false;
 
 		public void MoveSelection(Vector2 delta, SF_Node ignore) {
 			foreach(SF_Node n in selection){

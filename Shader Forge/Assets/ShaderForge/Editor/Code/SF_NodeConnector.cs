@@ -719,7 +719,7 @@ namespace ShaderForge {
 		}
 
 		public bool IsDeleteHovering(bool world = true){
-			return IsConnected() && Hovering(world) && SF_GUI.HoldingAlt();
+			return IsConnected() && Hovering(world) && SF_GUI.HoldingAlt() && !node.editor.nodeView.selection.boxSelecting;
 		}
 
 		public Color GetConnectorColorRGB() {

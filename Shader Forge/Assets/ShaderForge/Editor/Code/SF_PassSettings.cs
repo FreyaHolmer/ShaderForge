@@ -698,7 +698,7 @@ namespace ShaderForge {
 				string bef = prop.property.nameDisplay;
 				SF_GUI.AssignCursor( dispNameRect, MouseCursor.Text );
 				//if( mouseOver )
-					SF_GUI.EnterableTextField( prop, dispNameRect, ref prop.property.nameDisplay, EditorStyles.textField );
+					SF_GUI.EnterableTextField( prop, dispNameRect, ref prop.property.nameDisplay, EditorStyles.textField, update:false);
 				//else
 					//GUI.Label( dispNameRect, prop.property.nameDisplay, EditorStyles.boldLabel );
 				if( prop.property.nameDisplay != bef ) { // Changed

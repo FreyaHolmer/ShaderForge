@@ -309,19 +309,23 @@ namespace ShaderForge {
 			EditorGUI.BeginChangeCheck();
 			val = EditorGUI.FloatField( r, val, style );
 
+
 			bool pressedEnter = Event.current.keyCode == KeyCode.Return;
 
 			if( pressedEnter ) {
 				EditorGUI.EndChangeCheck();
-				if(GUI.GetNameOfFocusedControl() == field_name)
+				//Debug.Log("Pressed enter with focus on " + GUI.GetNameOfFocusedControl() + ", should have been " + field_name);
+				if(GUI.GetNameOfFocusedControl() == field_name){
+					//Debug.Log("Pressed enter!");
 					n.OnUpdateNode( NodeUpdateType.Hard );
+				}
 			} else if( EditorGUI.EndChangeCheck() ) {
 				n.OnUpdateNode( NodeUpdateType.Soft );
 			}
 		}
 
 
-		public static void EnterableTextField( SF_Node n, Rect r, ref string str, GUIStyle style ) {
+		public static void EnterableTextField( SF_Node n, Rect r, ref string str, GUIStyle style, bool update = true ) {
 			if( style == null )
 				style = EditorStyles.textField;
 			string field_name = n.GetType().ToString() + "_txt_" + n.id;
@@ -333,12 +337,20 @@ namespace ShaderForge {
 
 			bool pressedEnter = Event.current.keyCode == KeyCode.Return;
 
-			if( pressedEnter ) {
-				if( GUI.GetNameOfFocusedControl() == field_name )
-					n.OnUpdateNode( NodeUpdateType.Hard );
-			} else if( EditorGUI.EndChangeCheck() ) {
-				n.OnUpdateNode( NodeUpdateType.Soft );
+			if(update){
+				if( pressedEnter ) {
+					if( GUI.GetNameOfFocusedControl() == field_name )
+						n.OnUpdateNode( NodeUpdateType.Hard );
+					EditorGUI.EndChangeCheck();
+				} else if( EditorGUI.EndChangeCheck() ) {
+					n.OnUpdateNode( NodeUpdateType.Soft );
+				}
+			} else if(EditorGUI.EndChangeCheck()){
+				n.editor.ShaderOutdated = UpToDateState.OutdatedSoft;
 			}
+
+
+
 		}
 
 

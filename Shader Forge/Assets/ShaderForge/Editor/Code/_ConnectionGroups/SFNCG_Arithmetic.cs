@@ -46,7 +46,7 @@ namespace ShaderForge {
 					if( baseInType == ValueType.VTv1 )
 						output.valueType = ValueType.VTvPending;
 					else
-						output.valueType = baseInType;
+						SetOutputValueType(baseInType);
 				} else {
 				//	Debug.Log("SEARCHING:");
 					ValueType vtDom = GetDominantInputType();
@@ -62,6 +62,15 @@ namespace ShaderForge {
 		public void SetOutputValueType(ValueType vt){
 
 			//Debug.Log("Trying to set to " + vt);
+
+			if(vt == ValueType.VTv1v2)
+				vt = ValueType.VTv2;
+			if(vt == ValueType.VTv1v3)
+				vt = ValueType.VTv3;
+			if(vt == ValueType.VTv1v4)
+				vt = ValueType.VTv4;
+
+
 			output.SetValueType(vt);
 
 			//Debug.Log("Setting output type of " + output.node.nodeName + " to " + output.valueType); // THIS IS SET TO PENDING VOR VEC1 INPUTS
@@ -190,6 +199,8 @@ namespace ShaderForge {
 			foreach( SF_NodeConnector nc in inputs ) {
 				retType = GetDominantType( retType, nc.valueType );
 			}
+
+			//Debug.Log("Base input type is " + retType);
 
 			//if( retType == ValueType.VTvPending )
 				//Debug.LogWarning( "You should not be able to get here! Pending type returned" );

@@ -30,7 +30,7 @@ namespace ShaderForge {
 		public override int GetEvaluatedComponentCount() {
 			int max = 0;
 			foreach(SF_NodeConnector con in connectors){
-				if( con.conType == ConType.cOutput )
+				if( con.conType == ConType.cOutput || !con.IsConnected()) // Only connected ones, for now
 					continue;
 				max = Mathf.Max( max, con.GetCompCount() );
 			}

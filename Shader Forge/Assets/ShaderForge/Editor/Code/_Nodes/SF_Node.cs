@@ -247,6 +247,19 @@ namespace ShaderForge {
 
 		}
 
+
+		public void SetExtensionConnectorChain(params string[] cNames){
+			
+			SF_NodeConnector con = GetConnectorByStringID(cNames[0]);
+			for(int i=1;i<cNames.Length;i++){
+				SF_NodeConnector conNew = GetConnectorByStringID(cNames[i]);
+				con.SetVisChild(conNew);
+				con = conNew;
+			}
+			
+		}
+
+
 		public float[] VectorCopy( float[] original ) {
 			float[] retVec = new float[original.Length];
 			for( int i = 0; i < original.Length; i++ ) {

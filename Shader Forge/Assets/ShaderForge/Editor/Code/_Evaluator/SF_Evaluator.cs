@@ -1916,6 +1916,10 @@ namespace ShaderForge {
 				Debug.Log( "SHADER EVALUATING" );
 
 			editor.ps.fChecker.UpdateAvailability();
+			if(!editor.nodeView.treeStatus.CheckCanCompile()){
+				return;
+			}
+			ps.UpdateAutoSettings();
 			currentPass = PassType.FwdBase;
 			PrepareEvaluation();
 			UpdateDependencies();

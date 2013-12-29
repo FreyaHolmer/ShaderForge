@@ -123,6 +123,35 @@ namespace ShaderForge {
 			return this;
 		}
 
+		public SF_NodeConnector visControlChild;
+		public SF_NodeConnector visControlParent;
+		public SF_NodeConnector SetVisChild(SF_NodeConnector child){ // Used to make enable-chains (Connecting B enables the C connector etc)
+			visControlChild = child;
+			child.visControlParent = this;
+			child.enableState = EnableState.Hidden;
+			return this;
+		}
+
+		public void SetVisChildVisible(bool visible){
+
+			if(visControlChild == null){
+				return;
+			}
+
+			EnableState targetState = visible ? EnableState.Enabled : EnableState.Hidden;
+
+			if(visControlChild.enableState == targetState)
+				return; // Don't do anything if unchanged
+
+	
+			if(!visible){
+				visControlChild.Disconnect(true,false); // Disconnect if it goes invisible when linked
+			}
+
+			visControlChild.enableState = targetState;
+
+		}
+
 
 
 
@@ -544,7 +573,7 @@ namespace ShaderForge {
 			return ( node == null );
 		}
 
-		public void Disconnect( bool force = false, bool callback = true ) {
+		public void Disconnect( bool force = false, bool callback = true, bool reconnection = false ) {
 
 			//Debug.Log( "Attempt to disconnect: " + node.name + "[" + label + "]" );
 
@@ -559,6 +588,8 @@ namespace ShaderForge {
 				ResetValueType();
 				if( inputCon != null ) {
 					inputCon.outputCons.Remove( this );
+					if(!reconnection)
+						SetVisChildVisible(false); // Don't hide the child if this was disconnected by reconnection
 					//Debug.Log( "Disconnecting " + label + "<--" + inputCon.label );
 				}
 				inputCon = null;
@@ -672,7 +703,7 @@ namespace ShaderForge {
 
 				// In case there's an existing one
 				if( other.IsConnected() )
-					other.Disconnect();
+					other.Disconnect(true,false,true);
 
 			}
 
@@ -692,6 +723,8 @@ namespace ShaderForge {
 
 
 			this.outputCons.Add( other );
+
+			other.SetVisChildVisible(true);
 
 			if( linkMethod == LinkingMethod.Default ) {
 				node.RefreshValue();// OnUpdateNode( NodeUpdateType.Soft, false ); // Update this value
@@ -719,7 +752,30 @@ namespace ShaderForge {
 		}
 
 		public bool IsDeleteHovering(bool world = true){
-			return IsConnected() && Hovering(world) && SF_GUI.HoldingAlt() && !node.editor.nodeView.selection.boxSelecting;
+
+			if(!IsConnected())
+				return false; // There's no link to delete to begin with
+			if(!Hovering(world))
+				return false; // You aren't hovering at all
+			if(node.editor.nodeView.selection.boxSelecting)
+				return false; // You're in the middle of a box selection
+
+			if(SF_NodeConnector.pendingConnectionSource != null){
+
+				if(SF_NodeConnector.pendingConnectionSource == this)
+					return false; // Hovering the pending connection, don't mark it for delete
+
+				if(!UnconnectableToPending())
+					return true; // This will be a relink-delete!
+			}
+
+
+
+			if(SF_GUI.HoldingAlt())
+				return true; // RMB delete
+			
+
+			return false;
 		}
 
 		public Color GetConnectorColorRGB() {
@@ -766,10 +822,31 @@ namespace ShaderForge {
 		}
 
 
+		public bool ValidlyPendingChild(){
+			return (IsChild() && visControlParent.IsConnected() && CanConnectToPending() && enableState == EnableState.Enabled);
+		}
+
+		public bool CanConnectToPending(){
+			return SF_NodeConnector.pendingConnectionSource != null && !UnconnectableToPending();
+		}
+
+		public bool IsChild(){
+			return visControlParent != null;
+		}
+
 		public void Draw( Vector2 pos ) {
 
-			if( enableState == EnableState.Hidden )
+
+			bool hidden = enableState == EnableState.Hidden;
+
+			bool isUnconnectedChild = IsChild() && !IsConnected();
+			bool isHiddenExtraConnector = isUnconnectedChild && !ValidlyPendingChild();
+
+			if( hidden ){
 				return;
+			} else if(isHiddenExtraConnector){ // If it's flagged as enabled, but is an unconnected child, only draw it when it's either connected or has a pending valid connection
+				return;
+			}
 
 
 			// Don't draw if invalid
@@ -848,7 +925,7 @@ namespace ShaderForge {
 				labelRect.x -= EditorStyles.miniLabel.CalcSize( new GUIContent( label ) ).x + 4;
 			}
 
-			GUI.Label( labelRect, label, SF_Styles.MiniLabelOverflow );
+			GUI.Label( labelRect, isUnconnectedChild ? "+" : label,isUnconnectedChild ? EditorStyles.boldLabel : SF_Styles.MiniLabelOverflow );
 			
 			CheckIfDeleted();
 
@@ -856,8 +933,9 @@ namespace ShaderForge {
 		}
 
 
-		public void SetAvailable( bool b ) {
+		public SF_NodeConnector SetAvailable( bool b ) {
 			availableState = b ? AvailableState.Available : AvailableState.Unavailable;
+			return this;
 		}
 
 		public bool HasErrors() {

@@ -409,10 +409,6 @@ namespace ShaderForge {
 				SF_Tools.AssignShaderToMaterialAsset( ref preview.material, currentShaderAsset );
 			}
 
-
-
-
-
 			// Load data if it was set to initialize things
 
 		}
@@ -889,7 +885,10 @@ namespace ShaderForge {
 			// So we now have the path to save it, let's save
 			//StreamWriter sw;
 			if( !File.Exists( savePath ) ) {
-				File.CreateText( savePath );
+				StreamWriter sw = File.CreateText( savePath );
+				sw.Write("Shader \"\" { SubShader { Pass { } } }");
+				sw.Flush();
+				sw.Close();
 				AssetDatabase.Refresh();
 			}
 

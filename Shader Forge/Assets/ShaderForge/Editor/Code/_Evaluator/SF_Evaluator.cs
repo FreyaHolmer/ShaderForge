@@ -1968,37 +1968,16 @@ namespace ShaderForge {
 
 		void SaveShaderAsset() {
 
+			//Debug.Log("SaveShaderAsset()");
 
-			string filePath = editor.GetShaderFilePath();
-			//string nameEditor;
-			/*
-			if( string.IsNullOrEmpty( filePath ) ) {
-				filePath = Application.dataPath + "/ShaderForge/Internal/";
-				nameEditor = 
-			}*/
-
-			string nameEditor = filePath;
-			//string nameEditor = pathRoot + "AceMatEdShader.shader";
-			//string nameGame = pathRoot + "AceMatEdShaderGame.shader";
+			string fileContent = editor.nodeView.GetNodeDataSerialized() + "\n\n" + shaderString;
 
 
-			if( !File.Exists( nameEditor ) )
-				File.Create( nameEditor ).Close();
-			//if( !File.Exists( nameGame ) )
-			//	File.Create( nameGame ).Close();
-
-
-
-			string shaderFileString = shaderString;
-
-			shaderFileString = editor.nodeView.GetNodeDataSerialized() + "\n\n" + shaderFileString;
-
-
-			File.WriteAllText( nameEditor, shaderFileString );
-			//File.WriteAllText( nameGame, shaderString );
-
+			StreamWriter sw = new StreamWriter( editor.GetShaderFilePath() );
+			sw.Write(fileContent);
+			sw.Flush();
+			sw.Close();
 			AssetDatabase.Refresh( ImportAssetOptions.DontDownloadFromCacheServer );
-
 			editor.OnShaderEvaluated();
 
 		}

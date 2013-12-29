@@ -110,6 +110,9 @@ namespace ShaderForge {
 			// Compiled shader string:
 			string[] css = ( new SerializedObject( sh ) ).FindProperty( "m_Script" ).stringValue.Split( '\n' );
 
+			if(css.Length < 2){
+				return;
+			}
 
 			ShaderProgram prog = ShaderProgram.Vert;
 

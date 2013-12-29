@@ -413,10 +413,26 @@ namespace ShaderForge {
 
 			node.Repaint();
 
+		
+			bool hovering = false;
+			foreach(SF_Node n in editor.nodes){
+				foreach(SF_NodeConnector con in n.connectors){
+					if(con.CanConnectToPending() && con.Hovering(false)){
+						hovering = true;
+						break;
+					}
+				}
+				if(hovering)
+					break;
+			}
+
+			Color c = hovering ? Color.green : GetConnectionLineColor();
+
+
 			if( conType == ConType.cInput )
-				GUILines.DrawStyledConnection( editor, GetConnectionPoint(), MousePos(), 1, GetConnectionLineColor() );
+				GUILines.DrawStyledConnection( editor, GetConnectionPoint(), MousePos(), 1, c );
 			else
-				GUILines.DrawStyledConnection( editor, MousePos(), GetConnectionPoint(), GetCompCount(), GetConnectionLineColor() );
+				GUILines.DrawStyledConnection( editor, MousePos(), GetConnectionPoint(), GetCompCount(), c );
 
 			//Drawing.DrawLine(rect.center,MousePos(),Color.white,2,true);
 
@@ -703,7 +719,7 @@ namespace ShaderForge {
 
 				// In case there's an existing one
 				if( other.IsConnected() )
-					other.Disconnect(true,false,true);
+					other.Disconnect(true,false,reconnection:true);
 
 			}
 
@@ -751,6 +767,15 @@ namespace ShaderForge {
 			}
 		}
 
+		public bool IsConnectionHovering(bool world = true){
+
+			bool active = enableState == EnableState.Enabled && availableState == AvailableState.Available;
+			//bool free = !IsConnected();
+			bool hoveringPending = SF_NodeConnector.IsConnecting() && Hovering(world) && !UnconnectableToPending();
+
+			return (active && /*free &&*/ hoveringPending);
+		}
+
 		public bool IsDeleteHovering(bool world = true){
 
 			if(!IsConnected())
@@ -760,7 +785,7 @@ namespace ShaderForge {
 			if(node.editor.nodeView.selection.boxSelecting)
 				return false; // You're in the middle of a box selection
 
-			if(SF_NodeConnector.pendingConnectionSource != null){
+			if(SF_NodeConnector.IsConnecting()){
 
 				if(SF_NodeConnector.pendingConnectionSource == this)
 					return false; // Hovering the pending connection, don't mark it for delete
@@ -780,9 +805,15 @@ namespace ShaderForge {
 
 		public Color GetConnectorColorRGB() {
 
-			if(IsDeleteHovering()){
+
+			bool delHov = IsDeleteHovering();
+			bool conHov = IsConnectionHovering();
+
+			if(conHov){
+				return Color.green;
+			} else if(delHov){
 				return Color.red;
-			}
+			} 
 
 			if( enableState != EnableState.Enabled )
 				return Color.gray;
@@ -813,6 +844,10 @@ namespace ShaderForge {
 
 
 		public bool UnconnectableToPending() {
+			if(enableState != EnableState.Enabled || availableState == AvailableState.Unavailable)
+				return true;
+			if(SF_NodeConnector.pendingConnectionSource == this)
+				return true;
 			if( SF_NodeConnector.pendingConnectionSource != null ) {
 				if( SF_NodeConnector.pendingConnectionSource != this )
 					if( !CanValidlyConnectTo( SF_NodeConnector.pendingConnectionSource ) )

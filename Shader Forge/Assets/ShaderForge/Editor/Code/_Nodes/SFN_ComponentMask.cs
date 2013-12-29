@@ -8,7 +8,7 @@ namespace ShaderForge {
 	[System.Serializable]
 	public class SFN_ComponentMask : SF_Node {
 
-		public enum CompChannel {off = -1, r = 0, g = 1, b = 2, a = 3,  };
+		public enum CompChannel {off = -1, r = 0, g = 1, b = 2, a = 3  };
 		const string R = "R";
 		const string G = "G";
 		const string B = "B";
@@ -25,6 +25,16 @@ namespace ShaderForge {
 			new string[] { R, G },
 			new string[] { R, G, B },
 			new string[] { R, G, B, A }
+		};
+
+		public const float colDesat = 0.6f;
+
+		public static Color[] chanColors = new Color[]{
+			Color.white,
+			new Color( 1f,			colDesat,	colDesat),
+			new Color( colDesat,	1f,			colDesat),
+			new Color( colDesat*1.1f,	colDesat*1.1f,	1f		),
+			Color.white
 		};
 
 
@@ -149,10 +159,10 @@ namespace ShaderForge {
 
 					int curDisplayIndex = (int)components[i]-labelOffset;
 					string[] dispLabels = labels[inCompCount-1];
-
+					GUI.color = chanColors[Mathf.Clamp((int)components[i]+1,0,4)];
 					components[i] = (CompChannel)(EditorGUI.Popup( r, curDisplayIndex, dispLabels, popupStyle )+labelOffset);
 				}
-					
+
 
 				if( components[i] == CompChannel.off )
 					GUI.enabled = false; // Disable following buttons

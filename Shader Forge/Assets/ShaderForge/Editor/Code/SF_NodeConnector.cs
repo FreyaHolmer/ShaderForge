@@ -841,7 +841,7 @@ namespace ShaderForge {
 
 
 		public bool DisplayAsValid() {
-			return enableState == EnableState.Enabled && availableState == AvailableState.Available && !UnconnectableToPending();
+			return enableState == EnableState.Enabled && availableState == AvailableState.Available && (!UnconnectableToPending() || this == SF_NodeConnector.pendingConnectionSource);
 		}
 
 
@@ -929,7 +929,7 @@ namespace ShaderForge {
 
 			GUI.color = DisplayAsValid() ? Color.white : Color.grey;
 
-			if( HasErrors() ) {
+			if( HasErrors() && !(Hovering(true) && CanValidlyConnectTo(SF_NodeConnector.pendingConnectionSource)) ) {
 				Rect iconRect = new Rect( rect );
 				iconRect.x += iconRect.width;
 				iconRect.height = iconRect.width = 16;

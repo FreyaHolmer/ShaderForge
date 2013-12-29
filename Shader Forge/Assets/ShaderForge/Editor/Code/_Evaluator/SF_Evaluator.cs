@@ -868,6 +868,10 @@ namespace ShaderForge {
 
 			AppDebug("Specular");
 
+			if(!ps.HasDiffuse()){
+				App( "float NdotL = dot( "+VarNormalDir()+", lightDirection );" );
+			}
+
 			App ("NdotL = max(0.0, NdotL);");
 
 			//if(DoAmbientSpecThisPass() && ps.IsPBL())

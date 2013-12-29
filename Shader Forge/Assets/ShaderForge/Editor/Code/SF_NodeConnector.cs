@@ -784,13 +784,15 @@ namespace ShaderForge {
 				return false; // You aren't hovering at all
 			if(node.editor.nodeView.selection.boxSelecting)
 				return false; // You're in the middle of a box selection
+			if(node.editor.nodeView.isCutting)
+				return false; // We're already doing a cut-deletion, don't mark it for click-deletion
 
 			if(SF_NodeConnector.IsConnecting()){
 
 				if(SF_NodeConnector.pendingConnectionSource == this)
 					return false; // Hovering the pending connection, don't mark it for delete
 
-				if(!UnconnectableToPending())
+				if(!UnconnectableToPending() && this.conType == ConType.cInput)
 					return true; // This will be a relink-delete!
 			}
 

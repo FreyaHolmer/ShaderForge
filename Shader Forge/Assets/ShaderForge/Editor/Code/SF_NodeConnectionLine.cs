@@ -142,7 +142,10 @@ namespace ShaderForge{
 		}
 
 		public bool DeleteImminent(){
-			return aboutToBeDeleted || connector.IsDeleteHovering(false) || connector.inputCon.IsDeleteHovering(false);
+
+			bool thisIsPendingInput = (connector.conType == ConType.cInput) && (SF_NodeConnector.pendingConnectionSource == connector);
+
+			return aboutToBeDeleted || connector.IsDeleteHovering(false) || connector.inputCon.IsDeleteHovering(false) || thisIsPendingInput;
 		}
 
 

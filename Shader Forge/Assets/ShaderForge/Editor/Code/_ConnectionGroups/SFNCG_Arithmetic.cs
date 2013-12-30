@@ -42,7 +42,7 @@ namespace ShaderForge {
 
 			// Output:
 			if( !lockedOutput ){
-				if( InputsMissing() ) {
+				if( RequiredInputsMissing() ) {
 					if( baseInType == ValueType.VTv1 )
 						output.valueType = ValueType.VTvPending;
 					else

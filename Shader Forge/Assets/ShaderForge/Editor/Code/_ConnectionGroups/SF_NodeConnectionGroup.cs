@@ -43,9 +43,9 @@ namespace ShaderForge {
 			}
 		}
 
-		public bool InputsMissing() {
+		public bool RequiredInputsMissing() {
 			foreach( SF_NodeConnector nc in inputs ) {
-				if( !nc.IsConnected() )
+				if( !nc.IsConnected() && nc.required )
 					return true;
 			}
 			return false;

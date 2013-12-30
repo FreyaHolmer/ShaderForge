@@ -247,6 +247,14 @@ namespace ShaderForge {
 
 		}
 
+		public void ChainAppendIfConnected(ref string evalStr, string op, params string[] cons ){
+			foreach(string con in cons){
+				if(GetInputIsConnected(con)){
+					evalStr += op + GetConnectorByStringID(con).TryEvaluate();
+				}
+			}
+		}
+
 
 		public void SetExtensionConnectorChain(params string[] cNames){
 			

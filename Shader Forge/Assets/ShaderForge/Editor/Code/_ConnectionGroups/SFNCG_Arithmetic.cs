@@ -102,6 +102,10 @@ namespace ShaderForge {
 			
 			
 			foreach(SF_NodeConnector con in inputs){
+
+				if(con.IsChild() && !con.IsConnected())
+					continue; // This is fine, childs aren't required
+
 				if(con.GetCompCount() == 2)
 					con.TypecastTo(typeTarget);
 			}

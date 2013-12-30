@@ -40,18 +40,13 @@ namespace ShaderForge {
 
 			evalStr += GetConnectorByStringID( "A" ).TryEvaluate() + "+" + GetConnectorByStringID( "B" ).TryEvaluate();
 
-			if(GetInputIsConnected("C")){
-				evalStr += "+" + GetConnectorByStringID( "C" ).TryEvaluate();
-			}
-			if(GetInputIsConnected("D")){
-				evalStr += "+" + GetConnectorByStringID( "D" ).TryEvaluate();
-			}
-			if(GetInputIsConnected("E")){
-				evalStr += "+" + GetConnectorByStringID( "E" ).TryEvaluate();
-			}
+			ChainAppendIfConnected(ref evalStr, "+", "C", "D", "E");
 
 			return "(" + evalStr + ")";
 		}
+
+
+
 
 		public override float NodeOperator( int x, int y, int c ) {
 

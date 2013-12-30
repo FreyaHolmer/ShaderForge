@@ -1,13 +1,14 @@
 
-
-
-Hello!
-
-Shader Forge is a new node-based shader editor for Unity, giving you the ultimate freedom of shader creation in a visual and intuitive way - with no code required!
+Shader Forge is a new node-based shader editor for Unity, giving you the freedom of shader creation in a visual and intuitive way - with no code required!
 
 Shader Forge has been alpha-tested by a wide range of developers at companies ranging from several large studios such as Blizzard, DICE, Ubisoft, Bungie, EA, Avalanche Studios, Rovio, to indie studios such as Killbrite, InXile, The Chinese Room, and even developers like Marmoset, Samsung and Unity themselves.
-A ton of feedback was provided during the testing phase, and this phase is now nearing its end, where you can jump into early-access for 15% off the full price :)
+A ton of feedback was provided during the testing phase, and this phase is now nearing its end, where you can jump into early-access for 20% off the full price :)
 
+I'm super excited about this, as it's my first asset release; which I hope is the start of a longer commitment to keep this up-to-date and as good as possible!
+
+Enjoy!
+
+// Joachim Holmér
 
 
 
@@ -17,27 +18,24 @@ What am I buying?
 * A large pack of example shaders to study and use freely
 
 
-
 Workflow:
 ---------
 * Create shaders visually, without any coding needed
 * No extra files to sync over your version control system; Shader Forge uses a single file for shaders - the .shader file itself
 * SF writes CG shaders that can be used in any project, without installing Shader Forge.
-* Extensive documentation and support center, for providing feedback, bug reports and getting help!
 * Works in both Unity Pro and Unity Free
-
+* Support center, for providing feedback, bug reports and getting help!
 
 
 Some of the features:
 ---------------------
 * Built-in Physically Based Lighting mode and energy conserving shading
 * Visual and intuitive interface - Get a clear overview of what each node does
-* Custom lighting nodes
+* Custom lighting nodes and IBL support, with seamless Skyshop integration coming soon!
 * DX11 Tessellation & Displacement
 * Transparency; both partial and alpha clipping
-* Full per-light shadowing in forward rendering
 * Refraction & Render Textures (Requires Unity Pro)
-* All the essentials such as lightmapping, cubemaps, custom blending modes, depth sorting, fog control, and much much more!
+* Plus all the essentials such as lightmapping, cubemaps, custom blending modes, depth sorting, fog control, and much much more!
 
 
 
@@ -85,7 +83,8 @@ Introduction to node-based shader creation
 	Math is handled per-channel
 
 Using custom lighting
-
+	Diffuse term
+	Specular term
 
 
 

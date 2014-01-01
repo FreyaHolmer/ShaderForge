@@ -132,6 +132,8 @@ Lighting
 		Interpolated normals are cheaper to render, but doesn't look as good as normalized normals.
 	Lightmap support
 		Check this is you want your shader to support lightmapping
+	Light probe support
+		Check this if you want your shader to support light probes
 	Mask Directional light specular by shadows
 		This will remove specularity in shadows, which is more realistic. Currently only works for directional lights.
 	Receive Ambient Light
@@ -141,6 +143,8 @@ Lighting
 Quality
 	Per-pixel screen coordinates
 		This will make the screen coordinates more accurate, can be useful to make refraction look better
+	Per-pixel light probe sampling
+		This will make the light probe sampling be done on a per-pixel level. This is useful for light probed shaders that are using a normal map
 
 
 Blending & Depth

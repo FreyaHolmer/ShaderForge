@@ -77,9 +77,11 @@ namespace ShaderForge {
 		public RenderType renderType = RenderType.Opaque;
 		public bool ignoreProjector = false;
 		public bool lightmapped = false;
+		public bool lightprobed = true;
 		public bool energyConserving = false;
 		public bool remapGlossExponentially = true;
 		public bool highQualityScreenCoords = true;
+		public bool highQualityLightProbes = false;
 		//
 
 
@@ -140,12 +142,14 @@ namespace ShaderForge {
 			s += Serialize( "flbk", fallback );
 			s += Serialize( "rntp", ( (int)renderType ).ToString() );
 			s += Serialize( "lmpd", lightmapped.ToString() );
+			s += Serialize( "lprd", lightprobed.ToString() );
 			s += Serialize( "enco", energyConserving.ToString());
 			s += Serialize( "frtr", fresnelTerm.ToString() );
 			s += Serialize( "vitr", visibilityTerm.ToString() );
 			s += Serialize( "dbil", doubleIncomingLight.ToString() );
 			s += Serialize( "rmgx", remapGlossExponentially.ToString());
 			s += Serialize( "hqsc", highQualityScreenCoords.ToString());
+			s += Serialize( "hqlp", highQualityLightProbes.ToString());
 
 			s += Serialize( "fgom", fogOverrideMode.ToString()); 	// bool
 			s += Serialize( "fgoc", fogOverrideColor.ToString());	// bool
@@ -247,6 +251,9 @@ namespace ShaderForge {
 			case "lmpd":
 				lightmapped = bool.Parse( value );
 				break;
+			case "lprd":
+				lightprobed = bool.Parse( value );
+				break;
 			case "enco":
 				energyConserving = bool.Parse( value );
 				break;
@@ -264,6 +271,9 @@ namespace ShaderForge {
 				break;
 			case "hqsc":
 				highQualityScreenCoords = bool.Parse( value );
+				break;
+			case "hqlp":
+				highQualityLightProbes = bool.Parse( value );
 				break;
 
 			// Fog booleans
@@ -1058,8 +1068,8 @@ namespace ShaderForge {
 			
 			
 			highQualityScreenCoords = GUI.Toggle( r, highQualityScreenCoords, "Per-pixel screen coordinates" );
-
-
+			r.y += 20;
+			highQualityLightProbes = GUI.Toggle( r, highQualityLightProbes, "Per-pixel light probe sampling" );
 			r.y += 20;
 		
 			if( EndExpanderChangeCheck() )
@@ -1389,6 +1399,8 @@ namespace ShaderForge {
 				normalQuality = (NormalQuality)ContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality );
 				r.y += 20;
 				lightmapped = GUI.Toggle( r, lightmapped, "Lightmap support" );
+				r.y += 20;
+				lightprobed = GUI.Toggle( r, lightprobed, "Light probe support" );
 				r.y += 20;
 				GUI.enabled = true;
 			}

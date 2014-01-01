@@ -121,6 +121,12 @@ namespace ShaderForge {
 				}
 			}
 
+			if(ps.lightprobed){
+				dependencies.vert_in_normals = true;
+				if(ps.highQualityLightProbes)
+					dependencies.NeedFragNormals();
+			}
+
 			if( ps.IsOutlined() && currentPass == PassType.Outline ){
 				dependencies.vert_in_normals = true;
 			}
@@ -1094,6 +1100,12 @@ namespace ShaderForge {
 
 		}
 
+
+		bool DoPassSphericalHarmonics(){
+			return ps.lightprobed && currentPass == PassType.FwdBase;
+		}
+
+
 		void Lighting() {
 
 			if( IsShadowOrOutlinePass() )
@@ -1197,11 +1209,31 @@ namespace ShaderForge {
 				bool addedSomething = false;
 
 				if( ps.HasDiffuse() ){
-					if(ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailable()){
-						lgFinal += "(diffuse + " + ps.n_ambientDiffuse +  " )";
-					} else {
-						lgFinal += "diffuse";
+
+					bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailable();
+					bool shLight = DoPassSphericalHarmonics();
+
+					bool parenthesize = (ambDiff || shLight);
+
+					string diffuseLight = parenthesize ?  "( diffuse" : "diffuse";
+				
+					if(ambDiff){
+						diffuseLight += " + " + ps.n_ambientDiffuse;
 					}
+
+					if(shLight){
+						if(ps.highQualityLightProbes)
+							diffuseLight += " + ShadeSH9(float4(normalDirection,1))";
+						else
+							diffuseLight += " + i.shLight";
+					}
+
+
+
+					if(parenthesize)
+						diffuseLight += " )";
+
+					lgFinal += diffuseLight;
 
 					lgFinal += " * " + ps.n_diffuse;
 					addedSomething = true;
@@ -1357,6 +1389,8 @@ namespace ShaderForge {
 
 				if( ps.IsVertexLit() )
 					App( "float3 vtxLight : COLOR;" );
+				if( DoPassSphericalHarmonics() && !ps.highQualityLightProbes )
+					App ("float3 shLight" + GetVertOutTexcoord() );
 				if( dependencies.uv0_frag )
 					App( "float4 uv0" + GetVertOutTexcoord() );
 				if( dependencies.uv1_frag )
@@ -1417,6 +1451,9 @@ namespace ShaderForge {
 				App( "o.uv1 = v.uv1;" );
 			if( dependencies.vert_out_vertexColor )
 				App("o.vertexColor = v.vertexColor;");
+			if( DoPassSphericalHarmonics() && !ps.highQualityLightProbes){
+				App ("o.shLight = ShadeSH9(float4(v.normal * unity_Scale.w,1));");
+			}
 			if( dependencies.vert_out_normals )
 				InitNormalDirVert();
 			if( dependencies.vert_out_tangents )

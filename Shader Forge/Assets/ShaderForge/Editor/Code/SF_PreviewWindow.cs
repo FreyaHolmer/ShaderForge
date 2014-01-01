@@ -307,7 +307,7 @@ namespace ShaderForge {
 
 		public void UpdatePreviewBackgroundColor() {
 			if( backgroundTexture == null ){
-				backgroundTexture = new Texture2D( 2, 2, TextureFormat.ARGB32, false );
+				backgroundTexture = new Texture2D( 2, 2, TextureFormat.ARGB32, false, QualitySettings.activeColorSpace == ColorSpace.Linear );
 				backgroundTexture.hideFlags = HideFlags.HideAndDontSave;
 			}
 			Color c = settings.colorBg;

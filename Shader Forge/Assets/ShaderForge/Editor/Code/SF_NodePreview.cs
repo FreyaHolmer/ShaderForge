@@ -126,8 +126,11 @@ namespace ShaderForge {
 		}
 
 
+		public ColorSpace textureColorSpace = ColorSpace.Uninitialized;
+
 		public void InitializeTexture() {
-			texture = new Texture2D( SF_NodeData.RES, SF_NodeData.RES, TextureFormat.ARGB32, false, false/*LINEAR, true?*/); // TODO: Gamma/Linear?
+			texture = new Texture2D( SF_NodeData.RES, SF_NodeData.RES, TextureFormat.ARGB32, false, QualitySettings.activeColorSpace == ColorSpace.Linear); // TODO: Gamma/Linear?
+			textureColorSpace = QualitySettings.activeColorSpace;
 			texture.wrapMode = TextureWrapMode.Clamp;
 			texture.hideFlags = HideFlags.HideAndDontSave;
 		}

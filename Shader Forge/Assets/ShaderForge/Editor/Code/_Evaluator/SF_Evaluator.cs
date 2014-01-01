@@ -1567,7 +1567,12 @@ namespace ShaderForge {
 				//if(ps.mOut.diffuse.IsConnectedEnabledAndAvailable()){
 				//	AppFinalOutput("lightFinal + " + "diffuse", ps.n_alpha); // This is really weird, it should already be included in the light calcs. Do more research // TODO
 				//}else
-				AppFinalOutput("finalColor", ps.n_alpha);
+				if(currentPass == PassType.FwdAdd){
+					AppFinalOutput("finalColor * " + ps.n_alpha, "0");
+				} else {
+					AppFinalOutput("finalColor", ps.n_alpha);
+				}
+
 				
 			}
 

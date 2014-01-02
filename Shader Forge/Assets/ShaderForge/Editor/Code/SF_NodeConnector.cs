@@ -347,7 +347,7 @@ namespace ShaderForge {
 		}
 
 		public bool Released() {
-			bool cont = rect.Contains( MousePos() );
+			bool cont = Hovering(world:false);
 			bool release = ( Event.current.type == EventType.mouseUp );
 			return cont && release;
 		}

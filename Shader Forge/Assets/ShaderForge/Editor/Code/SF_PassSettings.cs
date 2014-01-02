@@ -1408,11 +1408,18 @@ namespace ShaderForge {
 			r.y += 20;
 			shadowReceive = GUI.Toggle( r, shadowReceive, "Receive shadows" );
 			r.y += 20;*/
-			maskedSpec = GUI.Toggle( r, maskedSpec, "Mask directional light specular by shadows" );
-			r.y += 20;
+
 			GUI.enabled = IsLit();
-			useAmbient = GUI.Toggle( r, useAmbient, "Receive Ambient Light" );
+			if(lightprobed){
+				GUI.enabled = false;
+				GUI.Toggle( r, true, "Receive Ambient Light" );
+				GUI.enabled = true;
+			}else{
+				useAmbient = GUI.Toggle( r, useAmbient, "Receive Ambient Light" );
+			}
 			GUI.enabled = true;
+			r.y += 20;
+			maskedSpec = GUI.Toggle( r, maskedSpec, "Mask directional light specular by shadows" );
 			r.y += 20;
 			
 			if( EndExpanderChangeCheck() )

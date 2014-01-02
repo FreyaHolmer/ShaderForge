@@ -776,7 +776,7 @@ namespace ShaderForge {
 
 			lmbStr = "float3 diffuse = " + lmbStr + " * attenColor";
 
-			if(ps.useAmbient && currentPass == PassType.FwdBase){
+			if(ps.useAmbient && currentPass == PassType.FwdBase && !ps.lightprobed){ // Ambient is already in light probe data
 				lmbStr += " + " + GetAmbientStr();
 			}
 			
@@ -1223,7 +1223,7 @@ namespace ShaderForge {
 
 					if(shLight){
 						if(ps.highQualityLightProbes)
-							diffuseLight += " + ShadeSH9(float4(normalDirection,1))";
+							diffuseLight += " + ShadeSH9(float4(normalDirection,1))" + (ps.doubleIncomingLight ? "" : " * 0.5");
 						else
 							diffuseLight += " + i.shLight";
 					}
@@ -1452,7 +1452,7 @@ namespace ShaderForge {
 			if( dependencies.vert_out_vertexColor )
 				App("o.vertexColor = v.vertexColor;");
 			if( DoPassSphericalHarmonics() && !ps.highQualityLightProbes){
-				App ("o.shLight = ShadeSH9(float4(v.normal * unity_Scale.w,1));");
+				App ("o.shLight = ShadeSH9(float4(v.normal * unity_Scale.w,1))" + (ps.doubleIncomingLight ? "" : " * 0.5") + ";");
 			}
 			if( dependencies.vert_out_normals )
 				InitNormalDirVert();

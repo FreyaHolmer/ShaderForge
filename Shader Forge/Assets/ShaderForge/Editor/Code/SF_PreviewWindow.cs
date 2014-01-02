@@ -147,7 +147,7 @@ namespace ShaderForge {
 			
 			//GUILayout.Label( "BG" );
 			r.x += r.width + 10;
-			bool bef = settings.previewAutoRotate;
+			//bool bef = settings.previewAutoRotate;
 			settings.previewAutoRotate = GUI.Toggle( r, settings.previewAutoRotate, "Rotate" );
 			//}
 			//EditorGUILayout.EndHorizontal();

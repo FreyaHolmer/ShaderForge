@@ -356,7 +356,7 @@ namespace ShaderForge {
 
 			float frac = dashLength/(p0-p1).magnitude;
 
-			int segcount = Mathf.Max(1, Mathf.RoundToInt(1f/frac));
+			//int segcount = Mathf.Max(1, Mathf.RoundToInt(1f/frac));
 
 			for(float t = 0; t < 1; t += frac*2f){
 

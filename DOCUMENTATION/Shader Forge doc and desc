@@ -34,8 +34,9 @@ Some of the features:
 * Custom lighting nodes and IBL support, with seamless Skyshop integration coming soon!
 * DX11 Tessellation & Displacement
 * Transparency; both partial and alpha clipping
-* Refraction & Render Textures (Requires Unity Pro)
-* Plus all the essentials such as lightmapping, cubemaps, custom blending modes, depth sorting, fog control, and much much more!
+* Refraction & Render Textures
+* Optionally use lightmapping and light probes / Spherical harmonics
+* Plus all the essentials such as cubemaps, custom blending modes, depth sorting, fog control, and much much more!
 
 
 
@@ -198,7 +199,7 @@ SURFACE
 	Gloss
 		This is the exponent of the specular highlights. Higher values will make it look shiny, values approaching 0 will make it look matte. Note that if you have unchecked gloss remapping, you should avoid using gloss values below 1.
 	Normal
-		This is then tangent-space normal direction, where you can connect normal maps or custom normal vectors.
+		This is the tangent-space normal direction, where you can connect normal maps or custom normal vectors.
 	Emission
 		This is simply light that is always added to your shader, regardless of the lighting conditions. 
 	Transmission

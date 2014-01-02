@@ -104,7 +104,7 @@ namespace ShaderForge {
 			
 
 			// TOOLBAR
-			DrawToolbar( new Rect( rect.x, rect.y, rect.width, TOOLBAR_HEIGHT ) );
+			//DrawToolbar( new Rect( rect.x, rect.y, rect.width, TOOLBAR_HEIGHT ) );
 
 			
 
@@ -112,8 +112,10 @@ namespace ShaderForge {
 			localRect.x = 0;
 			localRect.y = 0;
 
-			rect.y += TOOLBAR_HEIGHT;
-			rect.height -= TOOLBAR_HEIGHT;
+			//rect.y += TOOLBAR_HEIGHT;
+			//rect.height -= TOOLBAR_HEIGHT;
+
+
 
 
 			// VIEW
@@ -326,6 +328,19 @@ namespace ShaderForge {
 				editor.Defocus();
 			}
 
+			Rect logoRect = rect;
+			logoRect.y += 4;
+			logoRect.x += 1;
+			logoRect.width = SF_GUI.Logo.width;
+			logoRect.height = SF_GUI.Logo.height;
+			GUI.color = new Color(1f,1f,1f,0.5f);
+			GUI.DrawTexture( logoRect, SF_GUI.Logo );
+
+			logoRect.y += logoRect.height;
+			logoRect.height = 16;
+
+			GUI.Label(logoRect, SF_Tools.versionStage+" "+SF_Tools.version, EditorStyles.boldLabel);
+			GUI.color = Color.white;
 		}
 
 		
@@ -513,7 +528,7 @@ namespace ShaderForge {
 			return GetTime() - lastChangeTime;
 		}
 		
-		private void DrawRecompileTimer(Rect r){
+		public void DrawRecompileTimer(Rect r){
 
 			if(!SF_Settings.AutoRecompile)
 				return; // Don't draw recompile timer when autoRecompile is unchecked
@@ -524,19 +539,26 @@ namespace ShaderForge {
 				return;
 
 			r.width *= Mathf.Clamp01(delta);
-			GUI.Box(r,string.Empty);
-			GUI.Box(r,string.Empty);
-			GUI.Box(r,string.Empty);
+			if(SF_GUI.ProSkin){
+				GUI.Box(r,string.Empty);
+				GUI.Box(r,string.Empty);
+				GUI.Box(r,string.Empty);
+			} else {
+				GUI.color = new Color(1f,1f,1f,0.4f);
+				GUI.Box(r,string.Empty);
+				GUI.color = Color.white;
+			}
 		}
 
 		void DrawToolbar( Rect r ) {
+			/*
 			GUI.color = Color.white;
 			GUI.Box( r, "", toolbarStyle );
 			r.x += 6;
 
 			r.width = 108;
-
-		
+*/
+		/*
 			GUI.color = SF_GUI.outdatedStateColors[(int)editor.ShaderOutdated];
 			if( GUI.Button( r, "Compile shader", EditorStyles.toolbarButton ) ) {
 				if(treeStatus.CheckCanCompile())
@@ -549,12 +571,14 @@ namespace ShaderForge {
 			r.x += r.width + 4;
 			r.width = 100;
 			SF_Settings.AutoRecompile = GUI.Toggle( r, SF_Settings.AutoRecompile, "Auto-compile" );
-			
+			*/
+			/*
 			r.x += r.width + 20;
 			r.width = 140;
 			SF_Settings.HierarcyMove = GUI.Toggle( r, SF_Settings.HierarcyMove, "Hierarchal Node Move" );
 			r.x += r.width + 20;
 			r.width = 60;
+			*/
 			//GUI.Label( r, "Con. style:", EditorStyles.miniLabel );
 			//r.x += r.width + 2;
 			//SF_Settings.ConnectionLineStyle = (ConnectionLineStyle)EditorGUI.EnumPopup( r, SF_Settings.ConnectionLineStyle, EditorStyles.toolbarPopup);
@@ -563,6 +587,7 @@ namespace ShaderForge {
 			//GUILayout.FlexibleSpace();
 
 			//r.x += r.width + 20;
+			/*
 			GUI.color = new Color(0.8f,1f,0.8f,1f);
 			r.width = 110;
 			SF_Tools.LinkButton( r, SF_Tools.manualLabel, SF_Tools.manualURL, EditorStyles.toolbarButton );
@@ -573,6 +598,7 @@ namespace ShaderForge {
 			r.width = 80;
 			SF_Tools.LinkButton( r, SF_Tools.featureListLabel, SF_Tools.featureListURL, EditorStyles.toolbarButton );
 			GUI.color = Color.white;
+			*/
 
 		}
 

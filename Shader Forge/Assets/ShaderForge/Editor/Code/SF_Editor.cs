@@ -938,23 +938,96 @@ namespace ShaderForge {
 			return AssetDatabase.GetAssetPath( currentShaderAsset );
 		}
 
-
+		public bool displaySettings = false;
 
 		public void DrawPreviewPanel( Rect r ) {
 			// Left side shader preview
 
-			Rect logoRect = new Rect( 5, 0, SF_GUI.Logo.width, SF_GUI.Logo.height );
+			//Rect logoRect = new Rect( 1, 0, SF_GUI.Logo.width, SF_GUI.Logo.height );
 
-			GUI.DrawTexture( logoRect, SF_GUI.Logo );
-			GUI.Box( new Rect(203,10,128,19), SF_Tools.versionStage+" "+SF_Tools.version, versionStyle );
-			int previewOffset = preview.OnGUI( SF_GUI.Logo.height, (int)r.width );
+			//GUI.DrawTexture( logoRect, SF_GUI.Logo );
+
+			Rect btnRect = new Rect(r);
+			btnRect.y += 4;
+			btnRect.x += 2;
+			//btnRect.xMin += logoRect.width;
+
+			//int wDiff = 10;
+
+			btnRect.height = 17;
+			btnRect.width /= 4;
+			//btnRect.width += wDiff;
+
+			GUIStyle btnStyle = EditorStyles.miniButton;
+
+			if(GUI.Button(btnRect,"Return to menu",btnStyle)){
+				OnPressBackToMenuButton();
+			}
+			btnRect.x += btnRect.width;
+			//btnRect.xMax -= wDiff*2;
+			btnRect.width *= 0.75f;
+			displaySettings = GUI.Toggle(btnRect, displaySettings, "Settings",btnStyle);
+		
+			btnRect.x += btnRect.width;
+			btnRect.width *= 2f;
+
+			GUI.color = SF_GUI.outdatedStateColors[(int)ShaderOutdated];
+			if( GUI.Button( btnRect, "Compile shader", btnStyle ) ) {
+				if(nodeView.treeStatus.CheckCanCompile())
+					shaderEvaluator.Evaluate();
+			}
+			GUI.color = Color.white;
+			
+			nodeView.DrawRecompileTimer(btnRect);
+			btnRect.x += btnRect.width;
+			btnRect.width *= 0.5f;
+
+			SF_Settings.AutoRecompile = GUI.Toggle( btnRect, SF_Settings.AutoRecompile, "Auto" );
+
+			btnRect.y += 4;
+
+
+
+			// SETTINGS EXPANSION
+			if(displaySettings){
+				btnRect.y += btnRect.height;
+				btnRect.x = r.x + 2;
+				btnRect.width = r.width / 4f;
+				btnRect.x += btnRect.width;
+				btnRect.width *= 2;
+				SF_Settings.HierarcyMove = GUI.Toggle( btnRect, SF_Settings.HierarcyMove, "Hierarchal Node Move" );
+
+
+
+				btnRect.y += 4;
+			}
+
+
+
+
+			//GUI.Box( new Rect(203,10,128,19), SF_Tools.versionStage+" "+SF_Tools.version, versionStyle );
+			int previewOffset = preview.OnGUI( (int)btnRect.yMax, (int)r.width );
 			int statusBoxOffset = statusBox.OnGUI( previewOffset, (int)r.width );
+
+
 			ps.OnLocalGUI(statusBoxOffset, (int)r.width );
 			if( SF_Debug.nodes ) {
 				GUILayout.Label( "Node count: " + nodes.Count );
 			}
 
 		}
+
+		public void OnPressBackToMenuButton(){
+			shaderEvaluator.SaveShaderAsset();
+			Close();
+			Init();
+		}
+
+
+		public void OnPressSettingsButton(){
+
+		}
+
 
 
 

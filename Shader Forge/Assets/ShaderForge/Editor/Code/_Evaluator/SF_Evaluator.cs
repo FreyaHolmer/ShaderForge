@@ -2016,7 +2016,7 @@ namespace ShaderForge {
 
 
 
-		void SaveShaderAsset() {
+		public void SaveShaderAsset() {
 
 			//Debug.Log("SaveShaderAsset()");
 

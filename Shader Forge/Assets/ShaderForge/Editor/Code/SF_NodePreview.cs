@@ -180,6 +180,8 @@ namespace ShaderForge {
 		public void GenerateTexcoord() {
 			//		Color[] colors = new Color[16384];
 
+			//Debug.Log("Generated texcoords");
+
 			for( int y = 0; y < SF_NodeData.RES; y++ ) {
 				for( int x = 0; x < SF_NodeData.RES; x++ ) {
 					data[x, y, 0] = x / SF_NodeData.RESf;
@@ -188,7 +190,7 @@ namespace ShaderForge {
 					data[x, y, 3] = 0f;
 				}
 			}
-			UpdateColorPreview("Texcoord");
+			UpdateColorPreview("Texcoord", force:true);
 		}
 
 
@@ -248,9 +250,9 @@ namespace ShaderForge {
 
 
 
-		public void UpdateColorPreview(string msg = "") {
+		public void UpdateColorPreview(string msg = "", bool force = false) {
 
-			if(texture != null && SF_Parser.quickLoad)
+			if(texture != null && SF_Parser.quickLoad && !force)
 				return;
 
 			if(SF_Debug.nodePreviews)

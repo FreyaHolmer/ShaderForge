@@ -37,6 +37,8 @@ namespace ShaderForge {
 		public const string featureListURL = "https://docs.google.com/spreadsheet/ccc?key=0AqHpAiSNy9eDdGRaQ2hIbHpLVWtfbURSb1VRTlF0NGc&usp=sharing";
 		public const string manualLabel = "Manual & ToS";
 		public const string manualURL = "https://dl.dropboxusercontent.com/u/99714/Unity%20Projects/Shader%20Forge/Documents/ShaderForgeTesterGuide.html";
+		public const string documentationLabel = "Node Documentation";
+		public const string documentationURL = "http://www.acegikmo.com/shaderforge/nodes/";
 		public static string[] rendererLabels = new string[]{
 			"Direct3D 9",
 			"Direct3D 11",

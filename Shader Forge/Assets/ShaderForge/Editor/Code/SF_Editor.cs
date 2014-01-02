@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Reflection;
+using System.Net;
 
 
 
@@ -144,6 +145,7 @@ namespace ShaderForge {
 				Debug.Log( "[SF_LOG] - SF_Editor Init(" + initShader + ")" );
 			SF_Editor materialEditor = (SF_Editor)EditorWindow.GetWindow( typeof( SF_Editor ) );
 			SF_Editor.instance = materialEditor;
+			updateCheck = "";
 			materialEditor.InitializeInstance( initShader );
 		}
 
@@ -728,7 +730,50 @@ namespace ShaderForge {
 			func();
 			GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
 		}
+
+
+		public static string updateCheck = "";
+
+
+		public static void CheckForUpdates(){
+			updateCheck = "Checking for updates...";
+			//Debug.Log(updateCheck);
+
+			WebClient wc = new WebClient();
+
+			string latestVersion;
+
+			try{
+				latestVersion = wc.DownloadString("http://www.acegikmo.com/shaderforge/latestversion.php");
+				string[] split = latestVersion.Split('.');
+				int latestMajor = int.Parse(split[0]);
+				int latestMinor = int.Parse(split[1]);
+
+				bool outOfDate;
+
+				if(latestMajor > SF_Tools.versionNumPrimary){
+					outOfDate = true;
+				} else if(latestMinor > SF_Tools.versionNumSecondary){
+					outOfDate = true;
+				} else {
+					outOfDate = false;
+				}
+
+				if(outOfDate){
+					updateCheck = "Shader Forge is out of date! You are running " + SF_Tools.version + ", the latest version is " + latestVersion + ". Check the asset store to get it!";
+				} else {
+					updateCheck = "Shader Forge is up to date!";
+				}
+
+
+
+
+			} catch ( WebException e){
+				updateCheck = "Couldn't check for updates: " + e.Status;
+			}
 		
+
+		}
 		
 
 		
@@ -736,7 +781,9 @@ namespace ShaderForge {
 			
 			
 			
-			
+			if(string.IsNullOrEmpty(updateCheck)){
+				CheckForUpdates();
+			}
 			
 
 			GUILayout.BeginVertical();
@@ -758,12 +805,13 @@ namespace ShaderForge {
 
 				EditorGUILayout.Separator();
 
+				/*
 				FlexHorizontal(()=>{
 					if( GUILayout.Button(SF_Tools.manualLabel , GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
 						Application.OpenURL( SF_Tools.manualURL );
 					}
 				});
-				
+				*/
 
 				FlexHorizontal(()=>{
 					
@@ -790,8 +838,8 @@ namespace ShaderForge {
 					if( GUILayout.Button( "Unity thread" ) ) {
 						Application.OpenURL( "http://forum.unity3d.com/threads/191595-Shader-Forge-A-visual-node-based-shader-editor" );
 					}
-					if( GUILayout.Button( SF_Tools.featureListLabel ) ) {
-						Application.OpenURL( SF_Tools.featureListURL );
+					if( GUILayout.Button( SF_Tools.documentationLabel ) ) {
+						Application.OpenURL( SF_Tools.documentationURL );
 					}
 				});
 
@@ -799,6 +847,10 @@ namespace ShaderForge {
 					if( GUILayout.Button( SF_Tools.bugReportLabel, GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
 						Application.OpenURL( SF_Tools.bugReportURL );
 					}
+				});
+				EditorGUILayout.Separator();
+				FlexHorizontal(()=>{
+					GUILayout.Label(updateCheck);
 				});
 				
 				

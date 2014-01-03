@@ -45,6 +45,15 @@ ModelImporter:
     100078: transform5
     100080: transform6
     100082: livingroom_trims
+    100084: kitchen_bench
+    100086: kitchen_cabinets
+    100088: kitchen_sink
+    100090: pCylinder2
+    100092: polySurface10
+    100094: polySurface11
+    100096: polySurface12
+    100098: transform7
+    100100: transform8
     400000: door
     400002: door 1
     400004: door1
@@ -87,6 +96,15 @@ ModelImporter:
     400078: transform5
     400080: transform6
     400082: livingroom_trims
+    400084: kitchen_bench
+    400086: kitchen_cabinets
+    400088: kitchen_sink
+    400090: pCylinder2
+    400092: polySurface10
+    400094: polySurface11
+    400096: polySurface12
+    400098: transform7
+    400100: transform8
     2300000: door
     2300002: door 1
     2300004: door1
@@ -116,6 +134,10 @@ ModelImporter:
     2300052: polySurface8
     2300054: polySurface9
     2300056: livingroom_trims
+    2300058: kitchen_bench
+    2300060: kitchen_cabinets
+    2300062: kitchen_sink
+    2300064: polySurface10
     3300000: door
     3300002: door 1
     3300004: door1
@@ -145,6 +167,10 @@ ModelImporter:
     3300052: polySurface8
     3300054: polySurface9
     3300056: livingroom_trims
+    3300058: kitchen_bench
+    3300060: kitchen_cabinets
+    3300062: kitchen_sink
+    3300064: polySurface10
     4300000: pPlane1
     4300002: doorframe1
     4300004: door1
@@ -174,6 +200,10 @@ ModelImporter:
     4300052: polySurface6
     4300054: polySurface9
     4300056: livingroom_trims
+    4300058: polySurface10
+    4300060: kitchen_bench
+    4300062: kitchen_sink
+    4300064: kitchen_cabinets
     9500000: //RootNode
   materials:
     importMaterials: 0

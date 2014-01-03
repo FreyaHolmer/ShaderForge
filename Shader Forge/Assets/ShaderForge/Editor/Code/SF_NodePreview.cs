@@ -190,7 +190,7 @@ namespace ShaderForge {
 					data[x, y, 3] = 0f;
 				}
 			}
-			UpdateColorPreview("Texcoord", force:true);
+			UpdateColorPreview("Texcoord", force:true); // TODO: Might not want to force this here
 		}
 
 

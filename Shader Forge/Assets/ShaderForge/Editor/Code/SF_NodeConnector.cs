@@ -247,7 +247,7 @@ namespace ShaderForge {
 
 		public int GetCompCount() {
 
-			if( conType == ConType.cInput ) {
+			if( conType == ConType.cInput && IsConnected() ) { // TODO: What?
 				return inputCon.GetCompCount();
 			}
 

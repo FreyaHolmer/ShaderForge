@@ -67,11 +67,13 @@ namespace ShaderForge {
 		}
 
 		public void StopCutting(){
-			foreach(SF_Node n in editor.nodes){
-				foreach(SF_NodeConnector con in n.connectors){
-					if(con.IsConnected() && con.conType == ConType.cInput){
-						if(con.conLine.aboutToBeDeleted){
-							con.Disconnect();
+			for (int i = 0; i < editor.nodes.Count; i++) {
+				SF_Node n = editor.nodes [i];
+				for (int j = 0; j < n.connectors.Length; j++) {
+					SF_NodeConnector con = n.connectors [j];
+					if (con.IsConnected () && con.conType == ConType.cInput) {
+						if (con.conLine.aboutToBeDeleted) {
+							con.Disconnect ();
 						}
 					}
 				}

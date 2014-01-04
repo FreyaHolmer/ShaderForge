@@ -377,7 +377,7 @@ namespace ShaderForge {
 
 
 
-			if( enableState == EnableState.Hidden )
+			if(ShouldBeInvisible())
 				return;
 
 
@@ -871,19 +871,27 @@ namespace ShaderForge {
 			return visControlParent != null;
 		}
 
-		public void Draw( Vector2 pos ) {
 
-
+		public bool ShouldBeInvisible(){
 			bool hidden = enableState == EnableState.Hidden;
-
+			
 			bool isUnconnectedChild = IsChild() && !IsConnected();
 			bool isHiddenExtraConnector = isUnconnectedChild && !ValidlyPendingChild();
-
+			
 			if( hidden ){
-				return;
+				return true;
 			} else if(isHiddenExtraConnector){ // If it's flagged as enabled, but is an unconnected child, only draw it when it's either connected or has a pending valid connection
-				return;
+				return true;
 			}
+			return false;
+		}
+
+		public void Draw( Vector2 pos ) {
+
+			bool isUnconnectedChild = IsChild() && !IsConnected();
+
+			if(ShouldBeInvisible())
+				return;
 
 
 			// Don't draw if invalid

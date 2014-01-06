@@ -34,7 +34,7 @@ namespace ShaderForge {
 					continue;
 				if( !con.IsConnected() )
 					continue;
-				if( con.enableState != EnableState.Enabled ) // Don't process data in disabled inputs
+				if( !con.IsConnectedEnabledAndAvailable() ) // Don't process data in disabled inputs
 					continue;
 				if( con.SkipPasses.Contains( SF_Evaluator.currentPass ) && !all ) // So it's enabled and all - But does this pass even use it?
 					continue;

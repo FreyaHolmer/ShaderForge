@@ -161,7 +161,7 @@ namespace ShaderForge {
 		public List<SF_Node> GetListOfConnectedNodesWithGhosts(out List<SF_Node> ghosts) {
 			//Debug.Log ("GetListOfConnectedNodesWithGhosts()");
 			ResetAllNodeStatuses();
-			editor.materialOutput.status.SetLeadsToFinalRecursively(true);
+			editor.materialOutput.status.SetLeadsToFinalRecursively( all:false );
 			List<SF_Node> filtered = new List<SF_Node>();
 			foreach( SF_Node n in editor.nodes ) {
 				if( n.status.leadsToFinal )

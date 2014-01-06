@@ -104,6 +104,8 @@ namespace ShaderForge {
 			if(SF_Debug.evalFlow)
 				Debug.Log("UPDATING DEPENDENCIES: Pass = " + currentPass + " Prog = " + currentProgram);
 			cNodes = editor.nodeView.treeStatus.GetListOfConnectedNodesWithGhosts( out ghostNodes );
+			if(SF_Debug.evalFlow)
+				Debug.Log("Found " + cNodes.Count + " nodes");
 
 
 			for( int i = 0; i < cNodes.Count; i++ ) {
@@ -121,7 +123,7 @@ namespace ShaderForge {
 				}
 			}
 
-			if(ps.lightprobed){
+			if(ps.lightprobed  && !IsShadowOrOutlinePass()){
 				dependencies.vert_in_normals = true;
 				if(ps.highQualityLightProbes)
 					dependencies.NeedFragNormals();
@@ -159,7 +161,7 @@ namespace ShaderForge {
 				dependencies.vert_out_worldPos = true;
 				dependencies.frag_normalDirection = true;
 				if( ps.HasNormalMap() || ps.HasSpecular() )
-					dependencies.frag_viewDirection = true;
+					dependencies.NeedFragViewDirection();
 			}
 
 			if( ps.HasNormalMap() && !IsShadowOrOutlinePass() ) {
@@ -185,6 +187,7 @@ namespace ShaderForge {
 
 
 			foreach( SF_Node n in cNodes ) {
+
 				if( n is SFN_Time ) {
 					//Debug.Log("TIME DEPENDENCY");
 					dependencies.time = true;

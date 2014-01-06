@@ -254,7 +254,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_ViewPosition ), 			catExtData + "View Position" );
 
 			string catSceneData = "Scene Data/";
-			AddTemplate( typeof(SFN_SceneColor), catSceneData + "Scene Color" ).MarkAsNewNode();
+			AddTemplate( typeof(SFN_SceneColor), catSceneData + "Scene Color" );
 
 			string catMathConst = "Math Constants/";
 			AddTemplate( typeof( SFN_E ), 		catMathConst + "e", KeyCode.None, "EulersConstant" );

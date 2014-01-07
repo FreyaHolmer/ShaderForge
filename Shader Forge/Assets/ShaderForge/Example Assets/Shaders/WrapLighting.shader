@@ -1,11 +1,13 @@
-// Shader created with Shader Forge Beta 0.16 
+// Shader created with Shader Forge Beta 0.17 
 // Shader Forge (c) Joachim 'Acegikmo' Holmer
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.16;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:1,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,mssp:True,ufog:False,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300;n:type:ShaderForge.SFN_Final,id:0,x:32833,y:32427|diff-1-OUT,spec-6-OUT,gloss-4-OUT,normal-9-RGB,lwrap-2-OUT;n:type:ShaderForge.SFN_Vector3,id:1,x:33544,y:32425,v1:0.9,v2:0.7,v3:0.4;n:type:ShaderForge.SFN_Vector3,id:2,x:33143,y:32844,v1:0.9,v2:0.5,v3:0.5;n:type:ShaderForge.SFN_Vector1,id:3,x:33333,y:32629,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:4,x:33143,y:32637,v1:2;n:type:ShaderForge.SFN_OneMinus,id:5,x:33333,y:32486|IN-1-OUT;n:type:ShaderForge.SFN_Multiply,id:6,x:33143,y:32486|A-5-OUT,B-3-OUT;n:type:ShaderForge.SFN_Tex2d,id:9,x:33143,y:32717,ptlb:Normal,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;proporder:9;pass:END;sub:END;*/
+/*SF_DATA;ver:0.17;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:1,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,uamb:True,mssp:True,ufog:False,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,hqlp:False,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300;n:type:ShaderForge.SFN_Final,id:0,x:32767,y:32453|diff-270-RGB,spec-6-OUT,gloss-4-OUT,normal-9-RGB,lwrap-272-RGB;n:type:ShaderForge.SFN_Vector1,id:3,x:33333,y:32629,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:4,x:33143,y:32637,v1:2;n:type:ShaderForge.SFN_OneMinus,id:5,x:33333,y:32486|IN-270-RGB;n:type:ShaderForge.SFN_Multiply,id:6,x:33143,y:32486|A-5-OUT,B-3-OUT;n:type:ShaderForge.SFN_Tex2d,id:9,x:33143,y:32717,ptlb:Normal,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Color,id:270,x:33535,y:32412,ptlb:Diffuse,c1:0.9019608,c2:0.7019608,c3:0.3764706,c4:1;n:type:ShaderForge.SFN_Color,id:272,x:33143,y:32896,ptlb:Light Wrapping,c1:0.9058824,c2:0.4941176,c3:0.4901961,c4:1;proporder:9-272-270;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/WrapLighting" {
     Properties {
         _Normal ("Normal", 2D) = "bump" {}
+        _LightWrapping ("Light Wrapping", Color) = (0.9058824,0.4941176,0.4901961,1)
+        _Diffuse ("Diffuse", Color) = (0.9019608,0.7019608,0.3764706,1)
     }
     SubShader {
         Tags {
@@ -28,6 +30,8 @@ Shader "Shader Forge/Examples/WrapLighting" {
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
+            uniform float4 _Diffuse;
+            uniform float4 _LightWrapping;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -36,16 +40,18 @@ Shader "Shader Forge/Examples/WrapLighting" {
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
-                float4 uv0 : TEXCOORD0;
-                float4 posWorld : TEXCOORD1;
-                float3 normalDir : TEXCOORD2;
-                float3 tangentDir : TEXCOORD3;
-                float3 binormalDir : TEXCOORD4;
-                LIGHTING_COORDS(5,6)
+                float3 shLight : TEXCOORD0;
+                float4 uv0 : TEXCOORD1;
+                float4 posWorld : TEXCOORD2;
+                float3 normalDir : TEXCOORD3;
+                float3 tangentDir : TEXCOORD4;
+                float3 binormalDir : TEXCOORD5;
+                LIGHTING_COORDS(6,7)
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.uv0;
+                o.shLight = ShadeSH9(float4(v.normal * unity_Scale.w,1)) * 0.5;
                 o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
@@ -66,18 +72,18 @@ Shader "Shader Forge/Examples/WrapLighting" {
                 float3 attenColor = attenuation * _LightColor0.xyz;
 /////// Diffuse:
                 float NdotL = dot( normalDirection, lightDirection );
-                float3 w = float3(0.9,0.5,0.5)*0.5; // Light wrapping
+                float3 w = _LightWrapping.rgb*0.5; // Light wrapping
                 float3 NdotLWrap = NdotL * ( 1.0 - w );
                 float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
-                float3 diffuse = forwardLight * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
+                float3 diffuse = forwardLight * attenColor;
 ///////// Gloss:
                 float gloss = exp2(2.0*10.0+1.0);
 ////// Specular:
                 NdotL = max(0.0, NdotL);
-                float3 node_1 = float3(0.9,0.7,0.4);
-                float3 specularColor = ((1.0 - node_1)*0.3);
+                float4 node_270 = _Diffuse;
+                float3 specularColor = ((1.0 - node_270.rgb)*0.3);
                 float3 specular = (floor(attenuation) * _LightColor0.xyz) * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor;
-                float3 finalColor = diffuse * node_1 + specular;
+                float3 finalColor = ( diffuse + i.shLight ) * node_270.rgb + specular;
 /// Final Color:
                 return fixed4(finalColor,1);
             }
@@ -101,6 +107,8 @@ Shader "Shader Forge/Examples/WrapLighting" {
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
+            uniform float4 _Diffuse;
+            uniform float4 _LightWrapping;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -139,7 +147,7 @@ Shader "Shader Forge/Examples/WrapLighting" {
                 float3 attenColor = attenuation * _LightColor0.xyz;
 /////// Diffuse:
                 float NdotL = dot( normalDirection, lightDirection );
-                float3 w = float3(0.9,0.5,0.5)*0.5; // Light wrapping
+                float3 w = _LightWrapping.rgb*0.5; // Light wrapping
                 float3 NdotLWrap = NdotL * ( 1.0 - w );
                 float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
                 float3 diffuse = forwardLight * attenColor;
@@ -147,12 +155,12 @@ Shader "Shader Forge/Examples/WrapLighting" {
                 float gloss = exp2(2.0*10.0+1.0);
 ////// Specular:
                 NdotL = max(0.0, NdotL);
-                float3 node_1 = float3(0.9,0.7,0.4);
-                float3 specularColor = ((1.0 - node_1)*0.3);
+                float4 node_270 = _Diffuse;
+                float3 specularColor = ((1.0 - node_270.rgb)*0.3);
                 float3 specular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor;
-                float3 finalColor = diffuse * node_1 + specular;
+                float3 finalColor = diffuse * node_270.rgb + specular;
 /// Final Color:
-                return fixed4(finalColor,1);
+                return fixed4(finalColor * 1,0);
             }
             ENDCG
         }

@@ -1213,7 +1213,7 @@ namespace ShaderForge {
 
 				if( ps.HasDiffuse() ){
 
-					bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailable();
+					bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailableInThisPass(currentPass);
 					bool shLight = DoPassSphericalHarmonics();
 
 					bool parenthesize = (ambDiff || shLight);

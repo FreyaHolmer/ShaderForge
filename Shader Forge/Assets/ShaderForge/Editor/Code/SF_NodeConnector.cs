@@ -309,6 +309,13 @@ namespace ShaderForge {
 			return IsConnected() && enableState == EnableState.Enabled && availableState == AvailableState.Available;
 		}
 
+		public bool IsConnectedEnabledAndAvailableInThisPass(PassType pass){
+			if(SkipPasses.Contains(pass)){
+				return false;
+			}
+			return IsConnectedEnabledAndAvailable();
+		}
+
 
 
 		public bool ConnectionInProgress() {

@@ -61,7 +61,8 @@ namespace ShaderForge {
 
 		public void SetOutputValueType(ValueType vt){
 
-			//Debug.Log("Trying to set to " + vt);
+			if( SF_Debug.nodes )
+				Debug.Log("Trying to set to " + vt);
 
 			if(vt == ValueType.VTv1v2)
 				vt = ValueType.VTv2;
@@ -99,7 +100,6 @@ namespace ShaderForge {
 			} else {
 				//Debug.LogError("Shouldn't be able to get here, invalid casting on "+base.output.node.GetType().ToString() + " domType = " + domType.ToString());
 			}
-			
 			
 			foreach(SF_NodeConnector con in inputs){
 

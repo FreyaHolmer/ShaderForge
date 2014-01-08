@@ -65,7 +65,7 @@ namespace ShaderForge {
 			this.editor = editor;
 			//this.material = (Material)AssetDatabase.LoadAssetAtPath( SF_Paths.pInternal + "ShaderForgeInternal.mat", typeof( Material ) );
 			this.material = (Material)Resources.Load("ShaderForgeInternal",typeof(Material));
-			this.mesh = GetSFMesh( "sphere" );
+			this.mesh = GetSFMesh( "sf_sphere" );
 
 			SetupPreview();
 

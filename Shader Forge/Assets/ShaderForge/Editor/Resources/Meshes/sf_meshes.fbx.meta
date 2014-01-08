@@ -14,6 +14,12 @@ ModelImporter:
     100016: lightcone
     100018: pSphere1
     100020: filledframe
+    100022: sf_dodecahedron_soft
+    100024: sf_sphere
+    100026: sf_sphere_lowpoly
+    100028: sf_torus
+    100030: sf_torus_knot
+    100032: sf_torus_lowpoly
     400000: dodecahedron_soft
     400002: plant
     400004: //RootNode
@@ -25,6 +31,12 @@ ModelImporter:
     400016: lightcone
     400018: pSphere1
     400020: filledframe
+    400022: sf_dodecahedron_soft
+    400024: sf_sphere
+    400026: sf_sphere_lowpoly
+    400028: sf_torus
+    400030: sf_torus_knot
+    400032: sf_torus_lowpoly
     2300000: dodecahedron_soft
     2300002: plant
     2300004: sphere
@@ -35,6 +47,12 @@ ModelImporter:
     2300014: lightcone
     2300016: pSphere1
     2300018: filledframe
+    2300020: sf_dodecahedron_soft
+    2300022: sf_sphere
+    2300024: sf_sphere_lowpoly
+    2300026: sf_torus
+    2300028: sf_torus_knot
+    2300030: sf_torus_lowpoly
     3300000: dodecahedron_soft
     3300002: plant
     3300004: sphere
@@ -45,6 +63,12 @@ ModelImporter:
     3300014: lightcone
     3300016: pSphere1
     3300018: filledframe
+    3300020: sf_dodecahedron_soft
+    3300022: sf_sphere
+    3300024: sf_sphere_lowpoly
+    3300026: sf_torus
+    3300028: sf_torus_knot
+    3300030: sf_torus_lowpoly
     4300000: torus
     4300002: dodecahedron_soft
     4300004: sphere
@@ -55,6 +79,12 @@ ModelImporter:
     4300014: lightcone
     4300016: pSphere1
     4300018: filledframe
+    4300020: sf_torus
+    4300022: sf_dodecahedron_soft
+    4300024: sf_sphere
+    4300026: sf_torus_lowpoly
+    4300028: sf_sphere_lowpoly
+    4300030: sf_torus_knot
     9500000: //RootNode
   materials:
     importMaterials: 0

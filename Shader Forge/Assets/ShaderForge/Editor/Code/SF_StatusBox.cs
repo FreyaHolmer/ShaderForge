@@ -125,7 +125,7 @@ namespace ShaderForge {
 
 					bool ignoreMin = false;
 					i++;
-					if( css[i].Contains( "Name \"ShadowCaster\"" ) || css[i].Contains( "Name \"ShadowCollector\"" ) ||  css[i].Contains("\"LightMode\"=\"ForwardAdd\"") )
+					if( css[i].Contains( "Name \"ShadowCaster\"" ) || css[i].Contains( "Name \"ShadowCollector\"" ) ||  css[i].Contains( "Name \"ForwardAdd\"" ) )
 						ignoreMin = true;
 
 					cPass = new SFIns_Pass();

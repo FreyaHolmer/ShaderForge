@@ -1793,6 +1793,7 @@ namespace ShaderForge {
 			App( "Pass {" );
 			scope++;
 			{
+				App( "Name \"ForwardBase\"" );
 				PassTags();
 				RenderSetup();
 				BeginCG();
@@ -1837,6 +1838,7 @@ namespace ShaderForge {
 			App( "Pass {" );
 			scope++;
 			{
+				App( "Name \"ForwardAdd\"" );
 				PassTags();
 				RenderSetup();
 				BeginCG();

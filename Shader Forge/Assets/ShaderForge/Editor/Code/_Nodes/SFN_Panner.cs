@@ -33,23 +33,25 @@ namespace ShaderForge {
 
 
 		public override void DrawLowerPropertyBox() {
-			EditorGUI.BeginChangeCheck();
+			//EditorGUI.BeginChangeCheck();
 			Rect r = lowerRect;
 			r.width /= 8;
 			GUI.Label(r,"U");
 			r.x += r.width;
 			r.width *= 3;
-			speed.x = EditorGUI.FloatField( r, speed.x );
+			SF_GUI.EnterableFloatField( this, r, ref speed.x, EditorStyles.textField );
+			//speed.x = EditorGUI.FloatField( r, speed.x );
 			r.x += r.width;
 			r.width /= 3;
 			GUI.Label( r, "V" );
 			r.x += r.width;
 			r.width *= 3;
-			speed.y = EditorGUI.FloatField( r, speed.y );
+			SF_GUI.EnterableFloatField( this, r, ref speed.y, EditorStyles.textField );
+			//speed.y = EditorGUI.FloatField( r, speed.y );
 
-			if( EditorGUI.EndChangeCheck() ) {
-				OnUpdateNode();
-			}
+			//if( EditorGUI.EndChangeCheck() ) {
+			//	OnUpdateNode();
+			//}
 
 		}
 

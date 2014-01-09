@@ -1,3 +1,0 @@
-The Skyboxes are imported at 512x512 to speed up the import process, but the original files are 1024x1024 and can be re-imported at that size for higher quality.
-
-Each Skybox Texture also contains an Alpha Channel which can be used to modulate certain Image Effects (Pro Only). If you are not going to use the Alpha Channels it is best to re-import the Skybox Textures without them to preserve texture memory.

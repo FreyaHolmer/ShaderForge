@@ -1361,13 +1361,21 @@ namespace ShaderForge {
 			lightMode = (LightMode)ContentScaledToolbar( r, "Light Mode", (int)lightMode, strLightMode );
 			r.y += 20;
 			
+			
+			SF_GUI.ConditionalToggle(r, ref doubleIncomingLight,
+				usableIf: IsLit(),
+				disabledDisplayValue: false,
+				label: "Double incoming light"
+			);
+			
+			/*
 			if(IsLit()){
 				doubleIncomingLight = GUI.Toggle( r, doubleIncomingLight, "Double incoming light" );
 			} else {
 				GUI.enabled = false;
 				GUI.Toggle( r, false, "Double incoming light" );
 				GUI.enabled = true;
-			}
+			}*/
 				r.y += 20;
 			if(HasSpecular()){
 				remapGlossExponentially = GUI.Toggle( r, remapGlossExponentially, "Remap gloss from [0-1] to [1-2048]" );
@@ -1411,6 +1419,7 @@ namespace ShaderForge {
 				//r.y += 20;	
 				normalQuality = (NormalQuality)ContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality );
 				r.y += 20;
+				if(HasDiffuse())
 				lightmapped = GUI.Toggle( r, lightmapped, "Lightmap support" );
 				r.y += 20;
 				lightprobed = GUI.Toggle( r, lightprobed, "Light probe support" );

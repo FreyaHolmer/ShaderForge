@@ -356,9 +356,10 @@ namespace ShaderForge {
 			if(usableIf){
 				value = GUI.Toggle(r, value, label);
 			} else {
+				GUI.enabled = false;
 				GUI.Toggle(r, disabledDisplayValue, label);
+				GUI.enabled = true;
 			}
-			
 		}
 
 

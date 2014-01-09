@@ -14,7 +14,7 @@ http://www.acegikmo.com/shaderforge/  (Includes documentation, tutorials, links 
 
 Installation:
 -------------
-Put the "Shader Forge" folder in the project you want to use Shader Forge in.
+Put the "ShaderForge" folder in the project you want to use Shader Forge in.
 If you have an old version of Shader Forge installed, remove the *entire* ShaderForge folder before installing the new one
 
 

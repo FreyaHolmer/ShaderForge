@@ -2033,7 +2033,12 @@ namespace ShaderForge {
 			sw.Write(fileContent);
 			sw.Flush();
 			sw.Close();
-			AssetDatabase.Refresh( ImportAssetOptions.DontDownloadFromCacheServer );
+			try{
+				AssetDatabase.Refresh( ImportAssetOptions.DontDownloadFromCacheServer );
+			} catch(Exception e){
+				//Debug.Log(e);
+			}
+
 			editor.OnShaderEvaluated();
 
 		}
@@ -2055,7 +2060,7 @@ namespace ShaderForge {
 			if( !node.IsProperty() )
 				return;
 
-			Material m = SF_Editor.instance.preview.material;
+			Material m = SF_Editor.instance.preview.InternalMaterial;
 			switch( node.GetType().ToString() ) {
 				case ( "ShaderForge.SFN_Tex2d" ):
 					SFN_Tex2d texNode = (SFN_Tex2d)node;

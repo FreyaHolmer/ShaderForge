@@ -1363,27 +1363,17 @@ namespace ShaderForge {
 			
 			
 			SF_GUI.ConditionalToggle(r, ref doubleIncomingLight,
-				usableIf: IsLit(),
-				disabledDisplayValue: false,
-				label: "Double incoming light"
+				usableIf: 				IsLit(),
+				disabledDisplayValue: 	false,
+				label: 					"Double incoming light"
 			);
-			
-			/*
-			if(IsLit()){
-				doubleIncomingLight = GUI.Toggle( r, doubleIncomingLight, "Double incoming light" );
-			} else {
-				GUI.enabled = false;
-				GUI.Toggle( r, false, "Double incoming light" );
-				GUI.enabled = true;
-			}*/
-				r.y += 20;
-			if(HasSpecular()){ 
-				remapGlossExponentially = GUI.Toggle( r, remapGlossExponentially, "Remap gloss from [0-1] to [1-2048]" );
-			} else {
-				GUI.enabled = false;
-				GUI.Toggle( r, false, "Remap gloss from [0-1] to [1-2048]" );
-				GUI.enabled = true;
-			}
+			r.y += 20;
+
+			SF_GUI.ConditionalToggle(r, ref remapGlossExponentially,
+		        usableIf: 				HasGloss(),
+		        disabledDisplayValue: 	false,
+			    label: 					"Remap gloss from [0-1] to [1-2048]"
+	        );
 			r.y += 20;
 
 			if( lightMode == LightMode.PBL ) {
@@ -1412,35 +1402,59 @@ namespace ShaderForge {
 			lightCount = (LightCount)ContentScaledToolbar(r, "Light Count", (int)lightCount, strLightCount );
 			r.y += 20;
 
-			if( lightMode == LightMode.Unlit )
-				GUI.enabled = false;
-			{
+
 				//lightPrecision = (LightPrecision)ContentScaledToolbar(r, "Light Quality", (int)lightPrecision, strLightPrecision ); // TODO: Too unstable for release
 				//r.y += 20;	
-				normalQuality = (NormalQuality)ContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality );
-				r.y += 20;
-				if(HasDiffuse())
-				lightmapped = GUI.Toggle( r, lightmapped, "Lightmap support" );
-				r.y += 20;
-				lightprobed = GUI.Toggle( r, lightprobed, "Light probe support" );
-				r.y += 20;
-				GUI.enabled = true;
-			}
+
+			normalQuality = (NormalQuality)ContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality );
+			r.y += 20;
+
+			SF_GUI.ConditionalToggle(r, ref lightmapped,
+				usableIf: 				HasDiffuse() && lightMode != LightMode.Unlit,
+				disabledDisplayValue: 	false,
+				label: 					"Lightmap support" 
+			);
+			r.y += 20;
+
+			//lightprobed = GUI.Toggle( r, lightprobed, "Light probe support" );
+			SF_GUI.ConditionalToggle(r, ref lightprobed,
+			    usableIf: 				HasDiffuse() && lightMode != LightMode.Unlit,
+				disabledDisplayValue: 	false,
+				label: 					"Light probe support"
+			);
+			r.y += 20;
+
+
 			/*shadowCast = GUI.Toggle( r, shadowCast, "Cast shadows" );
 			r.y += 20;
 			shadowReceive = GUI.Toggle( r, shadowReceive, "Receive shadows" );
 			r.y += 20;*/
 
-			GUI.enabled = IsLit();
+
+
+
+			//GUI.enabled = IsLit();
+
+
+
+			SF_GUI.ConditionalToggle(r, ref useAmbient,
+				usableIf: 				!lightprobed && IsLit(),
+				disabledDisplayValue: 	lightprobed,
+			    label: 					"Receive Ambient Light"
+			);
+			r.y += 20;
+
+			/*
 			if(lightprobed){
 				GUI.enabled = false;
 				GUI.Toggle( r, true, "Receive Ambient Light" );
 				GUI.enabled = true;
 			}else{
 				useAmbient = GUI.Toggle( r, useAmbient, "Receive Ambient Light" );
-			}
-			GUI.enabled = true;
-			r.y += 20;
+			}*/
+
+
+			//r.y += 20;
 			if(HasSpecular()){
 				maskedSpec = GUI.Toggle( r, maskedSpec, "Mask directional light specular by shadows" );
 			} else {
@@ -1637,6 +1651,10 @@ namespace ShaderForge {
 
 		public bool HasSpecular() {
 			return ( lightMode == LightMode.BlinnPhong || lightMode == LightMode.Phong || lightMode == LightMode.PBL ) && ( mOut.specular.IsConnectedAndEnabled() );
+		}
+
+		public bool HasGloss(){
+			return mOut.gloss.IsConnectedAndEnabled();
 		}
 
 		public bool HasNormalMap() {

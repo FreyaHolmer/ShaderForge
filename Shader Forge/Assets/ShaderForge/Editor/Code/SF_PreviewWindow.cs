@@ -17,7 +17,31 @@ namespace ShaderForge {
 		[SerializeField]
 		public Mesh mesh;
 		[SerializeField]
-		public Material material;
+		public Material internalMaterial;
+		public Material InternalMaterial {
+			get {
+				if(internalMaterial == null){
+					internalMaterial = (Material)Resources.Load("ShaderForgeInternal",typeof(Material));
+
+					if(internalMaterial == null){ 
+
+						string meshesPath = AssetDatabase.GetAssetPath( Resources.Load("Meshes/sf_meshes",typeof(Mesh)) );
+						string sf_resourcePath = meshesPath.Substring(0,meshesPath.Length - 20);
+						string matPath = sf_resourcePath + "ShaderForgeInternal.mat";
+						//Debug.Log(matPath);
+						AssetDatabase.CreateAsset(internalMaterial = new Material(editor.currentShaderAsset), matPath );
+						//AssetDatabase.Refresh(ImportAssetOptions.DontDownloadFromCacheServer);
+
+					}
+
+				}
+				return internalMaterial;
+			}
+			set {
+				internalMaterial = value;
+			}
+		}
+
 		[SerializeField]
 		Texture render;
 		[SerializeField]
@@ -64,7 +88,7 @@ namespace ShaderForge {
 
 			this.editor = editor;
 			//this.material = (Material)AssetDatabase.LoadAssetAtPath( SF_Paths.pInternal + "ShaderForgeInternal.mat", typeof( Material ) );
-			this.material = (Material)Resources.Load("ShaderForgeInternal",typeof(Material));
+			//this.InternalMaterial = (Material)Resources.Load("ShaderForgeInternal",typeof(Material));
 			this.mesh = GetSFMesh( "sf_sphere" );
 
 			SetupPreview();
@@ -231,7 +255,7 @@ namespace ShaderForge {
 				UpdateDrag();
 
 
-			if( mesh == null || material == null || Event.current.type != EventType.repaint )
+			if( mesh == null || InternalMaterial == null || Event.current.type != EventType.repaint )
 				return;
 
 			if( previewStyle == null ) {
@@ -266,7 +290,7 @@ namespace ShaderForge {
 			//Matrix4x4 meshPos = Matrix4x4.TRS()
 
 			Vector3 pos = new Vector3( -mesh.bounds.center.x, -mesh.bounds.center.y, -mesh.bounds.center.z);
-			Graphics.DrawMesh( mesh, finalRot*pos, finalRot, material, 0, pruCam, 0 );
+			Graphics.DrawMesh( mesh, finalRot*pos, finalRot, InternalMaterial, 0, pruCam, 0 );
 
 			pruCam.transform.position = new Vector3( 0f,0f, -5f * meshExtents );
 			pruCam.farClipPlane = 5f * meshExtents * 2f;

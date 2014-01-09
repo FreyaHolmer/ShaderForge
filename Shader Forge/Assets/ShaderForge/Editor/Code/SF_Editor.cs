@@ -408,7 +408,8 @@ namespace ShaderForge {
 				SF_Parser.ParseNodeDataFromShader( this, initShader );
 				// Make preview material use this shader
 				//preview.material.shader = currentShaderAsset;
-				SF_Tools.AssignShaderToMaterialAsset( ref preview.material, currentShaderAsset );
+				Material m = preview.InternalMaterial;
+				SF_Tools.AssignShaderToMaterialAsset( ref m, currentShaderAsset );
 			}
 
 			// Load data if it was set to initialize things
@@ -971,7 +972,7 @@ namespace ShaderForge {
 
 
 			// Make sure the preview material is using the shader
-			preview.material.shader = currentShaderAsset;
+			preview.InternalMaterial.shader = currentShaderAsset;
 
 			// That's about it for the file/asset management.
 			CreateOutputNode();
@@ -1087,7 +1088,7 @@ namespace ShaderForge {
 
 
 		public void OnShaderEvaluated() {
-			statusBox.UpdateInstructionCount( preview.material.shader );
+			statusBox.UpdateInstructionCount( preview.InternalMaterial.shader );
 		}
 
 

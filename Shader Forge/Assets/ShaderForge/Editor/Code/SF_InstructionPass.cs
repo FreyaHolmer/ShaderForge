@@ -76,7 +76,7 @@ namespace ShaderForge{
 				Debug.LogError( "Tried to parse things in invalid program [" + prog + "]" );
 			}
 			
-			Debug.Log("Instr: " + split[1] + " "+ prog + " " + line + " ig: " + ignoreMin);
+			//Debug.Log("Instr: " + split[1] + " "+ prog + " " + line + " ig: " + ignoreMin);
 
 
 		}

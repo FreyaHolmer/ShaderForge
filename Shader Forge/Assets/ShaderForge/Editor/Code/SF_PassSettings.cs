@@ -1377,7 +1377,7 @@ namespace ShaderForge {
 				GUI.enabled = true;
 			}*/
 				r.y += 20;
-			if(HasSpecular()){
+			if(HasSpecular()){ 
 				remapGlossExponentially = GUI.Toggle( r, remapGlossExponentially, "Remap gloss from [0-1] to [1-2048]" );
 			} else {
 				GUI.enabled = false;

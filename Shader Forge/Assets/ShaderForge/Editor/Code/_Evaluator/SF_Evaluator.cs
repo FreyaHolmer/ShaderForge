@@ -119,7 +119,7 @@ namespace ShaderForge {
 				dependencies.NeedFragNormals();
 				dependencies.NeedFragLightDir();
 				
-				if( ( ps.lightMode == SF_PassSettings.LightMode.BlinnPhong || ps.lightMode == SF_PassSettings.LightMode.PBL) && ps.mOut.specular.IsConnectedEnabledAndAvailableInThisPass() ) {
+				if( ( ps.lightMode == SF_PassSettings.LightMode.BlinnPhong || ps.lightMode == SF_PassSettings.LightMode.PBL) && ps.mOut.specular.IsConnectedEnabledAndAvailableInThisPass(currentPass) ) {
 					dependencies.NeedFragHalfDir();
 				}
 			}

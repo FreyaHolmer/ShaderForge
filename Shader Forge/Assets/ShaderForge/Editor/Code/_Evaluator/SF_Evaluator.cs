@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Reflection;
 using System.IO;
+using UnityEditor.VersionControl;
 
 namespace ShaderForge {
 
@@ -2028,6 +2029,12 @@ namespace ShaderForge {
 
 			string fileContent = editor.nodeView.GetNodeDataSerialized() + "\n\n" + shaderString;
 
+
+			// Version control unlocking
+			Asset shaderAsset = UnityEditor.VersionControl.Provider.GetAssetByPath(editor.GetShaderFilePath());
+			if(shaderAsset.locked || shaderAsset.readOnly){
+				UnityEditor.VersionControl.Provider.Checkout( editor.currentShaderAsset, CheckoutMode.Both );
+			}
 
 			StreamWriter sw = new StreamWriter( editor.GetShaderFilePath() );
 			sw.Write(fileContent);

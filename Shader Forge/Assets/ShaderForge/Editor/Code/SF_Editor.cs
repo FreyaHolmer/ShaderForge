@@ -737,7 +737,7 @@ namespace ShaderForge {
 
 
 		public static string updateCheck = "";
-
+		public static bool outOfDate = false;
 
 		public static void CheckForUpdates(){
 			updateCheck = "Checking for updates...";
@@ -753,8 +753,6 @@ namespace ShaderForge {
 				int latestMajor = int.Parse(split[0]);
 				int latestMinor = int.Parse(split[1]);
 
-				bool outOfDate;
-
 				if(latestMajor > SF_Tools.versionNumPrimary){
 					outOfDate = true;
 				} else if(latestMinor > SF_Tools.versionNumSecondary){
@@ -764,7 +762,7 @@ namespace ShaderForge {
 				}
 
 				if(outOfDate){
-					updateCheck = "Shader Forge is out of date! You are running " + SF_Tools.version + ", the latest version is " + latestVersion + ". Check the asset store to get it!";
+					updateCheck = "Shader Forge is out of date!\nYou are running " + SF_Tools.version + ", the latest version is " + latestVersion;
 				} else {
 					updateCheck = "Shader Forge is up to date!";
 				}
@@ -797,7 +795,11 @@ namespace ShaderForge {
 
 				FlexHorizontal(()=>{
 					GUILayout.Label( SF_GUI.Logo );
+					if(outOfDate)
+						GUI.color = Color.red;
 					GUILayout.Label( SF_Tools.versionStage + " " + SF_Tools.version, EditorStyles.boldLabel );
+					if(outOfDate)
+						GUI.color = Color.white;
 				});
 
 
@@ -856,6 +858,23 @@ namespace ShaderForge {
 				FlexHorizontal(()=>{
 					GUILayout.Label(updateCheck);
 				});
+				if(outOfDate){
+					float t = (Mathf.Sin((float)EditorApplication.timeSinceStartup*Mathf.PI*2f)*0.5f)+0.5f;
+					GUI.color = Color.Lerp(Color.white, new Color(0.4f,0.7f,1f),t);
+					FlexHorizontal(()=>{
+						if(GUILayout.Button("Download latest version")){
+							Application.OpenURL( "https://www.assetstore.unity3d.com/#/content/14147" );
+						}
+					});
+					t = (Mathf.Sin((float)EditorApplication.timeSinceStartup*Mathf.PI*2f-1)*0.5f)+0.5f;
+					GUI.color = Color.Lerp(Color.white, new Color(0.4f,0.7f,1f),t);
+					FlexHorizontal(()=>{
+						if(GUILayout.Button("What's new?")){
+							Application.OpenURL( "http://acegikmo.com/shaderforge/changelog/" );
+						}
+					});
+					GUI.color = Color.green;
+				}
 				
 				
 

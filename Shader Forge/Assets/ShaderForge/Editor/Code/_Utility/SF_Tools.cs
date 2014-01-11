@@ -33,10 +33,6 @@ namespace ShaderForge {
 		// Misc strings
 		public const string bugReportLabel = "Post bugs & ideas";
 		public const string bugReportURL = "https://shaderforge.userecho.com/";
-		public const string featureListLabel = "Feature list";
-		public const string featureListURL = "https://docs.google.com/spreadsheet/ccc?key=0AqHpAiSNy9eDdGRaQ2hIbHpLVWtfbURSb1VRTlF0NGc&usp=sharing";
-		public const string manualLabel = "Manual & ToS";
-		public const string manualURL = "https://dl.dropboxusercontent.com/u/99714/Unity%20Projects/Shader%20Forge/Documents/ShaderForgeTesterGuide.html";
 		public const string documentationLabel = "Node Documentation";
 		public const string documentationURL = "http://www.acegikmo.com/shaderforge/nodes/";
 		public static string[] rendererLabels = new string[]{

@@ -837,7 +837,7 @@ namespace ShaderForge {
 						Application.OpenURL( "http://www.polycount.com/forum/showthread.php?t=123439" );
 					}
 					if( GUILayout.Button( "Unity thread" ) ) {
-						Application.OpenURL( "http://forum.unity3d.com/threads/191595-Shader-Forge-A-visual-node-based-shader-editor" );
+						Application.OpenURL( "http://forum.unity3d.com/threads/222049-Shader-Forge-A-visual-node-based-shader-editor" );
 					}
 					if( GUILayout.Button( SF_Tools.documentationLabel ) ) {
 						Application.OpenURL( SF_Tools.documentationURL );

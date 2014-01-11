@@ -1189,9 +1189,10 @@ namespace ShaderForge {
 			
 			ScriptableObject.DestroyImmediate(this);
 
+			editor.OnShaderModified(NodeUpdateType.Soft);
+
 			//if(leadsToFinal){
 			//	editor.ShaderOutdated = UpToDateState.OutdatedHard; // TODO: Only if connected
-			//	editor.ps.fChecker.UpdateAvailability();
 			//}
 		}
 

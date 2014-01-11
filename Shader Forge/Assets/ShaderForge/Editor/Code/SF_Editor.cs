@@ -220,6 +220,9 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Normalize ), 		catVecOps + "Normalize", KeyCode.N );
 			AddTemplate( typeof( SFN_Reflect ), 		catVecOps + "Reflect" );
 			AddTemplate( typeof( SFN_Transform ), 		catVecOps + "Transform" );
+			AddTemplate( typeof( SFN_VectorProjection ),catVecOps + "Vector Projection" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_VectorRejection ),	catVecOps + "Vector Rejection" ).MarkAsNewNode();
+
 
 			string catUvOps = "UV Operations/";
 			AddTemplate( typeof( SFN_Panner ), 		catUvOps + "Panner", KeyCode.P );

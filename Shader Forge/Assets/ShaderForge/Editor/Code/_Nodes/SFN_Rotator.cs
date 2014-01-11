@@ -92,7 +92,15 @@ namespace ShaderForge {
 
 			float angle = connectors[3].IsConnected() ? GetInputData( "ANG", x, y, 0 ) : Mathf.PI / 8f;
 			Vector2 pivot = connectors[2].IsConnected() ? new Vector2( GetInputData( "PIV", x, y, 0 ), GetInputData( "PIV", x, y, 1 ) ) : new Vector2( 0.5f, 0.5f );
-			Vector2 vec = new Vector2( GetInputData( "UVIN" )[x, y, 0], GetInputData( "UVIN" )[x, y, 1] ) - pivot;
+			Vector2 vec;
+
+			if(GetInputIsConnected("UVIN")){
+				vec = new Vector2( GetInputData( "UVIN", x, y, 0 ), GetInputData( "UVIN", x, y, 1 ) );
+			} else {
+				vec = new Vector2( x/SF_NodeData.RESf, y/SF_NodeData.RESf ); // TODO: should use ghost nodes... 
+			}
+			vec -= pivot;
+		
 
 			float cos = Mathf.Cos( angle );
 			float sin = Mathf.Sin( angle );

@@ -33,8 +33,8 @@ namespace ShaderForge {
 		// 
 		public enum RenderType { None, Opaque, Transparent, TransparentCutout, Background, Overlay, TreeOpaque, TreeTransparentCutout, TreeBillboard, Grass, GrassBillboard };
 		public enum BlendModePreset {
-			Off, 
-			AlphaBlended, 
+			Off,
+			AlphaBlended,
 			Additive,
 			Screen,
 			Multiplicative,
@@ -1483,6 +1483,10 @@ namespace ShaderForge {
 
 		public void ConformBlendsToPreset() {
 			switch( blendModePreset ) {
+				case BlendModePreset.Off:
+					blendSrc = BlendMode.One;
+					blendDst = BlendMode.Zero;
+					break;
 				case BlendModePreset.Additive:
 					blendSrc = BlendMode.One;
 					blendDst = BlendMode.One;
@@ -1495,6 +1499,10 @@ namespace ShaderForge {
 					blendSrc = BlendMode.SrcAlpha;
 					blendDst = BlendMode.OneMinusSrcAlpha;
 					break;
+				//case BlendModePreset.PremultipliedAlphaBlended:
+				//	blendSrc = BlendMode.One;
+				//	blendDst = BlendMode.OneMinusSrcAlpha;
+				//	break;
 				case BlendModePreset.Multiplicative:
 					blendSrc = BlendMode.DstColor;
 					blendDst = BlendMode.Zero;

@@ -50,6 +50,9 @@ Selling shaders created in Shader Forge:
 ----------------------------------------
 This is currently not permitted - I encourage you to share it with the community instead, as I believe most people will!
 If you, however, think you have a very very very special reason for your shader in particular that it should be allowed to be sold, send me a mail!
+If you are selling 3D models / assets, they are allowed to have SF shaders on them,
+as long as you mention Shader Forge in the asset store description, linked to either the website http://www.acegikmo.com/shaderforge/ or the asset store page http://u3d.as/6cc
+Plus, it might be an extra incentive if the shaders are SF shaders, so users can easily modify them if they want :)
 
 
 Quick start:
@@ -63,6 +66,6 @@ Quick start:
 	   Box select nodes = Hold Alt + Drag. Shift/control click to add to selection
       	 Deleting nodes = Select and press delete
    Deleting connections = Hold alt and drag RMB in empty space to start cutting lines.
-  Disconnect connectors = Alt+RMB on connectors to disconnect them. Alternatively, hover the cursor over a connector and press delete or backspace
+  Disconnect connectors = Alt+RMB on connectors to disconnect them. Alternatively, hover the cursor over a connector and press backspace
 
 

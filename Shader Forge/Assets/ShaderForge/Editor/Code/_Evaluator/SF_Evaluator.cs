@@ -104,7 +104,7 @@ namespace ShaderForge {
 
 			if(SF_Debug.evalFlow)
 				Debug.Log("UPDATING DEPENDENCIES: Pass = " + currentPass + " Prog = " + currentProgram);
-			cNodes = editor.nodeView.treeStatus.GetListOfConnectedNodesWithGhosts( out ghostNodes );
+			cNodes = editor.nodeView.treeStatus.GetListOfConnectedNodesWithGhosts( out ghostNodes, passDependent:true );
 			if(SF_Debug.evalFlow)
 				Debug.Log("Found " + cNodes.Count + " nodes");
 
@@ -2043,7 +2043,7 @@ namespace ShaderForge {
 			try{
 				AssetDatabase.Refresh( ImportAssetOptions.DontDownloadFromCacheServer );
 			} catch(Exception e){
-				//Debug.Log(e);
+
 			}
 
 			editor.OnShaderEvaluated();

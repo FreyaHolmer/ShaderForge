@@ -40,6 +40,8 @@ namespace ShaderForge {
 		public Rect rect;
 		public int typecastTarget = 0; // 0 = No typecasting
 
+		public int usageCount = 1;
+
 		public string strID = null;
 
 		[SerializeField]

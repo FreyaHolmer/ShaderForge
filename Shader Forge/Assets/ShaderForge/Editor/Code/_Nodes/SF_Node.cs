@@ -1308,7 +1308,9 @@ namespace ShaderForge {
 				if( con.conType == ConType.cInput )
 					continue;
 				if( con.IsConnected() ) {
-					n += con.outputCons.Count;
+					foreach(SF_NodeConnector inCon in con.outputCons){
+						n += inCon.usageCount; // Make sure it counts some as multiple uses
+					}
 				}
 			}
 			return n;

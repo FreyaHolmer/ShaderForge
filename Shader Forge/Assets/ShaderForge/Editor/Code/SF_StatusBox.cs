@@ -17,6 +17,8 @@ namespace ShaderForge {
 		SF_MinMax vtCount = new SF_MinMax();
 		[SerializeField]
 		SF_MinMax ftCount = new SF_MinMax();
+		[SerializeField]
+		RenderPlatform platform;
 
 		[SerializeField]
 		private GUIStyle labelStyle;
@@ -79,6 +81,25 @@ namespace ShaderForge {
 				InstructionLabel( ref iRect, SF_GUI.Inst_vert_tex, vtCount.ToString() );
 			if( !ftCount.Empty() )
 				InstructionLabel( ref iRect, SF_GUI.Inst_frag_tex, ftCount.ToString() );
+
+
+
+
+
+
+			if(Compiled()){
+				Color c = GUI.color;
+				c.a = 0.5f;
+				GUI.color = c;
+				r.xMin += iRect.x;
+				r.xMax -= 4;
+				GUI.Label(r, SF_Tools.rendererLabels[(int)platform],SF_Styles.InstructionCountRenderer);
+				GUI.color = Color.white;
+			}
+
+
+
+
 
 
 			GUI.color = Color.white;
@@ -177,7 +198,11 @@ namespace ShaderForge {
 			// else *any enabled*
 
 
-			int primPlat = (int)GetPrimaryPlatform();
+
+			platform = GetPrimaryPlatform();
+			int primPlat = (int)platform;
+
+
 
 		//	Debug.Log("Primary platform: " + (RenderPlatform)primPlat);
 

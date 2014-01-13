@@ -38,6 +38,18 @@ namespace ShaderForge {
 		}
 
 
+		private static GUIStyle instructionCountRenderer;
+		public static GUIStyle InstructionCountRenderer {
+			get {
+				if( instructionCountRenderer == null ) {
+					instructionCountRenderer = new GUIStyle( EditorStyles.miniLabel );
+					InstructionCountRenderer.alignment = TextAnchor.MiddleRight;
+				}
+				return instructionCountRenderer;
+			}
+		}
+
+
 		private static GUIStyle miniLabelOverflow;
 		public static GUIStyle MiniLabelOverflow {
 			get {

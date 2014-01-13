@@ -745,9 +745,10 @@ namespace ShaderForge {
 					sR.y += sR.height+5;
 					sR.width = 28;
 					GUI.Label( sR, "Min" );
-					sR.x += sR.width;
+					//sR.x += sR.width;
+					sR = sR.MovedRight();
 					SF_GUI.EnterableFloatField(prop, sR, ref slider.min, EditorStyles.textField );
-					sR.x += sR.width;
+					sR = sR.MovedRight();
 
 					sR.width = r.width - 164;
 

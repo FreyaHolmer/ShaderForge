@@ -664,7 +664,7 @@ namespace ShaderForge {
 				Rect r = pRect; r.width = 256; r.height = 16;
 				for( int i = 0; i < nodes.Count; i++ ) {
 					GUI.Label( r, "Node[" + i + "] at {" + nodes[i].rect.x + ", " + nodes[i].rect.y + "}", EditorStyles.label );// nodes[i]
-					r.y += r.height;
+					r = r.MovedDown();
 				}
 			}
 
@@ -735,6 +735,12 @@ namespace ShaderForge {
 			GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
 		}
 
+		public void FlexHorizontal(Action func, float width){
+			GUILayout.BeginHorizontal(GUILayout.Width(width)); GUILayout.Space(Screen.width/2f - 335);
+			func();
+			GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
+		}
+
 
 		public static string updateCheck = "";
 		public static bool outOfDate = false;
@@ -776,17 +782,22 @@ namespace ShaderForge {
 		
 
 		}
-		
+
+
+		private enum MainMenuState{Main, Credits}
+
+		private MainMenuState menuState = MainMenuState.Main;
 
 		
 		public void DrawMainMenu() {
+
+
 			
 			
 			
 			if(string.IsNullOrEmpty(updateCheck)){
 				CheckForUpdates();
 			}
-			
 
 			GUILayout.BeginVertical();
 			{
@@ -803,79 +814,22 @@ namespace ShaderForge {
 				});
 
 
-				FlexHorizontal(()=>{
-					GUI.color = new Color( 0.7f, 0.7f, 0.7f );
-					GUILayout.Label( '\u00a9' + " Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel );
-					GUI.color = Color.white;
-				});
+				if(menuState == MainMenuState.Main){
+					minSize = new Vector2(500,400);
+					DrawPrimaryMainMenuGUI();
+				} else if(menuState == MainMenuState.Credits){
 
-				EditorGUILayout.Separator();
+					//Vector2 centerPrev = position.center;
 
-				/*
-				FlexHorizontal(()=>{
-					if( GUILayout.Button(SF_Tools.manualLabel , GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
-						Application.OpenURL( SF_Tools.manualURL );
-					}
-				});
-				*/
+					minSize = new Vector2(740,560);
 
-				FlexHorizontal(()=>{
-					
-					if(SF_Tools.CanRunShaderForge()){
-						if( GUILayout.Button( "New Shader", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
-							bool created = TryCreateNewShader();
-							if( created )
-								return;
-						}
-						if( GUILayout.Button( "Load Shader", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
-							OpenLoadDialog();
-						}
-					} else {
-						GUILayout.BeginVertical();
-						SF_Tools.UnityOutOfDateGUI();
-						GUILayout.EndVertical();
-					}
-				});
+					//Rect rWnd = position;
+					//rWnd.center = new Vector2( 800,800);
+					//position = rWnd;
 
-				FlexHorizontal(()=>{
-					if( GUILayout.Button( "Polycount thread" ) ) {
-						Application.OpenURL( "http://www.polycount.com/forum/showthread.php?t=123439" );
-					}
-					if( GUILayout.Button( "Unity thread" ) ) {
-						Application.OpenURL( "http://forum.unity3d.com/threads/222049-Shader-Forge-A-visual-node-based-shader-editor" );
-					}
-					if( GUILayout.Button( SF_Tools.documentationLabel ) ) {
-						Application.OpenURL( SF_Tools.documentationURL );
-					}
-				});
 
-				FlexHorizontal(()=>{
-					if( GUILayout.Button( SF_Tools.bugReportLabel, GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
-						Application.OpenURL( SF_Tools.bugReportURL );
-					}
-				});
-				EditorGUILayout.Separator();
-				FlexHorizontal(()=>{
-					GUILayout.Label(updateCheck);
-				});
-				if(outOfDate){
-					float t = (Mathf.Sin((float)EditorApplication.timeSinceStartup*Mathf.PI*2f)*0.5f)+0.5f;
-					GUI.color = Color.Lerp(Color.white, new Color(0.4f,0.7f,1f),t);
-					FlexHorizontal(()=>{
-						if(GUILayout.Button("Download latest version")){
-							Application.OpenURL( "https://www.assetstore.unity3d.com/#/content/14147" );
-						}
-					});
-					t = (Mathf.Sin((float)EditorApplication.timeSinceStartup*Mathf.PI*2f-1)*0.5f)+0.5f;
-					GUI.color = Color.Lerp(Color.white, new Color(0.4f,0.7f,1f),t);
-					FlexHorizontal(()=>{
-						if(GUILayout.Button("What's new?")){
-							Application.OpenURL( "http://acegikmo.com/shaderforge/changelog/" );
-						}
-					});
-					GUI.color = Color.green;
+					DrawCreditsGUI();
 				}
-				
 				
 
 				
@@ -886,6 +840,134 @@ namespace ShaderForge {
 
 
 		}
+
+		public void DrawCreditsGUI(){
+			EditorGUILayout.Separator();
+			FlexHorizontal(()=>{
+				GUILayout.Label( "Thanks for purchasing Shader Forge <3" );
+			});
+			FlexHorizontal(()=>{
+				GUILayout.Label( "Created by Joachim 'Acegikmo' Holm" + '\u00e9' + "r");
+			});
+			FlexHorizontal(()=>{
+				GUILayout.Label( "A massive thanks to all of the alpha & beta testers for their amazing feedback during the early days!" );
+			});
+			FlexHorizontal(()=>{
+				GUILayout.Label( "Special thanks:", EditorStyles.boldLabel );
+			});
+			CreditsLine( "Jenny 'sranine' Nordenborg", "For creating the Shader Forge logo and for supporting me throughout the development time!" );
+			CreditsLine( "Peter Cornelius", "For convincing me that I should have started creating SF in the first place" );
+			CreditsLine( "Robert Briscoe", "For actively testing SF and providing excellent feedback" );
+			CreditsLine( "Thomas Pasieka", "For helping out immensely in getting the word out, as well as motivating me to continue" );
+			CreditsLine( "Aras Pranckevi" +'\u010D'+ "ius", "For helping out with various shader code issues");
+			CreditsLine( "Tim 'Stramit' Cooper & David 'Texel' Jones", "For giving helpful tips");
+			CreditsLine( "Sander 'Zerot' Homan", "For helping out stealing Unity's internal RT code");
+			CreditsLine( "Carlos 'Darkcoder' Wilkes", "For helping out with various serialization issues");
+			CreditsLine( "Daniele Giardini", "For his editor window icon script (also, check out his plugin HOTween!)");
+			CreditsLine( "James 'Farfarer' O'Hare", "For asking all the advanced shader questions on the forums so I didn't have to");
+			CreditsLine( "Tenebrous", "For helping with... Something... (I can't remember)");
+			CreditsLine( "Alex Telford", "For his fragment shader tutorials");
+			CreditsLine( "Shawn White", "For helping out finding how to access compiled shaders from code");
+			CreditsLine( "Colin Barr"+ '\u00e9' +"-Brisebois & Stephen Hill", "For their research on normal map blending");
+
+
+			EditorGUILayout.Separator();
+			FlexHorizontal(()=>{
+				if( GUILayout.Button( "Return to menu", GUILayout.Height( 30f ), GUILayout.Width( 190f ) ) ) {
+					menuState = MainMenuState.Main;
+				}
+			});
+		}
+
+		public void CreditsLine(string author, string reason){
+			FlexHorizontal(()=>{
+				GUILayout.Label( author, EditorStyles.boldLabel );
+				GUILayout.Label(" - ", SF_Styles.CreditsLabelText );
+				GUILayout.Label( reason, SF_Styles.CreditsLabelText );
+			},400f);
+		}
+
+		public void DrawPrimaryMainMenuGUI(){
+
+			
+			
+			FlexHorizontal(()=>{
+				GUI.color = new Color( 0.7f, 0.7f, 0.7f );
+				GUILayout.Label( '\u00a9' + " Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel );
+				GUI.color = Color.white;
+			});
+			
+			EditorGUILayout.Separator();
+			
+			/*
+				FlexHorizontal(()=>{
+					if( GUILayout.Button(SF_Tools.manualLabel , GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
+						Application.OpenURL( SF_Tools.manualURL );
+					}
+				});
+				*/
+			
+			FlexHorizontal(()=>{
+				
+				if(SF_Tools.CanRunShaderForge()){
+					if( GUILayout.Button( "New Shader", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
+						bool created = TryCreateNewShader();
+						if( created )
+							return;
+					}
+					if( GUILayout.Button( "Load Shader", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
+						OpenLoadDialog();
+					}
+				} else {
+					GUILayout.BeginVertical();
+					SF_Tools.UnityOutOfDateGUI();
+					GUILayout.EndVertical();
+				}
+			});
+			
+			FlexHorizontal(()=>{
+				if( GUILayout.Button( "Polycount thread" ) ) {
+					Application.OpenURL( "http://www.polycount.com/forum/showthread.php?t=123439" );
+				}
+				if( GUILayout.Button( "Unity thread" ) ) {
+					Application.OpenURL( "http://forum.unity3d.com/threads/222049-Shader-Forge-A-visual-node-based-shader-editor" );
+				}
+				if( GUILayout.Button( SF_Tools.documentationLabel ) ) {
+					Application.OpenURL( SF_Tools.documentationURL );
+				}
+				if( GUILayout.Button("Credits") ){
+					menuState = MainMenuState.Credits;
+				}
+			});
+			
+			FlexHorizontal(()=>{
+				if( GUILayout.Button( SF_Tools.bugReportLabel, GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
+					Application.OpenURL( SF_Tools.bugReportURL );
+				}
+			});
+			EditorGUILayout.Separator();
+			FlexHorizontal(()=>{
+				GUILayout.Label(updateCheck);
+			});
+			if(outOfDate){
+				float t = (Mathf.Sin((float)EditorApplication.timeSinceStartup*Mathf.PI*2f)*0.5f)+0.5f;
+				GUI.color = Color.Lerp(Color.white, new Color(0.4f,0.7f,1f),t);
+				FlexHorizontal(()=>{
+					if(GUILayout.Button("Download latest version")){
+						Application.OpenURL( "https://www.assetstore.unity3d.com/#/content/14147" );
+					}
+				});
+				t = (Mathf.Sin((float)EditorApplication.timeSinceStartup*Mathf.PI*2f-1)*0.5f)+0.5f;
+				GUI.color = Color.Lerp(Color.white, new Color(0.4f,0.7f,1f),t);
+				FlexHorizontal(()=>{
+					if(GUILayout.Button("What's new?")){
+						Application.OpenURL( "http://acegikmo.com/shaderforge/changelog/" );
+					}
+				});
+				GUI.color = Color.green;
+			}
+		}
+		
 		
 		
 		public bool PropertyNameTaken(SF_ShaderProperty sProp){

@@ -49,6 +49,20 @@ namespace ShaderForge {
 			}
 		}
 
+		private static GUIStyle creditsLabelText;
+		public static GUIStyle CreditsLabelText {
+			get {
+				if( creditsLabelText == null ) {
+					creditsLabelText = new GUIStyle( EditorStyles.label );
+					creditsLabelText.alignment = TextAnchor.MiddleLeft;
+					creditsLabelText.fixedHeight = 16;
+					creditsLabelText.padding = new RectOffset(0,0,6,0);
+					creditsLabelText.clipping = TextClipping.Overflow;
+				}
+				return creditsLabelText;
+			}
+		}
+
 
 		private static GUIStyle nodeNameLabelText;
 		public static GUIStyle GetNodeNameLabelText() {

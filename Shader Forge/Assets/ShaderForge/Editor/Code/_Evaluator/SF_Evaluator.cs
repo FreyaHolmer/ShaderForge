@@ -2033,7 +2033,8 @@ namespace ShaderForge {
 			// Version control unlocking
 			Asset shaderAsset = UnityEditor.VersionControl.Provider.GetAssetByPath(editor.GetShaderFilePath());
 			if(shaderAsset.locked || shaderAsset.readOnly){
-				UnityEditor.VersionControl.Provider.Checkout( editor.currentShaderAsset, CheckoutMode.Both );
+				UnityEditor.VersionControl.Provider.Lock( shaderAsset, false );
+				UnityEditor.VersionControl.Provider.Checkout( shaderAsset, CheckoutMode.Both );
 			}
 
 			StreamWriter sw = new StreamWriter( editor.GetShaderFilePath() );

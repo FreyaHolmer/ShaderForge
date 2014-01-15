@@ -26,7 +26,7 @@ namespace ShaderForge {
 
 			string s = nameDisplay;
 
-			Regex rgx = new Regex( "[^a-zA-Z0-9/s-]" );
+			Regex rgx = new Regex( "[^a-zA-Z0-9/s]" );
 			s = rgx.Replace( s, "" );
 
 			s = "_" + s;

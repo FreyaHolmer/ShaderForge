@@ -2044,7 +2044,7 @@ namespace ShaderForge {
 			try{
 				AssetDatabase.Refresh( ImportAssetOptions.DontDownloadFromCacheServer );
 			} catch(Exception e){
-
+				e.ToString();
 			}
 
 			editor.OnShaderEvaluated();

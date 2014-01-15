@@ -46,7 +46,6 @@ namespace ShaderForge {
 		}
 
 		public override float NodeOperator( int x, int y, int c ) {
-			Debug.Log( "Slider operator!" );
 			return current;
 		}
 

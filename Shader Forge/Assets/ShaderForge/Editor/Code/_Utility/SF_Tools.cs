@@ -184,13 +184,20 @@ namespace ShaderForge {
 			return new Color( f, f, f, f );
 		}
 
-		public static float Distance( Color a, Color b ) {
+		public static float Distance( Color a, Color b, int cc ) {
 			Color v = a - b;
-			return Mathf.Sqrt( Dot( v, v ) );
+			return Mathf.Sqrt( Dot( v, v, cc ) );
 		}
 
-		public static float Dot(Color a, Color b) {
-			return ( a.r * b.r + a.g * b.g + a.b * b.b/* + a.a * b.a*/ );
+		public static float Dot(Color a, Color b, int compCount) {
+
+			float retVal = 0f;
+
+			for(int i=0;i<compCount;i++){
+				retVal += a[i] * b[i];
+			}
+
+			return retVal;
 		}
 
 		public static Color Cross( Color a, Color b ) {

@@ -23,7 +23,8 @@ namespace ShaderForge {
 		public override Color NodeOperator( int x, int y ) {
 			Color i = GetInputData( "A" )[x, y];
 			Color n = GetInputData( "B" )[x, y];
-			float dot = SF_Tools.Dot(i, n);
+			int cc = Mathf.Max(GetInputCon( "A" ).GetCompCount(), GetInputCon( "B" ).GetCompCount());
+			float dot = SF_Tools.Dot(i, n, cc);
 			return i - 2 * n * dot;
 		}
 

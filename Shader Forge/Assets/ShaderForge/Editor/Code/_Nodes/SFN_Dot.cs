@@ -46,7 +46,10 @@ namespace ShaderForge {
 
 		public override Color NodeOperator( int x, int y ) {
 
-			float dot = SF_Tools.Dot( GetInputData( "A" )[x, y], GetInputData( "B" )[x, y] );
+
+			int cc = Mathf.Max(GetInputCon("A").GetCompCount(), GetInputCon("B").GetCompCount());
+
+			float dot = SF_Tools.Dot( GetInputData( "A" )[x, y], GetInputData( "B" )[x, y],  cc);
 
 			switch( dotType ) {
 				case DotType.Positive:

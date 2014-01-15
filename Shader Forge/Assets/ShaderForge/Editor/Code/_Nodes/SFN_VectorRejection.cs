@@ -37,8 +37,10 @@ namespace ShaderForge {
 			Vector4 a = GetInputData( "A" )[x, y];
 			Vector4 b = GetInputData( "B" )[x, y];
 
-			float dotLeft = SF_Tools.Dot( a, b );
-			float dotRight = SF_Tools.Dot( b, b );
+			int cc = Mathf.Max(GetInputCon( "A" ).GetCompCount(), GetInputCon( "B" ).GetCompCount());
+
+			float dotLeft = SF_Tools.Dot( a, b, cc );
+			float dotRight = SF_Tools.Dot( b, b, cc );
 
 			Vector4 retVec = a - (dotLeft/dotRight) * b;
 

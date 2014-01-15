@@ -67,7 +67,7 @@ namespace ShaderForge {
 
 			Color col = GetInputData( "COL" )[x,y];
 			Color lum = new Color( 0.3f, 0.59f, 0.11f );
-			Color dot = SF_Tools.FloatToColor(SF_Tools.Dot( col, lum ));
+			Color dot = SF_Tools.FloatToColor(SF_Tools.Dot( col, lum, 3 ));
 
 			float desat = 1f;
 			if( this["DES"].IsConnected() ) {

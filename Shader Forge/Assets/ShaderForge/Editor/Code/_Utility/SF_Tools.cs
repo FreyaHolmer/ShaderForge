@@ -237,7 +237,8 @@ namespace ShaderForge {
 				 .Replace( ";", "" )
 				 .Replace( ",", "" )
 				 .Replace( "/*", "" )
-				 .Replace( "*/", "" );
+				 .Replace( "*/", "" )
+				 .Replace("\"", "");
 		}
 
 

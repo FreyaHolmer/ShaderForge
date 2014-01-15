@@ -26,7 +26,7 @@ namespace ShaderForge {
 
 			string s = nameDisplay;
 
-			Regex rgx = new Regex( "[^a-zA-Z0-9/s]" );
+			Regex rgx = new Regex( "[^a-zA-Z0-9]" );
 			s = rgx.Replace( s, "" );
 
 			s = "_" + s;
@@ -148,9 +148,9 @@ namespace ShaderForge {
 		//}
 
 		public string GetFilteredVariableLine() {
-			if( this.nameInternal == "_SpecColor" ) { // TODO: Why?
-				return null;
-			}
+			//if( this.nameInternal == "_SpecColor" ) { // TODO: Why?
+			//	return null;
+			//}
 
 			return GetVariableLine();
 

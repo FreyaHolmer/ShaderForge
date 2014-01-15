@@ -21,6 +21,18 @@ namespace ShaderForge {
 		}
 
 
+		private static GUIStyle miniLabelRight;
+		public static GUIStyle MiniLabelRight {
+			get {
+				if( miniLabelRight == null ) {
+					miniLabelRight = new GUIStyle( EditorStyles.miniLabel );
+					miniLabelRight.alignment = TextAnchor.MiddleRight;
+					
+				}
+				return miniLabelRight;
+			}
+		}
+
 
 
 		private static GUIStyle largeTextField;

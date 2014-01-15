@@ -187,6 +187,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Negate ), 			catArithmetic + "Negate" );
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
+			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap Range", KeyCode.R ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Round ), 			catArithmetic + "Round" );
 			AddTemplate( typeof( SFN_Sign ), 			catArithmetic + "Sign" );
 			AddTemplate( typeof( SFN_Sqrt ), 			catArithmetic + "Sqrt" );
@@ -220,8 +221,8 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Normalize ), 		catVecOps + "Normalize", KeyCode.N );
 			AddTemplate( typeof( SFN_Reflect ), 		catVecOps + "Reflect" );
 			AddTemplate( typeof( SFN_Transform ), 		catVecOps + "Transform" );
-			AddTemplate( typeof( SFN_VectorProjection ),catVecOps + "Vector Projection" ).MarkAsNewNode();
-			AddTemplate( typeof( SFN_VectorRejection ),	catVecOps + "Vector Rejection" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_VectorProjection ),catVecOps + "Vector Projection" );
+			AddTemplate( typeof( SFN_VectorRejection ),	catVecOps + "Vector Rejection" );
 
 
 			string catUvOps = "UV Operations/";
@@ -239,7 +240,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_TexCoord ), 				catGeoData + "UV Coordinates", KeyCode.U );
 			AddTemplate( typeof( SFN_VertexColor ), 			catGeoData + "Vertex Color", KeyCode.V );
 			AddTemplate( typeof( SFN_ViewVector ), 				catGeoData + "View Dir." );
-			AddTemplate( typeof( SFN_ViewReflectionVector ), 	catGeoData + "View Refl. Dir.", KeyCode.R, "View Reflection"  );
+			AddTemplate( typeof( SFN_ViewReflectionVector ), 	catGeoData + "View Refl. Dir.", KeyCode.None, "View Reflection"  );
 			AddTemplate( typeof( SFN_FragmentPosition ), 		catGeoData + "World Position" );
 
 			string catLighting = "Lighting/";

@@ -1,7 +1,7 @@
-// Shader created with Shader Forge Beta 0.17 
+// Shader created with Shader Forge Beta 0.19 
 // Shader Forge (c) Joachim 'Acegikmo' Holmer
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.17;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:1,blpr:0,bsrc:3,bdst:7,culm:0,dpts:2,wrdp:True,uamb:True,mssp:True,ufog:True,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,hqlp:False,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300;n:type:ShaderForge.SFN_Final,id:0,x:32883,y:32628|diff-286-OUT,spec-2-R,normal-4-RGB,amspl-5-OUT;n:type:ShaderForge.SFN_Cubemap,id:1,x:34078,y:32788,ptlb:Cubemap,cube:f466cf7415226e046b096197eb7341aa,pvfc:1;n:type:ShaderForge.SFN_Tex2d,id:2,x:33221,y:32649,ptlb:Specular,tex:26c22711225093d47bd4f1294ca52131,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:4,x:33221,y:32842,ptlb:Normal,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Multiply,id:5,x:33221,y:33005|A-224-OUT,B-10-OUT;n:type:ShaderForge.SFN_NormalVector,id:6,x:33992,y:33100,pt:False;n:type:ShaderForge.SFN_ComponentMask,id:8,x:33799,y:33100,cc1:1,cc2:-1,cc3:-1,cc4:-1|IN-6-OUT;n:type:ShaderForge.SFN_Add,id:10,x:33431,y:33169|A-12-OUT,B-13-OUT;n:type:ShaderForge.SFN_Vector1,id:11,x:33799,y:33237,v1:0.4;n:type:ShaderForge.SFN_Multiply,id:12,x:33612,y:33110|A-8-OUT,B-11-OUT;n:type:ShaderForge.SFN_OneMinus,id:13,x:33612,y:33237|IN-11-OUT;n:type:ShaderForge.SFN_Vector1,id:214,x:34078,y:32943,v1:8;n:type:ShaderForge.SFN_Multiply,id:215,x:33883,y:32823|A-1-RGB,B-1-A,C-214-OUT;n:type:ShaderForge.SFN_Fresnel,id:223,x:33708,y:32577|EXP-1080-OUT;n:type:ShaderForge.SFN_Lerp,id:224,x:33493,y:32783|A-225-OUT,B-215-OUT,T-223-OUT;n:type:ShaderForge.SFN_Multiply,id:225,x:33708,y:32712|A-226-OUT,B-215-OUT;n:type:ShaderForge.SFN_Vector1,id:226,x:33904,y:32712,v1:0.7;n:type:ShaderForge.SFN_ConstantLerp,id:286,x:33412,y:32511,a:0.4,b:0|IN-223-OUT;n:type:ShaderForge.SFN_Slider,id:1080,x:33886,y:32540,ptlb:Fresnel Exponent,min:1,cur:2.526316,max:8;n:type:ShaderForge.SFN_Cubemap,id:1158,x:33582,y:32943,ptlb:node_1158;proporder:1-2-4-1080;pass:END;sub:END;*/
+/*SF_DATA;ver:0.19;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:1,blpr:0,bsrc:3,bdst:7,culm:0,dpts:2,wrdp:True,uamb:True,mssp:True,ufog:True,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,hqlp:False,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0;n:type:ShaderForge.SFN_Final,id:0,x:32883,y:32628|diff-286-OUT,spec-2-R,normal-4-RGB,amspl-5-OUT;n:type:ShaderForge.SFN_Cubemap,id:1,x:34078,y:32788,ptlb:Cubemap,cube:f466cf7415226e046b096197eb7341aa,pvfc:1;n:type:ShaderForge.SFN_Tex2d,id:2,x:33221,y:32649,ptlb:Specular,tex:26c22711225093d47bd4f1294ca52131,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:4,x:33221,y:32842,ptlb:Normal,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Multiply,id:5,x:33221,y:33005|A-224-OUT,B-10-OUT;n:type:ShaderForge.SFN_NormalVector,id:6,x:33992,y:33100,pt:False;n:type:ShaderForge.SFN_ComponentMask,id:8,x:33799,y:33100,cc1:1,cc2:-1,cc3:-1,cc4:-1|IN-6-OUT;n:type:ShaderForge.SFN_Add,id:10,x:33431,y:33169|A-12-OUT,B-13-OUT;n:type:ShaderForge.SFN_Vector1,id:11,x:33799,y:33237,v1:0.4;n:type:ShaderForge.SFN_Multiply,id:12,x:33612,y:33110|A-8-OUT,B-11-OUT;n:type:ShaderForge.SFN_OneMinus,id:13,x:33612,y:33237|IN-11-OUT;n:type:ShaderForge.SFN_Vector1,id:214,x:34078,y:32943,v1:8;n:type:ShaderForge.SFN_Multiply,id:215,x:33883,y:32823|A-1-RGB,B-1-A,C-214-OUT;n:type:ShaderForge.SFN_Fresnel,id:223,x:33708,y:32577|EXP-1080-OUT;n:type:ShaderForge.SFN_Lerp,id:224,x:33493,y:32783|A-225-OUT,B-215-OUT,T-223-OUT;n:type:ShaderForge.SFN_Multiply,id:225,x:33708,y:32712|A-226-OUT,B-215-OUT;n:type:ShaderForge.SFN_Vector1,id:226,x:33904,y:32712,v1:0.7;n:type:ShaderForge.SFN_ConstantLerp,id:286,x:33412,y:32511,a:0.4,b:0|IN-223-OUT;n:type:ShaderForge.SFN_Slider,id:1080,x:33886,y:32540,ptlb:Fresnel Exponent,min:1,cur:2.526316,max:8;n:type:ShaderForge.SFN_Cubemap,id:1158,x:33582,y:32943,ptlb:node_1158;proporder:1-2-4-1080;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Cubemaps" {
     Properties {
@@ -15,9 +15,11 @@ Shader "Shader Forge/Examples/Cubemaps" {
             "RenderType"="Opaque"
         }
         Pass {
+            Name "ForwardBase"
             Tags {
                 "LightMode"="ForwardBase"
             }
+            
             
             CGPROGRAM
             #pragma vertex vert
@@ -41,13 +43,13 @@ Shader "Shader Forge/Examples/Cubemaps" {
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
-                float3 shLight : TEXCOORD0;
-                float4 uv0 : TEXCOORD1;
-                float4 posWorld : TEXCOORD2;
-                float3 normalDir : TEXCOORD3;
-                float3 tangentDir : TEXCOORD4;
-                float3 binormalDir : TEXCOORD5;
-                LIGHTING_COORDS(6,7)
+                float4 uv0 : TEXCOORD0;
+                float4 posWorld : TEXCOORD1;
+                float3 normalDir : TEXCOORD2;
+                float3 tangentDir : TEXCOORD3;
+                float3 binormalDir : TEXCOORD4;
+                LIGHTING_COORDS(5,6)
+                float3 shLight : TEXCOORD7;
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
@@ -88,18 +90,24 @@ Shader "Shader Forge/Examples/Cubemaps" {
                 float3 specularColor = float3(_Specular_var.r,_Specular_var.r,_Specular_var.r);
                 float3 specularAmb = (lerp((0.7*node_215),node_215,node_223)*((i.normalDir.g*node_11)+(1.0 - node_11))) * specularColor;
                 float3 specular = (floor(attenuation) * _LightColor0.xyz) * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor + specularAmb;
+                float3 finalColor = 0;
+                float3 diffuseLight = diffuse;
+                diffuseLight += i.shLight; // Per-Vertex Light Probes / Spherical harmonics
                 float node_286 = lerp(0.4,0,node_223);
-                float3 finalColor = ( diffuse + i.shLight ) * float3(node_286,node_286,node_286) + specular;
+                finalColor += diffuseLight * float3(node_286,node_286,node_286);
+                finalColor += specular;
 /// Final Color:
                 return fixed4(finalColor,1);
             }
             ENDCG
         }
         Pass {
+            Name "ForwardAdd"
             Tags {
                 "LightMode"="ForwardAdd"
             }
             Blend One One
+            
             
             Fog { Color (0,0,0,0) }
             CGPROGRAM
@@ -162,9 +170,12 @@ Shader "Shader Forge/Examples/Cubemaps" {
                 float4 _Specular_var = tex2D(_Specular,TRANSFORM_TEX(node_1171.rg, _Specular));
                 float3 specularColor = float3(_Specular_var.r,_Specular_var.r,_Specular_var.r);
                 float3 specular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor;
+                float3 finalColor = 0;
+                float3 diffuseLight = diffuse;
                 float node_223 = pow(1.0-max(0,dot(normalDirection, viewDirection)),_FresnelExponent);
                 float node_286 = lerp(0.4,0,node_223);
-                float3 finalColor = diffuse * float3(node_286,node_286,node_286) + specular;
+                finalColor += diffuseLight * float3(node_286,node_286,node_286);
+                finalColor += specular;
 /// Final Color:
                 return fixed4(finalColor * 1,0);
             }

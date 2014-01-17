@@ -847,15 +847,18 @@ namespace ShaderForge {
 			FlexHorizontal(()=>{
 				GUILayout.Label( "Thanks for purchasing Shader Forge <3" );
 			});
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
 			FlexHorizontal(()=>{
-				GUILayout.Label( "Created by Joachim 'Acegikmo' Holm" + '\u00e9' + "r");
+				GUILayout.Label( "Created by ", SF_Styles.CreditsLabelText);
+				GUILayout.Label( "Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.boldLabel);
 			});
-			FlexHorizontal(()=>{
-				GUILayout.Label( "A massive thanks to all of the alpha & beta testers for their amazing feedback during the early days!" );
-			});
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
 			FlexHorizontal(()=>{
 				GUILayout.Label( "Special thanks:", EditorStyles.boldLabel );
 			});
+			CreditsLine("All of the alpha & beta testers","For their amazing feedback during the early days!" );
 			CreditsLine( "Jenny 'sranine' Nordenborg", "For creating the Shader Forge logo and for supporting me throughout the development time!" );
 			CreditsLine( "Peter Cornelius", "For convincing me that I should have started creating SF in the first place" );
 			CreditsLine( "Robert Briscoe", "For actively testing SF and providing excellent feedback" );

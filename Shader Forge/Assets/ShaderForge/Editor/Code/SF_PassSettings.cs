@@ -25,6 +25,7 @@ namespace ShaderForge {
 		public string[] strCullMode = new string[] { "Back", "Front", "Off" };
 		public enum DepthTest { Less, Greater, LEqual, GEqual, Equal, NotEqual, Always };
 		public string[] strDepthTest = new string[] { "<", ">", "\u2264 (Default)", "\u2265", "=", "\u2260", "Always" };
+
 		public enum Queue { Background, Geometry, AlphaTest, Transparent, Overlay };
 		public static int[] queueNumbers = new int[] { 1000, 2000, 2450, 3000, 4000 };
 		public string[] strQueue = new string[] { "Background (1000)", "Opaque Geometry (2000)", "Alpha Clip (2450)", "Transparent (3000)", "Overlay (4000)" };
@@ -57,6 +58,23 @@ namespace ShaderForge {
 		[SerializeField] private CullMode cullMode = CullMode.BackfaceCulling;
 		[SerializeField] private DepthTest depthTest = DepthTest.LEqual;
 		[SerializeField] private LightCount lightCount = LightCount.Multi;
+
+		public enum DepthTestStencil { Less, Greater, LEqual, GEqual, Equal, NotEqual, Always, Never };
+		public string[] strDepthTestStencil = new string[] { "<", ">", "\u2264", "\u2265", "=", "\u2260", "Always (Default)", "Never" };
+		public enum StencilOp { Keep, Zero, Replace, Invert, IncrSat, DecrSat, IncrWrap, DecrWrap };
+		public string[] strStencilOp = new string[] { "Keep (Default)", "Zero", "Replace", "Invert", "Increase (Clamped)", "Decrease (Clamped)", "Increase (Wrapped)", "Decrease (Wrapped)" };
+
+
+		public byte stencilValue = 128;
+		public byte stencilMaskRead = 255;
+		public byte stencilMaskWrite = 255;
+		public DepthTestStencil stencilComparison = DepthTestStencil.Always;
+		public StencilOp stencilPass = StencilOp.Keep;
+		public StencilOp stencilFail = StencilOp.Keep;
+		public StencilOp stencilFailZ = StencilOp.Keep;
+
+		public int offsetFactor = 0;
+		public int offsetUnits = 0;
 
 		public bool writeDepth = true;
 		public bool useAmbient = true;
@@ -98,6 +116,9 @@ namespace ShaderForge {
 
 		public bool fogOverrideRange = false;
 		public Vector2 fogRange = new Vector2(RenderSettings.fogStartDistance, RenderSettings.fogEndDistance);
+
+
+
 		//
 
 
@@ -163,7 +184,25 @@ namespace ShaderForge {
 			s += Serialize( "fgca", fogColor.a.ToString());			// Fog Color
 			s += Serialize( "fgde", fogDensity.ToString());			// float
 			s += Serialize( "fgrn", fogRange.x.ToString());			// Fog range X (Near)
-			s += Serialize( "fgrf", fogRange.y.ToString(), true);	// Fog range Y (Far)
+			s += Serialize( "fgrf", fogRange.y.ToString());	// Fog range Y (Far)
+
+
+			// Stencil buffer:
+			/*
+			s += Serialize ( "stcl", useStencilBuffer.ToString());
+			s += Serialize ( "stva", stencilValue.ToString());
+			s += Serialize ( "stmr", stencilMaskRead.ToString());
+			s += Serialize ( "stmw", stencilMaskWrite.ToString());
+			s += Serialize ( "stcp", ((int)stencilComparison).ToString());
+			s += Serialize ( "stps", ((int)stencilPass).ToString());
+			s += Serialize ( "stfa", ((int)stencilFail).ToString());
+			s += Serialize ( "stfz", ((int)stencilFailZ).ToString(), true);
+*/
+
+
+			// Offset
+			s += Serialize ( "ofsf", offsetFactor.ToString());
+			s += Serialize ( "ofsu", offsetUnits.ToString(), true);
 
 
 
@@ -315,10 +354,89 @@ namespace ShaderForge {
 			case "fgrf":
 				fogRange.y = float.Parse( value );
 				break;
+
+
+
+			// Stencil buffer:
+				/*
+			case "stcl":
+				useStencilBuffer = bool.Parse(value);
+				break;
+			case "stva":
+				stencilValue = byte.Parse(value);
+				break;
+			case "stmr":
+				stencilMaskRead = byte.Parse(value);
+				break;
+			case "stmw":
+				stencilMaskWrite = byte.Parse(value);
+				break;
+			case "stcp":
+				stencilComparison = (DepthTestStencil)int.Parse(value);
+				break;
+			case "stps":
+				stencilPass = (StencilOp)int.Parse(value);
+				break;
+			case "stfa":
+				stencilFail = (StencilOp)int.Parse(value);
+				break;
+			case "stfz":
+				stencilFailZ = (StencilOp)int.Parse(value);
+				break;*/
+
+			// Offset
+			case "ofsf":
+				offsetFactor = int.Parse(value);
+				break;
+			case "ofsu":
+				offsetUnits = int.Parse(value);
+				break;
+
 			}
 
 		}
 
+
+		/*
+		public class SF_Serializeable{
+
+			public string key;
+
+			public SF_Serializeable(){
+
+			}
+
+			public virtual string Serialize(bool last = false){
+			}
+
+			public virtual void Deserialize(string key, string value){
+			}
+
+			protected string Serialize( string key, string value, bool last = false ) {
+				return key + ":" + value + (last ? "" : ",");
+			}
+
+		}
+
+		public class SFS_Int : SF_Serializeable{
+
+			int val;
+
+			public SFS_Int(string key){
+				this.key = key;
+			}
+
+			public override string Serialize(bool last = false){
+				return Serialize(key,val.ToString(),last);
+			}
+			
+			public override void Deserialize(string key, string value){
+				if(key == this.key){
+					val = int.Parse(value);
+				}
+			}
+
+		}*/
 
 
 		// END SERIALIZATION
@@ -1119,7 +1237,7 @@ namespace ShaderForge {
 				int dstStrWidth = SF_GUI.WidthOf(dstStr,EditorStyles.miniLabel);
 				int fieldWidth = Mathf.FloorToInt((r.width - srcStrWidth - dstStrWidth)/2);
 
-				Rect rSrcLb =		new Rect( r );			rSrcLb.width = srcStrWidth;
+				Rect rSrcLb =		new Rect(r);			rSrcLb.width = srcStrWidth;
 				Rect rSrcField =	new Rect(r);			rSrcField.x = rSrcLb.xMax;	rSrcField.width = fieldWidth;
 				Rect rDstLb =		new Rect(r);			rDstLb.x = rSrcField.xMax;	rDstLb.width = dstStrWidth;
 				Rect rDstField =	new Rect(rSrcField);	rDstField.x = rDstLb.xMax;
@@ -1139,14 +1257,40 @@ namespace ShaderForge {
 			r.y += 20;
 
 
+			OffsetBlock (ref r);
+
 			FogBlock(ref r);
 
 			SortingBlock(ref r);
+
+
+
+			//StencilBlock(ref r); // TODO
 
 			if( EndExpanderChangeCheck() )
 				guiChanged = true;
 
 			return (int)r.yMax;
+		}
+
+
+		public void OffsetBlock(ref Rect r){
+			StartIgnoreChangeCheck();
+			Rect rOfs = r;
+			rOfs.xMax -= 4; // Margin
+			rOfs.width = 80;
+			GUI.Label(rOfs, "Offset Factor");
+			rOfs = rOfs.MovedRight();
+			rOfs.width /= 2;
+			offsetFactor = EditorGUI.IntField(rOfs,offsetFactor);
+			rOfs = rOfs.MovedRight();
+			rOfs.width *= 2;
+			GUI.Label(rOfs.PadLeft(4), "Offset Units");
+			rOfs = rOfs.MovedRight();
+			rOfs.width /= 2;
+			offsetUnits = EditorGUI.IntField(rOfs,offsetUnits);
+			r.y += 20;
+			EndIgnoreChangeCheck();
 		}
 
 
@@ -1163,6 +1307,116 @@ namespace ShaderForge {
 			if( prevChangeState ) {
 				GUI.changed = true;
 			}
+		}
+		
+
+		public bool useStencilBuffer = false;
+
+
+		public string GetStencilContent(){
+			string s = "";
+
+			s += "Ref " + stencilValue + "\n";
+
+			if(stencilMaskRead != (byte)255)
+				s += "ReadMask " + stencilMaskRead + "\n";
+			if(stencilMaskWrite != (byte)255)
+				s += "WriteMask " + stencilMaskWrite + "\n";
+			if(stencilComparison != DepthTestStencil.Always)
+				s += "Comp " + stencilComparison + "\n";
+			if(stencilPass != StencilOp.Keep)
+				s += "Pass " + stencilPass + "\n";
+			if(stencilFail != StencilOp.Keep)
+				s += "Fail " + stencilFail + "\n";
+			if(stencilFailZ != StencilOp.Keep)
+				s += "ZFail " + stencilFailZ + "\n";
+
+			return s;
+
+		}
+
+
+		public void StencilBlock(ref Rect r){
+
+			bool prevUseStencilBuffer = useStencilBuffer;
+			useStencilBuffer = GUI.Toggle(r, useStencilBuffer, useStencilBuffer ? "Stencil Buffer" : "Stencil Buffer...");
+			if( useStencilBuffer != prevUseStencilBuffer )
+	      		UpdateAutoSettings();
+			r.y += 20;
+			if(!useStencilBuffer)
+				return;
+			r.xMin += 20;
+
+			Rect rTmp = r;
+			rTmp.width = 84;
+			GUI.Label(rTmp,"Reference Value", EditorStyles.miniLabel);
+			rTmp = rTmp.MovedRight();
+			rTmp.width -= 40;
+			stencilValue = (byte)EditorGUI.IntField(rTmp.PadRight(4).PadTop(1).PadBottom(2),stencilValue);
+			rTmp = rTmp.MovedRight();
+			rTmp.width = r.width-128;
+			stencilComparison = (DepthTestStencil)SF_GUI.LabeledEnumFieldNamed(rTmp.PadRight(4).ClampWidth(32,140),strDepthTestStencil, new GUIContent("Comparison"), (int)stencilComparison, EditorStyles.miniLabel);
+			r.y += 20;
+
+			StencilBitfield(r, "Read Mask", ref stencilMaskRead);
+			r.y += 20;
+			StencilBitfield(r, "Write Mask", ref stencilMaskWrite);
+			r.y += 23;
+			stencilPass = (StencilOp)SF_GUI.LabeledEnumFieldNamed(r.PadRight(4),strStencilOp, new GUIContent("Pass"), (int)stencilPass, EditorStyles.miniLabel);
+			r.y += 20;
+			stencilFail = (StencilOp)SF_GUI.LabeledEnumFieldNamed(r.PadRight(4),strStencilOp, new GUIContent("Fail"), (int)stencilFail, EditorStyles.miniLabel);
+			r.y += 20;
+			stencilFailZ = (StencilOp)SF_GUI.LabeledEnumFieldNamed(r.PadRight(4),strStencilOp, new GUIContent("Fail Z"), (int)stencilFailZ, EditorStyles.miniLabel);
+			r.y += 20;
+			r.xMin -= 20;
+			r.y += 20;
+		}
+
+
+
+		public void StencilBitfield( Rect r, string label, ref byte b ){
+			StartIgnoreChangeCheck();
+			Rect tmp = r;
+			tmp.width = 57;
+
+			GUI.Label(tmp.PadRight(2),label, SF_Styles.MiniLabelRight);
+
+			tmp = tmp.MovedRight();
+			tmp.width = 36;
+			b = (byte)EditorGUI.IntField(tmp.PadTop(1).PadBottom(2).PadRight(2).PadLeft(2),b);
+
+			Rect bitField = r;
+			bitField.xMin += 57+36 + 4;
+			bitField.xMax -= 4;
+
+
+			bitField.width /= 8; // 8 bits
+			for (int i = 8 - 1; i >= 0; i--) {
+
+				GUIStyle btnStyle;
+
+				if(i==0)
+					btnStyle = EditorStyles.miniButtonRight;
+				else if(i==7)
+					btnStyle = EditorStyles.miniButtonLeft;
+				else
+					btnStyle = EditorStyles.miniButtonMid;
+
+				bool bit = ( (1<<i) & b ) != 0;
+				int iBit = bit ? 1 : 0;
+
+				GUI.color = bit ? Color.white : Color.gray;
+
+				if(GUI.Button(bitField.PadTop(2).PadBottom(2),iBit.ToString(),btnStyle)){
+					editor.Defocus();
+					b = (byte)( (1<<i) ^ b );
+				}
+				bitField = bitField.MovedRight();
+			}
+			GUI.color = Color.white;
+
+			EndIgnoreChangeCheck();
+
 		}
 
 
@@ -1509,6 +1763,17 @@ namespace ShaderForge {
 					blendDst = BlendMode.Zero;
 					break;
 			}
+		}
+
+
+
+
+
+		public string GetOffsetString(){
+			if(offsetFactor != 0 && offsetUnits != 0){
+				return "Offset " + offsetFactor + ", " + offsetUnits;
+			}
+			return "";
 		}
 
 		public bool UseZWrite() {

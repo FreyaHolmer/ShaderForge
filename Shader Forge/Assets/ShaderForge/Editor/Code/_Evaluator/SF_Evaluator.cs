@@ -522,6 +522,8 @@ namespace ShaderForge {
 				App( ps.GetZWriteString() );
 			}
 
+			App (ps.GetOffsetString());
+
 			
 			if(currentPass == PassType.FwdAdd){
 				App ("Fog { Color (0,0,0,0) }");
@@ -537,6 +539,18 @@ namespace ShaderForge {
 					App( "Fog {Density "+ps.fogDensity+"}" ); 
 				if(ps.fogOverrideRange)
 					App( "Fog {Range "+ps.fogRange.x+","+ps.fogRange.y+"}" ); 
+			}
+
+
+			if( ps.useStencilBuffer ){
+				App ("Stencil {");
+				scope++;
+
+				App ( ps.GetStencilContent() );
+
+				scope--;
+				App ("}");
+
 			}
 
 		}
@@ -751,14 +765,7 @@ namespace ShaderForge {
 
 			} else {
 
-				if( LightmapThisPass() ) {
-					App( "#ifndef LIGHTMAP_OFF" );
-					scope++;
-						App( "float3 diffuse = lightmap;" );
-					scope--;
-					App( "#else" );
-					scope++;
-				}
+
 
 				lmbStr = GetWithDiffPow("max( 0.0, NdotL)");
 
@@ -768,6 +775,15 @@ namespace ShaderForge {
 				//	lmbStr = "pow(" + lmbStr + "," + ps.n_diffusePower + ")";
 				//}
 
+			}
+
+			if( LightmapThisPass() ) {
+				App( "#ifndef LIGHTMAP_OFF" );
+				scope++;
+				App( "float3 diffuse = lightmap;" );
+				scope--;
+				App( "#else" );
+				scope++;
 			}
 
 
@@ -1200,6 +1216,7 @@ namespace ShaderForge {
 			if( DoPassSpecular() ) { // Specular
 				CalcGloss();
 				CalcSpecular();
+				//AppDebug("Spec done"); 
 			}
 			
 			/*if(!ps.IsLit() && ps.mOut.customLighting.IsConnectedEnabledAndAvailable() ){
@@ -1209,7 +1226,8 @@ namespace ShaderForge {
 			}*/
 			if( /*!ps.IsVertexLit() &&*/ currentProgram == ShaderProgram.Frag ) {
 
-				string lgFinal = "float3 finalColor = ";
+				//string lgFinal = "float3 finalColor = ";
+				App ("float3 finalColor = 0;");
 
 				bool addedSomething = false;
 
@@ -1220,47 +1238,66 @@ namespace ShaderForge {
 
 					bool parenthesize = (ambDiff || shLight);
 
-					string diffuseLight = parenthesize ?  "( diffuse" : "diffuse";
+					//string diffuseLight = parenthesize ?  "( diffuse" : "diffuse";
+
+					App ("float3 diffuseLight = diffuse;");
 				
 					if(ambDiff){
-						diffuseLight += " + " + ps.n_ambientDiffuse;
+						//diffuseLight += " + " + ps.n_ambientDiffuse;
+						App("diffuseLight += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light");
 					}
 
 					if(shLight){
+
+						if(LightmapThisPass()){
+							App ("#ifdef LIGHTMAP_OFF");
+							scope++;
+						}
+
 						if(ps.highQualityLightProbes)
-							diffuseLight += " + ShadeSH9(float4(normalDirection,1))" + (ps.doubleIncomingLight ? "" : " * 0.5");
+							App ("diffuseLight += ShadeSH9(float4(normalDirection,1))" + (ps.doubleIncomingLight ? ";" : " * 0.5; // Per-Pixel Light Probes / Spherical harmonics"));
+							//diffuseLight += " + ShadeSH9(float4(normalDirection,1))" + (ps.doubleIncomingLight ? "" : " * 0.5");
 						else
-							diffuseLight += " + i.shLight";
+							App ("diffuseLight += i.shLight; // Per-Vertex Light Probes / Spherical harmonics");
+							//diffuseLight += " + i.shLight";
+
+						if(LightmapThisPass()){
+							scope--;
+							App ("#endif");
+						}
 					}
 
 
 
-					if(parenthesize)
-						diffuseLight += " )";
+					//if(parenthesize)
+					//	diffuseLight += " )";
 
-					lgFinal += diffuseLight;
+					//lgFinal += diffuseLight;
+					App ("finalColor += diffuseLight * " + ps.n_diffuse + ";");
 
-					lgFinal += " * " + ps.n_diffuse;
-					addedSomething = true;
+					//lgFinal += " * " + ps.n_diffuse;
+					//addedSomething = true;
 				}
 
 				if(DoPassSpecular()){
-					lgFinal += addedSomething ? " + ":"";
-					lgFinal += "specular";
-					addedSomething = true;
+					App("finalColor += specular;");
+					//lgFinal += addedSomething ? " + ":"";
+					//lgFinal += "specular";
+					//addedSomething = true;
 				}
 				if(DoPassEmissive()){
-					lgFinal += addedSomething ? " + ":"";
-					lgFinal += "emissive";
-					addedSomething = true;
+					App("finalColor += emissive;");
+					//lgFinal += addedSomething ? " + ":"";
+					//lgFinal += "emissive";
+					//addedSomething = true;
 				}
 
-				if(!addedSomething)
-					lgFinal += "0"; // TODO: Don't do lighting at all if this is the case
+				//if(!addedSomething)
+					//lgFinal += "0"; // TODO: Don't do lighting at all if this is the case
 
 
-				lgFinal += ";";
-				App( lgFinal );
+				//lgFinal += ";";
+				//App( lgFinal );
 			}	
 			/*if(currentProgram == ShaderProgram.Frag){*/
 
@@ -1394,8 +1431,8 @@ namespace ShaderForge {
 
 				if( ps.IsVertexLit() )
 					App( "float3 vtxLight : COLOR;" );
-				if( DoPassSphericalHarmonics() && !ps.highQualityLightProbes )
-					App ("float3 shLight" + GetVertOutTexcoord() );
+				//if( DoPassSphericalHarmonics() && !ps.highQualityLightProbes )
+				//	App ("float3 shLight" + GetVertOutTexcoord() );
 				if( dependencies.uv0_frag )
 					App( "float4 uv0" + GetVertOutTexcoord() );
 				if( dependencies.uv1_frag )
@@ -1414,12 +1451,29 @@ namespace ShaderForge {
 					App( "float4 vertexColor : COLOR;" );
 				if( ShouldUseLightMacros() )
 					App( "LIGHTING_COORDS(" + GetVertOutTexcoord( true ) + "," + GetVertOutTexcoord( true ) + ")" );
-				if( LightmapThisPass() ) {
+
+				bool sh = DoPassSphericalHarmonics() && !ps.highQualityLightProbes;
+				bool lm = LightmapThisPass();
+				string shlmTexCoord = GetVertOutTexcoord();
+
+				if( lm && sh) {
 					App( "#ifndef LIGHTMAP_OFF" );
 					scope++;
-					App( "float2 uvLM" + GetVertOutTexcoord() );
+						App( "float2 uvLM" + shlmTexCoord );
+					scope--;
+					App( "#else" );
+					scope++;
+						App ("float3 shLight" + shlmTexCoord );
+					scope--;
+					App ("#endif");
+				} else if(lm){
+					App( "#ifndef LIGHTMAP_OFF" );
+					scope++;
+						App( "float2 uvLM" + shlmTexCoord );
 					scope--;
 					App( "#endif" );
+				} else if(sh){
+					App ("float3 shLight" + shlmTexCoord );
 				}
 
 			}
@@ -1442,6 +1496,8 @@ namespace ShaderForge {
 		}
 
 
+
+
 		void Vertex() {
 			currentProgram = ShaderProgram.Vert;
 			App( "VertexOutput vert (VertexInput v) {" );
@@ -1457,7 +1513,18 @@ namespace ShaderForge {
 			if( dependencies.vert_out_vertexColor )
 				App("o.vertexColor = v.vertexColor;");
 			if( DoPassSphericalHarmonics() && !ps.highQualityLightProbes){
+
+
+				if( LightmapThisPass() ){
+					App ("#ifdef LIGHTMAP_OFF");
+					scope++;
+				}
 				App ("o.shLight = ShadeSH9(float4(v.normal * unity_Scale.w,1))" + (ps.doubleIncomingLight ? "" : " * 0.5") + ";");
+
+				if( LightmapThisPass() ){
+					scope--;
+					App("#endif");
+				}
 			}
 			if( dependencies.vert_out_normals )
 				InitNormalDirVert();

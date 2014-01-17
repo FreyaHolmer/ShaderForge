@@ -40,8 +40,30 @@ namespace ShaderForge{
 		}
 
 
+		public static Rect PadBottom(this Rect r, int pixels ){
+			r.yMax -= pixels;
+			return r;
+		}
+		
+		public static Rect PadTop(this Rect r, int pixels ){
+			r.yMin += pixels;
+			return r;
+		}
+
+
 		public static Rect PadRight(this Rect r, int pixels ){
 			r.xMax -= pixels;
+			return r;
+		}
+
+		public static Rect PadLeft(this Rect r, int pixels ){
+			r.xMin += pixels;
+			return r;
+		}
+
+
+		public static Rect ClampWidth(this Rect r, int min, int max){
+			r.width = Mathf.Clamp(r.width, min, max);
 			return r;
 		}
 

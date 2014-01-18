@@ -61,8 +61,8 @@ namespace ShaderForge {
 
 		public void SetOutputValueType(ValueType vt){
 
-			if( SF_Debug.nodes )
-				Debug.Log("Trying to set to " + vt);
+
+				//Debug.Log("Trying to set to " + vt);
 
 			if(vt == ValueType.VTv1v2)
 				vt = ValueType.VTv2;
@@ -152,8 +152,9 @@ namespace ShaderForge {
 		}
 
 		public ValueType GetDominantType( ValueType a, ValueType b ) {
-			
-			//Debug.Log("Checking dominancy between a:" + a.ToString() + " b:" + b.ToString() + " on " + output.node.nodeName);
+
+			//if( SF_Debug.nodes)
+			//	Debug.Log("DOM a:" + a.ToString() + " b:" + b.ToString());
 			
 			if( a == b )
 				return a;
@@ -187,6 +188,27 @@ namespace ShaderForge {
 				return b;
 			if(b == ValueType.VTv3 && a == ValueType.VTv4)
 				return a;
+
+			if(a == ValueType.VTv1v2 && b == ValueType.VTv2){
+				return b;
+			}
+			if(b == ValueType.VTv1v2 && a == ValueType.VTv2){
+				return a;
+			}
+
+			if(a == ValueType.VTv1v3 && b == ValueType.VTv3){
+				return b;
+			}
+			if(b == ValueType.VTv1v3 && a == ValueType.VTv3){
+				return a;
+			}
+
+			if(a == ValueType.VTv1v4 && b == ValueType.VTv4){
+				return b;
+			}
+			if(b == ValueType.VTv1v4 && a == ValueType.VTv4){
+				return a;
+			}
 			
 			
 			

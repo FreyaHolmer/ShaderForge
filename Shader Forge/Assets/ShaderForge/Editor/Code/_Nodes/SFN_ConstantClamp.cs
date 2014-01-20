@@ -20,8 +20,8 @@ namespace ShaderForge {
 
 
 		public override void Initialize() {
-			base.Initialize( "Const. Clamp" );
-			base.SearchName = "Constant Clamp";
+			base.Initialize( "Clamp (Simple)" );
+			base.SearchName = "Clamp Simple";
 			base.showColor = true;
 			UseLowerReadonlyValues( true );
 			base.UseLowerPropertyBox( true, true );

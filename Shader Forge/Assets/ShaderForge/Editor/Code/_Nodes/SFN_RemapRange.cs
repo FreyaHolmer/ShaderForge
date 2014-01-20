@@ -25,7 +25,8 @@ namespace ShaderForge {
 
 
 		public override void Initialize() {
-			base.Initialize( "Remap Range" );
+			base.Initialize( "Remap (Simple)" );
+			base.SearchName = "Remap (Simple)";
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
 			base.PrepareArithmetic(1);

@@ -1118,7 +1118,7 @@ namespace ShaderForge {
 
 
 			bool onlyDX11 = mOut.tessellation.IsConnectedAndEnabled();
-			bool onlyDX = editor.nodeView.treeStatus.mipInputUsed;
+			bool onlyDX = false;//editor.nodeView.treeStatus.mipInputUsed;
 			
 
 			for(int i=0;i<usedRenderers.Length;i++){

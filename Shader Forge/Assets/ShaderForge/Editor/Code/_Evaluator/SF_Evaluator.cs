@@ -234,14 +234,14 @@ namespace ShaderForge {
 
 				if( n.GetType() == typeof( SFN_Tex2d ) ) {
 					if( n.GetInputIsConnected( "MIP" ) ) { // MIP connection
-						dependencies.ExcludeRenderPlatform( RenderPlatform.opengl ); // TODO: Find workaround!
+						//dependencies.ExcludeRenderPlatform( RenderPlatform.opengl ); // TODO: Find workaround!
 						dependencies.SetMinimumShaderTarget( 3 );
 					}
 				}
 
 				if( n.GetType() == typeof( SFN_Cubemap ) ) {
 					if( n.GetInputIsConnected( "MIP" ) ) { // MIP connection
-						dependencies.ExcludeRenderPlatform( RenderPlatform.opengl ); // TODO: Find workaround!
+						//dependencies.ExcludeRenderPlatform( RenderPlatform.opengl ); // TODO: Find workaround!
 						dependencies.SetMinimumShaderTarget( 3 );
 					}
 				}
@@ -450,7 +450,8 @@ namespace ShaderForge {
 				App( "#pragma exclude_renderers " + dependencies.GetExcludePlatforms() );
 			if( dependencies.IsTargetingAboveDefault() )
 				App( "#pragma target " + dependencies.GetShaderTarget() );
-			// App ("#pragma glsl"); // Kills non DX instruction counts
+			if( editor.nodeView.treeStatus.mipInputUsed)
+				App ("#pragma glsl"); // Kills non DX instruction counts
 		}
 		void EndCG() {
 			App( "ENDCG" );

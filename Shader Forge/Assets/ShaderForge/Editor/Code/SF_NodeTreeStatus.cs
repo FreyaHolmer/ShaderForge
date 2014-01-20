@@ -11,7 +11,7 @@ namespace ShaderForge {
 
 		public SF_Editor editor;
 		public List<SF_ErrorEntry> errors;
-		public bool mipInputUsed = false; // If this is true, only DX is allowed :<
+		public bool mipInputUsed = false; // If this is true, only DX is allowed :< OR: Enable glsl pragma
 		public bool usesSceneData = false;
 		// public bool lightNodesUsed = false; // Used to re-enable light settings when shader is set to unlit
 
@@ -20,6 +20,15 @@ namespace ShaderForge {
 		// Contains references to all nodes with properties
 		// Used in the pass settings listing
 		public List<SF_Node> propertyList = new List<SF_Node>();
+
+
+		public bool CanDisplayInstructionCount{
+			get{
+				bool dx = (editor.statusBox.platform == RenderPlatform.d3d9 || editor.statusBox.platform == RenderPlatform.d3d11);
+				return !(mipInputUsed && !dx);
+			}
+
+		}
 
 
 

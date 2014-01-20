@@ -18,7 +18,7 @@ namespace ShaderForge {
 		[SerializeField]
 		SF_MinMax ftCount = new SF_MinMax();
 		[SerializeField]
-		RenderPlatform platform;
+		public RenderPlatform platform;
 
 		[SerializeField]
 		private GUIStyle labelStyle;
@@ -62,32 +62,45 @@ namespace ShaderForge {
 			
 			//string tmp = "Instructions: ";
 
-			if( Compiled() ) {
+			//if( Compiled() ) {
 				headerStyle.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-			} else {
-				headerStyle.normal.textColor = new Color( 0f, 0f, 0f, 0.75f );
+			//} else {
+				//headerStyle.normal.textColor = new Color( 0f, 0f, 0f, 0.75f );
 				//tmp = "(Shader not compiled yet)";
-			}
+			//}
 
 			GUI.Label( r, string.Empty, EditorStyles.toolbar );	// Toolbar
 
 			Rect iRect = r;
 
+			Rect rTmp = iRect;
+			rTmp = rTmp.MovedUp();
+
+			//GUI.Label(rTmp, "MIP USED; " + editor.nodeView.treeStatus.mipInputUsed);
+
+
+			if(!editor.nodeView.treeStatus.CanDisplayInstructionCount){
+				InstructionLabel( ref iRect, SF_Styles.IconWarningSmall, "Instruction count unavailable");
+			} else {
+
+				InstructionLabel( ref iRect, SF_GUI.Inst_vert, vCount.ToString() );
+				InstructionLabel( ref iRect, SF_GUI.Inst_frag, fCount.ToString() );
+				if( !vtCount.Empty() )
+					InstructionLabel( ref iRect, SF_GUI.Inst_vert_tex, vtCount.ToString() );
+				if( !ftCount.Empty() )
+					InstructionLabel( ref iRect, SF_GUI.Inst_frag_tex, ftCount.ToString() );
+			}
+
 			
 
-			InstructionLabel( ref iRect, SF_GUI.Inst_vert, vCount.ToString() );
-			InstructionLabel( ref iRect, SF_GUI.Inst_frag, fCount.ToString() );
-			if( !vtCount.Empty() )
-				InstructionLabel( ref iRect, SF_GUI.Inst_vert_tex, vtCount.ToString() );
-			if( !ftCount.Empty() )
-				InstructionLabel( ref iRect, SF_GUI.Inst_frag_tex, ftCount.ToString() );
 
 
 
 
 
 
-			if(Compiled()){
+
+			//if(Compiled()){
 				Color c = GUI.color;
 				c.a = 0.5f;
 				GUI.color = c;
@@ -95,7 +108,7 @@ namespace ShaderForge {
 				r.xMax -= 4;
 				GUI.Label(r, SF_Tools.rendererLabels[(int)platform],SF_Styles.InstructionCountRenderer);
 				GUI.color = Color.white;
-			}
+			//}
 
 
 

@@ -72,6 +72,7 @@ namespace ShaderForge {
 			for( int i = 0; i < ps.usedRenderers.Length; i++ ) {
 				if( !ps.usedRenderers[i] ) {
 					excludeRenderers.Add( ( RenderPlatform )i );
+					//Debug.Log("Excluding " +( RenderPlatform )i);
 				}
 			}
 			
@@ -231,6 +232,7 @@ namespace ShaderForge {
 			string s = "";
 			foreach( RenderPlatform plat in excludeRenderers )
 				s += plat.ToString() + " ";
+			//Debug.Log("Exclude Str: " + s);
 			return s;
 		}
 

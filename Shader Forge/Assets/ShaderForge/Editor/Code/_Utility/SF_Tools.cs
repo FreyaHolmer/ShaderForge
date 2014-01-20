@@ -50,7 +50,7 @@ namespace ShaderForge {
 		public const int connectorMargin = 4;
 
 		// User prefs
-		public static bool absColor = true;
+		public static bool absColor = false;
 		public static bool advancedInspector = true;
 		public static int stationaryCursorRadius = 7;
 		

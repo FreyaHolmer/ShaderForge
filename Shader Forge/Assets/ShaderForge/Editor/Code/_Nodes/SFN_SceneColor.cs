@@ -40,11 +40,11 @@ namespace ShaderForge {
 			string UV = "";
 
 			if(AutoUV())
-				UV = "i.screenPos.xy*0.5+0.5";
+				UV = "sceneUVs";
 			else
 				UV = GetInputCon( "UVIN" ).Evaluate();
 
-			return "tex2D(_GrabTexture, float2(1,grabSign)*" + UV + ")";
+			return "tex2D(_GrabTexture, " + UV + ")";
 		}
 
 	}

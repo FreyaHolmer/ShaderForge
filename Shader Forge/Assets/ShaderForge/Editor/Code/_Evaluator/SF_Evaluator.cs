@@ -1101,7 +1101,9 @@ namespace ShaderForge {
 		void AppFinalOutput(string color, string alpha) {
 			AppDebug("Final Color");
 			if( ps.HasRefraction() && currentPass == PassType.FwdBase ) {
-				App( "return fixed4(lerp(tex2D(_GrabTexture, float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ").rgb, " + color + "," + alpha + "),1);" );
+				//App( "return fixed4(lerp(tex2D(_GrabTexture, float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ").rgb, " + color + "," + alpha + "),1);" );
+				//tex2D(_GrabTexture, float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ")
+				App( "return fixed4(lerp(sceneColor.rgb, " + color + "," + alpha + "),1);" );
 			} else {
 				App( "return fixed4(" + color + "," + alpha + ");" );
 			}
@@ -1344,6 +1346,31 @@ namespace ShaderForge {
 			if( (!dependencies.frag_viewReflection && currentProgram == ShaderProgram.Frag) || (!dependencies.vert_viewReflection && currentProgram == ShaderProgram.Vert) )
 				return;
 			App( "float3 viewReflectDirection = reflect( -"+VarViewDir()+", "+VarNormalDir()+" );" );
+		}
+
+		void InitSceneColor(){
+
+			if(dependencies.grabPass){
+
+
+
+				string s = "float4 sceneColor = ";
+
+				string sUv = "float2 sceneUVs = ";
+					
+
+				if(ps.HasRefraction() ){
+					sUv += "float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ";";
+				} else {
+					sUv += "float2(1,grabSign)*i.screenPos.xy*0.5+0.5;";
+				}
+
+				App (sUv);
+				s += "tex2D(_GrabTexture, sceneUVs);";
+				App (s);
+			}
+
+
 		}
 
 
@@ -1617,7 +1644,7 @@ namespace ShaderForge {
 				App( "i.screenPos.y *= _ProjectionParams.x;" );
 			}
 
-
+			InitSceneColor();
 
 			if( dependencies.frag_lightDirection ) {
 				InitLightDir();

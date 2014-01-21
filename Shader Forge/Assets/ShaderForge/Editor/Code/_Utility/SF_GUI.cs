@@ -199,10 +199,12 @@ namespace ShaderForge {
 		}
 
 		public static bool HoldingControl() {
-			if(Application.platform == RuntimePlatform.OSXEditor)
+			if( Application.platform == RuntimePlatform.OSXEditor )
 				return ( Event.current.modifiers & EventModifiers.Command ) != 0; // Command is held
-			else
-				return ( Event.current.modifiers & EventModifiers.Control ) != 0 ; // Control is held
+			else {
+				return ( Event.current.control ); // Control is held
+			}
+			
 		}
 		
 		public static bool PressedDelete(){

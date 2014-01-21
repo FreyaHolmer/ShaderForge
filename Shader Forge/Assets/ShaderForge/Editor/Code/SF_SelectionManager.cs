@@ -76,9 +76,10 @@ namespace ShaderForge {
 			
 			
 			// Duplicate, copy, cut, paste
-			
-			if( SF_GUI.HoldingControl() && Event.current.type == EventType.KeyDown){
-				
+			EventType et = Application.platform == RuntimePlatform.OSXEditor ? EventType.KeyDown : EventType.KeyUp; // TODO: Use KeyDown for Windows too
+
+			if( SF_GUI.HoldingControl() && Event.current.type == et ) {
+
 				switch(Event.current.keyCode){
 					case(KeyCode.D):
 						DuplicateSelection();

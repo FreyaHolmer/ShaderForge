@@ -259,7 +259,9 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_ViewPosition ), 			catExtData + "View Position" );
 
 			string catSceneData = "Scene Data/";
+			AddTemplate( typeof(SFN_DepthBlend), catSceneData + "Depth Blend" ).MarkAsNewNode();
 			AddTemplate( typeof(SFN_SceneColor), catSceneData + "Scene Color" );
+			AddTemplate( typeof(SFN_SceneDepth), catSceneData + "Scene Depth" ).MarkAsNewNode();
 
 			string catMathConst = "Math Constants/";
 			AddTemplate( typeof( SFN_E ), 		catMathConst + "e", KeyCode.None, "EulersConstant" );

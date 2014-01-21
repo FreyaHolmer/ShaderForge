@@ -215,6 +215,15 @@ namespace ShaderForge {
 					dependencies.NeedFragWorldPos();
 				}
 
+				if( n is SFN_SceneDepth ){
+					dependencies.NeedSceneDepth();
+				}
+
+				if( n is SFN_DepthBlend ){
+					dependencies.NeedSceneDepth();
+					dependencies.frag_pixelDepth = true;
+				}
+
 				/*
 				if( n is SFN_Rotator ) {
 					if(!n.GetInputIsConnected("ANG"))
@@ -563,6 +572,9 @@ namespace ShaderForge {
 
 			if( dependencies.grabPass )
 				App( "uniform sampler2D _GrabTexture;" );
+
+			if( dependencies.frag_sceneDepth );
+				App( "uniform sampler2D _CameraDepthTexture;");
 
 			if( dependencies.time ) {
 				//App( "uniform float4 _Time;" ); // TODO: _Time too. Maybe replace at the end?
@@ -1349,7 +1361,7 @@ namespace ShaderForge {
 			App( "float3 viewReflectDirection = reflect( -"+VarViewDir()+", "+VarNormalDir()+" );" );
 		}
 
-		void InitSceneColor(){
+		void InitSceneColorAndDepth(){
 
 			if(dependencies.grabPass){
 
@@ -1369,6 +1381,14 @@ namespace ShaderForge {
 				App (sUv);
 				s += "tex2D(_GrabTexture, sceneUVs);";
 				App (s);
+			}
+
+
+			if(dependencies.frag_sceneDepth){
+				App("float sceneZ = LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos))));");
+			}
+			if(dependencies.frag_pixelDepth){
+				App("float partZ = i.projPos.z;");
 			}
 
 
@@ -1477,6 +1497,8 @@ namespace ShaderForge {
 					App( "float4 screenPos" + GetVertOutTexcoord() );
 				if( dependencies.vert_in_vertexColor )
 					App( "float4 vertexColor : COLOR;" );
+				if( dependencies.frag_projPos)
+					App ("float4 projPos" + GetVertOutTexcoord() );
 				if( ShouldUseLightMacros() )
 					App( "LIGHTING_COORDS(" + GetVertOutTexcoord( true ) + "," + GetVertOutTexcoord( true ) + ")" );
 
@@ -1583,7 +1605,12 @@ namespace ShaderForge {
 			} else {
 				App( "o.pos = mul(UNITY_MATRIX_MVP, v.vertex);" );
 			}
-			
+
+
+			if( dependencies.frag_projPos ){
+				App( "o.projPos = ComputeScreenPos (o.pos);" );
+				App( "COMPUTE_EYEDEPTH(o.projPos.z);" );
+			}
 		
 
 			if( dependencies.vert_out_screenPos ) { // TODO: Select screen pos accuracy etc
@@ -1636,6 +1663,7 @@ namespace ShaderForge {
 			InitViewDirFrag();
 			InitNormalDirFrag();
 			InitReflectionDir();
+
 			PrepareLightmapVars();
 
 
@@ -1645,7 +1673,7 @@ namespace ShaderForge {
 				App( "i.screenPos.y *= _ProjectionParams.x;" );
 			}
 
-			InitSceneColor();
+			InitSceneColorAndDepth();
 
 			if( dependencies.frag_lightDirection ) {
 				InitLightDir();

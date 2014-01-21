@@ -53,7 +53,11 @@ namespace ShaderForge {
 		public bool vert_tangentTransform = false;
 
 		public bool frag_objectPos = false;
-		
+
+		public bool frag_sceneDepth = false;
+		public bool frag_pixelDepth = false;
+
+		public bool frag_projPos = false;
 		
 
 		public bool const_pi = false;
@@ -82,6 +86,16 @@ namespace ShaderForge {
 			//excludeRenderers.Add( RenderPlatform.gles );
 			//excludeRenderers.Add( RenderPlatform.xbox360 );
 			//excludeRenderers.Add( RenderPlatform.ps3 );
+		}
+
+		public void NeedSceneAndFragDepth(){
+			frag_pixelDepth = true;
+			NeedSceneDepth();
+		}
+
+		public void NeedSceneDepth(){
+			frag_projPos = true;
+			frag_sceneDepth = true;
 		}
 
 		public void IncrementTexCoord( int num ) {

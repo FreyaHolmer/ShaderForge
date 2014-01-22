@@ -27,7 +27,7 @@ namespace ShaderForge {
 				SF_NodeConnector.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_TexCoord),"UVOUT"),
 				SF_NodeConnector.Create(this,"PIV","Piv",ConType.cInput,ValueType.VTv2,false,"float2(0.5,0.5)").SetRequired(false),
 				SF_NodeConnector.Create(this,"ANG","Ang",ConType.cInput,ValueType.VTv1,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_Time),"T"),
-				SF_NodeConnector.Create(this,"SPD","Spd",ConType.cInput,ValueType.VTv2,false,"1.0").SetRequired(false),
+				SF_NodeConnector.Create(this,"SPD","Spd",ConType.cInput,ValueType.VTv1,false,"1.0").SetRequired(false),
 			};
 
 			//base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2] );

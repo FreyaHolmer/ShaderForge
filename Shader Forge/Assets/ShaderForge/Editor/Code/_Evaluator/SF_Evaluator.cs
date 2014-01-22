@@ -865,10 +865,11 @@ namespace ShaderForge {
 				App ("i.normalDir = normalize(i.normalDir);");
 			}
 
-			App ("float3 normalLocal = " + ps.n_normals + ";");
+			
 
 
 			if( ps.HasNormalMap() ) {
+				App( "float3 normalLocal = " + ps.n_normals + ";" );
 				App( "float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals" );
 			} else {
 				App( "float3 normalDirection =  i.normalDir;" );

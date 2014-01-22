@@ -573,7 +573,7 @@ namespace ShaderForge {
 			if( dependencies.grabPass )
 				App( "uniform sampler2D _GrabTexture;" );
 
-			if( dependencies.frag_sceneDepth );
+			if( dependencies.frag_sceneDepth )
 				App( "uniform sampler2D _CameraDepthTexture;");
 
 			if( dependencies.time ) {

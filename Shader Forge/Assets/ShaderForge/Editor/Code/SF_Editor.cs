@@ -171,7 +171,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Ceil ), 			catArithmetic + "Ceil" );
 			AddTemplate( typeof( SFN_Clamp ), 			catArithmetic + "Clamp" );
 			AddTemplate( typeof( SFN_Clamp01 ), 		catArithmetic + "Clamp 0-1" );
-			AddTemplate( typeof( SFN_ConstantClamp ), 	catArithmetic + "Clamp (Simple)" );
+			AddTemplate( typeof( SFN_ConstantClamp ), 	catArithmetic + "Clamp (Simple)",KeyCode.None, "Clamp Simple" );
 			AddTemplate( typeof( SFN_Divide ), 			catArithmetic + "Divide", KeyCode.D );
 			AddTemplate( typeof( SFN_Exp ), 			catArithmetic + "Exp" );
 			AddTemplate( typeof( SFN_Floor ), 			catArithmetic + "Floor" );
@@ -179,7 +179,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Frac ), 			catArithmetic + "Frac" );
 			AddTemplate( typeof( SFN_If ), 				catArithmetic + "If", KeyCode.I );
 			AddTemplate( typeof( SFN_Lerp ), 			catArithmetic + "Lerp", KeyCode.L );
-			AddTemplate( typeof( SFN_ConstantLerp ), 	catArithmetic + "Lerp (Simple)" );
+			AddTemplate( typeof( SFN_ConstantLerp ), 	catArithmetic + "Lerp (Simple)",KeyCode.None, "Lerp Simple" );
 			AddTemplate( typeof( SFN_Log ), 			catArithmetic + "Log" );
 			AddTemplate( typeof( SFN_Max ), 			catArithmetic + "Max" );
 			AddTemplate( typeof( SFN_Min ), 			catArithmetic + "Min" );
@@ -187,7 +187,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Negate ), 			catArithmetic + "Negate" );
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
-			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R );
+			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
 			AddTemplate( typeof( SFN_RemapRangeAdvanced ),catArithmetic + "Remap" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Round ), 			catArithmetic + "Round" );
 			AddTemplate( typeof( SFN_Sign ), 			catArithmetic + "Sign" );

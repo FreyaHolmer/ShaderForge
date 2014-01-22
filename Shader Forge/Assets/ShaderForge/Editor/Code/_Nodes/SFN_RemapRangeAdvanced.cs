@@ -29,7 +29,7 @@ namespace ShaderForge {
 				SF_NodeConnector.Create( this, "OMIN", "oMin", ConType.cInput, ValueType.VTvPending, false ).SetRequired( true ),
 				SF_NodeConnector.Create( this, "OMAX", "oMax", ConType.cInput, ValueType.VTvPending, false ).SetRequired( true )};
 			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize(connectors[0], connectors[1], connectors[2], connectors[3], connectors[4], connectors[5] );
-
+			base.extraWidthInput = 6;
 			GetConnectorByStringID("IMIN").usageCount = 2;
 			GetConnectorByStringID("OMIN").usageCount = 2;
 

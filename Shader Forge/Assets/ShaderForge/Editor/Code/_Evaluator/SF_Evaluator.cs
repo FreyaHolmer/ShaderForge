@@ -858,26 +858,25 @@ namespace ShaderForge {
 			if( (!dependencies.frag_normalDirection && currentProgram == ShaderProgram.Frag) )
 				return;
 
-			if( ps.HasNormalMap() ) {
-				App( "float3 normalLocal = " + ps.n_normals + ";" );
-				// approximation without sqrt:  localCoords.z = 
-				// 1.0 - 0.5 * dot(localCoords, localCoords);
-				
-				if( ps.normalQuality == SF_PassSettings.NormalQuality.Normalized ) { // TODO: see if you actually ever need to normalize here
-					App( "float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );" );
-				} else {
-					App( "float3 normalDirection =  mul( normalLocal, tangentTransform );" );
-				}
-			} else {
-				if( ps.normalQuality == SF_PassSettings.NormalQuality.Normalized ) {
-					App( "float3 normalDirection = normalize(i.normalDir);" );
-				} else {
-					App( "float3 normalDirection = i.normalDir;" );
-				}
+			AppDebug("Normals");
+
+
+			if(ps.normalQuality == SF_PassSettings.NormalQuality.Normalized){
+				App ("i.normalDir = normalize(i.normalDir);");
 			}
+
+			App ("float3 normalLocal = " + ps.n_normals + ";");
+
+
+			if( ps.HasNormalMap() ) {
+				App( "float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals" );
+			} else {
+				App( "float3 normalDirection =  i.normalDir;" );
+			}
+
 			if( ps.IsDoubleSided() ) {
 				App( "" );
-				App( "float nSign = sign( dot( viewDirection, normalDirection ) ); // Reverse normal if this is a backface" );
+				App( "float nSign = sign( dot( viewDirection, i.normalDir ) ); // Reverse normal if this is a backface" );
 				App( "i.normalDir *= nSign;" );
 				App( "normalDirection *= nSign;" );
 				App( "" );

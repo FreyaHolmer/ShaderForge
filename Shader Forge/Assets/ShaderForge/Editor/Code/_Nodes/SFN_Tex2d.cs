@@ -60,6 +60,8 @@ namespace ShaderForge {
 				SF_NodeConnector.Create(this,"A","A",ConType.cOutput,ValueType.VTv1)							.Outputting(OutChannel.A)
 			};
 			base.texture.CompCount = 4;
+			connectors[0].usageCount = 2; // To define a variable of UVs to use with TRANSFORM_TEX
+
 		}
 
 		public override bool IsUniformOutput() {

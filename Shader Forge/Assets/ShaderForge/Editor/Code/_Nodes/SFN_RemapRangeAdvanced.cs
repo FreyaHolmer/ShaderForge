@@ -45,7 +45,7 @@ namespace ShaderForge {
 
 
 		}
-
+		 
 
 
 
@@ -56,7 +56,6 @@ namespace ShaderForge {
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			string inVal = GetInputCon( "IN" ).Evaluate();
 
 			string val = GetInputCon( "IN" ).Evaluate();
 			string iMin = GetInputCon( "IMIN" ).Evaluate();

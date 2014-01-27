@@ -1244,14 +1244,14 @@ namespace ShaderForge {
 				//string lgFinal = "float3 finalColor = ";
 				App ("float3 finalColor = 0;");
 
-				bool addedSomething = false;
+				//bool addedSomething = false;
 
 				if( ps.HasDiffuse() ){
 
 					bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailableInThisPass(currentPass);
 					bool shLight = DoPassSphericalHarmonics();
 
-					bool parenthesize = (ambDiff || shLight);
+					//bool parenthesize = (ambDiff || shLight);
 
 					//string diffuseLight = parenthesize ?  "( diffuse" : "diffuse";
 

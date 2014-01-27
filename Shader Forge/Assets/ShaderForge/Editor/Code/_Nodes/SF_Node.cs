@@ -164,7 +164,7 @@ namespace ShaderForge {
 
 			// Try to find icon
 
-			texture.LoadAndInitializeIcons(this.GetType());
+			texture.LoadAndInitializeIcons(this.GetType()); 
 
 
 			pos = editor.nodeView.SubtractNodeWindowOffset( pos );

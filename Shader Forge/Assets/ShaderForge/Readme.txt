@@ -48,11 +48,10 @@ If you finish and release a product in Unity, using Shader Forge, I would apprec
 
 Selling shaders created in Shader Forge:
 ----------------------------------------
-This is currently not permitted - I encourage you to share it with the community instead, as I believe most people will!
-If you, however, think you have a very very very special reason for your shader in particular that it should be allowed to be sold, send me a mail!
-If you are selling 3D models / assets, they are allowed to have SF shaders on them,
-as long as you mention Shader Forge in the asset store description, linked to either the website http://www.acegikmo.com/shaderforge/ or the asset store page http://u3d.as/6cc
-Plus, it might be an extra incentive if the shaders are SF shaders, so users can easily modify them if they want :)
+Shaders created in SF can be used freely in commercial and non-commercial projects with no restrictions.
+If you are creating assets for the asset store using SF shaders, I and your customers too, most likely,
+would be happy to know if the shaders are created with Shader Forge, in the asset store description,
+linked to either the website http://www.acegikmo.com/shaderforge/ or the asset store page http://u3d.as/6cc
 
 
 Quick start:

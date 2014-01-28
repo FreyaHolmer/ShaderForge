@@ -49,8 +49,9 @@ If you finish and release a product in Unity, using Shader Forge, I would apprec
 Selling shaders created in Shader Forge:
 ----------------------------------------
 Shaders created in SF can be used freely in commercial and non-commercial projects with no restrictions.
-If you are creating assets for the asset store using SF shaders, I and your customers too, most likely,
-would be happy to know if the shaders are created with Shader Forge, in the asset store description,
+If you are creating assets for the asset store using SF shaders, people will probably want to know if the shaders are created with Shader Forge,
+so they know they can easily be modified!
+I would also be very happy if you were to credit SF in the asset store description,
 linked to either the website http://www.acegikmo.com/shaderforge/ or the asset store page http://u3d.as/6cc
 
 

@@ -189,7 +189,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
-			AddTemplate( typeof( SFN_RemapRangeAdvanced ),catArithmetic + "Remap" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_RemapRangeAdvanced ),catArithmetic + "Remap" );
 			AddTemplate( typeof( SFN_Round ), 			catArithmetic + "Round" );
 			AddTemplate( typeof( SFN_Sign ), 			catArithmetic + "Sign" );
 			AddTemplate( typeof( SFN_Sqrt ), 			catArithmetic + "Sqrt" );
@@ -260,9 +260,9 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_ViewPosition ), 			catExtData + "View Position" );
 
 			string catSceneData = "Scene Data/";
-			AddTemplate( typeof(SFN_DepthBlend), catSceneData + "Depth Blend" ).MarkAsNewNode();
+			AddTemplate( typeof(SFN_DepthBlend), catSceneData + "Depth Blend" );
 			AddTemplate( typeof(SFN_SceneColor), catSceneData + "Scene Color" );
-			AddTemplate( typeof(SFN_SceneDepth), catSceneData + "Scene Depth" ).MarkAsNewNode();
+			AddTemplate( typeof(SFN_SceneDepth), catSceneData + "Scene Depth" );
 
 			string catMathConst = "Math Constants/";
 			AddTemplate( typeof( SFN_E ), 		catMathConst + "e", KeyCode.None, "EulersConstant" );

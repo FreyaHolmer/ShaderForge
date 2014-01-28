@@ -385,6 +385,11 @@ namespace ShaderForge {
 				}
 			}
 
+			bool transparency = ps.mOut.alphaClip.IsConnectedEnabledAndAvailable() || ps.mOut.alpha.IsConnectedEnabledAndAvailable();
+
+			if(transparency)
+				App ("[HideInInspector]_Cutoff (\"Alpha cutoff\", Range(0,1)) = 0.5"); // Hack, but, required for transparency to play along with depth etc
+
 			End();
 
 		}

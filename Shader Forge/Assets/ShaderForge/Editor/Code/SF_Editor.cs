@@ -8,6 +8,7 @@ using System.Linq;
 using System.Xml;
 using System.Reflection;
 using System.Net;
+using System.Collections;
 
 
 
@@ -501,8 +502,42 @@ namespace ShaderForge {
 		double prevFrameTime = 1;
 		public double deltaTime = 0.02;
 
+
+
+
+
+
+		List<IEnumerator> coroutines = new List<IEnumerator>();
+
+		//double corLastTime;
+	//	double corDeltaTime;
+		void UpdateCoroutines(){
+			//corDeltaTime = EditorApplication.timeSinceStartup - corLastTime;
+			//corLastTime = EditorApplication.timeSinceStartup;
+			for(int i = 0; i < coroutines.Count; i++){
+				IEnumerator routine = coroutines[i];
+				if(!routine.MoveNext()){
+					coroutines.RemoveAt(i--);
+				}
+			}
+		}
+		void StartCoroutine (IEnumerator routine){
+			coroutines.Add(routine);
+		}
+
+
+
+
+
+
+
+
+
+
 		void Update() {
-			
+
+
+
 			if( closeMe ) {
 				base.Close();
 				return;
@@ -650,6 +685,7 @@ namespace ShaderForge {
 			pRect.width = separatorLeft.rect.x;
 			SF_GUI.FillBackground( pRect );
 			DrawPreviewPanel( pRect );
+			Rect previewPanelRect = pRect;
 
 			//pRect.x += leftWidth;
 			//pRect.width = wSeparator;
@@ -694,10 +730,411 @@ namespace ShaderForge {
 			SF_GUI.FillBackground( pRect );
 			nodeBrowser.OnLocalGUI( pRect );
 
+
+
+			// Last thing, right?
+
+			ssButtonColor = Color.Lerp(ssButtonColor,ssButtonColorTarget, (float)deltaTime*ssButtonFadeSpeed);
+
+			if(previewPanelRect.Contains(Event.current.mousePosition)){
+
+				ssButtonColorTarget = Color.white;
+				ssButtonFadeSpeed = 0.4f;
+
+
+			} else {
+				ssButtonColorTarget = new Color(1f,1f,1f,0f); // TODO LERP
+				ssButtonFadeSpeed = 1.5f;
+			}
+			Rect ssRect = new Rect(8,49,32,19);
+			GUI.color = ssButtonColor;
+			if(GUI.Button(ssRect, SF_GUI.Screenshot_icon)){
+				GenericMenu menu = new GenericMenu();
+				menu.AddItem( new GUIContent("Take screenshot of node tree"), false, ContextClickScreenshot, "ss_standard" );
+				menu.AddItem( new GUIContent("Take screenshot of node tree without 3D preview"), false, ContextClickScreenshot, "ss_nopreview" );
+				menu.ShowAsContext();
+				
+			}
+			GUI.color = Color.white;
+			
+			//Rect ssRectIcon = new Rect(0f, 0f, SF_GUI.Screenshot_icon.width, SF_GUI.Screenshot_icon.height);
+			////ssRectIcon.center = ssRect.center;
+			//GUI.DrawTexture(ssRectIcon, SF_GUI.Screenshot_icon);
+
+
+			if(Event.current.type == EventType.repaint)
+				UpdateCoroutines();
+
+
 			DrawTooltip();
 
-
 		}
+
+		Color ssButtonColor = Color.black;
+		Color ssButtonColorTarget = Color.black;
+		float ssButtonFadeSpeed = 0.5f;
+	
+
+		public void ContextClickScreenshot( object o ) {
+			string picked = o as string;
+			switch(picked){
+			case "ss_standard":
+				StartCoroutine(CaptureScreenshot(includePreview:true));
+				break;
+			case "ss_nopreview":
+				StartCoroutine(CaptureScreenshot(includePreview:false));
+				break;
+			}
+		}
+
+
+
+
+		public bool screenshotInProgress = false;
+		public bool firstFrameScreenshotInProgress = false;
+
+
+		public IEnumerator CaptureScreenshot(bool includePreview){
+
+
+
+			screenshotInProgress = true;
+			firstFrameScreenshotInProgress = true;
+
+			Rect r = nodeView.rect.PadBottom(24);
+			Vector2 startCamPos = nodeView.cameraPos;
+			Rect nodeWrap = nodeView.GetNodeEncapsulationRect().Margin(32);
+
+			// Calculate tiles needed
+			int xTiles;
+			int yTiles;
+
+			xTiles = Mathf.CeilToInt(nodeWrap.width/r.width);
+			yTiles = Mathf.CeilToInt(nodeWrap.height/r.height);
+			//int bottomAlign = (int)((r.height*(yTiles)) - nodeWrap.height);
+
+
+
+			int leftAlign = (int)separatorLeft.rect.xMax;
+
+			Texture2D tex = new Texture2D((int)r.width*xTiles, (int)r.height*yTiles,TextureFormat.RGB24,false);
+			tex.hideFlags = HideFlags.HideAndDontSave;
+
+			float previewRadius = 64f;
+			Vector2 optimalPreviewPoint = CalculateOptimalPlacement(nodeWrap, out previewRadius);
+			int ssMargin = 64;
+			previewRadius = previewRadius*2 - ssMargin;
+
+			float creditsRadius = 32;
+			Vector2 optimalCreditsPoint;
+			if(includePreview){
+				float tr = previewRadius-ssMargin;
+				optimalCreditsPoint = CalculateOptimalPlacement(nodeWrap, out creditsRadius,
+				        new Rect(optimalPreviewPoint.x-tr/2+ssMargin/2,optimalPreviewPoint.y-tr/2+ssMargin/2,tr, tr)
+		        );
+			} else {
+				optimalCreditsPoint = optimalPreviewPoint;
+				creditsRadius = previewRadius-ssMargin;
+			}
+
+
+			string shaderTitle = "";
+
+			if(!string.IsNullOrEmpty(currentShaderPath)){
+				if(currentShaderPath.Contains('/')){
+					string[] split = currentShaderPath.Split('/');
+					if(split.Length > 0){
+						shaderTitle = split[split.Length-1];
+					}
+				}
+			}
+			
+			
+			
+			
+			
+			for(int ix=0;ix<xTiles;ix++){
+				for(int iy=0;iy<yTiles;iy++){
+					r = nodeView.rect.PadBottom(24);
+
+					nodeView.cameraPos = nodeWrap.TopLeft() + new Vector2(ix*r.width,iy*r.height) - new Vector2(leftAlign,0f);
+					//nodeWrap = nodeView.GetNodeEncapsulationRect();
+					// PUT LOADING INDICATOR HERE
+					yield return null;
+					if(SF_Debug.screenshot)
+						GUI.Label(r,"(" + ix + ", " + iy + ")");
+
+				//	Debug.Log("R: " + r + " OptPt: " + optimalPreviewPoint);
+
+					if(includePreview){
+						Rect previewRect = new Rect(0f,0f,previewRadius,previewRadius);
+						previewRect.center = new Vector2(optimalPreviewPoint.x-nodeView.cameraPos.x,optimalPreviewPoint.y-nodeView.cameraPos.y);
+
+						//Rect previewLabelRect = previewRect;
+						//previewLabelRect.height = (28);
+						//previewLabelRect.x += 4;
+						//previewLabelRect.y += 2;
+
+						GUI.Box( previewRect.Margin(2).PadTop(-16), string.Empty, SF_Styles.NodeStyle );
+						preview.DrawMesh(previewRect);
+
+						if(shaderTitle != string.Empty){
+							Rect previewLabelRect = previewRect;
+							previewLabelRect.height = 16;
+							previewLabelRect.Margin(-1);
+							previewLabelRect.y -= 16;
+
+							GUI.Label(previewLabelRect,shaderTitle,SF_Styles.GetNodeScreenshotTitleText());
+						}
+					}
+					Rect creditsLineRect = nodeWrap;
+					creditsLineRect.height = 32;
+					creditsLineRect.x -= nodeView.cameraPos.x;
+					creditsLineRect.y -= nodeView.cameraPos.y;
+					creditsLineRect = creditsLineRect.Margin(-8);
+
+					Color tmp  = SF_GUI.ProSkin ? Color.white : Color.black;
+					tmp.a = 0.6f;
+					GUI.color = tmp;
+					//GUI.Label(creditsLineRect, "Created with Shader Forge " + SF_Tools.versionStage + " " + SF_Tools.version + " - A node-based shader editor for Unity - http://u3d.as/6cc", EditorStyles.boldLabel);
+
+
+					Rect creditsRect = new Rect(0f,0f,Mathf.Min(creditsRadius*1.5f,SF_GUI.Logo.width),0f);
+					creditsRect.height = creditsRect.width*((float)SF_GUI.Logo.height/SF_GUI.Logo.width);
+					creditsRect.center = new Vector2(optimalCreditsPoint.x-nodeView.cameraPos.x,optimalCreditsPoint.y-nodeView.cameraPos.y);
+					GUI.DrawTexture(creditsRect, SF_GUI.Logo);
+					Rect crTop = creditsRect;
+					crTop.height = 16;
+					crTop = crTop.MovedUp();
+					GUI.Label(crTop, "Created using");
+					Rect crBottom = creditsRect;
+					crBottom = crBottom.MovedDown();
+					crBottom.height = 16;
+					crBottom.width += 256;
+					GUI.Label(crBottom, SF_Tools.versionStage + " " + SF_Tools.version + " - http://u3d.as/6cc");
+					//GUI.color = new Color(1f,0f,0f,0.4f);
+					//GUI.DrawTexture(creditsRect, EditorGUIUtility.whiteTexture);
+					//GUI.color = Color.white;
+					GUI.color = Color.white;
+
+
+					//float clampedX = Mathf.Min(r.width, nodeWrap.width - ix*r.width);
+					//float clampedY = Mathf.Min(r.height, nodeWrap.height - iy*r.height);
+
+					Rect readRect = new Rect(r.x, r.y, r.width, r.height);
+					//Rect readRect = new Rect(r.x, r.y, clampedX, clampedY);
+
+					tex.ReadPixels(readRect,(int)(ix*r.width),(int)(tex.height-(iy+1)*r.height));
+					firstFrameScreenshotInProgress = false;
+					//Debug.Log(nodeView.cameraPos - startCamPos);
+
+
+
+				}
+			}
+
+			//tex.ReadPixels(new Rect(preview.),)
+
+
+			nodeView.cameraPos = startCamPos;
+
+
+
+
+			// Crop the texture down to fit the nodes + margins
+
+
+			Color[] croppedBlock = tex.GetPixels(0,tex.height - (int)nodeWrap.height,(int)nodeWrap.width, (int)nodeWrap.height);
+			DestroyImmediate(tex);
+			tex = new Texture2D((int)nodeWrap.width, (int)nodeWrap.height);
+			tex.hideFlags = HideFlags.HideAndDontSave;
+			tex.SetPixels(croppedBlock);
+
+
+			// EditorUtility.OpenFolderPanel("things",Application.dataPath,"Default");
+
+
+			/*Vector2[] nodePoints = new Vector2[nodes.Count];
+			for(int i=0;i<nodePoints.Length;i++){
+				nodePoints[i] = nodes[i].rect.center;
+			}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+			// Mask with the new mask thing
+			/*
+			Color[] oldPixels = tex.GetPixels();
+			Color[] newPixels = new Color[oldPixels.Length];
+			for (int i = 0; i < oldPixels.Length; i+=1) {
+				Color pixel = oldPixels [i];
+
+				Vector2 pt = new Vector2(i%tex.width, tex.height - Mathf.FloorToInt((float)i/tex.width));
+
+				Vector2 maskPt = (pt / distSampleResF);
+				maskPt.x /= mask.width;
+				maskPt.y /= mask.height;
+				maskPt.y = 1f-maskPt.y;
+
+
+
+				Vector2 testPt = pt + nodeWrap.TopLeft();
+
+				//pixel *= Mathf.Clamp01((testPt - nodeWrap.TopLeft()).magnitude/256f);
+				//pixel *= Mathf.Clamp01((nodePoints[0] - testPt).magnitude/256f);
+				//pixel *= Mathf.Clamp01(testPt.ShortestChebyshevDistanceToPoints(nodePoints)/256f);
+				/*
+				float dist2rect = testPt.ShortestManhattanDistanceToRects(nodeRects.ToArray());
+				float dist2line = float.MaxValue;
+
+				foreach(SF_NodeConnectionLine line in lines){
+					dist2line = Mathf.Min(dist2line, SF_Tools.DistanceToLine(line.pointsBezier0[0],line.pointsBezier0[line.pointsBezier0.Length-1],testPt));
+				}
+
+
+				float shortest = Mathf.Min(dist2rect, dist2line);
+
+				//pixel = Color.white * Mathf.Clamp01(shortest/(Mathf.Max(tex.width,tex.height)*0.2f));
+
+				//pixel.a = 1f;
+				newPixels[i] = pixel * mask.GetPixelBilinear(maskPt.x, maskPt.y);
+			}
+			tex.SetPixels(newPixels);
+			*/
+
+
+
+			tex.Apply();
+
+			shaderTitle = CleanFileName(shaderTitle+"_"+DateTime.Now.ToShortDateString()).Replace(" ","_").ToLower();
+
+			string projPath = Application.dataPath.Substring(0, Application.dataPath.Length-6);
+			string filePath = projPath + "sf_"+shaderTitle+".png";
+			File.WriteAllBytes(filePath, tex.EncodeToPNG());
+			DestroyImmediate(tex);
+			screenshotInProgress = false;
+			if(Application.platform == RuntimePlatform.OSXEditor)
+				EditorUtility.RevealInFinder(filePath);
+			else
+				System.Diagnostics.Process.Start("explorer.exe", "/select,"+filePath.Replace("/","\\"));
+		}
+
+		public static string CleanFileName(string filename){
+			filename.Replace("/","");
+			return new String(filename.Except(System.IO.Path.GetInvalidFileNameChars()).ToArray());
+		}   
+
+
+
+		public Vector2 CalculateOptimalPlacement(Rect nodeWrap, out float radius, params Rect[] extraRects ){
+
+
+
+
+			List<Rect> nodeRects = new List<Rect>();
+			List<SF_NodeConnectionLine> lines = new List<SF_NodeConnectionLine>();
+			for(int i=0;i<nodes.Count;i++){
+				nodeRects.Add( nodes[i].rect.PadTop((int)(nodes[i].BoundsTop()-nodes[i].rect.yMin)) );
+				foreach(SF_NodeConnector con in nodes[i].connectors){
+					nodeRects.Add(con.rect);
+					if(con.conType == ConType.cOutput || !con.IsConnectedAndEnabled())
+						continue;
+					lines.Add(con.conLine);
+					con.conLine.ReconstructShapes();
+					for (int j = 0; j < con.conLine.pointsBezier0.Length; j++) {
+						
+						con.conLine.pointsBezier0[j] = con.conLine.pointsBezier0[j] ; //+ new Vector2(nodeWrap.width, nodeWrap.height) - new Vector2(r.width*0.5f,r.height*0.5f);//new Vector2(600,1330);
+						
+					}
+				}
+				
+			}
+			if(extraRects != null)
+				nodeRects.AddRange(extraRects);
+			
+			
+			Rect[] borderRects = new Rect[]{
+				nodeWrap.MovedRight(),
+				nodeWrap.MovedLeft(),
+				nodeWrap.MovedUp(),
+				nodeWrap.MovedDown()
+			};
+			
+			for (int i = 0; i < 4; i++) {
+				nodeRects.Add(borderRects[i]);
+			}
+			
+			
+			
+			int distSampleRes = 16;
+			float distSampleResF = distSampleRes;
+			
+			
+			//Texture2D mask = new Texture2D(Mathf.CeilToInt(nodeWrap.width/distSampleResF),Mathf.CeilToInt(nodeWrap.height/distSampleResF),TextureFormat.RGB24,false);
+			//mask.hideFlags = HideFlags.HideAndDontSave;
+
+			int width = Mathf.CeilToInt(nodeWrap.width/distSampleResF);
+			int height = Mathf.CeilToInt(nodeWrap.height/distSampleResF);
+			
+			float longestDist = float.MinValue;
+			Vector2 longestDistPt = Vector2.zero;
+			
+			
+			// GENERATE MASK
+			Color[] newMaskPixels = new Color[width*height];
+			for (int i = 0; i < newMaskPixels.Length; i+=1) {
+				
+				
+				
+				//Color pixel = Color.white;
+				
+				
+				
+				Vector2 testPt = new Vector2(i%width, height - Mathf.FloorToInt((float)i/width))*distSampleResF + nodeWrap.TopLeft();
+				
+				//pixel *= Mathf.Clamp01((testPt - nodeWrap.TopLeft()).magnitude/256f);
+				//pixel *= Mathf.Clamp01((nodePoints[0] - testPt).magnitude/256f);
+				//pixel *= Mathf.Clamp01(testPt.ShortestChebyshevDistanceToPoints(nodePoints)/256f);
+				
+				float dist2rect = testPt.ShortestManhattanDistanceToRects(nodeRects.ToArray());
+				float dist2line = float.MaxValue;
+				
+				foreach(SF_NodeConnectionLine line in lines){
+					dist2line = Mathf.Min(dist2line, SF_Tools.DistanceToLine(line.pointsBezier0[0],line.pointsBezier0[line.pointsBezier0.Length-1],testPt));
+				}
+				
+				
+				float shortest = Mathf.Min(dist2rect, dist2line);
+				
+				if(shortest > longestDist){
+					longestDist = shortest;
+					longestDistPt = testPt;
+					//pixel = Color.red;
+				}// else {
+					//pixel = Color.white * Mathf.Clamp01(shortest/(Mathf.Max(nodeWrap.width,nodeWrap.height)*0.2f));
+				//}
+				
+				
+				
+				//pixel.a = 1f;
+				//newMaskPixels[i] = pixel;
+			}
+			//mask.SetPixels(newMaskPixels);
+			//mask.Apply();
+			radius = longestDist;
+			return longestDistPt;
+		}
+
+
 
 
 		// TOOLTIP, Draw this last
@@ -871,6 +1308,7 @@ namespace ShaderForge {
 			CreditsLine( "Sander 'Zerot' Homan", "For helping out stealing Unity's internal RT code");
 			CreditsLine( "Carlos 'Darkcoder' Wilkes", "For helping out with various serialization issues");
 			CreditsLine( "Daniele Giardini", "For his editor window icon script (also, check out his plugin HOTween!)");
+			CreditsLine( "Beck Sebenius", "For helping out getting coroutines to run in the Editor");
 			CreditsLine( "James 'Farfarer' O'Hare", "For asking all the advanced shader questions on the forums so I didn't have to");
 			CreditsLine( "Tenebrous", "For helping with... Something... (I can't remember)");
 			CreditsLine( "Alex Telford", "For his fragment shader tutorials");

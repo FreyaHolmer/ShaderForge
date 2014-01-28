@@ -15,7 +15,7 @@ namespace ShaderForge {
 
 		const int TOOLBAR_HEIGHT = 18;
 		[SerializeField]
-		Vector2 cameraPos = Vector3.zero;
+		public Vector2 cameraPos = Vector3.zero;
 
 		[SerializeField]
 		bool panCamera = false;
@@ -330,36 +330,44 @@ namespace ShaderForge {
 				editor.Defocus();
 			}
 
-			Rect logoRect = rect;
-			logoRect.y += 4;
-			logoRect.x += 1;
-			logoRect.width = SF_GUI.Logo.width;
-			logoRect.height = SF_GUI.Logo.height;
-			GUI.color = new Color(1f,1f,1f,0.5f);
-			GUI.DrawTexture( logoRect, SF_GUI.Logo );
 
-			logoRect.y += logoRect.height;
-			logoRect.height = 16;
+			if(!editor.screenshotInProgress){
 
-			GUI.Label(logoRect, SF_Tools.versionStage+" "+SF_Tools.version, EditorStyles.boldLabel);
-			GUI.color = Color.white;
+				Rect logoRect = rect;
+				logoRect.y += editor.firstFrameScreenshotInProgress ? 32 : 4;
+				logoRect.x += editor.firstFrameScreenshotInProgress ? 32 : 1;
+				logoRect.width = SF_GUI.Logo.width;
+				logoRect.height = SF_GUI.Logo.height;
+				GUI.color = new Color(1f,1f,1f,0.5f);
+				GUI.DrawTexture( logoRect, SF_GUI.Logo );
+				
+				logoRect.y += logoRect.height;
+				logoRect.height = 16;
+				
+				GUI.Label(logoRect, SF_Tools.versionStage+" "+SF_Tools.version, EditorStyles.boldLabel);
+				GUI.color = Color.white;
+
+
+			}
+
+
 		}
 
-		
 
+		public Rect GetNodeEncapsulationRect(){
 
+			Rect r = editor.nodes[0].rect; // No need for null check, there should always be a main node
+			foreach( SF_Node n in editor.nodes ) {
+				r = SF_Tools.Encapsulate( r, n.rect );
+			}
+			return r;
 
-		
-
+		}
 
 		public void CenterCamera() {
 
 			// Find midpoint of all nodes
-			Vector2 stp = editor.materialOutput.rect.center;
-			Rect r = new Rect( stp.x, stp.y, 1f, 1f );
-			foreach( SF_Node n in editor.nodes ) {
-				r = SF_Tools.Encapsulate( r, n.rect );
-			}
+			Rect r = GetNodeEncapsulationRect();
 			
 			// Move Camera
 			cameraPos = r.center - new Vector2(Screen.width*0.5f,Screen.height*0.5f) -Vector2.right * editor.separatorLeft.rect.x;
@@ -498,7 +506,7 @@ namespace ShaderForge {
 
 			string header = "";
 			header += "// Shader created with " + SF_Tools.versionString + " \n";
-			header += "// Shader Forge (c) Joachim 'Acegikmo' Holmer\n";
+			header += "// Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/\n";
 			header += "// Note: Manually altering this data may prevent you from opening it in Shader Forge\n";
 			header += "/" + "*"; // Hurgh!
 

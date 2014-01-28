@@ -689,7 +689,7 @@ namespace ShaderForge {
 				if( focusedField )
 					editor.nodeView.selection.DeselectAll();
 
-				if( selected || focusedField || mouseOver ) {
+				if( selected || focusedField || mouseOver && !editor.screenshotInProgress ) {
 					GUI.color = new Color(1f,1f,1f,0.6f);
 					nameRect.x += nameRect.width;
 					GUI.Label( nameRect, property.nameInternal, EditorStyles.boldLabel );

@@ -114,6 +114,20 @@ namespace ShaderForge {
 			return nodeCommentLabelText;
 		}
 
+		private static GUIStyle nodeScreenshotTitleText;
+		public static GUIStyle GetNodeScreenshotTitleText() {
+			if( nodeScreenshotTitleText == null ) {
+				//nodeScreenshotTitleText = new GUIStyle( NodeStyle );
+				nodeScreenshotTitleText = new GUIStyle(EditorStyles.boldLabel);
+				nodeScreenshotTitleText.fontSize = 14;
+				nodeScreenshotTitleText.alignment = TextAnchor.LowerCenter;
+				nodeScreenshotTitleText.clipping = TextClipping.Overflow;
+				float col = SF_GUI.ProSkin ? 1f : 0f;
+				nodeScreenshotTitleText.normal.textColor = new Color( col, col, col, 0.5f );
+			}
+			return nodeScreenshotTitleText;
+		}
+
 
 
 		private static GUIStyle nodeCommentLabelTextField;

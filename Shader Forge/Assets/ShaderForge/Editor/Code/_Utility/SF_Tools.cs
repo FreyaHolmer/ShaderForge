@@ -64,8 +64,7 @@ namespace ShaderForge {
 			return true;
 		#endif
 		}
-		
-		
+
 		
 		public static void UnityOutOfDateGUI(){
 			GUIStyle st = new GUIStyle(EditorStyles.boldLabel);
@@ -267,6 +266,36 @@ namespace ShaderForge {
 			if( r.height < 0 )
 				r.y -= ( r.height *= -1 );
 		}
+
+
+		public static float DistanceToLines(Vector2 point, Vector2[] line){
+			float shortest = float.MaxValue;
+
+			for (int i = 0; i < line.Length-1; i++) {
+				shortest = Mathf.Min(shortest, DistanceToLine(line[i], line[i+1], point));
+			}
+
+			return shortest;
+
+		}
+
+		public static float DistanceToLine(Vector2 a, Vector2 b, Vector2 point){
+			// Return minimum distance between line segment vw and point p
+			float l2 = Vector2.SqrMagnitude(a - b);  // i.e. |w-v|^2 -  avoid a sqrt
+			if (l2 == 0.0)
+				return Vector2.Distance(point, a);   // v == w case
+			// Consider the line extending the segment, parameterized as v + t (w - v).
+			// We find projection of point p onto the line. 
+			// It falls where t = [(p-v) . (w-v)] / |w-v|^2
+			float t = Vector2.Dot(point - a, b - a) / l2;
+			if (t < 0.0)
+				return Vector2.Distance(point, a);       // Beyond the 'v' end of the segment
+			else if (t > 1.0)
+				return Vector2.Distance(point, b);  // Beyond the 'w' end of the segment
+			Vector2 projection = a + t * (b - a);  // Projection falls on the segment
+			return Vector2.Distance(point, projection);
+		}
+
 
 
 		public static bool LineIntersection(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, out Vector2 intersection){

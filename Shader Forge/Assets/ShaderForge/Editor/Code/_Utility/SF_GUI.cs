@@ -44,6 +44,15 @@ namespace ShaderForge {
 			}
 		}
 
+		private static Texture2D screenshot_icon;
+		public static Texture2D Screenshot_icon {
+			get {
+				if( screenshot_icon == null )
+					screenshot_icon = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "screenshot_icon" ), typeof(Texture2D) );
+				return screenshot_icon;
+			}
+		}
+
 		private static Texture2D inst_vert;
 		public static Texture2D Inst_vert {
 			get {

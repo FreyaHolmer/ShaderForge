@@ -704,7 +704,8 @@ namespace ShaderForge {
 
 			string inner = ( ShouldUseLightMacros() ? atten : "1" );
 			App( "float attenuation = " + inner + ";" );
-			App( "float3 attenColor = attenuation * _LightColor0.xyz;" );
+			if(ps.lightMode != SF_PassSettings.LightMode.Unlit)
+				App( "float3 attenColor = attenuation * _LightColor0.xyz;" );
 		}
 
 

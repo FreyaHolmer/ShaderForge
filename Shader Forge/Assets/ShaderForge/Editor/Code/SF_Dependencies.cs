@@ -219,6 +219,7 @@ namespace ShaderForge {
 
 		public void NeedFragTangentTransform() {
 			frag_tangentTransform = true;
+			frag_normalDirection = true;
 			vert_in_normals = true;
 			vert_out_normals = true;
 			vert_in_tangents = true;

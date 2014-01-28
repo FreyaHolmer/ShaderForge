@@ -861,9 +861,9 @@ namespace ShaderForge {
 			AppDebug("Normals");
 
 
-			if(ps.normalQuality == SF_PassSettings.NormalQuality.Normalized){
-				App ("i.normalDir = normalize(i.normalDir);");
-			}
+			//if(ps.normalQuality == SF_PassSettings.NormalQuality.Normalized){
+			//	App ("i.normalDir = normalize(i.normalDir);");
+			//}
 
 			
 
@@ -1659,6 +1659,11 @@ namespace ShaderForge {
 			CheckClip();
 
 			InitGrabPassSign();
+
+			if(ps.normalQuality == SF_PassSettings.NormalQuality.Normalized && dependencies.frag_normalDirection){
+				App ("i.normalDir = normalize(i.normalDir);");
+			}
+
 			InitTangentTransformFrag();
 			InitViewDirFrag();
 			InitNormalDirFrag();

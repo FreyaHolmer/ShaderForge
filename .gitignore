@@ -19,6 +19,8 @@
 *NewShader.shader
 
 CLEANUP/*
+OLD_FILES/AutoPlaceScreenshots*
+Shader Forge/Assets/Experiments/*
 
 Shader Forge/Assets/LightmapTestNew/*
 Shader Forge/Assets/LightmapTestNew.meta

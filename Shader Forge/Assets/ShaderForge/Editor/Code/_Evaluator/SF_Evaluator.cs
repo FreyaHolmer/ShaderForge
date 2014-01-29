@@ -1369,6 +1369,13 @@ namespace ShaderForge {
 
 		void InitSceneColorAndDepth(){
 
+			if(dependencies.frag_sceneDepth){
+				App("float sceneZ = LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos))));");
+			}
+			if(dependencies.frag_pixelDepth){
+				App("float partZ = i.projPos.z;");
+			}
+
 			if(dependencies.grabPass){
 
 
@@ -1390,12 +1397,7 @@ namespace ShaderForge {
 			}
 
 
-			if(dependencies.frag_sceneDepth){
-				App("float sceneZ = LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos))));");
-			}
-			if(dependencies.frag_pixelDepth){
-				App("float partZ = i.projPos.z;");
-			}
+
 
 
 		}

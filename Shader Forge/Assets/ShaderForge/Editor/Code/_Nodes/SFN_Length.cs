@@ -11,6 +11,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Length" );
 			base.PrepareArithmetic(1,ValueType.VTvPending,ValueType.VTv1);
+			( base.conGroup as SFNCG_Arithmetic ).LockOutType();
 		}
 
 		public override int GetEvaluatedComponentCount() {

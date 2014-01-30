@@ -1052,10 +1052,12 @@ namespace ShaderForge {
 
 		public bool MouseOverNode(bool world = false) {
 
+			if(!editor.nodeView.MouseInsideNodeView(offset:true))
+				return false;
+
 			if( world ) {
 				return rect.Contains( Event.current.mousePosition );
 			}
-				
 			else
 				return LocalRect().Contains( Event.current.mousePosition );
 		}

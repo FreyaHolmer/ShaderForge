@@ -93,6 +93,7 @@ namespace ShaderForge {
 		}
 
 
+		float zoom = 1f;
 
 
 		public void OnLocalGUI( Rect r ) {
@@ -127,11 +128,19 @@ namespace ShaderForge {
 
 
 			
+			if (Event.current.type == EventType.ScrollWheel){
+				zoom = Mathf.Clamp( zoom - Event.current.delta.y*0.05f, 0.25f, 1f );
 
-			
+			}
+
+
 
 			//GUI.BeginGroup( rect );
 			cameraPos = GUI.BeginScrollView( rect, cameraPos, rectInner, GUIStyle.none, GUIStyle.none );
+			//GUI.BeginGroup(rect);
+
+
+			//EditorZoomArea.Begin(zoom,rTest);
 			//cameraPos = GUI.BeginScrollView(nodeAreaRect, cameraPos, viewRect, true, true );
 			{
 
@@ -251,6 +260,8 @@ namespace ShaderForge {
 				
 
 			}
+			//EditorZoomArea.End();
+			//GUI.EndGroup();
 			GUI.EndScrollView();
 
 
@@ -656,7 +667,7 @@ namespace ShaderForge {
 		}
 
 
-		bool MouseInsideNodeView( bool offset = false ) {
+		public bool MouseInsideNodeView( bool offset = false ) {
 
 			if( offset ) {
 				return rect.Contains( AddNodeWindowOffset( Event.current.mousePosition ) );

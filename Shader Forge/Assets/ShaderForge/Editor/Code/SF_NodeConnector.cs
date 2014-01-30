@@ -336,8 +336,8 @@ namespace ShaderForge {
 		}
 
 		public bool Hovering(bool world) {
-			//if( !node.editor.nodeView.rect.Contains( Event.current.mousePosition ) )
-			//	return false;
+			if( !node.editor.nodeView.MouseInsideNodeView(offset:false) )
+				return false;
 			Rect r = SF_Tools.GetExpanded( rect, SF_Tools.connectorMargin );
 			return r.Contains( world ? Event.current.mousePosition : MousePos() );
 		}

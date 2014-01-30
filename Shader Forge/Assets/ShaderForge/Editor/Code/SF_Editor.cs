@@ -746,7 +746,7 @@ namespace ShaderForge {
 				ssButtonColorTarget = new Color(1f,1f,1f,0f); // TODO LERP
 				ssButtonFadeSpeed = 1.5f;
 			}
-			Rect ssRect = new Rect(8,49,32,19);
+			Rect ssRect = new Rect(8,previewButtonHeightOffset,32,19);
 			GUI.color = ssButtonColor;
 			if(GUI.Button(ssRect, SF_GUI.Screenshot_icon)){
 				GenericMenu menu = new GenericMenu();
@@ -1608,6 +1608,7 @@ namespace ShaderForge {
 
 
 			//GUI.Box( new Rect(203,10,128,19), SF_Tools.versionStage+" "+SF_Tools.version, versionStyle );
+			previewButtonHeightOffset = (int)btnRect.yMax + 24;
 			int previewOffset = preview.OnGUI( (int)btnRect.yMax, (int)r.width );
 			int statusBoxOffset = statusBox.OnGUI( previewOffset, (int)r.width );
 
@@ -1618,6 +1619,8 @@ namespace ShaderForge {
 			}
 
 		}
+
+		int previewButtonHeightOffset;
 
 		public void OnPressBackToMenuButton(){
 			shaderEvaluator.SaveShaderAsset();

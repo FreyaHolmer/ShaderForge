@@ -31,18 +31,6 @@ namespace ShaderForge {
 
 		}
 
-		[MenuItem ("Shader Forge Debug/Clear Prefs")]
-		static void Clear(){
-			EditorPrefs.DeleteKey(KeyOf(SF_Setting.CurveShape));
-			EditorPrefs.DeleteKey(KeyOf(SF_Setting.AutoCompile));
-			EditorPrefs.DeleteKey(KeyOf(SF_Setting.HierarchalNodeMove));
-			EditorPrefs.DeleteKey(KeyOf(SF_Setting.DrawNodePreviews));
-			Debug.Log("CLEARED");
-		}
-
-
-
-
 
 		// Settings:
 		public static bool AutoRecompile {

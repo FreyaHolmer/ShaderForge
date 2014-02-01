@@ -37,6 +37,13 @@ namespace ShaderForge {
 			Color.white
 		};
 
+		public static Color[] outputChanColors = new Color[]{
+			Color.red,
+			Color.green,
+			Color.blue,
+			SF_NodeConnector.colorEnabledDefault
+		};
+
 
 
 		public GUIStyle popupStyle;
@@ -83,7 +90,11 @@ namespace ShaderForge {
 
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","-",ConType.cOutput,ValueType.VTvPending,false).Outputting(OutChannel.All),
-				SF_NodeConnector.Create(this,"IN","In",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
+				SF_NodeConnector.Create(this,"IN","In",ConType.cInput,ValueType.VTvPending,false).SetRequired(true),
+				SF_NodeConnector.Create(this,"R","R",ConType.cOutput,	ValueType.VTv1)	.WithColor(Color.red)	.Outputting(OutChannel.R),
+				SF_NodeConnector.Create(this,"G","G",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.green)	.Outputting(OutChannel.G),
+				SF_NodeConnector.Create(this,"B","B",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.blue)	.Outputting(OutChannel.B),
+				SF_NodeConnector.Create(this,"A","A",ConType.cOutput,ValueType.VTv1)							.Outputting(OutChannel.A)
 			};
 			outCompCount = 1;
 			UpdateOutput();
@@ -238,6 +249,30 @@ namespace ShaderForge {
 				}
 			}
 			connectors[0].label = label;
+
+			connectors[0].color = outCompCount == 1 ? outputChanColors[Mathf.Clamp((int)components[0],0,3)] : SF_NodeConnector.colorEnabledDefault;
+
+
+			SF_NodeConnector inCon = GetConnectorByStringID( "IN" );
+			if(inCon.IsConnected()){
+				for(int i=0;i<4;i++){
+
+					if(i < outCompCount && outCompCount > 1){
+						connectors[i+2].enableState = EnableState.Enabled;
+					} else {
+						connectors[i+2].enableState = EnableState.Hidden;
+						connectors[i+2].Disconnect();
+
+					}
+
+
+					int id = (int)components[i];
+					connectors[i+2].label = compLabels[3][id+1];
+
+					connectors[i+2].color = outputChanColors[Mathf.Clamp(id,0,3)];
+				}
+
+			}
 		}
 
 

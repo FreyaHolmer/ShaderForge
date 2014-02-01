@@ -32,6 +32,11 @@ namespace ShaderForge{
 			Subtract = 19,
 			Divide = 20
 		};
+
+
+		const int maxEnum = 20;
+		static int[] skipEnum = new int[]{4,9,11};
+
 		public BlendMode currentBlendMode = BlendMode.Overlay;
 		public bool clamp = true;
 		
@@ -59,6 +64,31 @@ namespace ShaderForge{
 		public override bool IsUniformOutput() {
 			return false;
 		}
+
+	
+		public void StepBlendMode(int inc){
+			int nextBlendIndex = (int)currentBlendMode + inc;
+
+			restart:
+			foreach(int i in skipEnum){
+				if(nextBlendIndex == i){
+					nextBlendIndex += inc;
+					goto restart; // Watch out for raptors
+				}
+			}
+
+
+			if(nextBlendIndex == -1){
+				currentBlendMode = (BlendMode)maxEnum;
+				return;
+			} else if(nextBlendIndex > maxEnum){
+				currentBlendMode = (BlendMode)0;
+				return;
+			}
+
+			currentBlendMode = (BlendMode)nextBlendIndex;
+
+		}
 		
 
 
@@ -73,7 +103,21 @@ namespace ShaderForge{
 			r.height = 17;
 			currentBlendMode = (BlendMode)EditorGUI.EnumPopup( r, currentBlendMode );
 			r = r.MovedDown();
+			r.width -= r.height*2+8;
 			clamp = GUI.Toggle(r,clamp,"Clamp", SF_Styles.ToggleDiscrete);
+			r.width = lowerRect.width;
+			r = r.MovedRight();
+			r.width = r.height+4;
+			r = r.MovedLeft(2);
+			if(GUI.Button(r,"\u25B2")){
+				StepBlendMode(-1);
+			}
+			r = r.MovedRight();
+			if(GUI.Button(r, "\u25BC")){
+				StepBlendMode(1);
+			}
+
+
 			if(EditorGUI.EndChangeCheck())
 				OnUpdateNode();
 		}

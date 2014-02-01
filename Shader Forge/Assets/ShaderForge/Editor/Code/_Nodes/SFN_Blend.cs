@@ -25,7 +25,7 @@ namespace ShaderForge{
 			VividLight = 13,
 			LinearLight = 14,
 			PinLight = 15,
-		//	HardMix = 16,
+			HardMix = 16,
 
 			Difference = 17,
 			Exclusion = 18,
@@ -196,6 +196,8 @@ namespace ShaderForge{
 				return "( " + a + " > 0.5 ? (" + b + " + 2.0*" + a + " -1.0) : (" + b + " + 2.0*(" + a + "-0.5)))";
 			case BlendMode.PinLight:
 				return "( " + a + " > 0.5 ? max(" + b + ",2.0*(" + a + "-0.5)) : min(" + b + ",2.0*" + a + ") )";
+			case BlendMode.HardMix:
+				return "round( 0.5*(" + a + " + " + b + "))";
 			case BlendMode.Difference:
 				return "abs(" + a + "-" + b + ")";
 			case BlendMode.Exclusion:
@@ -237,6 +239,8 @@ namespace ShaderForge{
 				return a > 0.5f ? b + 2f*(a-0.5f) : b + 2f*a -1f;
 			case BlendMode.PinLight:
 				return a > 0.5f ? Mathf.Max(b,2f*(a-0.5f)) : Mathf.Min(b,2f*a);
+			case BlendMode.HardMix:
+				return Mathf.Round((a+b)*0.5f);
 			case BlendMode.Difference:
 				return Mathf.Abs(a-b);
 			case BlendMode.Exclusion:

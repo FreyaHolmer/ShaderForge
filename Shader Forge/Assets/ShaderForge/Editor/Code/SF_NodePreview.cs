@@ -294,8 +294,8 @@ namespace ShaderForge {
 
 			uniform = node.IsUniformOutput();
 
-			// Combine the node textures, unless we're quickloading
-			if(!SF_Parser.quickLoad){
+			// Combine the node textures, unless we're quickloading or don't want to load them
+			if(!SF_Parser.quickLoad && SF_Settings.DrawNodePreviews){
 				for( int y = 0; y < SF_NodeData.RES; y++ ) {
 					for( int x = 0; x < SF_NodeData.RES; x++ ) {
 						Color retVector = node.NodeOperator( x, y );

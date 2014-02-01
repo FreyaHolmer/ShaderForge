@@ -10,7 +10,8 @@ namespace ShaderForge {
 	public enum SF_Setting{
 		CurveShape,			// int	Bezier/Linear/etc
 		AutoCompile, 		// bool	True/False
-		HierarchalNodeMove 	// bool	True/False
+		HierarchalNodeMove, // bool	True/False
+		DrawNodePreviews	// bool	True/False
 	};
 
 	public class SF_Settings {
@@ -19,10 +20,24 @@ namespace ShaderForge {
 		public const string suffixDefault = "_default";
 
 		public SF_Settings() {
+		}
+
+		public static void InitializeSettings() {
 			// Set up all defaults
 			SetDefaultInt ( SF_Setting.CurveShape, 			(int)ConnectionLineStyle.Bezier );
 			SetDefaultBool( SF_Setting.AutoCompile, 		true 							);
 			SetDefaultBool( SF_Setting.HierarchalNodeMove, 	false 							);
+			SetDefaultBool( SF_Setting.DrawNodePreviews, 	true 							);
+
+		}
+
+		[MenuItem ("Shader Forge Debug/Clear Prefs")]
+		static void Clear(){
+			EditorPrefs.DeleteKey(KeyOf(SF_Setting.CurveShape));
+			EditorPrefs.DeleteKey(KeyOf(SF_Setting.AutoCompile));
+			EditorPrefs.DeleteKey(KeyOf(SF_Setting.HierarchalNodeMove));
+			EditorPrefs.DeleteKey(KeyOf(SF_Setting.DrawNodePreviews));
+			Debug.Log("CLEARED");
 		}
 
 
@@ -38,6 +53,11 @@ namespace ShaderForge {
 		public static bool HierarcyMove {
 			get { return LoadBool(SF_Setting.HierarchalNodeMove); }
 			set { SetBool(SF_Setting.HierarchalNodeMove, value); }
+		}
+
+		public static bool DrawNodePreviews {
+			get { return LoadBool(SF_Setting.DrawNodePreviews); }
+			set { SetBool(SF_Setting.DrawNodePreviews, value); }
 		}
 
 		public static ConnectionLineStyle ConnectionLineStyle {
@@ -80,18 +100,30 @@ namespace ShaderForge {
 		private static void SetDefaultBool( SF_Setting setting, bool value ){
 			string key = KeyOf(setting);
 			EditorPrefs.SetBool(key + suffixDefault, value);
+			if(!EditorPrefs.HasKey(key)){
+				SetBool(setting, value);
+			}
 		}
 		private static void SetDefaultString(SF_Setting setting, string value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetString(key + suffixDefault, value);
+			if(!EditorPrefs.HasKey(key)){
+				SetString(setting, value);
+			}
 		}
 		private static void SetDefaultInt(SF_Setting setting, int value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetInt(key + suffixDefault, value);
+			if(!EditorPrefs.HasKey(key)){
+				SetInt(setting, value);
+			}
 		}
 		private static void SetDefaultFloat(SF_Setting setting, float value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetFloat(key + suffixDefault, value);
+			if(!EditorPrefs.HasKey(key)){
+				SetFloat(setting, value);
+			}
 		}
 		// --------------------------------------------------
 		public static void SetBool( SF_Setting setting, bool value ){
@@ -106,7 +138,7 @@ namespace ShaderForge {
 			string key = KeyOf(setting);
 			EditorPrefs.SetInt(key, value);
 		}
-		public static void SetFlost(SF_Setting setting, float value){
+		public static void SetFloat(SF_Setting setting, float value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetFloat(key, value);
 		}

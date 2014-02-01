@@ -369,7 +369,7 @@ namespace ShaderForge {
 			//Debug.Log( "[SF_LOG] - SF_Editor InitializeInstance(" + initShader + ")" );
 			//this.title = ;
 
-
+			SF_Settings.InitializeSettings();
 			this.initialized = true;
 			this.ps = ScriptableObject.CreateInstance<SF_PassSettings>().Initialize( this );
 			this.shaderEvaluator = new SF_Evaluator( this );
@@ -1598,8 +1598,10 @@ namespace ShaderForge {
 				btnRect.x = r.x + 2;
 				btnRect.width = r.width / 4f;
 				btnRect.x += btnRect.width;
-				btnRect.width *= 2;
+				btnRect.width *= 2.5f;
 				SF_Settings.HierarcyMove = GUI.Toggle( btnRect, SF_Settings.HierarcyMove, "Hierarchal Node Move" );
+				btnRect = btnRect.MovedDown();
+				SF_Settings.DrawNodePreviews = GUI.Toggle( btnRect, SF_Settings.DrawNodePreviews, "Auto-Update Node Previews" );
 
 
 

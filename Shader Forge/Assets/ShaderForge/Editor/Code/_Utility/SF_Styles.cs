@@ -202,6 +202,19 @@ namespace ShaderForge {
 		}
 
 
+		private static GUIStyle toggleDiscrete;
+		public static GUIStyle ToggleDiscrete {
+			get {
+				if( toggleDiscrete == null ) {
+					toggleDiscrete = new GUIStyle( GUI.skin.toggle );
+					toggleDiscrete.fontSize = 10;
+				}
+				
+				return toggleDiscrete;
+			}
+		}
+
+
 
 		// Thanks to Tenebrous!
 		public static void ListStyles() {

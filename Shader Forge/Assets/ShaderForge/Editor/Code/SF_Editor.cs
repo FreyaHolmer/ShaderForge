@@ -169,6 +169,7 @@ namespace ShaderForge {
 			string catArithmetic = "Arithmetic/";
 			AddTemplate( typeof( SFN_Abs ), 			catArithmetic + "Abs" );
 			AddTemplate( typeof( SFN_Add ), 			catArithmetic + "Add", KeyCode.A );
+			AddTemplate( typeof( SFN_Blend ), 			catArithmetic + "Blend", KeyCode.B ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Ceil ), 			catArithmetic + "Ceil" );
 			AddTemplate( typeof( SFN_Clamp ), 			catArithmetic + "Clamp" );
 			AddTemplate( typeof( SFN_Clamp01 ), 		catArithmetic + "Clamp 0-1" );
@@ -233,7 +234,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Rotator ), 	catUvOps + "Rotator" );
 
 			string catGeoData = "Geometry Data/";
-			AddTemplate( typeof( SFN_Binormal ), 				catGeoData + "Binormal Dir.", KeyCode.B );
+			AddTemplate( typeof( SFN_Binormal ), 				catGeoData + "Binormal Dir.");
 			AddTemplate( typeof( SFN_Fresnel ), 				catGeoData + "Fresnel", KeyCode.F );
 			AddTemplate( typeof( SFN_NormalVector ), 			catGeoData + "Normal Dir." );
 			AddTemplate( typeof( SFN_ObjectPosition ), 			catGeoData + "Object Position");

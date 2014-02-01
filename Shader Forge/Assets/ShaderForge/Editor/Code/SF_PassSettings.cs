@@ -184,7 +184,7 @@ namespace ShaderForge {
 			s += Serialize( "fgca", fogColor.a.ToString());			// Fog Color
 			s += Serialize( "fgde", fogDensity.ToString());			// float
 			s += Serialize( "fgrn", fogRange.x.ToString());			// Fog range X (Near)
-			s += Serialize( "fgrf", fogRange.y.ToString());	// Fog range Y (Far)
+			s += Serialize( "fgrf", fogRange.y.ToString());			// Fog range Y (Far)
 
 
 			// Stencil buffer:

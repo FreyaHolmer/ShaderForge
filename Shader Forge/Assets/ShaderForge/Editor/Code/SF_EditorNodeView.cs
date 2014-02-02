@@ -93,7 +93,33 @@ namespace ShaderForge {
 		}
 
 
-		float zoom = 1f;
+		public float zoom = 1f;
+		public float zoomTarget = 1f;
+
+		public void SetZoom(float setZoom){
+			Vector2 oldWidth = new Vector2(rect.width,rect.height)/zoom;
+			zoom = ClampZoom(setZoom);
+			Vector2 newWidth = new Vector2(rect.width,rect.height)/zoom;
+			Vector2 delta = newWidth - oldWidth;
+
+			//Vector2 normalizedMouseCoords = (Event.current.mousePosition);
+
+			//normalizedMouseCoords.x /= rect.width;
+			//normalizedMouseCoords.y /= rect.height;
+
+			//Debug.Log(normalizedMouseCoords);
+
+
+			cameraPos -= delta*0.5f;
+
+			if(zoom == 1f)
+				SnapCamera();
+
+		}
+
+		public float ClampZoom(float in_zoom){
+			return Mathf.Clamp(in_zoom,0.125f,1f);
+		}
 
 
 		public void OnLocalGUI( Rect r ) {
@@ -128,23 +154,19 @@ namespace ShaderForge {
 
 
 			
-			if (Event.current.type == EventType.ScrollWheel){
-				zoom = Mathf.Clamp( zoom - Event.current.delta.y*0.05f, 0.25f, 1f );
+			if ( MouseInsideNodeView(false) && Event.current.type == EventType.ScrollWheel){
+				//
+				zoomTarget = ClampZoom(zoomTarget * (1f-Event.current.delta.y*0.02f));
 
 			}
 
+			SetZoom( Mathf.Lerp(zoom,zoomTarget, 0.2f ));
 
 
-			//GUI.BeginGroup( rect );
-			cameraPos = GUI.BeginScrollView( rect, cameraPos, rectInner, GUIStyle.none, GUIStyle.none );
-			//GUI.BeginGroup(rect);
 
-
-			//EditorZoomArea.Begin(zoom,rTest);
-			//cameraPos = GUI.BeginScrollView(nodeAreaRect, cameraPos, viewRect, true, true );
+			//cameraPos = GUI.BeginScrollView( rect, cameraPos, rectInner, GUIStyle.none, GUIStyle.none );
+			SF_ZoomArea.Begin(zoom,rect,cameraPos);
 			{
-
-				
 
 				//GUIStyle gs = EditorStyles.label;
 				//gs.margin = new RectOffset( int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue );
@@ -156,7 +178,7 @@ namespace ShaderForge {
 
 				// GUI.Box( new Rect( Screen.width, Screen.height, 32, 32 ), "BottomRight" );
 				// GUI.Box( new Rect( Screen.width/2f, Screen.height/2f, 32, 32 ), "Center" );
-				GUI.Box( new Rect( 0f, 0f, 32, 32 ), "TopLeft" );
+				//GUI.Box( new Rect( 0f, 0f, 32, 32 ), "TopLeft" );
 
 				// NODES
 				if( editor.nodes != null ) {
@@ -210,7 +232,7 @@ namespace ShaderForge {
 
 									con.conLine.aboutToBeDeleted = true;
 
-									Vector2 hit = editor.nodeView.SubtractNodeWindowOffset(intersection);
+									Vector2 hit = editor.nodeView.ScreenSpaceToZoomSpace(intersection);
 
 									float scale = 5f;
 									float scaleDiff = 0.95f;
@@ -260,9 +282,8 @@ namespace ShaderForge {
 				
 
 			}
-			//EditorZoomArea.End();
-			//GUI.EndGroup();
-			GUI.EndScrollView();
+			SF_ZoomArea.End(zoom);
+			//GUI.EndScrollView();
 
 
 
@@ -381,7 +402,8 @@ namespace ShaderForge {
 			Rect r = GetNodeEncapsulationRect();
 			
 			// Move Camera
-			cameraPos = r.center - new Vector2(Screen.width*0.5f,Screen.height*0.5f) -Vector2.right * editor.separatorLeft.rect.x;
+			cameraPos = r.center - new Vector2(Screen.width*0.5f,Screen.height*0.5f) +Vector2.right * editor.separatorLeft.rect.x;
+			SnapCamera();
 		}
 
 
@@ -648,6 +670,7 @@ namespace ShaderForge {
 				//	selection.DeselectAll();
 				//Debug.Log("Delta: " + Event.current.delta);
 				cameraPos -= Event.current.delta;
+				SnapCamera();
 				editor.Defocus();
 				//Debug.Log( "USING" );
 				Event.current.Use();
@@ -663,35 +686,52 @@ namespace ShaderForge {
 		}
 
 		public Vector2 GetNodeSpaceMousePos() {
-			return SubtractNodeWindowOffset( Event.current.mousePosition );
+			return ScreenSpaceToZoomSpace( Event.current.mousePosition );
 		}
 
 
 		public bool MouseInsideNodeView( bool offset = false ) {
 
 			if( offset ) {
-				return rect.Contains( AddNodeWindowOffset( Event.current.mousePosition ) );
+				return rect.Contains( ZoomSpaceToScreenSpace( Event.current.mousePosition ) );
 			} else {
 				return rect.Contains( Event.current.mousePosition );
 			}
 
 		}
 
-
-		public Vector2 AddNodeWindowOffset( Vector2 in_vec ) {
-			return in_vec - cameraPos;
+		void SnapCamera(){
+			cameraPos.x = Mathf.Round(cameraPos.x);
+			cameraPos.y = Mathf.Round(cameraPos.y);
 		}
-		public Rect AddNodeWindowOffset( Rect in_rect ) {
-			in_rect.x += -cameraPos.x;
-			in_rect.y += -cameraPos.y;
+
+
+		public Vector2 ZoomSpaceToScreenSpace( Vector2 in_vec ) {
+			return (in_vec - cameraPos + editor.separatorLeft.rect.TopRight())*zoom + rect.TopLeft();
+		}
+		public Rect ZoomSpaceToScreenSpace( Rect in_rect ) {
+			Vector2 offset = ZoomSpaceToScreenSpace(in_rect.TopLeft());
+			in_rect.x = offset.x;
+			in_rect.y = offset.y;
+			in_rect.width /= zoom;
+			in_rect.height /= zoom;
+			//in_rect.x += -cameraPos.x;
+			//in_rect.y += -cameraPos.y;
 			return in_rect;
 		}
-		public Vector2 SubtractNodeWindowOffset( Vector2 in_vec ) {
-			return in_vec + cameraPos;
+		public Vector2 ScreenSpaceToZoomSpace( Vector2 in_vec ) {
+			return ( in_vec - rect.TopLeft() )/zoom - editor.separatorLeft.rect.TopRight() + cameraPos;
+			//return in_vec + cameraPos;
 		}
-		public Rect SubtractNodeWindowOffset( Rect in_rect ) {
-			in_rect.x -= -cameraPos.x;
-			in_rect.y -= -cameraPos.y;
+		public Rect ScreenSpaceToZoomSpace( Rect in_rect ) {
+			//in_rect.x -= -cameraPos.x;
+			//in_rect.y -= -cameraPos.y;
+			Vector2 offset = ScreenSpaceToZoomSpace(in_rect.TopLeft());
+			in_rect.x = offset.x;
+			in_rect.y = offset.y;
+			in_rect.width *= zoom;
+			in_rect.height *= zoom;
+
 			return in_rect;
 		}
 

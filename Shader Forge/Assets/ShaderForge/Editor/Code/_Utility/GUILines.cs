@@ -45,7 +45,7 @@ namespace ShaderForge {
 
 			Vector3[] v3Pts = new Vector3[points.Length];
 			for (int i = 0; i < points.Length; i++) {
-				points[i] = editor.nodeView.AddNodeWindowOffset( points[i] );
+				points[i] = editor.nodeView.ZoomSpaceToScreenSpace( points[i] );
 				v3Pts[i] = new Vector3(points[i].x, points[i].y);
 			}
 
@@ -323,8 +323,8 @@ namespace ShaderForge {
 
 		public static void DrawRectilinearConnection( SF_Editor editor, Vector2 p0, Vector2 p1, float offset, Color col ) {
 
-			p0 = editor.nodeView.AddNodeWindowOffset( p0 );
-			p1 = editor.nodeView.AddNodeWindowOffset( p1 );
+			p0 = editor.nodeView.ZoomSpaceToScreenSpace( p0 );
+			p1 = editor.nodeView.ZoomSpaceToScreenSpace( p1 );
 
 			p0 += new Vector2( 0f, offset );
 			p1 += new Vector2( 0f, offset );
@@ -341,8 +341,8 @@ namespace ShaderForge {
 		}
 
 		public static void DrawLinearConnection( SF_Editor editor, Vector2 p0, Vector2 p1, float offset, Color col ) {
-			p0 = editor.nodeView.AddNodeWindowOffset( p0 );
-			p1 = editor.nodeView.AddNodeWindowOffset( p1 );
+			p0 = editor.nodeView.ZoomSpaceToScreenSpace( p0 );
+			p1 = editor.nodeView.ZoomSpaceToScreenSpace( p1 );
 
 			p0 += new Vector2( 0f, offset );
 			p1 += new Vector2( 0f, offset );
@@ -351,8 +351,8 @@ namespace ShaderForge {
 		}
 
 		public static void DrawDashedLine(SF_Editor editor, Vector2 p0, Vector2 p1, Color col, float dashLength ){
-			p0 = editor.nodeView.AddNodeWindowOffset( p0 );
-			p1 = editor.nodeView.AddNodeWindowOffset( p1 );
+			p0 = editor.nodeView.ZoomSpaceToScreenSpace( p0 );
+			p1 = editor.nodeView.ZoomSpaceToScreenSpace( p1 );
 
 			float frac = dashLength/(p0-p1).magnitude;
 
@@ -370,8 +370,8 @@ namespace ShaderForge {
 
 		public static void DrawBezierConnection( SF_Editor editor, Vector2 p0, Vector2 p1, float offset, Color col ) {
 
-			p0 = editor.nodeView.AddNodeWindowOffset( p0 );
-			p1 = editor.nodeView.AddNodeWindowOffset( p1 );
+			p0 = editor.nodeView.ZoomSpaceToScreenSpace( p0 );
+			p1 = editor.nodeView.ZoomSpaceToScreenSpace( p1 );
 
 			Vector2 p0t = p0;
 			Vector2 p1t = p1;

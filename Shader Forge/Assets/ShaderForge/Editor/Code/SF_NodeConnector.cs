@@ -336,7 +336,7 @@ namespace ShaderForge {
 		}
 
 		public bool Hovering(bool world) {
-			if( !node.editor.nodeView.MouseInsideNodeView(offset:false) )
+			if( !node.editor.nodeView.MouseInsideNodeView(offset:world) )
 				return false;
 			Rect r = SF_Tools.GetExpanded( rect, SF_Tools.connectorMargin );
 			return r.Contains( world ? Event.current.mousePosition : MousePos() );
@@ -818,7 +818,7 @@ namespace ShaderForge {
 
 
 			bool delHov = IsDeleteHovering();
-			bool conHov = IsConnectionHovering();
+			bool conHov = IsConnectionHovering(true);
 
 			if(conHov){
 				return Color.green;

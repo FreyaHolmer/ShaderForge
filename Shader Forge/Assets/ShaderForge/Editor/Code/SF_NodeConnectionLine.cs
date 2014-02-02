@@ -235,10 +235,10 @@ namespace ShaderForge{
 		public bool Intersects(Vector2 p0, Vector2 p1, out Vector2 intersection){
 			intersection = Vector2.zero;
 
-			p0 = editor.nodeView.AddNodeWindowOffset(p0);
-			p1 = editor.nodeView.AddNodeWindowOffset(p1);
-			p0 = editor.nodeView.AddNodeWindowOffset(p0);
-			p1 = editor.nodeView.AddNodeWindowOffset(p1); // Double, for whatever reason
+			p0 = editor.nodeView.ZoomSpaceToScreenSpace(p0);
+			p1 = editor.nodeView.ZoomSpaceToScreenSpace(p1);
+			p0 = editor.nodeView.ZoomSpaceToScreenSpace(p0);
+			p1 = editor.nodeView.ZoomSpaceToScreenSpace(p1); // Double, for whatever reason
 
 			float cc = connector.GetCompCount();
 

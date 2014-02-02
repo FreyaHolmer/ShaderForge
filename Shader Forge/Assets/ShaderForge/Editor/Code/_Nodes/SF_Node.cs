@@ -167,7 +167,7 @@ namespace ShaderForge {
 			texture.LoadAndInitializeIcons(this.GetType()); 
 
 
-			pos = editor.nodeView.SubtractNodeWindowOffset( pos );
+			pos = editor.nodeView.ScreenSpaceToZoomSpace( pos );
 			InitializeDefaultRect( pos );
 		}
 

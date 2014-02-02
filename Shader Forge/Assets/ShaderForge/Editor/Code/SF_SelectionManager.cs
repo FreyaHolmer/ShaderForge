@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -119,7 +119,7 @@ namespace ShaderForge {
 		public void ExecuteBoxSelect() {
 			boxSelecting = false;
 			foreach( SF_Node n in editor.nodes ) {
-				if( SF_Tools.Intersects( editor.nodeView.AddNodeWindowOffset( n.rect), selectionBox ) ){
+				if( SF_Tools.Intersects( editor.nodeView.ZoomSpaceToScreenSpace( n.rect), selectionBox ) ){
 					n.Select();
 				}
 			}

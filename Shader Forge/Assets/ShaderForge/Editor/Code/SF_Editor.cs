@@ -795,6 +795,8 @@ namespace ShaderForge {
 		public bool screenshotInProgress = false;
 		public bool firstFrameScreenshotInProgress = false;
 
+		public float preScreenshotZoom = 1f;
+
 
 		public IEnumerator CaptureScreenshot(bool includePreview){
 
@@ -802,6 +804,12 @@ namespace ShaderForge {
 
 			screenshotInProgress = true;
 			firstFrameScreenshotInProgress = true;
+
+			preScreenshotZoom = nodeView.zoomTarget;
+			nodeView.SetZoom (1f);
+			nodeView.zoomTarget = 1f;
+			yield return null;
+
 
 			Rect r = nodeView.rect.PadBottom(24);
 			Vector2 startCamPos = nodeView.cameraPos;
@@ -817,7 +825,7 @@ namespace ShaderForge {
 
 
 
-			int leftAlign = (int)separatorLeft.rect.xMax;
+			int leftAlign = -(int)separatorLeft.rect.xMax;
 
 			Texture2D tex = new Texture2D((int)r.width*xTiles, (int)r.height*yTiles,TextureFormat.RGB24,false);
 			tex.hideFlags = HideFlags.HideAndDontSave;
@@ -870,7 +878,8 @@ namespace ShaderForge {
 
 					if(includePreview){
 						Rect previewRect = new Rect(0f,0f,previewRadius,previewRadius);
-						previewRect.center = new Vector2(optimalPreviewPoint.x-nodeView.cameraPos.x,optimalPreviewPoint.y-nodeView.cameraPos.y);
+						//previewRect.center = new Vector2(optimalPreviewPoint.x-nodeView.cameraPos.x,optimalPreviewPoint.y-nodeView.cameraPos.y);
+						previewRect.center = nodeView.ZoomSpaceToScreenSpace(optimalPreviewPoint);
 
 						//Rect previewLabelRect = previewRect;
 						//previewLabelRect.height = (28);
@@ -903,7 +912,7 @@ namespace ShaderForge {
 
 					Rect creditsRect = new Rect(0f,0f,Mathf.Min(creditsRadius*1.5f,SF_GUI.Logo.width),0f);
 					creditsRect.height = creditsRect.width*((float)SF_GUI.Logo.height/SF_GUI.Logo.width);
-					creditsRect.center = new Vector2(optimalCreditsPoint.x-nodeView.cameraPos.x,optimalCreditsPoint.y-nodeView.cameraPos.y);
+					creditsRect.center = nodeView.ZoomSpaceToScreenSpace(optimalCreditsPoint);
 					GUI.DrawTexture(creditsRect, SF_GUI.Logo);
 					Rect crTop = creditsRect;
 					crTop.height = 16;
@@ -928,6 +937,7 @@ namespace ShaderForge {
 
 					tex.ReadPixels(readRect,(int)(ix*r.width),(int)(tex.height-(iy+1)*r.height));
 					firstFrameScreenshotInProgress = false;
+
 					//Debug.Log(nodeView.cameraPos - startCamPos);
 
 
@@ -940,7 +950,8 @@ namespace ShaderForge {
 
 			nodeView.cameraPos = startCamPos;
 
-
+			nodeView.SetZoom(preScreenshotZoom);
+			nodeView.zoomTarget = preScreenshotZoom;
 
 
 			// Crop the texture down to fit the nodes + margins

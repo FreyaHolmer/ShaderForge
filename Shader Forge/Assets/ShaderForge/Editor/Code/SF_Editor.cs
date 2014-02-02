@@ -712,7 +712,7 @@ namespace ShaderForge {
 
 			
 
-			nodeView.OnLocalGUI( pRect );
+			nodeView.OnLocalGUI( pRect.PadTop(22) );
 
 
 

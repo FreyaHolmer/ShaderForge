@@ -102,20 +102,60 @@ namespace ShaderForge {
 			Vector2 newWidth = new Vector2(rect.width,rect.height)/zoom;
 			Vector2 delta = newWidth - oldWidth;
 
-			//Vector2 normalizedMouseCoords = (Event.current.mousePosition);
+			Vector2 normalizedMouseCoords = (Event.current.mousePosition - new Vector2(editor.separatorLeft.rect.xMax,22));
 
-			//normalizedMouseCoords.x /= rect.width;
-			//normalizedMouseCoords.y /= rect.height;
-
-			//Debug.Log(normalizedMouseCoords);
+			normalizedMouseCoords.x /= rect.width;
+			normalizedMouseCoords.y /= rect.height;
 
 
-			cameraPos -= delta*0.5f;
+
+			cameraPos -= Vector2.Scale(delta, normalizedMouseCoords);
+
+			if(delta.sqrMagnitude != 0f){
+
+
+				// Correct in here to prevent going outside the bounds
+				BoundsAdjustCamera();
+			}
+
 
 			if(zoom == 1f)
 				SnapCamera();
 
 		}
+
+
+
+		public void BoundsAdjustCamera(){
+			/*
+			Rect wrapped = GetNodeEncapsulationRect().Margin(256);
+			Rect view = ScreenSpaceToZoomSpace(rect);
+
+			Vector2 toCenter = (view.center - wrapped.center)*0.5f;
+
+			float camBottom = cameraPos.y + rect.height/zoom - 22;
+			float camTop = cameraPos.y;
+			float camRight = cameraPos.x + rect.width/zoom - editor.separatorLeft.rect.xMax;
+			float camLeft = cameraPos.x - editor.separatorLeft.rect.xMax;
+
+			Vector2 deltaTotal = Vector2.zero; 
+
+			if( camBottom > wrapped.yMax)
+				deltaTotal -= new Vector2(0f,camBottom-wrapped.yMax);
+			if(camTop < wrapped.yMin){
+				deltaTotal -= new Vector2(0f,camTop-wrapped.yMin);
+			}
+			if(camRight > wrapped.xMax)
+				deltaTotal -= new Vector2(camRight-wrapped.xMax,0f);
+			if(camLeft < wrapped.xMin)
+				deltaTotal -= new Vector2(camLeft-wrapped.xMin,0f);
+
+			cameraPos += deltaTotal;
+
+*/
+
+		}
+
 
 		public float ClampZoom(float in_zoom){
 			return Mathf.Clamp(in_zoom,0.125f,1f);
@@ -124,10 +164,12 @@ namespace ShaderForge {
 
 		public void OnLocalGUI( Rect r ) {
 
+
+			//r = r.PadTop(Mathf.CeilToInt(22*zoom));
+
 			selection.OnGUI(); // To detect if you press things
 
 			editor.mousePosition = Event.current.mousePosition;
-
 			rect = r;
 
 			
@@ -155,135 +197,34 @@ namespace ShaderForge {
 
 			
 			if ( MouseInsideNodeView(false) && Event.current.type == EventType.ScrollWheel){
-				//
 				zoomTarget = ClampZoom(zoomTarget * (1f-Event.current.delta.y*0.02f));
-
 			}
 
 			SetZoom( Mathf.Lerp(zoom,zoomTarget, 0.2f ));
 
 
 
-			//cameraPos = GUI.BeginScrollView( rect, cameraPos, rectInner, GUIStyle.none, GUIStyle.none );
+
 			SF_ZoomArea.Begin(zoom,rect,cameraPos);
 			{
-
-				//GUIStyle gs = EditorStyles.label;
-				//gs.margin = new RectOffset( int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue );
-				//gs.contentOffset = new Vector2( float.MaxValue / -2f, float.MaxValue / -2f ); 
-
-				//GUI.Label( new Rect(0,0,2048,2048), string.Empty);
-				if(Event.current.type == EventType.layout)
-					GUILayout.Label( string.Empty, GUILayout.Width( float.MaxValue ), GUILayout.Height( float.MaxValue ) );
-
-				// GUI.Box( new Rect( Screen.width, Screen.height, 32, 32 ), "BottomRight" );
-				// GUI.Box( new Rect( Screen.width/2f, Screen.height/2f, 32, 32 ), "Center" );
-				//GUI.Box( new Rect( 0f, 0f, 32, 32 ), "TopLeft" );
-
 				// NODES
 				if( editor.nodes != null ) {
-
-					//Event e = Event.current;
-					//editor.BeginWindows();
-					
 					for(int i=0;i<editor.nodes.Count;i++) {
 						if( !editor.nodes[i].Draw() )
 							break;
 					}
-					
-
-					//editor.EndWindows();
-					
 					for(int i=0;i<editor.nodes.Count;i++)
 						editor.nodes[i].DrawConnectors();
 				}
 
-				
 
-				
-
-				// END NODES
-				if( SF_Debug.nodes )
-					UpdateDebugInput();
-
-
-
-				if(SF_GUI.HoldingAlt() && Event.current.type == EventType.mouseDown && Event.current.button == 1){ // Alt + RMB drag
-					StartCutting();
-				} else if(SF_GUI.ReleasedRawRMB()){
-					StopCutting();
-				}
-
-
-
-				// Deletion line
-				if(isCutting){
-
-					Vector2 cutEnd = GetNodeSpaceMousePos();
-
-					GUILines.DrawDashedLine(editor, cutStart, GetNodeSpaceMousePos(), Color.white, 5f);
-
-
-					foreach(SF_Node n in editor.nodes){
-						foreach(SF_NodeConnector con in n.connectors){
-							if(con.IsConnected() && con.conType == ConType.cInput){
-								Vector2 intersection = Vector2.zero;
-								if(con.conLine.Intersects(cutStart, cutEnd, out intersection)){
-
-									con.conLine.aboutToBeDeleted = true;
-
-									Vector2 hit = editor.nodeView.ScreenSpaceToZoomSpace(intersection);
-
-									float scale = 5f;
-									float scaleDiff = 0.95f;
-									//Vector2 rg, up, lf, dn;
-
-
-									//Vector2 localRight = (cutStart-cutEnd).normalized;
-									//Vector2 localUp = new Vector2(localRight.y,-localRight.x);
-
-									//rg = hit + localRight * scale;
-									//up = hit + localUp * scale;
-									//lf = hit - localRight * scale;
-									//dn = hit - localUp * scale;
-									Color c0 = new Color(1f,0.1f,0.1f,0.9f);
-									Color c1 = new Color(1f,0.1f,0.1f,0.7f);
-									Color c2 = new Color(1f,0.1f,0.1f,0.5f);
-									Color c3 = new Color(1f,0.1f,0.1f,0.3f);
-
-									GUILines.DrawDisc(hit,scale,c0);
-									GUILines.DrawDisc(hit,scale-scaleDiff,c1);
-									GUILines.DrawDisc(hit,scale-scaleDiff*2,c2);
-									GUILines.DrawDisc(hit,scale-scaleDiff*3,c3);
-
-									//GUILines.DrawLine(rg,up,Color.red,2f,true);
-									//GUILines.DrawLine(up,lf,Color.red,2f,true);
-									//GUILines.DrawLine(lf,dn,Color.red,2f,true);
-									//GUILines.DrawLine(dn,rg,Color.red,2f,true);
-
-
-
-
-
-									continue;
-								} else {
-									con.conLine.aboutToBeDeleted = false;
-								}
-							}
-						}
-					}
-
-
-				}
-
+				UpdateCutLine();
 
 				UpdateCameraPanning();
 
-				
-
 			}
 			SF_ZoomArea.End(zoom);
-			//GUI.EndScrollView();
+
 
 
 
@@ -366,13 +307,13 @@ namespace ShaderForge {
 			if(!editor.screenshotInProgress){
 
 				Rect logoRect = rect;
-				logoRect.y += editor.firstFrameScreenshotInProgress ? 32 : 4;
-				logoRect.x += editor.firstFrameScreenshotInProgress ? 32 : 1;
+				logoRect.y -= 14;
+				logoRect.x += 1;
 				logoRect.width = SF_GUI.Logo.width;
 				logoRect.height = SF_GUI.Logo.height;
 				GUI.color = new Color(1f,1f,1f,0.5f);
 				GUI.DrawTexture( logoRect, SF_GUI.Logo );
-				
+
 				logoRect.y += logoRect.height;
 				logoRect.height = 16;
 				
@@ -384,6 +325,79 @@ namespace ShaderForge {
 
 
 		}
+
+
+
+
+		public void UpdateCutLine(){
+
+			if(SF_GUI.HoldingAlt() && Event.current.type == EventType.mouseDown && Event.current.button == 1){ // Alt + RMB drag
+				StartCutting();
+			} else if(SF_GUI.ReleasedRawRMB()){
+				StopCutting();
+			}
+			
+			if(isCutting){
+				
+				Vector2 cutEnd = GetNodeSpaceMousePos();
+				
+				GUILines.DrawDashedLine(editor, cutStart, GetNodeSpaceMousePos(), Color.white, 5f);
+				
+				
+				foreach(SF_Node n in editor.nodes){
+					foreach(SF_NodeConnector con in n.connectors){
+						if(con.IsConnected() && con.conType == ConType.cInput){
+							Vector2 intersection = Vector2.zero;
+							if(con.conLine.Intersects(cutStart, cutEnd, out intersection)){
+								
+								con.conLine.aboutToBeDeleted = true;
+								
+								Vector2 hit = editor.nodeView.ScreenSpaceToZoomSpace(intersection);
+								
+								float scale = 5f;
+								float scaleDiff = 0.95f;
+								//Vector2 rg, up, lf, dn;
+								
+								
+								//Vector2 localRight = (cutStart-cutEnd).normalized;
+								//Vector2 localUp = new Vector2(localRight.y,-localRight.x);
+								
+								//rg = hit + localRight * scale;
+								//up = hit + localUp * scale;
+								//lf = hit - localRight * scale;
+								//dn = hit - localUp * scale;
+								Color c0 = new Color(1f,0.1f,0.1f,0.9f);
+								Color c1 = new Color(1f,0.1f,0.1f,0.7f);
+								Color c2 = new Color(1f,0.1f,0.1f,0.5f);
+								Color c3 = new Color(1f,0.1f,0.1f,0.3f);
+								
+								GUILines.DrawDisc(hit,scale,c0);
+								GUILines.DrawDisc(hit,scale-scaleDiff,c1);
+								GUILines.DrawDisc(hit,scale-scaleDiff*2,c2);
+								GUILines.DrawDisc(hit,scale-scaleDiff*3,c3);
+								
+								//GUILines.DrawLine(rg,up,Color.red,2f,true);
+								//GUILines.DrawLine(up,lf,Color.red,2f,true);
+								//GUILines.DrawLine(lf,dn,Color.red,2f,true);
+								//GUILines.DrawLine(dn,rg,Color.red,2f,true);
+								
+								
+								
+								
+								
+								continue;
+							} else {
+								con.conLine.aboutToBeDeleted = false;
+							}
+						}
+					}
+				}
+				
+				
+			}
+
+		}
+
 
 
 		public Rect GetNodeEncapsulationRect(){
@@ -671,6 +685,8 @@ namespace ShaderForge {
 				//Debug.Log("Delta: " + Event.current.delta);
 				cameraPos -= Event.current.delta;
 				SnapCamera();
+
+				BoundsAdjustCamera();
 				editor.Defocus();
 				//Debug.Log( "USING" );
 				Event.current.Use();
@@ -698,16 +714,16 @@ namespace ShaderForge {
 				return rect.Contains( Event.current.mousePosition );
 			}
 
-		}
+		} 
 
 		void SnapCamera(){
 			cameraPos.x = Mathf.Round(cameraPos.x);
 			cameraPos.y = Mathf.Round(cameraPos.y);
-		}
+		} 
 
-
+		 
 		public Vector2 ZoomSpaceToScreenSpace( Vector2 in_vec ) {
-			return (in_vec - cameraPos + editor.separatorLeft.rect.TopRight())*zoom + rect.TopLeft();
+			return (in_vec - cameraPos + editor.separatorLeft.rect.TopRight() )*zoom + rect.TopLeft() + (Vector2.up * (22f))*(zoom-1);
 		}
 		public Rect ZoomSpaceToScreenSpace( Rect in_rect ) {
 			Vector2 offset = ZoomSpaceToScreenSpace(in_rect.TopLeft());
@@ -720,9 +736,13 @@ namespace ShaderForge {
 			return in_rect;
 		}
 		public Vector2 ScreenSpaceToZoomSpace( Vector2 in_vec ) {
-			return ( in_vec - rect.TopLeft() )/zoom - editor.separatorLeft.rect.TopRight() + cameraPos;
+			return ( in_vec - (Vector2.up * (22f))*(zoom-1) - rect.TopLeft() ) / zoom - editor.separatorLeft.rect.TopRight() + cameraPos;
 			//return in_vec + cameraPos;
 		}
+
+		// az + b + x(z-1)
+
+
 		public Rect ScreenSpaceToZoomSpace( Rect in_rect ) {
 			//in_rect.x -= -cameraPos.x;
 			//in_rect.y -= -cameraPos.y;

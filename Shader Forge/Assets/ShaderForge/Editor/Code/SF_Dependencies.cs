@@ -53,6 +53,7 @@ namespace ShaderForge {
 		public bool vert_tangentTransform = false;
 
 		public bool frag_objectPos = false;
+		public bool vert_objectPos = false;
 
 		public bool frag_sceneDepth = false;
 		public bool frag_pixelDepth = false;
@@ -119,6 +120,9 @@ namespace ShaderForge {
 
 		public void NeedFragObjPos() {
 			frag_objectPos = true;
+		}
+		public void NeedVertObjPos(){
+			vert_objectPos = true;
 		}
 
 		public void NeedVertScreenPos() {

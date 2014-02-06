@@ -202,7 +202,10 @@ namespace ShaderForge {
 				}
 
 				if( n is SFN_ObjectPosition ) {
-					dependencies.NeedFragObjPos();
+					if(currentProgram == ShaderProgram.Frag)
+						dependencies.NeedFragObjPos();
+					else
+						dependencies.NeedVertObjPos();
 				}
 
 				if( n is SFN_Fresnel ) {
@@ -852,7 +855,7 @@ namespace ShaderForge {
 		}
 
 		void InitObjectPos() {
-			if(dependencies.frag_objectPos)
+			if(dependencies.frag_objectPos || dependencies.vert_objectPos)
 				App( "float4 objPos = mul ( _Object2World, float4(0,0,0,1) );" );
 		}
 
@@ -1590,6 +1593,8 @@ namespace ShaderForge {
 				InitTangentDirVert();
 			if( dependencies.vert_out_binormals )
 				InitBinormalDirVert();
+
+			InitObjectPos();
 
 			if( editor.materialOutput.vertexOffset.IsConnectedAndEnabled() ) {
 				App( "v.vertex.xyz += " + ps.n_vertexOffset + ";" );

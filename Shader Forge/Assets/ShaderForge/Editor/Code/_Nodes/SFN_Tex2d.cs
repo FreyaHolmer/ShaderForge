@@ -111,8 +111,20 @@ namespace ShaderForge {
 			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
 			tmp.y += tmp.height;
 			markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
-			if(EditorGUI.EndChangeCheck())
+
+			if(EditorGUI.EndChangeCheck()){
+				UpdateNormalMapAlphaState();
 				OnUpdateNode();
+			}
+		}
+
+		public void UpdateNormalMapAlphaState(){
+			if(markedAsNormalMap){
+				GetConnectorByStringID("A").Disconnect();
+				GetConnectorByStringID("A").enableState = EnableState.Hidden;
+			} else {
+				GetConnectorByStringID("A").enableState = EnableState.Enabled; // No alpha channel when unpacking normals
+			}
 		}
 
 
@@ -405,7 +417,7 @@ namespace ShaderForge {
 			RefreshNoTexValueAndNormalUnpack();
 
 
-
+			UpdateNormalMapAlphaState();
 			RenderToTexture();
 			editor.shaderEvaluator.ApplyProperty( this );
 			OnUpdateNode(NodeUpdateType.Soft);
@@ -423,9 +435,11 @@ namespace ShaderForge {
 			if(newAssetIsNormalMap){
 				noTexValue = NoTexValue.Bump;
 				markedAsNormalMap = true;
+				UpdateNormalMapAlphaState();
 			} else if( noTexValue == NoTexValue.Bump){
 				noTexValue = NoTexValue.Black;
 				markedAsNormalMap = false;
+				UpdateNormalMapAlphaState();
 			}
 
 		}
@@ -455,6 +469,7 @@ namespace ShaderForge {
 				break;
 			case "isnm":
 				markedAsNormalMap = bool.Parse(value);
+				UpdateNormalMapAlphaState();
 				UpdateCompCount();
 				break;
 			}

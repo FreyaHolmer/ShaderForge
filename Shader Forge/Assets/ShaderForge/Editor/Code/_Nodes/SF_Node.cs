@@ -1235,6 +1235,11 @@ namespace ShaderForge {
 			PreDefine();
 			
 			string s = GetVariableType() + " " + GetVariableName() + " = " + Evaluate() + ";";
+
+			if(HasComment()){
+				s += " // " + comment;
+			}
+
 			SF_Editor.instance.shaderEvaluator.App( s );
 			varDefined = true;
 		}

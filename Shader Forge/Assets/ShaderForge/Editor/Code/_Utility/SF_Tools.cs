@@ -24,7 +24,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 0;
-		public static int versionNumSecondary = 23;
+		public static int versionNumSecondary = 24;
 		public static string versionStage = "Beta";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge " + versionStage + " " + version;
@@ -58,6 +58,7 @@ namespace ShaderForge {
 		public const string minimumUnityVersion = "4.2";
 		
 		public static bool CanRunShaderForge(){	
+
 		#if UNITY_2_6 || UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_1
 			return false;
 		#else

@@ -50,7 +50,6 @@ namespace ShaderForge{
 			return r;
 		}
 
-
 		public static Rect PadRight(this Rect r, int pixels ){
 			r.xMax -= pixels;
 			return r;
@@ -64,6 +63,10 @@ namespace ShaderForge{
 
 		public static Rect ClampWidth(this Rect r, int min, int max){
 			r.width = Mathf.Clamp(r.width, min, max);
+			return r;
+		}
+		public static Rect ClampHeight(this Rect r, int min, int max){
+			r.height = Mathf.Clamp(r.height, min, max);
 			return r;
 		}
 
@@ -92,14 +95,22 @@ namespace ShaderForge{
 			return r;
 		}
 
+		public static Rect Lerp(this Rect r, Rect a, Rect b, float t ){
+			r.x = Mathf.Lerp(a.x,b.x,t);
+			r.y = Mathf.Lerp(a.y,b.y,t);
+			r.width = Mathf.Lerp(a.width,b.width,t);
+			r.height = Mathf.Lerp(a.height,b.height,t);
+
+			return r;
+		}
+
 
 
 		public static Rect ScaleSizeBy(this Rect rect, float scale)
 		{
 			return rect.ScaleSizeBy(scale, rect.center);
 		}
-		public static Rect ScaleSizeBy(this Rect rect, float scale, Vector2 pivotPoint)
-		{
+		public static Rect ScaleSizeBy(this Rect rect, float scale, Vector2 pivotPoint){
 			Rect result = rect;
 			result.x -= pivotPoint.x;
 			result.y -= pivotPoint.y;
@@ -112,12 +123,10 @@ namespace ShaderForge{
 
 			return result;
 		}
-		public static Rect ScaleSizeBy(this Rect rect, Vector2 scale)
-		{
+		public static Rect ScaleSizeBy(this Rect rect, Vector2 scale){
 			return rect.ScaleSizeBy(scale, rect.center);
 		}
-		public static Rect ScaleSizeBy(this Rect rect, Vector2 scale, Vector2 pivotPoint)
-		{
+		public static Rect ScaleSizeBy(this Rect rect, Vector2 scale, Vector2 pivotPoint){
 			Rect result = rect;
 			result.x -= pivotPoint.x;
 			result.y -= pivotPoint.y;

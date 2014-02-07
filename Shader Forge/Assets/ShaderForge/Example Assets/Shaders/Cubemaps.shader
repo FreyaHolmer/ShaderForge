@@ -1,7 +1,7 @@
-// Shader created with Shader Forge Beta 0.19 
-// Shader Forge (c) Joachim 'Acegikmo' Holmer
+// Shader created with Shader Forge Beta 0.24 
+// Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.19;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:1,blpr:0,bsrc:3,bdst:7,culm:0,dpts:2,wrdp:True,uamb:True,mssp:True,ufog:True,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,hqlp:False,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0;n:type:ShaderForge.SFN_Final,id:0,x:32883,y:32628|diff-286-OUT,spec-2-R,normal-4-RGB,amspl-5-OUT;n:type:ShaderForge.SFN_Cubemap,id:1,x:34078,y:32788,ptlb:Cubemap,cube:f466cf7415226e046b096197eb7341aa,pvfc:1;n:type:ShaderForge.SFN_Tex2d,id:2,x:33221,y:32649,ptlb:Specular,tex:26c22711225093d47bd4f1294ca52131,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:4,x:33221,y:32842,ptlb:Normal,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Multiply,id:5,x:33221,y:33005|A-224-OUT,B-10-OUT;n:type:ShaderForge.SFN_NormalVector,id:6,x:33992,y:33100,pt:False;n:type:ShaderForge.SFN_ComponentMask,id:8,x:33799,y:33100,cc1:1,cc2:-1,cc3:-1,cc4:-1|IN-6-OUT;n:type:ShaderForge.SFN_Add,id:10,x:33431,y:33169|A-12-OUT,B-13-OUT;n:type:ShaderForge.SFN_Vector1,id:11,x:33799,y:33237,v1:0.4;n:type:ShaderForge.SFN_Multiply,id:12,x:33612,y:33110|A-8-OUT,B-11-OUT;n:type:ShaderForge.SFN_OneMinus,id:13,x:33612,y:33237|IN-11-OUT;n:type:ShaderForge.SFN_Vector1,id:214,x:34078,y:32943,v1:8;n:type:ShaderForge.SFN_Multiply,id:215,x:33883,y:32823|A-1-RGB,B-1-A,C-214-OUT;n:type:ShaderForge.SFN_Fresnel,id:223,x:33708,y:32577|EXP-1080-OUT;n:type:ShaderForge.SFN_Lerp,id:224,x:33493,y:32783|A-225-OUT,B-215-OUT,T-223-OUT;n:type:ShaderForge.SFN_Multiply,id:225,x:33708,y:32712|A-226-OUT,B-215-OUT;n:type:ShaderForge.SFN_Vector1,id:226,x:33904,y:32712,v1:0.7;n:type:ShaderForge.SFN_ConstantLerp,id:286,x:33412,y:32511,a:0.4,b:0|IN-223-OUT;n:type:ShaderForge.SFN_Slider,id:1080,x:33886,y:32540,ptlb:Fresnel Exponent,min:1,cur:2.526316,max:8;n:type:ShaderForge.SFN_Cubemap,id:1158,x:33582,y:32943,ptlb:node_1158;proporder:1-2-4-1080;pass:END;sub:END;*/
+/*SF_DATA;ver:0.24;sub:START;pass:START;ps:lgpr:1,nrmq:1,limd:1,blpr:0,bsrc:3,bdst:7,culm:0,dpts:2,wrdp:True,uamb:True,mssp:True,ufog:True,aust:True,igpj:False,qofs:0,lico:1,qpre:1,flbk:,rntp:1,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,hqlp:False,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0;n:type:ShaderForge.SFN_Final,id:0,x:32883,y:32628|diff-286-OUT,spec-2-R,normal-4-RGB,amspl-5-OUT;n:type:ShaderForge.SFN_Cubemap,id:1,x:34078,y:32788,ptlb:Cubemap,cube:f466cf7415226e046b096197eb7341aa,pvfc:1;n:type:ShaderForge.SFN_Tex2d,id:2,x:33221,y:32649,ptlb:Specular,tex:26c22711225093d47bd4f1294ca52131,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:4,x:33221,y:32842,ptlb:Normal,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Multiply,id:5,x:33221,y:33005|A-224-OUT,B-10-OUT;n:type:ShaderForge.SFN_NormalVector,id:6,x:33992,y:33100,pt:False;n:type:ShaderForge.SFN_ComponentMask,id:8,x:33799,y:33100,cc1:1,cc2:-1,cc3:-1,cc4:-1|IN-6-OUT;n:type:ShaderForge.SFN_Add,id:10,x:33431,y:33169|A-12-OUT,B-13-OUT;n:type:ShaderForge.SFN_Vector1,id:11,x:33799,y:33237,v1:0.4;n:type:ShaderForge.SFN_Multiply,id:12,x:33612,y:33110|A-8-OUT,B-11-OUT;n:type:ShaderForge.SFN_OneMinus,id:13,x:33612,y:33237|IN-11-OUT;n:type:ShaderForge.SFN_Vector1,id:214,x:34078,y:32943,v1:8;n:type:ShaderForge.SFN_Multiply,id:215,x:33883,y:32823|A-1-RGB,B-1-A,C-214-OUT;n:type:ShaderForge.SFN_Fresnel,id:223,x:33708,y:32577|EXP-1080-OUT;n:type:ShaderForge.SFN_Lerp,id:224,x:33493,y:32783|A-225-OUT,B-215-OUT,T-223-OUT;n:type:ShaderForge.SFN_Multiply,id:225,x:33708,y:32712|A-226-OUT,B-215-OUT;n:type:ShaderForge.SFN_Vector1,id:226,x:33904,y:32712,v1:0.7;n:type:ShaderForge.SFN_ConstantLerp,id:286,x:33412,y:32511,a:0.4,b:0|IN-223-OUT;n:type:ShaderForge.SFN_Slider,id:1080,x:33886,y:32540,ptlb:Fresnel Exponent,min:1,cur:2.526316,max:8;n:type:ShaderForge.SFN_Cubemap,id:1158,x:33582,y:32943,ptlb:node_1158;proporder:1-2-4-1080;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Cubemaps" {
     Properties {
@@ -64,11 +64,13 @@ Shader "Shader Forge/Examples/Cubemaps" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
+                i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
+/////// Normals:
                 float2 node_1170 = i.uv0;
                 float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_1170.rg, _Normal))).rgb;
-                float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
+                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
                 float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
@@ -150,11 +152,13 @@ Shader "Shader Forge/Examples/Cubemaps" {
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
+                i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
+/////// Normals:
                 float2 node_1171 = i.uv0;
                 float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_1171.rg, _Normal))).rgb;
-                float3 normalDirection = normalize( mul( normalLocal, tangentTransform ) );
+                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:

@@ -69,6 +69,7 @@ namespace ShaderForge {
 		// TODO: SHADER MODEL
 		public SF_Evaluator() {
 
+
 		}
 
 		public SF_Evaluator( SF_Editor editor ) {
@@ -242,6 +243,9 @@ namespace ShaderForge {
 
 				if( n is SFN_ScreenPos ) {
 					dependencies.NeedFragScreenPos();
+					if((n as SFN_ScreenPos).currentType == SFN_ScreenPos.ScreenPosType.SceneUVs){
+						dependencies.NeedSceneUVs();
+					}
 				}
 
 				if( n.GetType() == typeof( SFN_Tex2d ) ) {
@@ -1379,15 +1383,11 @@ namespace ShaderForge {
 				App("float partZ = i.projPos.z;");
 			}
 
-			if(dependencies.grabPass){
 
-
-
-				string s = "float4 sceneColor = ";
-
+			if(dependencies.scene_uvs){
 				string sUv = "float2 sceneUVs = ";
-					
-
+				
+				
 				if(ps.HasRefraction() ){
 					sUv += "float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ";";
 				} else {
@@ -1395,6 +1395,12 @@ namespace ShaderForge {
 				}
 
 				App (sUv);
+			}
+
+
+			if(dependencies.grabPass){
+
+				string s = "float4 sceneColor = ";
 				s += "tex2D(_GrabTexture, sceneUVs);";
 				App (s);
 			}
@@ -1729,7 +1735,7 @@ namespace ShaderForge {
 
 
 		void InitGrabPassSign(){
-			if( !dependencies.grabPass )
+			if( !dependencies.scene_uvs )
 				return;
 			App("#if UNITY_UV_STARTS_AT_TOP");
 			scope++;

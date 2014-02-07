@@ -7,8 +7,8 @@ namespace ShaderForge {
 	[System.Serializable]
 	public class SFN_ScreenPos : SF_Node {
 
-
-		public enum ScreenPosType { Normalized = 0, Tiled = 1 };
+	
+		public enum ScreenPosType { Normalized = 0, Tiled = 1, SceneUVs = 2 };
 		public ScreenPosType currentType = ScreenPosType.Normalized;
 
 		public SFN_ScreenPos() {
@@ -50,10 +50,17 @@ namespace ShaderForge {
 
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			if( currentType == ScreenPosType.Tiled)
+			// NeedSceneUVs()
+			switch(currentType){
+			case ScreenPosType.Normalized:
+				return "i.screenPos";
+			case ScreenPosType.Tiled:
 				return "float2(i.screenPos.x*(_ScreenParams.r/_ScreenParams.g), i.screenPos.y)";
-			return "i.screenPos";
-			
+			case ScreenPosType.SceneUVs:
+				return "sceneUVs";
+			}
+			Debug.LogError("Invalid screen position category");
+			return "";
 		}
 
 		public override string SerializeSpecialData() {

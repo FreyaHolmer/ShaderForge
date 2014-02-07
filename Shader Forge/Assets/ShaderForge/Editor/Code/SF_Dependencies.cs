@@ -21,6 +21,7 @@ namespace ShaderForge {
 		public bool lightColor = false;
 		public bool time = false;
 		public bool grabPass = false;
+		public bool scene_uvs = false;
 		public bool tessellation = false;
 		public bool displacement = false;
 
@@ -142,7 +143,12 @@ namespace ShaderForge {
 			NeedFragScreenPos();
 		}
 
+		public void NeedSceneUVs(){
+			scene_uvs = true;
+		}
+
 		public void NeedGrabPass() {
+			NeedSceneUVs();
 			grabPass = true;
 		}
 

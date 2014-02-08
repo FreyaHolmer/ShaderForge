@@ -75,8 +75,8 @@ namespace ShaderForge {
 
 		public SF_Dependencies(SF_PassSettings ps) {
 			excludeRenderers = new List<RenderPlatform>();
-			for( int i = 0; i < ps.usedRenderers.Length; i++ ) {
-				if( !ps.usedRenderers[i] ) {
+			for( int i = 0; i < ps.catMeta.usedRenderers.Length; i++ ) {
+				if( !ps.catMeta.usedRenderers[i] ) {
 					excludeRenderers.Add( ( RenderPlatform )i );
 					//Debug.Log("Excluding " +( RenderPlatform )i);
 				}

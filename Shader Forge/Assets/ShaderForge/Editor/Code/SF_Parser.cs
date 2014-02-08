@@ -297,7 +297,7 @@ namespace ShaderForge {
 				}
 				if( findLOD ) {
 					if( shaderData[i].TrimStart().StartsWith( "LOD " ) ) {
-						editor.ps.LOD = int.Parse(shaderData[i].Trim().Split( ' ' )[1]);
+						editor.ps.catMeta.LOD = int.Parse(shaderData[i].Trim().Split( ' ' )[1]);
 						found_LOD = true;
 					} 
 				}
@@ -331,13 +331,13 @@ namespace ShaderForge {
 
 
 		public static void ParseRenderer( string[] arr, bool only ) {
-			for( int i = 0; i < editor.ps.usedRenderers.Length; i++ ) {
-				editor.ps.usedRenderers[i] = !only; // Enable or disable all
+			for( int i = 0; i < editor.ps.catMeta.usedRenderers.Length; i++ ) {
+				editor.ps.catMeta.usedRenderers[i] = !only; // Enable or disable all
 			}
 			for( int i = 2; i < arr.Length; i++ ) { // i = 2 to ignore #pragma x_renderers
 				string rndr = arr[i];
 				int enm = (int)((RenderPlatform)Enum.Parse( typeof( RenderPlatform ), rndr ));
-				editor.ps.usedRenderers[enm] = only; // Disable or enable one
+				editor.ps.catMeta.usedRenderers[enm] = only; // Disable or enable one
 			}
 		}
 

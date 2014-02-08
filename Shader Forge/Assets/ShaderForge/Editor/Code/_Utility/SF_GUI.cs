@@ -373,6 +373,76 @@ namespace ShaderForge {
 		}
 
 
+		public static int ContentScaledToolbar(Rect r, string label, int selected, string[] labels ) {
+			
+			r.height = 15;
+			
+			Rect rLeft = new Rect( r );
+			Rect rRight = new Rect( r );
+			
+			rLeft.width = SF_GUI.WidthOf( label, EditorStyles.miniLabel )+4;
+			rRight.width = r.width - rLeft.width;
+			rRight.x += rLeft.width;
+			
+			GUI.Label( rLeft, label, EditorStyles.miniLabel);
+			
+			
+			// Full pixel width of strings:
+			float[] lblPxWidth = new float[labels.Length];
+			float pxWidthTotal = 0;
+			for( int i = 0; i < labels.Length; i++ ) {
+				lblPxWidth[i] = SF_GUI.WidthOf( labels[i], EditorStyles.miniButtonMid );
+				pxWidthTotal += lblPxWidth[i];
+			}
+			
+			// Scale all buttons to fit the rect
+			float scale = rRight.width / pxWidthTotal;
+			for( int i = 0; i < labels.Length; i++ ) {
+				lblPxWidth[i] *= scale;
+			}
+			
+			
+			
+			
+			GUIStyle style = EditorStyles.miniButtonLeft;
+			int retval = selected;
+			
+			Rect rTemp = new Rect(rRight);
+			
+			for( int i = 0; i < labels.Length; i++ ) {
+				
+				rTemp.width = lblPxWidth[i];
+				
+				if( i == labels.Length - 1 ) {
+					style = EditorStyles.miniButtonRight;
+				} else if( i > 0 ) {
+					style = EditorStyles.miniButtonMid;
+				}
+				
+				if( GUI.Button(rTemp, labels[i], style ) )
+					retval = i;
+				
+				if( selected == i && GUI.enabled ) {
+					if( EditorGUIUtility.isProSkin ) {
+						GUI.Box( rTemp, "" );
+						GUI.Box( rTemp, "" );
+						GUI.Box( rTemp, "" );
+					} else {
+						GUI.color = new Color( 0f, 0f, 0f, 0.3f );
+						GUI.Box( rTemp, "" );
+						GUI.color = Color.white;
+					}
+					
+				}
+				
+				rTemp.x += rTemp.width;
+			}
+			GUI.color = Color.white;
+			return retval;
+			
+		}
+
+
 
 		public static bool ProSkin {
 			get{

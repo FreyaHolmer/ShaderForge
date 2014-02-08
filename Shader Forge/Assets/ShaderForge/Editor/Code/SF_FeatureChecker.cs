@@ -38,7 +38,7 @@ namespace ShaderForge {
 		public void UpdateAvailability() {
 
 
-			bool unlit = (ps.lightMode == SF_PassSettings.LightMode.Unlit);
+			bool unlit = (ps.catLighting.lightMode == SFPSC_Lighting.LightMode.Unlit);
 			bool lit = !unlit;
 
 			// Diffuse makes these available: Transmission, Light Wrapping, Ambient lighting, Diffuse Power

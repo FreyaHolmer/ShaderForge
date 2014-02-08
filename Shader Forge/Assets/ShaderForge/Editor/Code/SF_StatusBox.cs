@@ -270,32 +270,32 @@ namespace ShaderForge {
 			BuildTarget active = EditorUserBuildSettings.activeBuildTarget;
 
 			// Specific ones:
-			if(active == BuildTarget.PS3 && editor.ps.usedRenderers[(int)RenderPlatform.ps3])
+			if(active == BuildTarget.PS3 && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.ps3])
 				return RenderPlatform.ps3;
-			if(active == BuildTarget.XBOX360 && editor.ps.usedRenderers[(int)RenderPlatform.xbox360])
+			if(active == BuildTarget.XBOX360 && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.xbox360])
 				return RenderPlatform.xbox360;
-			if(active == BuildTarget.FlashPlayer && editor.ps.usedRenderers[(int)RenderPlatform.flash])
+			if(active == BuildTarget.FlashPlayer && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.flash])
 				return RenderPlatform.flash;
 
 			// Mobile platforms
 			bool mobile = ( active == BuildTarget.Android || active == BuildTarget.iPhone || active == BuildTarget.BB10 || active == BuildTarget.FlashPlayer );
-			if(mobile && editor.ps.usedRenderers[(int)RenderPlatform.gles])
+			if(mobile && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.gles])
 				return RenderPlatform.gles;
 
 			// Standalone / Webplayer. In this case, it depends on what the user is using
 			// Pick the one that is currently running
-			if( Application.platform == RuntimePlatform.OSXEditor && editor.ps.usedRenderers[(int)RenderPlatform.opengl] )
+			if( Application.platform == RuntimePlatform.OSXEditor && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.opengl] )
 				return RenderPlatform.opengl;
-			if( Application.platform == RuntimePlatform.WindowsEditor && editor.ps.usedRenderers[(int)RenderPlatform.d3d9] )
+			if( Application.platform == RuntimePlatform.WindowsEditor && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.d3d9] )
 				return RenderPlatform.d3d9;
-			if( Application.platform == RuntimePlatform.WindowsEditor && editor.ps.usedRenderers[(int)RenderPlatform.d3d11] )
+			if( Application.platform == RuntimePlatform.WindowsEditor && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.d3d11] )
 				return RenderPlatform.d3d11;
 
 
 			Debug.LogWarning( "[SF] Unhandled platform settings. Make sure your build target (" + active + ") is sensible, and that you've got platforms enabled to compile for" );
 			// You're using some weird setup, pick first active one
 			for(int i=0;i<7;i++){
-				if(editor.ps.usedRenderers[i])
+				if(editor.ps.catMeta.usedRenderers[i])
 					return (RenderPlatform)i;
 			}
 

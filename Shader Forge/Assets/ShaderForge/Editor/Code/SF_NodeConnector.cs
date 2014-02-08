@@ -972,6 +972,7 @@ namespace ShaderForge {
 				}
 
 				GUI.Label( typeRect, valueType.ToString() );
+				GUI.skin.label.alignment = TextAnchor.MiddleLeft;
 			}
 
 			if( outerLabel ) {

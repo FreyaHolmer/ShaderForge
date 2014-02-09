@@ -18,7 +18,7 @@ namespace ShaderForge {
 
 
 		public override string GetInitializationLine() {
-			string defaultValue = GetMin().ToString();
+			string defaultValue = GetCurrent().ToString();
 			// name ("display name", Range (min, max)) = number
 			return GetVariable() + " (\"" + nameDisplay + "\", Range(" + GetMin() + ", " + GetMax() + ")) = " + defaultValue;
 		}
@@ -29,6 +29,10 @@ namespace ShaderForge {
 
 		float GetMax() {
 			return ( node as SFN_Slider ).max;
+		}
+
+		float GetCurrent() {
+			return ( node as SFN_Slider ).current;
 		}
 
 		public override string GetVariableLine() {

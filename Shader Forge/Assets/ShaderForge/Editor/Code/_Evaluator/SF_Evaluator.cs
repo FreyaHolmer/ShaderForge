@@ -1296,6 +1296,10 @@ namespace ShaderForge {
 					}
 
 
+					// To make diffuse/spec tradeoff better
+					if(ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL && DoPassDiffuse() && DoPassSpecular()){
+						App ("diffuseLight *= 1-specularColor;");
+					}
 
 					//if(parenthesize)
 					//	diffuseLight += " )";

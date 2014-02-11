@@ -169,7 +169,7 @@ namespace ShaderForge {
 			string catArithmetic = "Arithmetic/";
 			AddTemplate( typeof( SFN_Abs ), 			catArithmetic + "Abs" );
 			AddTemplate( typeof( SFN_Add ), 			catArithmetic + "Add", KeyCode.A );
-			AddTemplate( typeof( SFN_Blend ), 			catArithmetic + "Blend", KeyCode.B ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Blend ), 			catArithmetic + "Blend", KeyCode.B );
 			AddTemplate( typeof( SFN_Ceil ), 			catArithmetic + "Ceil" );
 			AddTemplate( typeof( SFN_Clamp ), 			catArithmetic + "Clamp" );
 			AddTemplate( typeof( SFN_Clamp01 ), 		catArithmetic + "Clamp 0-1" );
@@ -187,6 +187,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Min ), 			catArithmetic + "Min" );
 			AddTemplate( typeof( SFN_Multiply ), 		catArithmetic + "Multiply", KeyCode.M );
 			AddTemplate( typeof( SFN_Negate ), 			catArithmetic + "Negate" );
+			AddTemplate( typeof( SFN_Noise ), 			catArithmetic + "Noise" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
@@ -222,7 +223,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Dot ), 			catVecOps + "Dot Product" );
 			AddTemplate( typeof( SFN_Length ), 			catVecOps + "Length" );
 			AddTemplate( typeof( SFN_Normalize ), 		catVecOps + "Normalize", KeyCode.N );
-			AddTemplate( typeof( SFN_NormalBlend ), 	catVecOps + "Normal Blend" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_NormalBlend ), 	catVecOps + "Normal Blend" );
 			AddTemplate( typeof( SFN_Reflect ), 		catVecOps + "Reflect" );
 			AddTemplate( typeof( SFN_Transform ), 		catVecOps + "Transform" );
 			AddTemplate( typeof( SFN_VectorProjection ),catVecOps + "Vector Projection" );

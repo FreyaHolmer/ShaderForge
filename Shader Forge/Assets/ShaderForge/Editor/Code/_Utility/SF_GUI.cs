@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Collections;
 using System.Reflection;
 using System;
+using System.Linq;
 
 namespace ShaderForge {
 
@@ -271,8 +272,8 @@ namespace ShaderForge {
 			return (int)style.CalcSize( new GUIContent(s) ).x;
 		}
 
-		public static System.Enum LabeledEnumField( Rect r, string label, System.Enum enumVal, GUIStyle style ) {
-			return LabeledEnumField( r, new GUIContent(label), enumVal, style);
+		public static System.Enum LabeledEnumField( Rect r, string label, System.Enum enumVal, GUIStyle style, bool zoomCompensate = false ) {
+			return LabeledEnumField( r, new GUIContent(label), enumVal, style, zoomCompensate);
 		}
 
 		public static void MoveRight( ref Rect r, int newWidth ) {
@@ -290,16 +291,107 @@ namespace ShaderForge {
 			return EditorGUI.Popup( rightRect, (int)enumVal, names );
 		}
 
-		public static System.Enum LabeledEnumField(Rect r, GUIContent label, System.Enum enumVal, GUIStyle style) {
+		public static System.Enum LabeledEnumField(Rect r, GUIContent label, System.Enum enumVal, GUIStyle style, bool zoomCompensate = false) {
 			Rect leftRect = new Rect( r );
 			Rect rightRect = new Rect( r );
 			int width = WidthOf( label, style) + 4;
 			leftRect.width = width;
 			rightRect.xMin += width;
 			GUI.Label( leftRect, label, style );
-			return EditorGUI.EnumPopup( rightRect, enumVal );
+
+			return SF_GUI.EnumPopup( rightRect, GUIContent.none, enumVal, EditorStyles.popup, zoomCompensate);
+			//return EditorGUI.EnumPopup( rightRect, GUIContent.none, enumVal, EditorStyles.popup );
+			//return EnumPopupZoomCompensated( rightRect, enumVal );
+
 		}
 
+
+
+
+		// UnityEditor.EditorGUI
+
+		public static Enum EnumPopup(Rect position, GUIContent label, Enum selected, GUIStyle style, bool zoomCompensate = false)
+		{
+
+
+			Type type = selected.GetType();
+			if (!type.IsEnum)
+			{
+				throw new Exception("parameter _enum must be of type System.Enum");
+			}
+			string[] names = Enum.GetNames(type);
+			int num = Array.IndexOf<string>(names, Enum.GetName(type, selected));
+			Matrix4x4 prevMatrix = Matrix4x4.identity;
+			if(zoomCompensate){
+				prevMatrix = GUI.matrix;
+				GUI.matrix = Matrix4x4.identity;
+			}
+			num = EditorGUI.Popup(position, label, num, TempContent((
+				from x in names
+				select ObjectNames.NicifyVariableName(x)).ToArray<string>()), style);
+			if (num < 0 || num >= names.Length)
+			{
+				if(zoomCompensate)
+					GUI.matrix = prevMatrix;
+				return selected;
+			}
+			if(zoomCompensate)
+				GUI.matrix = prevMatrix;
+			return (Enum)Enum.Parse(type, names[num]);
+		}
+
+		/*
+		public static int Popup(Rect position, GUIContent label, int selectedIndex, GUIContent[] displayedOptions, GUIStyle style)
+		{
+			int controlID = GUIUtility.GetControlID(EditorGUI.s_PopupHash, EditorGUIUtility.native, position);
+			return EditorGUI.DoPopup(EditorGUI.PrefixLabel(position, controlID, label), controlID, selectedIndex, displayedOptions, style);
+		}*/
+
+
+		// UnityEditor.EditorGUIUtility
+		private static GUIContent[] TempContent(string[] texts)
+		{
+			GUIContent[] array = new GUIContent[texts.Length];
+			for (int i = 0; i < texts.Length; i++)
+			{
+				array[i] = new GUIContent(texts[i]);
+			}
+			return array;
+		}
+
+
+
+		/*
+		public static Enum EnumPopupZoomCompensated(Rect r, Enum selected ){
+
+			// TODO: Custom enum popup proper zoom positioning
+
+			if(GUI.Button(r,selected.ToString(),EditorStyles.popup)){
+
+				GenericMenu gm = new GenericMenu();
+				//gm.AddItem(selected);
+
+				Array enumList = Enum.GetValues(selected.GetType());
+
+				for(int i=0;i < enumList.Length;i++){
+
+					gm.AddItem( new GUIContent(enumList.GetValue(i).ToString()), i == Convert.ToInt32(selected), (object o)=>{Debug.Log(o.ToString());},"Test " + i);
+
+
+				}
+
+				gm.ShowAsContext();
+
+
+
+			}
+
+
+
+			return selected;
+
+		}
+*/
 
 		public static void FillBackground( Rect r ) {
 			Color pCol = GUI.color;

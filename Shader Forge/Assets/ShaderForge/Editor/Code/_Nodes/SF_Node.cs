@@ -179,6 +179,9 @@ namespace ShaderForge {
 			// Override
 		}
 
+		public virtual string GetPrepareUniformsAndFunctions(){
+			return string.Empty; // Override
+		}
 		
 
 		public virtual void Update() {

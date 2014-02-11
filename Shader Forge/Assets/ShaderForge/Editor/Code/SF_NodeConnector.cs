@@ -116,6 +116,10 @@ namespace ShaderForge {
 			//Debug.Log("Typecasting " + label + " to " + target);
 			return this;
 		}
+		public SF_NodeConnector WithUseCount(int count){
+			usageCount = count;
+			return this;
+		}
 		public SF_NodeConnector Skip( params PassType[] passes ) {
 			SkipPasses.AddRange( passes );
 			return this;

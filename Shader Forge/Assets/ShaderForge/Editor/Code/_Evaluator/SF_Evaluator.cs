@@ -324,6 +324,13 @@ namespace ShaderForge {
 					}
 				}
 
+
+				if(SF_Editor.NodeExistsAndIs(n, "SFN_SkyshopSpec")){
+					if( !n.GetInputIsConnected( "REFL" ) ) { // Reflection connection, if not connected, we need default reflection vector
+						dependencies.NeedFragViewReflection();
+					}
+				}
+
 				if( n.GetType() == typeof( SFN_LightAttenuation ) ) {
 					dependencies.NeedFragAttenuation();
 				}
@@ -402,9 +409,11 @@ namespace ShaderForge {
 		}
 		void PropertiesCG() {
 			for( int i = 0; i < cNodes.Count; i++ ) {
+				App (cNodes[i].GetPrepareUniformsAndFunctions());
 				if( cNodes[i].IsProperty() ) {
 					App( cNodes[i].property.GetFilteredVariableLine() );
 				}
+
 			}
 		}
 		void BeginSubShader() {
@@ -948,7 +957,7 @@ namespace ShaderForge {
 			//}
 			string sAmb = "";
 			if(DoAmbientSpecThisPass()){
-				sAmb = "float3 specularAmb = " + ps.n_ambientSpecular+" * specularColor"; // TODO: Vis and fresnel
+				sAmb = "float3 specularAmb = " + ps.n_ambientSpecular; // TODO: Vis and fresnel
 			}
 
 
@@ -968,8 +977,11 @@ namespace ShaderForge {
 			}
 			s += ",gloss)";
 
+			bool initialized_NdotV = false;
 
 			App( "float3 specularColor = " + ps.n_specular + ";" );
+			if((ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.energyConserving) && DoPassDiffuse() && DoPassSpecular())
+				App ("float specularMonochrome = dot(specularColor,float3(0.3,0.59,0.11));");
 
 			// PBL SHADING, normalization term comes after this
 			if( ps.catLighting.IsPBL() ) {
@@ -983,21 +995,22 @@ namespace ShaderForge {
 					s += "*fresnelTerm";
 
 
-					//if(DoAmbientSpecThisPass()){
-					//	App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
-					//	App (fTermDef.Replace("HdotL","NdotV").Replace("fresnelTerm","fresnelTermAmb"));
-					//	sAmb += " * fresnelTermAmb";
-					//}
+					if(DoAmbientSpecThisPass()){
+						App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
+						initialized_NdotV = true;
+						App (fTermDef.Replace("HdotL","NdotV").Replace("fresnelTerm","fresnelTermAmb"));
+						sAmb += " * fresnelTermAmb";
+					}
 
 				} else {
 					s += "*specularColor";
 				}
-				
+
 				
 				// VISIBILITY TERM
 				if( ps.catLighting.visibilityTerm ) {
 					//App( "float NdotL = max(0.0,dot( "+VarNormalDir()+", lightDirection ));" ); // This should already be defined in the diffuse calc. TODO: Redefine if diffuse is not used
-					//if(!DoAmbientSpecThisPass() && ps.fresnelTerm) // Already defined in that case
+					if(!initialized_NdotV) // Already defined?
 						App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
 					App( "float alpha = 1.0 / ( sqrt( (Pi/4.0) * gloss + Pi/2.0 ) );" );
 					string vTermDef = "float visTerm = ( NdotL * ( 1.0 - alpha ) + alpha ) * ( NdotV * ( 1.0 - alpha ) + alpha );";
@@ -1014,6 +1027,7 @@ namespace ShaderForge {
 				}
 				
 			} else {
+				sAmb += " * specularColor";
 				s += " * specularColor";
 			}
 			
@@ -1298,7 +1312,9 @@ namespace ShaderForge {
 
 					// To make diffuse/spec tradeoff better
 					if(ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL && DoPassDiffuse() && DoPassSpecular()){
-						App ("diffuseLight *= 1-specularColor;");
+						App ("diffuseLight *= 1-specularMonochrome;");
+					} else if(ps.catLighting.energyConserving){
+						App ("diffuseLight *= 1-specularMonochrome;");
 					}
 
 					//if(parenthesize)

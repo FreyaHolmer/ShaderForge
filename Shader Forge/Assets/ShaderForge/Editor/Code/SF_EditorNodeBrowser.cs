@@ -101,6 +101,9 @@ namespace ShaderForge {
 		[SerializeField]
 		string prevCategory;
 
+		[SerializeField]
+		float innerHeight = 256;
+
 		const string searchBoxName = "sf_search_box";
 
 		public void OnLocalGUI( Rect rect ) {
@@ -172,12 +175,18 @@ namespace ShaderForge {
 			
 
 			// Calc insides height
-			scrollRect.height = Mathf.Max( scrollRect.height, GetNodeList().Count * styleCategory.fixedHeight );
+			//Debug.Log(panelRect.height);
+			scrollRect.height = Mathf.Max( panelRect.height, innerHeight );
 			scrollRect.width -= 15;
 
 			Rect btnRect = new Rect( panelRect.x, panelRect.y - toolbarRect.height, rect.width - 16, styleCategory.fixedHeight );
+			innerHeight = 0;
+			float innerStartY = 0f;
+
 			scrollPos = GUI.BeginScrollView( panelRect, scrollPos, scrollRect, false, true /*GUILayout.Width( rect.wi )*/ );
 			{
+				if(Event.current.type == EventType.layout)
+					innerStartY = btnRect.y;
 				if( GetNodeList().Count > 0 ) {
 					foreach( SF_EditorNodeData entry in GetNodeList() ) {
 
@@ -194,8 +203,15 @@ namespace ShaderForge {
 					GUI.color = Color.white;
 				}
 
+				if(Event.current.type == EventType.layout){
+					innerHeight = btnRect.yMax - innerStartY;
+					//Debug.Log ("Inner: " + innerHeight + ", Panel: " + panelRect.height);
+				}
+
 			}
 			GUI.EndScrollView();
+
+
 
 
 			UpdateDrag();

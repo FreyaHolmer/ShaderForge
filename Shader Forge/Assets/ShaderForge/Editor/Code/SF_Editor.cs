@@ -284,14 +284,37 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Tan ), 	catTrig + "Tan" );
 
 
-			Type marmosetType = Type.GetType("ShaderForge.SFN_Skyshop");
 
-			if(marmosetType != null){
-				AddTemplate( marmosetType, "Marmoset/" + "Skyshop" );
+			TryAddTemplateDynamic("SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse");
+			TryAddTemplateDynamic("SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular");
+
+
+
+		}
+
+		public static bool NodeExistsAndIs(SF_Node node, string nodeName){
+			if(NodeExists(nodeName))
+				if(node.GetType() == GetNodeType(nodeName))
+					return true;
+			return false;
+		}
+
+		public static bool NodeExists(string nodeName){
+			return GetNodeType(nodeName) != null;
+		}
+
+		public static Type GetNodeType(string nodeName){
+			return Type.GetType("ShaderForge." + nodeName);
+		}
+
+		public SF_EditorNodeData TryAddTemplateDynamic(string type, string label, KeyCode keyCode = KeyCode.None, string searchName = null ){
+
+			Type dynType = GetNodeType(type);
+
+			if(dynType != null){
+				return AddTemplate( dynType, label, keyCode, searchName );
 			}
-
-
-
+			return null;
 		}
 
 		public SF_EditorNodeData AddTemplate( Type type, string label, KeyCode keyCode = KeyCode.None, string searchName = null ) {

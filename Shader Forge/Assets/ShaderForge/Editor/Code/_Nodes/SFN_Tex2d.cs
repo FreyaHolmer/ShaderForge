@@ -108,7 +108,7 @@ namespace ShaderForge {
 			EditorGUI.BeginChangeCheck();
 			Rect tmp = lowerRect;
 			tmp.height = 16f;
-			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
+			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp , "Default", noTexValue, EditorStyles.miniLabel, false );
 			tmp.y += tmp.height;
 			markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
 

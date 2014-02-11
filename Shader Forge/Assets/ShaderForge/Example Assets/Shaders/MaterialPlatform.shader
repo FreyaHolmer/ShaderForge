@@ -41,13 +41,56 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                     sampler2D unity_LightmapInd;
                 #endif
             #endif
+            
+            
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
+            
+            
             uniform samplerCUBE _Cubemap;
+            
+            
+            
+            
+            
             uniform sampler2D _DirtMask; uniform float4 _DirtMask_ST;
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             uniform sampler2D _FloorNormal; uniform float4 _FloorNormal_ST;
+            
+            
+            
+            
+            
             uniform float _EdgeNormalScale;
+            
+            
             uniform sampler2D _EdgeNormal; uniform float4 _EdgeNormal_ST;
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             uniform float4 _DirtColor;
+            
+            
+            
+            
+            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -89,13 +132,13 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
-                float2 node_578 = i.uv0;
+                float2 node_563 = i.uv0;
                 float2 node_399 = i.uv0;
                 float node_407 = _EdgeNormalScale;
                 float2 node_400 = (node_399.rg*node_407);
                 float2 node_438 = (node_399.rg*node_407*0.5);
                 float4 node_132 = i.vertexColor;
-                float3 normalLocal = lerp(UnpackNormal(tex2D(_FloorNormal,TRANSFORM_TEX(node_578.rg, _FloorNormal))).rgb,normalize(lerp(UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_400, _EdgeNormal))).rgb,UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_438, _EdgeNormal))).rgb,0.5)),node_132.b);
+                float3 normalLocal = lerp(UnpackNormal(tex2D(_FloorNormal,TRANSFORM_TEX(node_563.rg, _FloorNormal))).rgb,normalize(lerp(UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_400, _EdgeNormal))).rgb,UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_438, _EdgeNormal))).rgb,0.5)),node_132.b);
                 float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
                 float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
                 #ifndef LIGHTMAP_OFF
@@ -132,7 +175,7 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                     float3 diffuse = max( 0.0, NdotL) * attenColor;
                 #endif
 ///////// Gloss:
-                float4 node_2 = tex2D(_MainTex,TRANSFORM_TEX(node_578.rg, _MainTex));
+                float4 node_2 = tex2D(_MainTex,TRANSFORM_TEX(node_563.rg, _MainTex));
                 float gloss = exp2(lerp((0.4*node_2.a),0.8,node_132.b)*10.0+1.0);
 ////// Specular:
                 NdotL = max(0.0, NdotL);
@@ -179,12 +222,50 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                     sampler2D unity_LightmapInd;
                 #endif
             #endif
+            
+            
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
+            
+            
+            
+            
             uniform sampler2D _DirtMask; uniform float4 _DirtMask_ST;
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             uniform sampler2D _FloorNormal; uniform float4 _FloorNormal_ST;
+            
+            
+            
+            
+            
             uniform float _EdgeNormalScale;
+            
             uniform sampler2D _EdgeNormal; uniform float4 _EdgeNormal_ST;
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             uniform float4 _DirtColor;
+            
+            
+            
+            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -220,13 +301,13 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
-                float2 node_579 = i.uv0;
+                float2 node_564 = i.uv0;
                 float2 node_399 = i.uv0;
                 float node_407 = _EdgeNormalScale;
                 float2 node_400 = (node_399.rg*node_407);
                 float2 node_438 = (node_399.rg*node_407*0.5);
                 float4 node_132 = i.vertexColor;
-                float3 normalLocal = lerp(UnpackNormal(tex2D(_FloorNormal,TRANSFORM_TEX(node_579.rg, _FloorNormal))).rgb,normalize(lerp(UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_400, _EdgeNormal))).rgb,UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_438, _EdgeNormal))).rgb,0.5)),node_132.b);
+                float3 normalLocal = lerp(UnpackNormal(tex2D(_FloorNormal,TRANSFORM_TEX(node_564.rg, _FloorNormal))).rgb,normalize(lerp(UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_400, _EdgeNormal))).rgb,UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_438, _EdgeNormal))).rgb,0.5)),node_132.b);
                 float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
@@ -237,7 +318,7 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 diffuse = max( 0.0, NdotL) * attenColor;
 ///////// Gloss:
-                float4 node_2 = tex2D(_MainTex,TRANSFORM_TEX(node_579.rg, _MainTex));
+                float4 node_2 = tex2D(_MainTex,TRANSFORM_TEX(node_564.rg, _MainTex));
                 float gloss = exp2(lerp((0.4*node_2.a),0.8,node_132.b)*10.0+1.0);
 ////// Specular:
                 NdotL = max(0.0, NdotL);

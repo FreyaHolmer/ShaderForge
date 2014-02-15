@@ -148,7 +148,7 @@ namespace ShaderForge {
 		}
 
 		public void NeedGrabPass() {
-			NeedSceneUVs();
+			NeedSceneUVs(); // TODO: Really?
 			grabPass = true;
 		}
 

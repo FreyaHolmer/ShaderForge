@@ -591,9 +591,9 @@ namespace ShaderForge {
 		}
 
 
-		bool isDragging = false;
-		bool isEditingComment = false;
-		public static bool isEditingAnyComment = false;
+		public bool isDragging = false;
+		bool isEditingNodeTextField = false;
+		public static bool isEditingAnyNodeTextField = false;
 
 		public void ContextClick( object o ) {
 			string picked = o as string;
@@ -604,8 +604,8 @@ namespace ShaderForge {
 			case "cmt_edit":
 				editor.Defocus(deselectNodes:true);
 				GUI.FocusControl("node_comment_" + id);
-				isEditingComment = true;
-				SF_Node.isEditingAnyComment = true;
+				isEditingNodeTextField = true;
+				SF_Node.isEditingAnyNodeTextField = true;
 				break;
 			}
 		}
@@ -641,7 +641,7 @@ namespace ShaderForge {
 				OnRelease();
 			} else if( Event.current.type == EventType.ContextClick ) {
 				Vector2 mousePos = Event.current.mousePosition;
-				if( rect.Contains( mousePos ) ) {
+				if( MouseOverNode( world: true ) ) {
 					// Now create the menu, add items and show it
 					GenericMenu menu = new GenericMenu();
 					editor.ResetRunningOutdatedTimer();
@@ -718,7 +718,7 @@ namespace ShaderForge {
 
 
 
-			if(HasComment() || isEditingComment){
+			if(HasComment() || isEditingNodeTextField){
 				GUI.color = Color.white;
 				Rect cr = rect;
 				cr.height = SF_Styles.GetNodeCommentLabelTextField().fontSize + 4;
@@ -728,7 +728,7 @@ namespace ShaderForge {
 					cr.y -= 26;
 				}
 
-				if(isEditingComment){
+				if(isEditingNodeTextField){
 
 
 					bool clicked = Event.current.rawType == EventType.mouseDown && Event.current.button == 0;
@@ -738,8 +738,8 @@ namespace ShaderForge {
 					bool defocus = pressedReturn || clickedOutside;
 
 					if( defocus ){
-						isEditingComment = false;
-						SF_Node.isEditingAnyComment = false;
+						isEditingNodeTextField = false;
+						SF_Node.isEditingAnyNodeTextField = false;
 						editor.Defocus();
 					}
 					string fieldStr = "node_comment_" + id;

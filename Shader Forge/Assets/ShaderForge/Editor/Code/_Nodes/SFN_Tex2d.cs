@@ -110,9 +110,13 @@ namespace ShaderForge {
 			tmp.height = 16f;
 			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp , "Default", noTexValue, EditorStyles.miniLabel, false );
 			tmp.y += tmp.height;
+			bool preMarked = markedAsNormalMap;
+
 			markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
 
 			if(EditorGUI.EndChangeCheck()){
+				if(markedAsNormalMap && !preMarked)
+					noTexValue = NoTexValue.Bump;
 				UpdateNormalMapAlphaState();
 				OnUpdateNode();
 			}

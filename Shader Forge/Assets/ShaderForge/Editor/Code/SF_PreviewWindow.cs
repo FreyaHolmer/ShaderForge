@@ -59,6 +59,8 @@ namespace ShaderForge {
 		Vector2 rotMeshStart = new Vector2(-30f,0f);
 		[SerializeField]
 		Vector2 rotMesh = new Vector2(-30f,0f);
+		[SerializeField]
+		Vector2 rotMeshSmooth = new Vector2(-30f,0f);
 
 		// Used for Reflection to get the preview render
 		[SerializeField]
@@ -71,6 +73,8 @@ namespace ShaderForge {
 		object pruRef;
 		[SerializeField]
 		Camera pruCam;
+		[SerializeField]
+		Transform pruCamPivot;
 		[SerializeField]
 		Light[] pruLights;
 		[SerializeField]
@@ -127,6 +131,13 @@ namespace ShaderForge {
 			pruRef = Activator.CreateInstance( pruType );
 			FieldInfo pruCamField = pruRef.GetType().GetField( "m_Camera" );
 			pruCam = (Camera)pruCamField.GetValue( pruRef );
+
+			pruCamPivot = new GameObject("CameraPivot").transform;
+			pruCamPivot.hideFlags = HideFlags.HideAndDontSave;
+			pruCam.clearFlags = CameraClearFlags.Skybox;
+			pruCam.transform.parent = pruCamPivot;
+
+
 			FieldInfo pruLightsField = pruRef.GetType().GetField( "m_Light" );
 			pruLights = (Light[])pruLightsField.GetValue( pruRef );
 
@@ -135,6 +146,16 @@ namespace ShaderForge {
 			bfs = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 			ieuSetCustomLighting = ieuType.GetMethod( "SetCustomLighting", bfs );
 			ieuRemoveCustomLighting = ieuType.GetMethod( "RemoveCustomLighting", bfs );
+		}
+
+
+		public bool SkyboxOn{
+			get{
+				return pruCam.clearFlags == CameraClearFlags.Skybox;
+			}
+			set{
+				pruCam.clearFlags = value ? CameraClearFlags.Skybox : CameraClearFlags.Nothing;
+			}
 		}
 
 
@@ -156,16 +177,33 @@ namespace ShaderForge {
 			EditorGUI.BeginChangeCheck();
 			mesh = (Mesh)EditorGUI.ObjectField(r, mesh, typeof( Mesh ), false );
 			if( EditorGUI.EndChangeCheck() ) {
-				targetFOV = 15f;
-				editor.Defocus(); // TODO: This is a bit hacky
+				targetFOV = 35f;
+				//editor.Defocus(); // TODO: This is a bit hacky
 			}
 
 			r.x += r.width + 10;
-
+			r.width *= 0.5f;
 			EditorGUI.BeginChangeCheck();
+			GUI.enabled = pruCam.clearFlags == CameraClearFlags.Nothing;
+			//GUI.color = GUI.enabled ? Color.white : new Color(1f,1f,1f,0.5f);
 			settings.colorBg = EditorGUI.ColorField( r, "", settings.colorBg );
+			GUI.enabled = true;
+			//GUI.color = Color.white;
 			if( EditorGUI.EndChangeCheck() )
 				UpdatePreviewBackgroundColor();
+
+
+			r.x += r.width + 10;
+			r.width += 10;
+
+
+			GUI.enabled = RenderSettings.skybox != null;
+			SkyboxOn = GUI.Toggle( r, SkyboxOn, "Skybox" );
+			if(RenderSettings.skybox == null && SkyboxOn){
+				SkyboxOn = false;
+			}
+			GUI.enabled = true;
+
 
 			//GUILayout.Label( "Rotate:" );
 			
@@ -176,7 +214,7 @@ namespace ShaderForge {
 			//}
 			//EditorGUILayout.EndHorizontal();
 
-			
+			//GUI.Label(new Rect(),);
 
 			// DEBUG:
 
@@ -212,6 +250,7 @@ namespace ShaderForge {
 			if(settings.previewAutoRotate){
 				rotMesh.y += (float)(editor.deltaTime * -22.5);
 			}
+			rotMeshSmooth = Vector2.Lerp(rotMeshSmooth,rotMesh,0.5f);
 		}
 
 		public void StartDrag() {
@@ -224,8 +263,8 @@ namespace ShaderForge {
 		}
 
 		public void UpdateDrag() {
-			rotMesh.y = rotMeshStart.y + ( dragStartPos.x - Event.current.mousePosition.x ) * 0.4f;
-			rotMesh.x = Mathf.Clamp( rotMeshStart.x + ( dragStartPos.y - Event.current.mousePosition.y ) * 0.4f, -90f, 90f );
+			rotMesh.y = rotMeshStart.y + ( -(dragStartPos.x - Event.current.mousePosition.x) ) * 0.4f;
+			rotMesh.x = Mathf.Clamp( rotMeshStart.x + ( -(dragStartPos.y - Event.current.mousePosition.y) ) * 0.4f, -90f, 90f );
 		}
 
 		public void StopDrag() {
@@ -276,12 +315,12 @@ namespace ShaderForge {
 
 
 
-			float A = rotMesh.y;
-			float B = rotMesh.x;
+			float A = rotMeshSmooth.y;
+			float B = rotMeshSmooth.x;
 			Quaternion rotA = Quaternion.Euler( 0f, A, 0f );
 			Quaternion rotB = Quaternion.Euler( B, 0f, 0f );
-			Quaternion finalRot = rotB * rotA;
-
+			Quaternion finalRot = rotA * rotB;
+			pruCamPivot.rotation = finalRot;
 			float meshExtents = mesh.bounds.extents.magnitude;
 
 
@@ -290,10 +329,12 @@ namespace ShaderForge {
 			//Matrix4x4 meshPos = Matrix4x4.TRS()
 
 			Vector3 pos = new Vector3( -mesh.bounds.center.x, -mesh.bounds.center.y, -mesh.bounds.center.z);
-			Graphics.DrawMesh( mesh, finalRot*pos, finalRot, InternalMaterial, 0, pruCam, 0 );
+			pruCam.transform.localPosition = new Vector3( 0f,0f, -3f * meshExtents );
+			Graphics.DrawMesh( mesh, Quaternion.identity*pos, Quaternion.identity, InternalMaterial, 0, pruCam, 0 );
 
-			pruCam.transform.position = new Vector3( 0f,0f, -5f * meshExtents );
-			pruCam.farClipPlane = 5f * meshExtents * 2f;
+
+			pruCam.farClipPlane = 3f * meshExtents * 2f;
+			pruCam.nearClipPlane = 0.1f;
 			pruCam.fieldOfView = smoothFOV;
 			//Debug.Log( targetFOV );
 			//pruCam.transform.position = , pruCam.transform.position.z );
@@ -307,19 +348,19 @@ namespace ShaderForge {
 		[SerializeField]
 		const float minFOV = 1f;
 		[SerializeField]
-		float targetFOV = 15f;
+		float targetFOV = 30f;
 		[SerializeField]
-		float smoothFOV = 15f;
+		float smoothFOV = 30f;
 		[SerializeField]
-		const float maxFOV = 25f;
+		const float maxFOV = 60f;
 
 		public void UpdateCameraZoom() {
 
 			if( Event.current.type == EventType.scrollWheel && MouseOverPreview() ) {
 				if(Event.current.delta.y > 0f){
-					targetFOV++;
+					targetFOV+=2f;
 				} else if( Event.current.delta.y < 0f ){
-					targetFOV--;
+					targetFOV-=2f;
 				}
 					
 				

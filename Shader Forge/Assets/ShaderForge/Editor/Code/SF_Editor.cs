@@ -284,6 +284,10 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Tan ), 	catTrig + "Tan" );
 
 
+			// Uncategorized
+		//	AddTemplate( typeof( SFN_Code ), "Code" );
+
+
 
 			TryAddTemplateDynamic("SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse");
 			TryAddTemplateDynamic("SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular");
@@ -669,7 +673,7 @@ namespace ShaderForge {
 				return;
 			}
 
-			if(!SF_Node.isEditingAnyComment)
+			if(!SF_Node.isEditingAnyNodeTextField)
 				UpdateKeyHoldEvents();
 
 			//UpdateCameraZoomInput();
@@ -1351,6 +1355,7 @@ namespace ShaderForge {
 			CreditsLine( "Alex Telford", "For his fragment shader tutorials");
 			CreditsLine( "Shawn White", "For helping out finding how to access compiled shaders from code");
 			CreditsLine( "Colin Barr"+ '\u00e9' +"-Brisebois & Stephen Hill", "For their research on normal map blending");
+			CreditsLine( "Andrew Baldwin", "For his articles on pseudorandom numbers" );
 
 
 			EditorGUILayout.Separator();

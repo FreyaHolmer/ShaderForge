@@ -90,7 +90,15 @@ namespace ShaderForge {
 			}
 		}
 
-
+		public static void DrawTextureTiled(Rect r, Texture2D tex, bool local = true){
+			Rect tCoords = new Rect(
+				local ? 0 : (float)r.x/(float)tex.width,
+				local ? 0 : (float)r.y/(float)tex.height,
+				(float)r.width/(float)tex.width, 
+				(float)r.height/(float)tex.height
+			);
+			GUI.DrawTextureWithTexCoords(r,tex,tCoords);
+		}
 
 
 		public static string SkinSuffix(string s) {

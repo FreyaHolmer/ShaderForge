@@ -1,7 +1,14 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 
 namespace ShaderForge{
+
+	public enum RectBorder{
+		TopLeft, 	Top, 	TopRight,
+		Left, 		Center, Right,
+		BottomLeft,	Bottom,	BottomRight
+	}
 
 	public static class SF_Extensions {
 
@@ -69,6 +76,34 @@ namespace ShaderForge{
 			r.height = Mathf.Clamp(r.height, min, max);
 			return r;
 		}
+		public static Rect ClampMinSize(this Rect r, int width, int height){
+			if(r.width < width)
+				r.width = width;
+			if(r.height < height)
+				r.height = height;
+			return r;
+		}
+		public static Rect ClampMaxSize(this Rect r, int width, int height){
+			if(r.width > width)
+				r.width = width;
+			if(r.height > height)
+				r.height = height;
+			return r;
+		}
+		public static Rect ClampMinSize(this Rect r, int size){
+			if(r.width < size)
+				r.width = size;
+			if(r.height < size)
+				r.height = size;
+			return r;
+		}
+		public static Rect ClampMaxSize(this Rect r, int size){
+			if(r.width > size)
+				r.width = size;
+			if(r.height > size)
+				r.height = size;
+			return r;
+		}
 
 		public static Vector2 TopLeft(this Rect r){
 			return new Vector2(r.x, r.y);
@@ -123,22 +158,57 @@ namespace ShaderForge{
 
 			return result;
 		}
-		public static Rect ScaleSizeBy(this Rect rect, Vector2 scale){
-			return rect.ScaleSizeBy(scale, rect.center);
-		}
-		public static Rect ScaleSizeBy(this Rect rect, Vector2 scale, Vector2 pivotPoint){
-			Rect result = rect;
-			result.x -= pivotPoint.x;
-			result.y -= pivotPoint.y;
-			result.xMin *= scale.x;
-			result.xMax *= scale.x;
-			result.yMin *= scale.y;
-			result.yMax *= scale.y;
-			result.x += pivotPoint.x;
-			result.y += pivotPoint.y;
-			return result;
-		}
 
+
+		public static Rect GetBorder(this Rect r, RectBorder border, int size, bool showResizeCursor = false){
+			Rect retRect = r;
+
+			// Dimensions
+			if(border == RectBorder.Left || border == RectBorder.Right)
+				retRect.height = r.height-size*2;
+			else
+				retRect.height = size;
+
+			if(border == RectBorder.Top || border == RectBorder.Bottom)
+				retRect.width = r.width-size*2;
+			else
+				retRect.width = size;
+			
+			// Position
+			if(border == RectBorder.Left || border == RectBorder.Center || border == RectBorder.Right)
+				retRect.y += size;
+			if(border == RectBorder.BottomLeft || border == RectBorder.Bottom || border == RectBorder.BottomRight)
+				retRect.y += r.height-size;
+
+			if(border == RectBorder.Top || border == RectBorder.Center || border == RectBorder.Bottom)
+				retRect.x += size;
+			if(border == RectBorder.TopRight || border == RectBorder.Right || border == RectBorder.BottomRight)
+				retRect.x += r.width-size;
+
+
+			if(showResizeCursor){
+
+				MouseCursor cursor;
+
+				if(border == RectBorder.Top || border == RectBorder.Bottom)
+					cursor = MouseCursor.ResizeVertical;
+				else if(border == RectBorder.Left || border == RectBorder.Right)
+					cursor = MouseCursor.ResizeHorizontal;
+				else if(border == RectBorder.TopLeft || border == RectBorder.BottomRight)
+					cursor = MouseCursor.ResizeUpLeft;
+				else if(border == RectBorder.BottomLeft || border == RectBorder.TopRight)
+					cursor = MouseCursor.ResizeUpRight;
+				else
+					cursor = MouseCursor.MoveArrow;
+
+				SF_GUI.AssignCursor(retRect,cursor);
+
+
+			}
+
+			return retRect;
+
+		}
 
 
 

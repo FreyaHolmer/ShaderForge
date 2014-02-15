@@ -34,41 +34,12 @@ Shader "Shader Forge/Examples/Vertex Animation" {
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform float4 _TimeEditor;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform float _BulgeScale;
-            
-            
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
-            
             uniform float4 _GlowColor;
-            
-            
             uniform sampler2D _Normals; uniform float4 _Normals_ST;
-            
-            
-            
             uniform float _BulgeShape;
-            
-            
             uniform float _GlowIntensity;
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -110,7 +81,7 @@ Shader "Shader Forge/Examples/Vertex Animation" {
                 float4 node_8699 = _Time + _TimeEditor;
                 float node_133 = pow((abs((frac((node_8698.rg+node_8699.g*float2(0.25,0)).r)-0.5))*2.0),_BulgeShape); // Panning gradient
                 float3 normalLocal = normalize(lerp(UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_8698.rg, _Normals))).rgb,float3(0,0,1),node_133));
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
@@ -164,39 +135,12 @@ Shader "Shader Forge/Examples/Vertex Animation" {
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform float4 _TimeEditor;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform float _BulgeScale;
-            
-            
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
-            
             uniform float4 _GlowColor;
-            
-            
             uniform sampler2D _Normals; uniform float4 _Normals_ST;
-            
-            
-            
             uniform float _BulgeShape;
-            
-            
             uniform float _GlowIntensity;
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -236,7 +180,7 @@ Shader "Shader Forge/Examples/Vertex Animation" {
                 float4 node_8701 = _Time + _TimeEditor;
                 float node_133 = pow((abs((frac((node_8700.rg+node_8701.g*float2(0.25,0)).r)-0.5))*2.0),_BulgeShape); // Panning gradient
                 float3 normalLocal = normalize(lerp(UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_8700.rg, _Normals))).rgb,float3(0,0,1),node_133));
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
@@ -285,24 +229,8 @@ Shader "Shader Forge/Examples/Vertex Animation" {
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _TimeEditor;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform float _BulgeScale;
-            
             uniform float _BulgeShape;
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -350,24 +278,8 @@ Shader "Shader Forge/Examples/Vertex Animation" {
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _TimeEditor;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform float _BulgeScale;
-            
             uniform float _BulgeShape;
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;

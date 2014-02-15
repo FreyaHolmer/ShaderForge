@@ -32,24 +32,11 @@ Shader "Shader Forge/Examples/Tiles" {
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            
-            
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
             uniform float _Gloss;
-            
             uniform float _Specular;
-            
-            
-            
-            
             uniform samplerCUBE _SpecularIBL;
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -83,7 +70,7 @@ Shader "Shader Forge/Examples/Tiles" {
 /////// Normals:
                 float2 node_170 = i.uv0;
                 float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_170.rg, _Normal))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
@@ -143,19 +130,10 @@ Shader "Shader Forge/Examples/Tiles" {
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            
-            
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
             uniform float _Gloss;
-            
             uniform float _Specular;
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -189,7 +167,7 @@ Shader "Shader Forge/Examples/Tiles" {
 /////// Normals:
                 float2 node_171 = i.uv0;
                 float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_171.rg, _Normal))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:

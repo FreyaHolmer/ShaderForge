@@ -58,7 +58,7 @@ namespace ShaderForge {
 		[SerializeField]
 		Vector2 rotMeshStart = new Vector2(-30f,0f);
 		[SerializeField]
-		Vector2 rotMesh = new Vector2(-30f,0f);
+		Vector2 rotMesh = new Vector2(30f,0f);
 		[SerializeField]
 		Vector2 rotMeshSmooth = new Vector2(-30f,0f);
 

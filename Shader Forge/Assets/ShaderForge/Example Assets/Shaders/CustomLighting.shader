@@ -30,8 +30,6 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             #pragma multi_compile_shadowcaster
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -67,41 +65,11 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform float4 _Color;
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
             uniform sampler2D _Normals; uniform float4 _Normals_ST;
-            
-            
-            
-            
-            
-            
-            
             uniform float _Bands;
-            
-            
-            
             uniform float _Gloss;
-            
-            
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -137,7 +105,7 @@ Shader "Shader Forge/Examples/Custom Lighting" {
 /////// Normals:
                 float2 node_264 = i.uv0;
                 float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_264.rg, _Normals))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
@@ -169,41 +137,11 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform float4 _Color;
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
             uniform sampler2D _Normals; uniform float4 _Normals_ST;
-            
-            
-            
-            
-            
-            
-            
             uniform float _Bands;
-            
-            
-            
             uniform float _Gloss;
-            
-            
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -237,7 +175,7 @@ Shader "Shader Forge/Examples/Custom Lighting" {
 /////// Normals:
                 float2 node_265 = i.uv0;
                 float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_265.rg, _Normals))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:

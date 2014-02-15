@@ -409,7 +409,7 @@ namespace ShaderForge {
 		}
 		void PropertiesCG() {
 			for( int i = 0; i < cNodes.Count; i++ ) {
-				App (cNodes[i].GetPrepareUniformsAndFunctions());
+				AppIfNonEmpty (cNodes[i].GetPrepareUniformsAndFunctions());
 				if( cNodes[i].IsProperty() ) {
 					App( cNodes[i].property.GetFilteredVariableLine() );
 				}
@@ -2274,6 +2274,10 @@ namespace ShaderForge {
 		void End() {
 			scope--;
 			App( "}" );
+		}
+		public void AppIfNonEmpty(string s){
+			if(!string.IsNullOrEmpty(s))
+				App(s);
 		}
 		public void App( string s ) {
 			shaderString += GetScopeTabs() + s + "\n";

@@ -35,28 +35,11 @@ Shader "Shader Forge/Examples/LightCone" {
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _TimeEditor;
-            
-            
             uniform sampler2D _ConeFalloff; uniform float4 _ConeFalloff_ST;
-            
-            
-            
             uniform float4 _ConeColor;
-            
-            
             uniform float _ConeStrength;
-            
-            
-            
             uniform sampler2D _Smoke; uniform float4 _Smoke_ST;
-            
-            
-            
-            
-            
-            
             uniform float _SmokeScale;
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;

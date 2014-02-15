@@ -27,16 +27,7 @@ Shader "Shader Forge/Examples/Vertex Color Rounding" {
             #pragma multi_compile_fwdbase_fullshadows
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            
-            
-            
-            
-            
-            
             uniform float _Divisions;
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;

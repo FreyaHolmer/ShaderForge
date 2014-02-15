@@ -40,34 +40,8 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                     sampler2D unity_LightmapInd;
                 #endif
             #endif
-            
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -116,7 +90,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
                 float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_575.rg, _Normal))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 
                 float nSign = sign( dot( viewDirection, i.normalDir ) ); // Reverse normal if this is a backface
                 i.normalDir *= nSign;
@@ -204,33 +178,8 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                     sampler2D unity_LightmapInd;
                 #endif
             #endif
-            
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -273,7 +222,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
                 float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_576.rg, _Normal))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 
                 float nSign = sign( dot( viewDirection, i.normalDir ) ); // Reverse normal if this is a backface
                 i.normalDir *= nSign;
@@ -335,22 +284,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                     sampler2D unity_LightmapInd;
                 #endif
             #endif
-            
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -411,22 +345,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                     sampler2D unity_LightmapInd;
                 #endif
             #endif
-            
-            
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;

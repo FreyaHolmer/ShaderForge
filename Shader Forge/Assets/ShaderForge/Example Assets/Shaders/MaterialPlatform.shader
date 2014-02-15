@@ -41,56 +41,13 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                     sampler2D unity_LightmapInd;
                 #endif
             #endif
-            
-            
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
-            
-            
             uniform samplerCUBE _Cubemap;
-            
-            
-            
-            
-            
             uniform sampler2D _DirtMask; uniform float4 _DirtMask_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform sampler2D _FloorNormal; uniform float4 _FloorNormal_ST;
-            
-            
-            
-            
-            
             uniform float _EdgeNormalScale;
-            
-            
             uniform sampler2D _EdgeNormal; uniform float4 _EdgeNormal_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform float4 _DirtColor;
-            
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -139,7 +96,7 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                 float2 node_438 = (node_399.rg*node_407*0.5);
                 float4 node_132 = i.vertexColor;
                 float3 normalLocal = lerp(UnpackNormal(tex2D(_FloorNormal,TRANSFORM_TEX(node_563.rg, _FloorNormal))).rgb,normalize(lerp(UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_400, _EdgeNormal))).rgb,UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_438, _EdgeNormal))).rgb,0.5)),node_132.b);
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
                 #ifndef LIGHTMAP_OFF
                     float4 lmtex = tex2D(unity_Lightmap,i.uvLM);
@@ -222,50 +179,12 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                     sampler2D unity_LightmapInd;
                 #endif
             #endif
-            
-            
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
-            
-            
-            
-            
             uniform sampler2D _DirtMask; uniform float4 _DirtMask_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform sampler2D _FloorNormal; uniform float4 _FloorNormal_ST;
-            
-            
-            
-            
-            
             uniform float _EdgeNormalScale;
-            
             uniform sampler2D _EdgeNormal; uniform float4 _EdgeNormal_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             uniform float4 _DirtColor;
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -308,7 +227,7 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                 float2 node_438 = (node_399.rg*node_407*0.5);
                 float4 node_132 = i.vertexColor;
                 float3 normalLocal = lerp(UnpackNormal(tex2D(_FloorNormal,TRANSFORM_TEX(node_564.rg, _FloorNormal))).rgb,normalize(lerp(UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_400, _EdgeNormal))).rgb,UnpackNormal(tex2D(_EdgeNormal,TRANSFORM_TEX(node_438, _EdgeNormal))).rgb,0.5)),node_132.b);
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:

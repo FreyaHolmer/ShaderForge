@@ -30,20 +30,8 @@ Shader "Shader Forge/Examples/Parallax" {
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            
-            
-            
-            
-            
-            
-            
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
-            
-            
-            
-            
             uniform sampler2D _AORGBHeightA; uniform float4 _AORGBHeightA_ST;
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -78,7 +66,7 @@ Shader "Shader Forge/Examples/Parallax" {
                 float2 node_35 = (i.uv0.rg*8.0);
                 float2 node_110 = (0.15*(tex2D(_AORGBHeightA,TRANSFORM_TEX(node_35, _AORGBHeightA)).a - 0.5)*mul(tangentTransform, viewDirection).xy + node_35);
                 float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_110.rg, _Normal))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
@@ -123,20 +111,8 @@ Shader "Shader Forge/Examples/Parallax" {
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            
-            
-            
-            
-            
-            
-            
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
-            
-            
-            
-            
             uniform sampler2D _AORGBHeightA; uniform float4 _AORGBHeightA_ST;
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -171,7 +147,7 @@ Shader "Shader Forge/Examples/Parallax" {
                 float2 node_35 = (i.uv0.rg*8.0);
                 float2 node_110 = (0.15*(tex2D(_AORGBHeightA,TRANSFORM_TEX(node_35, _AORGBHeightA)).a - 0.5)*mul(tangentTransform, viewDirection).xy + node_35);
                 float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_110.rg, _Normal))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:

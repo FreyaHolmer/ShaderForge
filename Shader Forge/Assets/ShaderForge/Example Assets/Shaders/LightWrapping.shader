@@ -31,19 +31,9 @@ Shader "Shader Forge/Examples/LightWrapping" {
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            
-            
-            
-            
-            
-            
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
-            
             uniform float4 _Diffuse;
-            
             uniform float4 _LightWrapping;
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -77,9 +67,9 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
-                float2 node_277 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_277.rg, _Normal))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float2 node_355 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_355.rg, _Normal))).rgb;
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
@@ -127,18 +117,9 @@ Shader "Shader Forge/Examples/LightWrapping" {
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            
-            
-            
-            
-            
-            
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
-            
             uniform float4 _Diffuse;
-            
             uniform float4 _LightWrapping;
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -170,9 +151,9 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
-                float2 node_278 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_278.rg, _Normal))).rgb;
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float2 node_356 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_356.rg, _Normal))).rgb;
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:

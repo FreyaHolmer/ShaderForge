@@ -36,26 +36,8 @@ Shader "Shader Forge/Examples/Refraction" {
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform sampler2D _GrabTexture;
-            
-            
             uniform float _RefractionIntensity;
-            
-            
-            
-            
             uniform sampler2D _Refraction; uniform float4 _Refraction_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -97,7 +79,7 @@ Shader "Shader Forge/Examples/Refraction" {
                 float3 node_25 = UnpackNormal(tex2D(_Refraction,TRANSFORM_TEX(node_27, _Refraction)));
                 float node_13 = _RefractionIntensity;
                 float3 normalLocal = lerp(float3(0,0,1),node_25.rgb,node_13);
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 
                 float nSign = sign( dot( viewDirection, i.normalDir ) ); // Reverse normal if this is a backface
                 i.normalDir *= nSign;
@@ -158,26 +140,8 @@ Shader "Shader Forge/Examples/Refraction" {
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform sampler2D _GrabTexture;
-            
-            
             uniform float _RefractionIntensity;
-            
-            
-            
-            
             uniform sampler2D _Refraction; uniform float4 _Refraction_ST;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -219,7 +183,7 @@ Shader "Shader Forge/Examples/Refraction" {
                 float3 node_25 = UnpackNormal(tex2D(_Refraction,TRANSFORM_TEX(node_27, _Refraction)));
                 float node_13 = _RefractionIntensity;
                 float3 normalLocal = lerp(float3(0,0,1),node_25.rgb,node_13);
-                float3 normalDirection =  mul( normalLocal, tangentTransform ); // Perturbed normals
+                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 
                 float nSign = sign( dot( viewDirection, i.normalDir ) ); // Reverse normal if this is a backface
                 i.normalDir *= nSign;

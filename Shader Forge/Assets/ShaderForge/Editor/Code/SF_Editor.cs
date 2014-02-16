@@ -216,6 +216,7 @@ namespace ShaderForge {
 
 			string catVecOps = "Vector Operations/";
 			AddTemplate( typeof( SFN_Append ), 			catVecOps + "Append", KeyCode.Q );
+			AddTemplate( typeof( SFN_ChannelBlend ), 	catVecOps + "Channel Blend").MarkAsNewNode();
 			AddTemplate( typeof( SFN_ComponentMask ),	catVecOps + "Component Mask", KeyCode.C );
 			AddTemplate( typeof( SFN_Cross ), 			catVecOps + "Cross Product" );
 			AddTemplate( typeof( SFN_Desaturate ), 		catVecOps + "Desaturate" );

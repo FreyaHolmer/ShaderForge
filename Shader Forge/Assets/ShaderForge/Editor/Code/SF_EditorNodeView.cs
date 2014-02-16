@@ -416,7 +416,7 @@ namespace ShaderForge {
 			Rect r = GetNodeEncapsulationRect();
 			
 			// Move Camera
-			cameraPos = r.center - new Vector2(Screen.width*0.5f,Screen.height*0.5f) +Vector2.right * editor.separatorLeft.rect.x;
+			cameraPos = r.center - new Vector2( 0f, Screen.height * 0.5f );
 			SnapCamera();
 		}
 

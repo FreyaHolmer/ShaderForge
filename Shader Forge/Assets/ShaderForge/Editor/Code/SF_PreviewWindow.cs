@@ -133,7 +133,7 @@ namespace ShaderForge {
 			pruCam = (Camera)pruCamField.GetValue( pruRef );
 
 			pruCamPivot = new GameObject("CameraPivot").transform;
-			pruCamPivot.hideFlags = HideFlags.HideAndDontSave;
+			pruCamPivot.gameObject.hideFlags = HideFlags.HideAndDontSave;
 			pruCam.clearFlags = CameraClearFlags.Skybox;
 			pruCam.transform.parent = pruCamPivot;
 

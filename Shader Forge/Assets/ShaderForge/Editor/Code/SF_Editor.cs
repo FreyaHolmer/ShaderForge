@@ -1570,6 +1570,8 @@ namespace ShaderForge {
 			CreateOutputNode();
 			shaderEvaluator.Evaluate(); // And we're off!
 
+			nodeView.CenterCamera();
+
 			return true;
 		}
 

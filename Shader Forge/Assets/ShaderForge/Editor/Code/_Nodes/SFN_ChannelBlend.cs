@@ -34,13 +34,14 @@ namespace ShaderForge {
 
 		public override void OnUpdateNode( NodeUpdateType updType, bool cascade = true ) {
 
-			if(this["M"].IsConnected()){
-				UpdateMaskCompCountInputs();
-			}
+
 
 
 			if( InputsConnected() )
 				RefreshValue( 1, 2 );
+			if(this["M"].IsConnected()){
+				UpdateMaskCompCountInputs();
+			}
 			base.OnUpdateNode( updType );
 		}
 
@@ -67,13 +68,23 @@ namespace ShaderForge {
 
 			for(int i = 0;i<4;i++){
 
+				SF_NodeConnector con = connectors[i+2];
+
+				//if(con.IsConnected() && con.inputCon.GetCompCount() != cc)
+				//	connectors[i+2].Disconnect();
+
 				bool use = i < cc;
 
-				connectors[i+2].SetRequired( use );
-				connectors[i+2].enableState = use ? EnableState.Enabled : EnableState.Hidden;
-				if(connectors[i+2].IsConnected() && connectors[i+2].enableState == EnableState.Hidden){
-					connectors[i+2].Disconnect();
-				}
+				con.SetRequired( use );
+				con.enableState = use ? EnableState.Enabled : EnableState.Disabled;
+
+				// Disconnect if going hidden while connected, but not during load, as it might connect an unevaluated cc
+				//if(!SF_Parser.quickLoad && !SF_Parser.settingUp){
+				if(con.IsConnected() && con.enableState == EnableState.Disabled){
+						//connectors[i+2].Disconnect();
+						//Debug.Log("Disconnecting thing due to things!");
+					}
+				//}
 
 			}
 

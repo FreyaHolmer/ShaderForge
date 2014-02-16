@@ -237,8 +237,10 @@ namespace ShaderForge {
 						if( mCon == null )
 							continue;
 						if( mCon.conType == ConType.cOutput ) {
-							foreach( SF_NodeConnector mConOut in mCon.outputCons ) {
-								mConOut.node.OnUpdateNode( updType ); // TODO Null ref
+							for (int i = 0; i < mCon.outputCons.Count; i++) {
+								SF_NodeConnector mConOut = mCon.outputCons [i];
+								mConOut.node.OnUpdateNode (updType);
+								// TODO Null ref
 							}
 						}
 					}

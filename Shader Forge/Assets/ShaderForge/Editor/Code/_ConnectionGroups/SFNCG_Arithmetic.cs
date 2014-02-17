@@ -134,7 +134,7 @@ namespace ShaderForge {
 			}
 		}
 
-		public ValueType GetDominantInputType() {
+		public virtual ValueType GetDominantInputType() {
 
 			ValueType dom = inputs[0].valueType;
 
@@ -218,7 +218,7 @@ namespace ShaderForge {
 		}
 
 
-		public ValueType GetBaseInputType() {
+		public virtual ValueType GetBaseInputType() {
 
 			ValueType retType = ValueType.VTvPending;
 

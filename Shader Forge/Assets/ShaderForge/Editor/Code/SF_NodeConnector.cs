@@ -253,15 +253,36 @@ namespace ShaderForge {
 
 		public int GetCompCount() {
 
-			if( conType == ConType.cInput && IsConnected() ) { // TODO: What?
-				return inputCon.GetCompCount();
+
+			if( conType == ConType.cInput){
+				if( IsConnected() ) {
+					return inputCon.GetCompCount();
+				} else {
+					int cc = 0;
+					if(SF_Tools.CompCountOf(valueType, out cc)){
+						return cc;
+					} else {
+						Debug.LogWarning("[Shader Forge] - invalid component count in ["+label+"] of " + node.name + "");
+						return node.texture.CompCount; // This is super weird, shouldn't read from the max comp count, read from the connection type instead
+					}
+				}
+
 			}
 
 
+
 			OutChannel oc = outputChannel;
-			if( oc == OutChannel.All )
-				return node.texture.CompCount;
-			if( oc == OutChannel.RGB )
+			if( oc == OutChannel.All ){
+
+				int cc = 0;
+				if(SF_Tools.CompCountOf(valueType, out cc)){
+					return cc;
+				} else {
+					Debug.LogWarning("[Shader Forge] - invalid component count in ["+label+"] of " + node.name + "");
+					return node.texture.CompCount; // This is super weird, shouldn't read from the max comp count, read from the connection type instead
+				}
+
+			} else if( oc == OutChannel.RGB )
 				return 3;
 			if( oc == OutChannel.RG )
 				return 2;
@@ -443,7 +464,7 @@ namespace ShaderForge {
 
 
 			if( conType == ConType.cInput )
-				GUILines.DrawStyledConnection( editor, GetConnectionPoint(), MousePos(), 1, c );
+				GUILines.DrawStyledConnection( editor, GetConnectionPoint(), MousePos(), GetCompCount(), c );
 			else
 				GUILines.DrawStyledConnection( editor, MousePos(), GetConnectionPoint(), GetCompCount(), c );
 

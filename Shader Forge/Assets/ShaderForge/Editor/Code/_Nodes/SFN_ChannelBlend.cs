@@ -29,7 +29,7 @@ namespace ShaderForge {
 				SF_NodeConnector.Create( this, "B", "Bcol", ConType.cInput, 	ValueType.VTvPending, false ).SetRequired( true ),
 				SF_NodeConnector.Create( this, "A", "Acol", ConType.cInput, 	ValueType.VTvPending, false ).SetRequired( true )
 			};
-			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2], connectors[3], connectors[4], connectors[5] );
+			base.conGroup = ScriptableObject.CreateInstance<SFNCG_ChannelBlend>().Initialize( connectors[0], connectors[1], connectors[2], connectors[3], connectors[4], connectors[5] );
 		}
 
 		public override void OnUpdateNode( NodeUpdateType updType, bool cascade = true ) {
@@ -56,15 +56,14 @@ namespace ShaderForge {
 		}
 
 		public override int GetEvaluatedComponentCount() {
-			return this["M"].GetCompCount();
+			return this["R"].GetCompCount();
 		}
-
-
 
 
 		private void UpdateMaskCompCountInputs(){
 
 			int cc = this["M"].GetCompCount();
+			base.texture.CompCount = cc; // Why doesn't this work?
 
 			for(int i = 0;i<4;i++){
 

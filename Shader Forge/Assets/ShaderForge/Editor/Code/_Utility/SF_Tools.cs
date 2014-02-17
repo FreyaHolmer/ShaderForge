@@ -24,7 +24,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 0;
-		public static int versionNumSecondary = 25;
+		public static int versionNumSecondary = 26;
 		public static string versionStage = "Beta";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge " + versionStage + " " + version;
@@ -329,6 +329,8 @@ namespace ShaderForge {
 			return false; // No intersection
 		}
 
+
+
 		// Returns the first intersection it can find
 		public static bool LineIntersection(Vector2 p0, Vector2 p1, Vector2[] points, out Vector2 intersection){
 			intersection = Vector2.zero;
@@ -338,6 +340,24 @@ namespace ShaderForge {
 				}
 			}
 			return false;
+		}
+
+
+		public static bool CompCountOf(ValueType vt, out int cc){
+			cc = 0;
+			if(vt == ValueType.VTv4 || vt == ValueType.TexAsset)
+				cc = 4;
+			if(vt == ValueType.VTv3)
+				cc = 3;
+			if(vt == ValueType.VTv2)
+				cc = 2;
+			if(vt == ValueType.VTv1)
+				cc = 1;
+			if(vt == ValueType.VTv1v2 || vt == ValueType.VTv1v3 || vt == ValueType.VTv1v4 || vt == ValueType.VTvPending)
+				cc = 1;
+
+			return cc > 0;
+
 		}
 
 

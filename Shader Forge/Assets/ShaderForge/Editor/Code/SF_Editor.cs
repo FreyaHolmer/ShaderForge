@@ -309,7 +309,7 @@ namespace ShaderForge {
 		}
 
 		public static Type GetNodeType(string nodeName){
-			return Type.GetType("ShaderForge." + nodeName);
+			return Assembly.GetExecutingAssembly().GetType("ShaderForge." + nodeName);
 		}
 
 		public SF_EditorNodeData TryAddTemplateDynamic(string type, string label, KeyCode keyCode = KeyCode.None, string searchName = null ){

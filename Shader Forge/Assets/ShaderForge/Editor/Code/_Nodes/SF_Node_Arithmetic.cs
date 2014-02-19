@@ -38,9 +38,13 @@ namespace ShaderForge {
 		}
 
 		public override bool IsUniformOutput() {
-			if( connectors.Length > 2)
-				return ( GetInputData( "A" ).uniform && GetInputData( "B" ).uniform );
-			return ( GetInputData( "IN" ).uniform );
+
+			if(InputsConnected()){
+				if( connectors.Length > 2)
+					return ( GetInputData( "A" ).uniform && GetInputData( "B" ).uniform );
+				return ( GetInputData( "IN" ).uniform );
+			}
+			return true;
 		}
 
 		// New system

@@ -33,10 +33,6 @@ namespace ShaderForge {
 		}
 
 		public override void OnUpdateNode( NodeUpdateType updType, bool cascade = true ) {
-
-
-
-
 			if( InputsConnected() )
 				RefreshValue( 1, 2 );
 			if(this["M"].IsConnected()){

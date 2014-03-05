@@ -6,16 +6,11 @@ namespace ShaderForge {
 	[System.Serializable]
 	public class SFP_ValueProperty : SF_ShaderProperty {
 
-
-		public bool isBumpmap = false;
-
 		public new SFP_ValueProperty Initialize( SF_Node node ) {
 			base.nameType = "Value";
 			base.Initialize( node );
 			return this;
 		}
-
-
 
 		public override string GetInitializationLine() {
 			string defaultValue = base.node.texture.dataUniform.r.ToString();

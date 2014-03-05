@@ -22,14 +22,16 @@ namespace ShaderForge {
 			SetName( node.GetVariableName() );
 		}
 
-		public void UpdateInternalName() {
+		public virtual void UpdateInternalName() {
 
 			string s = nameDisplay;
 
 			Regex rgx = new Regex( "[^a-zA-Z0-9]" );
 			s = rgx.Replace( s, "" );
 
+
 			s = "_" + s;
+
 
 			// TODO: Make sure it's valid and unique
 
@@ -154,6 +156,11 @@ namespace ShaderForge {
 
 			return GetVariableLine();
 
+		}
+
+		
+		public virtual string GetMulticompilePragma(){
+			return ""; // Override for branching
 		}
 
 		public virtual string GetInitializationLine() {

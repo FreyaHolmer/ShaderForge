@@ -134,11 +134,6 @@ namespace ShaderForge {
 
 		void OnDestroy(){
 
-			//Debug.Log ("Destroyed the editor window");
-
-
-
-
 		}
 
 		public static void Init( Shader initShader = null ) {
@@ -213,6 +208,9 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Tex2dAsset ), 		catProps + "Texture Asset" );
 			AddTemplate( typeof( SFN_ValueProperty ), 	catProps + "Value" );
 			AddTemplate( typeof( SFN_Vector4Property ), catProps + "Vector 4" );
+
+			//string catBranching = "Branching/"; 
+			//AddTemplate( typeof( SFN_StaticBranch ), catBranching + "Static Branch" );
 
 			string catVecOps = "Vector Operations/";
 			AddTemplate( typeof( SFN_Append ), 			catVecOps + "Append", KeyCode.Q );

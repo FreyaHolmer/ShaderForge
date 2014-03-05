@@ -474,6 +474,12 @@ namespace ShaderForge {
 					App( "#pragma multi_compile_shadowcaster" );
 			}
 
+			foreach(SF_Node n in cNodes){
+				if(n.IsProperty() && n.property is SFP_Branch){
+					App(n.property.GetMulticompilePragma ());
+				}
+			}
+
 
 			
 			if( dependencies.DoesExcludePlatforms() )
@@ -2264,6 +2270,18 @@ namespace ShaderForge {
 				case ( "ShaderForge.SFN_Vector4Property" ):
 					SFN_Vector4Property vector4Node = (SFN_Vector4Property)node;
 					m.SetVector( vector4Node.property.GetVariable(), vector4Node.texture.dataUniform );
+					break;
+				case ( "ShaderForge.SFN_StaticBranch" ):
+					SFN_StaticBranch sbNode = (SFN_StaticBranch)node;
+					
+					if(sbNode.on){
+						//Debug.Log("Enabling keyword");
+						m.EnableKeyword(sbNode.property.nameInternal);
+					} else {
+						//Debug.Log("Disabling keyword");
+						m.DisableKeyword(sbNode.property.nameInternal);
+					}
+
 					break;
 			}
 		}

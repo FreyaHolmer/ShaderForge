@@ -325,11 +325,12 @@ namespace ShaderForge {
 				}
 
 
-				if(SF_Editor.NodeExistsAndIs(n, "SFN_SkyshopSpec")){
-					if( !n.GetInputIsConnected( "REFL" ) ) { // Reflection connection, if not connected, we need default reflection vector
-						dependencies.NeedFragViewReflection();
+				if(SF_Debug.dynamicNodeLoad)
+					if(SF_Editor.NodeExistsAndIs(n, "SFN_SkyshopSpec")){
+						if( !n.GetInputIsConnected( "REFL" ) ) { // Reflection connection, if not connected, we need default reflection vector
+							dependencies.NeedFragViewReflection();
+						}
 					}
-				}
 
 				if( n.GetType() == typeof( SFN_LightAttenuation ) ) {
 					dependencies.NeedFragAttenuation();

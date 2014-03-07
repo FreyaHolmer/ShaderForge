@@ -130,12 +130,13 @@ namespace ShaderForge {
 					}
 				}
 
-				if(SF_Editor.NodeExistsAndIs(n, "SFN_SkyshopSpec")){
-					if(n.GetInputIsConnected("GLOSS")){
-						foundMipUsed = true;
-						mipNode = n;
+				if(SF_Debug.dynamicNodeLoad)
+					if(SF_Editor.NodeExistsAndIs(n, "SFN_SkyshopSpec")){
+						if(n.GetInputIsConnected("GLOSS")){
+							foundMipUsed = true;
+							mipNode = n;
+						}
 					}
-				}
 
 
 

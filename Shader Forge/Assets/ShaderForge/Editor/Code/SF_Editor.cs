@@ -287,9 +287,11 @@ namespace ShaderForge {
 		//	AddTemplate( typeof( SFN_Code ), "Code" );
 
 
-
-			TryAddTemplateDynamic("SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse");
-			TryAddTemplateDynamic("SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular");
+			if( SF_Debug.dynamicNodeLoad ) {
+				TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" );
+				TryAddTemplateDynamic( "SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular" );
+			}
+			
 
 
 

@@ -40,7 +40,7 @@ namespace ShaderForge {
 			r.y += 20;
 			GUI.DrawTexture(r.ClampSize(0,SF_Styles.IconWarningSmall.width),SF_Styles.IconWarningSmall);
 			r.xMin += 20;
-			GUI.Label(r, "These features are experimental and may not work");
+			GUI.Label(r, "Experimental features may not work");
 			r.xMin -= 20;
 			r.y += 20;
 			force2point0 = GUI.Toggle( r, force2point0, "Force Shader Model 2.0" );

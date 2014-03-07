@@ -76,6 +76,9 @@ namespace ShaderForge{
 			r.height = Mathf.Clamp(r.height, min, max);
 			return r;
 		}
+		public static Rect ClampSize(this Rect r, int min, int max){
+			return r.ClampWidth(min,max).ClampHeight(min,max);
+		}
 		public static Rect ClampMinSize(this Rect r, int width, int height){
 			if(r.width < width)
 				r.width = width;

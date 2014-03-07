@@ -296,7 +296,11 @@ namespace ShaderForge {
 
 			//Debug.Log( "Drag exists: " + ( dragNode != null ) + "\nDrag name: " + dragNode.name + "\nDrag type: " + dragNode.type.ToString() );
 
+			//float preScale = (float)(editor.separatorRight.rect.x - Event.current.mousePosition.x);
+			//preScale /= 48f; // Distance to animate in
+			//preScale = Mathf.Clamp01(preScale);
 
+			//Rect boxRect = new Rect( 0, 0, SF_Node.NODE_SIZE, SF_Node.NODE_SIZE ).ScaleSizeBy(preScale).ClampSize((int)styleCategory.fixedHeight,SF_Node.NODE_SIZE);
 			Rect boxRect = new Rect( 0, 0, SF_Node.NODE_SIZE, SF_Node.NODE_SIZE );
 			boxRect.center = Event.current.mousePosition;
 

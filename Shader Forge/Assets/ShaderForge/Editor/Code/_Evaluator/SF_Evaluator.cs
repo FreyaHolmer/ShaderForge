@@ -484,8 +484,12 @@ namespace ShaderForge {
 			
 			if( dependencies.DoesExcludePlatforms() )
 				App( "#pragma exclude_renderers " + dependencies.GetExcludePlatforms() );
-			if( dependencies.IsTargetingAboveDefault() )
-				App( "#pragma target " + dependencies.GetShaderTarget() );
+			if( dependencies.IsTargetingAboveDefault() ){
+				if( ps.catExperimental.force2point0 )
+					App( "#pragma target 2.0" );
+				else
+					App( "#pragma target " + dependencies.GetShaderTarget() );
+			}
 			if( editor.nodeView.treeStatus.mipInputUsed)
 				App ("#pragma glsl"); // Kills non DX instruction counts
 		}

@@ -30,7 +30,8 @@ namespace ShaderForge{
 			new SFIns_PassPlat(RenderPlatform.gles),
 			new SFIns_PassPlat(RenderPlatform.xbox360),
 			new SFIns_PassPlat(RenderPlatform.ps3),
-			new SFIns_PassPlat(RenderPlatform.flash)
+			new SFIns_PassPlat(RenderPlatform.flash),
+			new SFIns_PassPlat(RenderPlatform.d3d11_9x)
 		};
 
 		public void Parse(ShaderProgram prog, string line, bool ignoreMin ) {
@@ -50,7 +51,15 @@ namespace ShaderForge{
 
 			bool hasTex = ( split.Length == 11 );
 
-			int enumID = (int)Enum.Parse( typeof( RenderPlatform ), split[1] );
+			object enumObj = Enum.Parse( typeof( RenderPlatform ), split[1] );
+
+			int enumID;
+
+			if(enumObj != null){
+				enumID = (int)enumObj;
+			} else {
+				return;
+			}
 
 
 

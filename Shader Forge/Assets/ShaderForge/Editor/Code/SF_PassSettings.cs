@@ -127,6 +127,8 @@ namespace ShaderForge {
 		public SFPSC_Lighting catLighting;
 		public SFPSC_Quality catQuality;
 		public SFPSC_Blending catBlending;
+		public SFPSC_Experimental catExperimental;
+
 		// Add more here
 		
 		public int maxWidth;
@@ -145,11 +147,12 @@ namespace ShaderForge {
 			fChecker = ScriptableObject.CreateInstance<SF_FeatureChecker>().Initialize(this, materialEditor);
 
 			cats = new List<SFPS_Category>();
-			cats.Add( catMeta 		= NewCat<SFPSC_Meta>		(	"Shader Settings"	));
-			cats.Add( catProperties = NewCat<SFPSC_Properties>	( 	"Properties" 		));
-			cats.Add( catLighting 	= NewCat<SFPSC_Lighting>	(	"Lighting"			));
-			cats.Add( catQuality 	= NewCat<SFPSC_Quality>		(	"Quality"			));
-			cats.Add( catBlending 	= NewCat<SFPSC_Blending>	(	"Blending"			));
+			cats.Add( catMeta 			= NewCat<SFPSC_Meta>			(	"Shader Settings"	));
+			cats.Add( catProperties 	= NewCat<SFPSC_Properties>		( 	"Properties" 		));
+			cats.Add( catLighting 		= NewCat<SFPSC_Lighting>		(	"Lighting"			));
+			cats.Add( catQuality 		= NewCat<SFPSC_Quality>			(	"Quality"			));
+			cats.Add( catBlending 		= NewCat<SFPSC_Blending>		(	"Blending"			));
+			cats.Add( catExperimental 	= NewCat<SFPSC_Experimental>	(	"Experimental"		));
 
 			return this;
 		}
@@ -210,6 +213,8 @@ namespace ShaderForge {
 				offset = catQuality.Draw( offset );
 				offset = GUISeparator( offset ); // ----------------------------------------------
 				offset = catBlending.Draw(offset);
+				offset = GUISeparator( offset ); // ----------------------------------------------
+				offset = catExperimental.Draw(offset);
 				offset = GUISeparator( offset ); // ----------------------------------------------
 			}
 			GUI.EndScrollView();

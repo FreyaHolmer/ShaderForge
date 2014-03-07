@@ -182,7 +182,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Min ), 			catArithmetic + "Min" );
 			AddTemplate( typeof( SFN_Multiply ), 		catArithmetic + "Multiply", KeyCode.M );
 			AddTemplate( typeof( SFN_Negate ), 			catArithmetic + "Negate" );
-			AddTemplate( typeof( SFN_Noise ), 			catArithmetic + "Noise" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Noise ), 			catArithmetic + "Noise" );
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
@@ -214,7 +214,7 @@ namespace ShaderForge {
 
 			string catVecOps = "Vector Operations/";
 			AddTemplate( typeof( SFN_Append ), 			catVecOps + "Append", KeyCode.Q );
-			AddTemplate( typeof( SFN_ChannelBlend ), 	catVecOps + "Channel Blend").MarkAsNewNode();
+			AddTemplate( typeof( SFN_ChannelBlend ), 	catVecOps + "Channel Blend");
 			AddTemplate( typeof( SFN_ComponentMask ),	catVecOps + "Component Mask", KeyCode.C );
 			AddTemplate( typeof( SFN_Cross ), 			catVecOps + "Cross Product" );
 			AddTemplate( typeof( SFN_Desaturate ), 		catVecOps + "Desaturate" );

@@ -17,7 +17,8 @@ namespace ShaderForge {
 			true,	// - OpenGL ES 2.0
 			false,  // - Xbox 360
 			false,	// - PlayStation 3
-			false	// - Flash
+			false,	// - Flash
+			false	// - Direct3D 11 for Windows RT
 		};*/
 		public bool[] usedRenderers; // TODO: Serialization?
 		public string fallback = "";
@@ -26,14 +27,15 @@ namespace ShaderForge {
 
 
 		public override SFPS_Category PostInitialize (){
-			usedRenderers = new bool[7]{ // TODO: Load from project settings
+			usedRenderers = new bool[8]{ // TODO: Load from project settings
 				true,	// - Direct3D 9
 				true,	// - Direct3D 11
 				true,	// - OpenGL
 				true,	// - OpenGL ES 2.0
 				false,  // - Xbox 360
 				false,	// - PlayStation 3
-				false	// - Flash
+				false,	// - Flash
+				false	// - Direct3D 11 for Windows RT
 			};
 			return this;
 		}

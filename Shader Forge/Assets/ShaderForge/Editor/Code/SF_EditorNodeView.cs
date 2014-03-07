@@ -102,7 +102,7 @@ namespace ShaderForge {
 			Vector2 newWidth = new Vector2(rect.width,rect.height)/zoom;
 			Vector2 delta = newWidth - oldWidth;
 
-			Vector2 normalizedMouseCoords = (Event.current.mousePosition - new Vector2(editor.separatorLeft.rect.xMax,22));
+			Vector2 normalizedMouseCoords = (Event.current.mousePosition - new Vector2(editor.separatorLeft.rect.xMax,editor.TabOffset));
 
 			normalizedMouseCoords.x /= rect.width;
 			normalizedMouseCoords.y /= rect.height;
@@ -723,7 +723,7 @@ namespace ShaderForge {
 
 		 
 		public Vector2 ZoomSpaceToScreenSpace( Vector2 in_vec ) {
-			return (in_vec - cameraPos + editor.separatorLeft.rect.TopRight() )*zoom + rect.TopLeft() + (Vector2.up * (22f))*(zoom-1);
+			return (in_vec - cameraPos + editor.separatorLeft.rect.TopRight() )*zoom + rect.TopLeft() + (Vector2.up * (editor.TabOffset))*(zoom-1);
 		}
 		public Rect ZoomSpaceToScreenSpace( Rect in_rect ) {
 			Vector2 offset = ZoomSpaceToScreenSpace(in_rect.TopLeft());
@@ -736,7 +736,7 @@ namespace ShaderForge {
 			return in_rect;
 		}
 		public Vector2 ScreenSpaceToZoomSpace( Vector2 in_vec ) {
-			return ( in_vec - (Vector2.up * (22f))*(zoom-1) - rect.TopLeft() ) / zoom - editor.separatorLeft.rect.TopRight() + cameraPos;
+			return ( in_vec - (Vector2.up * (editor.TabOffset))*(zoom-1) - rect.TopLeft() ) / zoom - editor.separatorLeft.rect.TopRight() + cameraPos;
 			//return in_vec + cameraPos;
 		}
 

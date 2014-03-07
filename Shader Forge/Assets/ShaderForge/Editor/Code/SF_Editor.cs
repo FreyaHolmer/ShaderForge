@@ -621,7 +621,31 @@ namespace ShaderForge {
 				Repaint(); // Update GUI every frame if focused
 
 		}
-		
+
+	
+
+		MethodInfo isDockedMethod;
+
+		public bool Docked{
+			get{
+
+
+				if(isDockedMethod == null){
+					BindingFlags fullBinding = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+					isDockedMethod = typeof( EditorWindow ).GetProperty( "docked", fullBinding ).GetGetMethod( true );
+				}
+				
+				return ( bool ) isDockedMethod.Invoke(this, null);
+			}
+		}
+
+		public int TabOffset{
+			get{
+				return Docked ? 19 : 22;
+			}
+		}
+
+
 		
 		public double Now(){
 			TimeSpan t = ( DateTime.UtcNow - startTime );
@@ -737,9 +761,12 @@ namespace ShaderForge {
 				}
 			}
 
-			
 
-			nodeView.OnLocalGUI( pRect.PadTop(22) );
+
+			nodeView.OnLocalGUI( pRect.PadTop(TabOffset) ); // 22 when not docked, 19 if docked
+			//GUI.EndGroup();
+
+			//pRect.yMin -= 3; // if docked
 
 
 

@@ -85,7 +85,16 @@ namespace ShaderForge {
 
 
 		public SF_Node CreateInstance() {
-			SF_Node node = (SF_Node)ScriptableObject.CreateInstance( Type.GetType( type ) );
+
+			Type fType = Type.GetType( type );
+
+			// Might be dynamic...
+			if( fType == null ) {
+				fType = SF_Editor.GetNodeType( type );
+			}
+
+
+			SF_Node node = (SF_Node)ScriptableObject.CreateInstance( fType );
 			node.Initialize();
 			return node;
 		}

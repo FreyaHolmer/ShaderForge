@@ -2280,10 +2280,10 @@ namespace ShaderForge {
 					
 					if(sbNode.on){
 						//Debug.Log("Enabling keyword");
-						m.EnableKeyword(sbNode.property.nameInternal);
+						//m.EnableKeyword(sbNode.property.nameInternal);
 					} else {
 						//Debug.Log("Disabling keyword");
-						m.DisableKeyword(sbNode.property.nameInternal);
+						//m.DisableKeyword(sbNode.property.nameInternal);
 					}
 
 					break;

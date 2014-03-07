@@ -724,13 +724,10 @@ namespace ShaderForge {
 			}
 
 
-			if(nodeView != null)
-				nodeView.selection.DrawBoxSelection();
+
 
 			//EditorGUILayout.BeginHorizontal();
 			//{
-
-
 			//float wPreview = leftSeparator;
 			//float wNodeBrowser = 130;
 
@@ -756,7 +753,7 @@ namespace ShaderForge {
 			if( SF_Debug.nodes ) {
 				Rect r = pRect; r.width = 256; r.height = 16;
 				for( int i = 0; i < nodes.Count; i++ ) {
-					GUI.Label( r, "Node[" + i + "] at {" + nodes[i].rect.x + ", " + nodes[i].rect.y + "}", EditorStyles.label );// nodes[i]
+					GUI.Label( r, "Node[" + i + "] at {" + nodes[i].rect.x + ", " + nodes[i].rect.y + "}", EditorStyles.label ); // nodes[i]
 					r = r.MovedDown();
 				}
 			}

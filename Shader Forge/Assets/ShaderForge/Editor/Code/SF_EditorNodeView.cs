@@ -167,7 +167,7 @@ namespace ShaderForge {
 
 			//r = r.PadTop(Mathf.CeilToInt(22*zoom));
 
-			selection.OnGUI(); // To detect if you press things
+
 
 			editor.mousePosition = Event.current.mousePosition;
 			rect = r;
@@ -207,6 +207,10 @@ namespace ShaderForge {
 
 			SF_ZoomArea.Begin(zoom,rect,cameraPos);
 			{
+				selection.OnGUI(); // To detect if you press things
+				if(editor.nodeView != null)
+					editor.nodeView.selection.DrawBoxSelection();
+
 				// NODES
 				if( editor.nodes != null ) {
 					for(int i=0;i<editor.nodes.Count;i++) {

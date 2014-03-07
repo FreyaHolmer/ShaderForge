@@ -45,6 +45,7 @@ namespace ShaderForge {
 				Rect r = new Rect( selectionBox );
 				SF_Tools.FlipNegative( ref r );
 				GUI.Box( r, string.Empty, SF_Styles.SelectionStyle );
+				//GUI.Label(r,selectionBox.ToString().Replace(' ','\n'));
 			}
 		}
 
@@ -119,7 +120,7 @@ namespace ShaderForge {
 		public void ExecuteBoxSelect() {
 			boxSelecting = false;
 			foreach( SF_Node n in editor.nodes ) {
-				if( SF_Tools.Intersects( editor.nodeView.ZoomSpaceToScreenSpace( n.rect), selectionBox ) ){
+				if( SF_Tools.Intersects( n.rect, selectionBox ) ){
 					n.Select();
 				}
 			}

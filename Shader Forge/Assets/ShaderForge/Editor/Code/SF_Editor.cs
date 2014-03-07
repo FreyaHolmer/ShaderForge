@@ -320,7 +320,8 @@ namespace ShaderForge {
 							break;
 						}
 					}
-					Debug.LogError("Unable to find the specified assembly");
+					if( SF_Debug.dynamicNodeLoad )
+						Debug.LogError("Unable to find the specified assembly");
 				}
 				return editorAssembly;
 			}
@@ -331,7 +332,8 @@ namespace ShaderForge {
 
 			Assembly asm = EditorAssembly;
 			string fullNodeName = "ShaderForge." + nodeName;
-			Debug.Log( "Trying to dynamically load [" + fullNodeName + "]" + " in assembly [" + asm.FullName + "]" );
+			if( SF_Debug.dynamicNodeLoad )
+				Debug.Log( "Trying to dynamically load [" + fullNodeName + "]" + " in assembly [" + asm.FullName + "]" );
 
 			return asm.GetType( fullNodeName );
 		}

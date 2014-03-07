@@ -14,6 +14,7 @@ namespace ShaderForge{
 		public static bool nodeActions = false;
 		public static bool performance = false;
 		public static bool nodePreviews = false;
+		public static bool dynamicNodeLoad = false;
 		
 	}
 

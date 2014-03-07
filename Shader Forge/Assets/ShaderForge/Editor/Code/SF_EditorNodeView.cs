@@ -252,9 +252,10 @@ namespace ShaderForge {
 
 
 			if( Event.current.type == EventType.DragPerform ) {
-				if( DragAndDrop.objectReferences[0] is Texture2D ) {
+				Object droppedObj = DragAndDrop.objectReferences[0];
+				if( droppedObj is Texture2D || droppedObj is ProceduralTexture || droppedObj is RenderTexture ) {
 					SFN_Tex2d texNode = editor.nodeBrowser.OnStopDrag() as SFN_Tex2d;
-					texNode.TextureAsset = DragAndDrop.objectReferences[0] as Texture2D;
+					texNode.TextureAsset = droppedObj as Texture;
 					texNode.OnAssignedTexture();
 					Event.current.Use();
 				}
@@ -262,7 +263,8 @@ namespace ShaderForge {
 
 			if( Event.current.type == EventType.dragUpdated && Event.current.type != EventType.DragPerform ) {
 				if( DragAndDrop.objectReferences.Length > 0 ) {
-					if( DragAndDrop.objectReferences[0].GetType() == typeof( Texture2D ) ) {
+					Object dragObj = DragAndDrop.objectReferences[0];
+					if( dragObj is Texture2D || dragObj is ProceduralTexture || dragObj is RenderTexture  ) {
 						DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 						if( !editor.nodeBrowser.IsPlacing() )
 							editor.nodeBrowser.OnStartDrag( editor.GetTemplate<SFN_Tex2d>() );

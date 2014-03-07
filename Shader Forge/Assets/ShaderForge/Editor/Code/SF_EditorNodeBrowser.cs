@@ -292,6 +292,8 @@ namespace ShaderForge {
 			if( !IsPlacing() )
 				return;
 
+			editor.Repaint();
+
 			//Debug.Log( "Drag exists: " + ( dragNode != null ) + "\nDrag name: " + dragNode.name + "\nDrag type: " + dragNode.type.ToString() );
 
 

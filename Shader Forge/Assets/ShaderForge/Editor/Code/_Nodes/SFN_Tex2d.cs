@@ -319,16 +319,18 @@ namespace ShaderForge {
 			GUI.BeginGroup( rect );
 
 			if( IsProperty() && Event.current.type == EventType.DragPerform && rectInner.Contains(Event.current.mousePosition) ) {
-				if( DragAndDrop.objectReferences[0].GetType() == typeof( Texture2D ) ) {
+				Object droppedObj = DragAndDrop.objectReferences[0];
+				if( droppedObj is Texture2D || droppedObj is ProceduralTexture || droppedObj is RenderTexture) {
 					Event.current.Use();
-					TextureAsset = DragAndDrop.objectReferences[0] as Texture2D;
+					TextureAsset = droppedObj as Texture;
 					OnAssignedTexture();
 				}
 			}
 
 			if( IsProperty() && Event.current.type == EventType.dragUpdated ) {
 				if(DragAndDrop.objectReferences.Length > 0){
-					if( DragAndDrop.objectReferences[0].GetType() == typeof( Texture2D ) ) {
+					Object dragObj = DragAndDrop.objectReferences[0];
+					if( dragObj is Texture2D || dragObj is ProceduralTexture || dragObj is RenderTexture) {
 						DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 						editor.nodeBrowser.CancelDrag();
 						Event.current.Use();
@@ -367,7 +369,7 @@ namespace ShaderForge {
 				selectRect.xMin += 40;
 
 				if(GUI.Button( selectRect, "Select", EditorStyles.miniButton )){
-					EditorGUIUtility.ShowObjectPicker<Texture2D>( TextureAsset, false, "", this.id );
+					EditorGUIUtility.ShowObjectPicker<Texture>( TextureAsset, false, "", this.id );
 					Event.current.Use();
 				}
 
@@ -376,7 +378,7 @@ namespace ShaderForge {
 
 			if( IsProperty() && Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == this.id ) {
 				Event.current.Use();
-				TextureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
+				TextureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture;
 				OnAssignedTexture();
 			}
 
@@ -433,8 +435,15 @@ namespace ShaderForge {
 			string path = AssetDatabase.GetAssetPath( TextureAsset );
 			if( string.IsNullOrEmpty( path ) )
 				newAssetIsNormalMap = false;
-			else
-				newAssetIsNormalMap = ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).normalmap;
+			else{
+				AssetImporter importer = UnityEditor.AssetImporter.GetAtPath( path );
+				if(importer is TextureImporter)
+					newAssetIsNormalMap = ((TextureImporter)importer).normalmap;
+				else if(TextureAsset is ProceduralTexture && TextureAsset.name.EndsWith("_Normal"))
+					newAssetIsNormalMap = true; // When it's a ProceduralTexture having _Normal as a suffix
+				else
+					newAssetIsNormalMap = false; // When it's a RenderTexture or ProceduralTexture
+			}
 			
 			if(newAssetIsNormalMap){
 				noTexValue = NoTexValue.Bump;

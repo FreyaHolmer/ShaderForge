@@ -176,6 +176,12 @@ namespace ShaderForge {
 
 
 		public override bool Draw() {
+			if( IsGlobalProperty()){
+				rect.height = (int)(NODE_HEIGHT + 16f + 2);
+			} else {
+				rect.height = (int)(NODE_HEIGHT + 32f + 2);
+			}
+
 			ProcessInput();
 			DrawHighlight();
 			PrepareWindowColor();
@@ -192,6 +198,10 @@ namespace ShaderForge {
 
 			GUI.skin.box.clipping = TextClipping.Overflow;
 			GUI.BeginGroup( rect );
+
+			if(IsGlobalProperty()){
+				GUI.enabled = false;
+			}
 
 			if( IsProperty() && Event.current.type == EventType.DragPerform && rectInner.Contains(Event.current.mousePosition) ) {
 				Object droppedObj = DragAndDrop.objectReferences[0];
@@ -217,6 +227,10 @@ namespace ShaderForge {
 				}
 			}
 
+			if(IsGlobalProperty()){
+				GUI.enabled = true;
+			}
+
 
 
 			Color prev = GUI.color;
@@ -237,7 +251,7 @@ namespace ShaderForge {
 
 
 
-			if( rectInner.Contains( Event.current.mousePosition ) && !SF_NodeConnector.IsConnecting() ) {
+			if( rectInner.Contains( Event.current.mousePosition ) && !SF_NodeConnector.IsConnecting() && !IsGlobalProperty() ) {
 				Rect selectRect = new Rect( rectInner );
 				selectRect.yMin += 80;
 				selectRect.xMin += 40;
@@ -250,7 +264,7 @@ namespace ShaderForge {
 			}
 
 			
-			if( Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == this.id ) {
+			if( !IsGlobalProperty() && Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == this.id ) {
 				Event.current.Use();
 				textureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture;
 				OnAssignedTexture();
@@ -329,8 +343,10 @@ namespace ShaderForge {
 			EditorGUI.BeginChangeCheck();
 			Rect tmp = lowerRect;
 			tmp.height = 16f;
-			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
-			tmp.y += tmp.height;
+			if(!IsGlobalProperty()){
+				noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
+				tmp.y += tmp.height;
+			}
 			bool preMarked = markedAsNormalMap;
 			markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
 			if(EditorGUI.EndChangeCheck()){
@@ -340,17 +356,19 @@ namespace ShaderForge {
 				OnUpdateNode();
 
 			}
-				
+
 		}
 
 
 		public override string SerializeSpecialData() {
+			string s = property.Serialize();
 			if( textureAsset == null )
-				return null;
-			return "tex:" + SF_Tools.AssetToGUID( textureAsset );
+				return s;
+			return s + "," + "tex:" + SF_Tools.AssetToGUID( textureAsset );
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
+			property.Deserialize(key,value);
 			switch( key ) {
 				case "tex":
 					textureAsset = (Texture)SF_Tools.GUIDToAsset( value, typeof( Texture ) );

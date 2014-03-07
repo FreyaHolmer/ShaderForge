@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 
@@ -12,6 +13,8 @@ namespace ShaderForge {
 		public string nameInternal = "_";	// The internal shader code name		
 		public SF_Node node;
 
+		public bool global = false;
+
 
 		public void OnEnable() {
 			base.hideFlags = HideFlags.HideAndDontSave;
@@ -22,13 +25,18 @@ namespace ShaderForge {
 			SetName( node.GetVariableName() );
 		}
 
+		public string FormatInternalName(string s){
+			Regex rgx = new Regex( "[^a-zA-Z0-9_]" );
+			s = rgx.Replace( s, "" );
+			return s;
+		}
+
 		public virtual void UpdateInternalName() {
 
 			string s = nameDisplay;
 
-			Regex rgx = new Regex( "[^a-zA-Z0-9]" );
-			s = rgx.Replace( s, "" );
 
+			s = FormatInternalName(s);
 
 			s = "_" + s;
 
@@ -41,6 +49,32 @@ namespace ShaderForge {
 		public void SetName(string s) {
 			nameDisplay = s;
 			UpdateInternalName();
+		}
+
+		public void SetBothNameAndInternal(string s){
+			s = FormatInternalName(s);
+			nameDisplay = s;
+			nameInternal = s;
+		}
+
+		public void ToggleGlobal(){
+			global = !global;
+
+			List<SF_Node> propList = node.editor.nodeView.treeStatus.propertyList;
+
+			if(global){
+
+				if(propList.Contains(node)){
+					propList.Remove(node);
+				}
+
+			} else {
+
+				if(!propList.Contains(node)){
+					propList.Add(node);
+				}
+
+			}
 		}
 		
 		
@@ -132,7 +166,17 @@ namespace ShaderForge {
 		}
 		
 		
-
+		public bool CanToggleGlobal(){
+			if(this is SFP_ValueProperty)
+				return true;
+			if(this is SFP_Color)
+				return true;
+			if(this is SFP_Tex2d && node is SFN_Tex2dAsset)
+				return true;
+			if(this is SFP_Vector4Property)
+				return true;
+			return false;
+		}
 
 
 		public SF_ShaderProperty() {
@@ -156,6 +200,18 @@ namespace ShaderForge {
 
 			return GetVariableLine();
 
+		}
+
+		public string Serialize(){
+			return "glob:" + global.ToString();
+		}
+
+		public void Deserialize( string key, string value ){
+			switch( key ) {
+			case "glob":
+				global = bool.Parse( value );
+				break;
+			}
 		}
 
 		

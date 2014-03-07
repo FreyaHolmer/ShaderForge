@@ -218,6 +218,9 @@ namespace ShaderForge {
 					case "ptlb":
 						node.property.SetName( dValue );
 						break;
+					case "ptin":
+						node.property.nameInternal = dValue;
+						break;
 					case "cmnt":
 						node.comment = dValue;
 						break;

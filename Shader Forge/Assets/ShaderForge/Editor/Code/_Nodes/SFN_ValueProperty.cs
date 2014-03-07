@@ -49,7 +49,16 @@ namespace ShaderForge {
 			r.yMin += 4;
 			r.yMax -= 2;
 			r.xMin += 2;
-			float fVal = EditorGUI.FloatField( r, texture.dataUniform[0], SF_Styles.LargeTextField );
+			float fVal;
+			if(IsGlobalProperty()){
+				fVal = 1f;
+				GUI.enabled = false;
+				EditorGUI.FloatField( r, 1, SF_Styles.LargeTextField );
+				GUI.enabled = true;
+
+			} else {
+				fVal = EditorGUI.FloatField( r, texture.dataUniform[0], SF_Styles.LargeTextField );
+			}
 			r.x += r.width + 6;
 			r.width = r.height;
 			Rect texCoords = new Rect( r );
@@ -69,10 +78,13 @@ namespace ShaderForge {
 		}
 
 		public override string SerializeSpecialData() {
-			return "v1:" + texture.dataUniform[0];
+			string s = property.Serialize() + ",";
+			s += "v1:" + texture.dataUniform[0];
+			return s;
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
+			property.Deserialize(key,value);
 			switch( key ) {
 				case "v1":
 					float fVal = float.Parse( value );

@@ -35,6 +35,8 @@ namespace ShaderForge {
 		public static Color colorExposedDark = new Color( 0.24f, 0.32f, 0.30f ) * 1.25f;
 		public static Color colorExposedDarker = new Color( 0.24f, 0.32f, 0.30f ) * 0.75f;
 
+		public static Color colorGlobal = new Color( 1f, 0.8f, 0.7f); // ( 1f, 0.9f, 0.8f);
+
 
 		
 
@@ -130,6 +132,10 @@ namespace ShaderForge {
 				return false;
 			}
 			return true;
+		}
+
+		public bool IsGlobalProperty(){
+			return IsProperty() ? property.global : false;
 		}
 
 
@@ -542,8 +548,16 @@ namespace ShaderForge {
 		}
 
 		public void PrepareWindowColor() {
-			Color unselected = IsProperty() ? colorExposed : colorDefault;
-			GUI.color = unselected;
+
+			if(IsProperty()){
+				if(property.global){
+					GUI.color = colorGlobal;
+				} else {
+					GUI.color = colorExposed; // colorExposed
+				}
+			} else {
+				GUI.color = colorDefault;
+			}
 		}
 
 		public void ResetWindowColor() {
@@ -601,6 +615,9 @@ namespace ShaderForge {
 		public void ContextClick( object o ) {
 			string picked = o as string;
 			switch(picked){
+			case "prop_global_toggle":
+				property.ToggleGlobal();
+				break;
 			case "doc_open":
 				SF_Web.OpenDocumentationForNode(this);
 				break;
@@ -648,6 +665,13 @@ namespace ShaderForge {
 					// Now create the menu, add items and show it
 					GenericMenu menu = new GenericMenu();
 					editor.ResetRunningOutdatedTimer();
+					if(IsProperty() && property.CanToggleGlobal()){
+						if(property.global){
+							menu.AddItem( new GUIContent("Make local"), false, ContextClick, "prop_global_toggle" );
+						} else {
+							menu.AddItem( new GUIContent("Make global"), false, ContextClick, "prop_global_toggle" );
+						}
+					}
 					menu.AddItem( new GUIContent("Edit Comment"), false, ContextClick, "cmt_edit" );
 					menu.AddItem( new GUIContent("What does " + nodeName + " do?"), false, ContextClick, "doc_open" );
 					menu.ShowAsContext();
@@ -677,16 +701,29 @@ namespace ShaderForge {
 				//GUI.color = SF_Styles.nodeNameLabelBackgroundColor;
 				GUI.Box( nameRect, "", EditorStyles.textField );
 				GUI.color = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-				string oldName = property.nameDisplay;
+				string oldName = IsGlobalProperty() ? property.nameInternal : property.nameDisplay;
 				
 				GUI.SetNextControlName(focusName);
 				//Debug.Log();
-				string newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
+
+				string newName;
+				if(IsGlobalProperty())
+					newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
+				else
+					newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
+
+	
 				SF_Tools.FormatSerializable( ref newName );
+
+
 				
 				
-				if( oldName != newName )
-					property.SetName( newName );
+				if( oldName != newName ){
+					if(IsGlobalProperty())
+						property.SetBothNameAndInternal( newName );
+					else
+						property.SetName( newName );
+				}
 
 				bool focusedField = GUI.GetNameOfFocusedControl() == focusName;
 
@@ -698,19 +735,24 @@ namespace ShaderForge {
 				if( selected || focusedField || mouseOver && !editor.screenshotInProgress ) {
 					GUI.color = new Color(1f,1f,1f,0.6f);
 					nameRect.x += nameRect.width;
-					GUI.Label( nameRect, property.nameInternal, EditorStyles.boldLabel );
+					if(!IsGlobalProperty()){
+						GUI.Label( nameRect, property.nameInternal, EditorStyles.boldLabel );
+					}
 					nameRect.y -= 12;
 
 					// Right:
-					GUI.color = new Color( 1f, 1f, 1f, 0.3f );
-					GUI.Label( nameRect, "Internal name:", EditorStyles.miniLabel);
+					if(!IsGlobalProperty()){ // Global ones *only* have internal names, display as main instead
+						GUI.color = new Color( 1f, 1f, 1f, 0.3f );
+						GUI.Label( nameRect, "Internal name:", EditorStyles.miniLabel);
+					}
+
 					
 					// Upper:
 					nameRect = new Rect( rect );
 					nameRect.height = 20;
 					nameRect.y -= 33;
 					GUI.color = new Color( 1f, 1f, 1f, 0.6f );
-					GUI.Label( nameRect, "Property label:", EditorStyles.miniLabel );
+					GUI.Label( nameRect, !IsGlobalProperty() ? "Property label:" : "Internal name:", EditorStyles.miniLabel );
 
 
 					GUI.color = Color.white;
@@ -1356,8 +1398,10 @@ namespace ShaderForge {
 			s += "id:" + this.id + ",";
 			s += "x:" + (int)rect.x + ",";
 			s += "y:" + (int)rect.y;
-			if(IsProperty())
+			if(IsProperty()){
 				s += ",ptlb:" + property.nameDisplay;
+				s += ",ptin:" + property.nameInternal;
+			}
 			if(HasComment())
 				s += ",cmnt:" + comment;
 			

@@ -46,12 +46,19 @@ namespace ShaderForge {
 
 		public override void DrawLowerPropertyBox() {
 
-			if(selected && !SF_GUI.MultiSelectModifierHeld())
+			if(selected && !SF_GUI.MultiSelectModifierHeld() && !IsGlobalProperty())
 				ColorPickerCorner( lowerRect );
 
 			Color vecPrev = texture.dataUniform;
 			PrepareWindowColor();
 			Rect tRect = lowerRect;
+
+			if(IsGlobalProperty()){
+				texture.dataUniform[0] = texture.dataUniform[1] = texture.dataUniform[2] = 0.5f;
+				texture.dataUniform[3] = 1f;
+				GUI.enabled = false;
+			}
+
 			texture.dataUniform[0] = EditorGUI.FloatField( tRect, texture.dataUniform[0] );
 			tRect.x += tRect.width;
 			texture.dataUniform[1] = EditorGUI.FloatField( tRect, texture.dataUniform[1] );
@@ -64,6 +71,10 @@ namespace ShaderForge {
 				OnUpdateValue();
 				OnUpdateNode();
 			}
+
+			if(IsGlobalProperty()){
+				GUI.enabled = true;
+			}
 				
 		}
 
@@ -72,7 +83,8 @@ namespace ShaderForge {
 		}
 
 		public override string SerializeSpecialData() {
-			string s = "c1:" + texture.dataUniform[0] + ",";
+			string s = property.Serialize() + ",";
+			s += "c1:" + texture.dataUniform[0] + ",";
 			s += "c2:" + texture.dataUniform[1] + ",";
 			s += "c3:" + texture.dataUniform[2] + ",";
 			s += "c4:" + texture.dataUniform[3];
@@ -80,6 +92,7 @@ namespace ShaderForge {
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
+			property.Deserialize(key,value);
 			switch( key ) {
 				case "c1":
 					float fVal1 = float.Parse( value );

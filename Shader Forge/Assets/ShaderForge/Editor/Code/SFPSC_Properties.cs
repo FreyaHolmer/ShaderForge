@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ShaderForge {
 	
@@ -55,7 +57,11 @@ namespace ShaderForge {
 		public override float DrawInner(ref Rect r){
 
 			
-			int propCount = editor.nodeView.treeStatus.propertyList.Count;
+			//int propCount = editor.nodeView.treeStatus.propertyList.Count;
+
+			List<SF_Node> propertyList = editor.nodeView.treeStatus.propertyList;
+			
+			int propCount = propertyList.Count;
 
 			bool multiple = propCount > 1;
 
@@ -64,7 +70,7 @@ namespace ShaderForge {
 			r.y = 0;
 			
 			
-			if( editor.nodeView.treeStatus.propertyList.Count == 0 ) {
+			if( propCount == 0 ) {
 				r.y += 16;
 				GUI.enabled = false;
 				GUI.Label( r, "No properties in this shader yet" );
@@ -81,7 +87,7 @@ namespace ShaderForge {
 			
 			r.height = propertyHeight;
 			
-			
+
 			
 			// On drop...
 			if( draggingProperty != null && SF_GUI.ReleasedRawLMB()) {
@@ -107,7 +113,9 @@ namespace ShaderForge {
 			
 			
 			int i = 0;
-			foreach(SF_Node prop in editor.nodeView.treeStatus.propertyList){
+
+
+			foreach(SF_Node prop in propertyList){
 				bool draggingThis = ( draggingProperty == prop );
 				bool dragging = (draggingProperty != null);
 

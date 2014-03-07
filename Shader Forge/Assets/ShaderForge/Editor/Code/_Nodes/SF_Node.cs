@@ -573,8 +573,11 @@ namespace ShaderForge {
 			if( SF_NodeConnector.pendingConnectionSource != null )
 				return;
 
-			if( MouseOverNode( world: true ) && dragDelta.sqrMagnitude < SF_Tools.stationaryCursorRadius ) { // If you released on the node without dragging
-
+			bool hover = MouseOverNode( world: true );
+			bool stationary = dragDelta.sqrMagnitude < SF_Tools.stationaryCursorRadius;
+			bool placingNew = editor.nodeBrowser.IsPlacing();
+			
+			if( hover && stationary && !placingNew ) { // If you released on the node without dragging
 				if( SF_GUI.MultiSelectModifierHeld() ) {
 					if( selected )
 						Deselect();
@@ -586,9 +589,6 @@ namespace ShaderForge {
 					Select();
 					Event.current.Use();
 				}
-
-
-				
 			}
 
 		}

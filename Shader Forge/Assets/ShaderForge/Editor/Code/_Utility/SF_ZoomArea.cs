@@ -2,12 +2,12 @@
 
 namespace ShaderForge{
 	public class SF_ZoomArea{
-		private const float kEditorWindowTabHeight = 22.0f;
+		private static float kEditorWindowTabHeight = 22.0f;
 		private static Matrix4x4 prevGuiMatrix;
 		
 		public static Rect Begin(float zoomScale, Rect screenCoordsArea, Vector2 cameraPos){
 			GUI.EndGroup();
-
+			kEditorWindowTabHeight = screenCoordsArea.y;
 			Rect clippedArea = screenCoordsArea.ScaleSizeBy(1.0f / zoomScale, screenCoordsArea.TopLeft());
 			GUI.BeginGroup(clippedArea);
 			//if(zoomScale != 1f){

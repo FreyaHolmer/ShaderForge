@@ -22,7 +22,7 @@ namespace ShaderForge {
 			property = ScriptableObject.CreateInstance<SFP_Vector4Property>().Initialize( this );
 
 			connectors = new SF_NodeConnector[]{
-				SF_NodeConnector.Create(this,"XYZ","XYZ",ConType.cOutput,ValueType.VTv3)							.Outputting(OutChannel.RGB),
+				SF_NodeConnector.Create(this,"XYZ","XYZ",ConType.cOutput,ValueType.VTv3)						.Outputting(OutChannel.RGB),
 				SF_NodeConnector.Create(this,"X","X",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.red)	.Outputting(OutChannel.R),
 				SF_NodeConnector.Create(this,"Y","Y",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.green)	.Outputting(OutChannel.G),
 				SF_NodeConnector.Create(this,"Z","Z",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.blue)	.Outputting(OutChannel.B),
@@ -43,10 +43,15 @@ namespace ShaderForge {
 
 			Color vecPrev = texture.dataUniform;
 
-			if( selected && !SF_GUI.MultiSelectModifierHeld() )
+			if( !IsGlobalProperty() && selected && !SF_GUI.MultiSelectModifierHeld() )
 				ColorPickerCorner( lowerRect );
 
 			PrepareWindowColor();
+			if(IsGlobalProperty()){
+				texture.dataUniform[0] = texture.dataUniform[1] = texture.dataUniform[2] = 0.5f;
+				texture.dataUniform[3] = 1f;
+				GUI.enabled = false;
+			}
 			Rect tRect = lowerRect;
 			texture.dataUniform[0] = EditorGUI.FloatField( tRect, texture.dataUniform[0] );
 			tRect.x += tRect.width;
@@ -55,6 +60,9 @@ namespace ShaderForge {
 			texture.dataUniform[2] = EditorGUI.FloatField( tRect, texture.dataUniform[2] );
 			tRect.x += tRect.width;
 			texture.dataUniform[3] = EditorGUI.FloatField( tRect, texture.dataUniform[3] );
+			if(IsGlobalProperty()){
+				GUI.enabled = true;
+			}
 			ResetWindowColor();
 			if( texture.dataUniform != vecPrev ) {
 				OnUpdateNode( NodeUpdateType.Soft );
@@ -64,7 +72,8 @@ namespace ShaderForge {
 		}
 
 		public override string SerializeSpecialData() {
-			string s = "v1:" + texture.dataUniform[0] + ",";
+			string s = base.SerializeSpecialData() + ",";
+			s += "v1:" + texture.dataUniform[0] + ",";
 			s += "v2:" + texture.dataUniform[1] + ",";
 			s += "v3:" + texture.dataUniform[2] + ",";
 			s += "v4:" + texture.dataUniform[3];
@@ -72,6 +81,7 @@ namespace ShaderForge {
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
+			property.Deserialize(key,value);
 			switch( key ) {
 				case "v1":
 					float fVal1 = float.Parse( value );

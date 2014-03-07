@@ -9,13 +9,14 @@ namespace ShaderForge {
 
 	[System.Serializable]
 	public enum RenderPlatform {
-		d3d9,	// - Direct3D 9
-		d3d11,	// - Direct3D 11
-		opengl,	// - OpenGL
-		gles,	// - OpenGL ES 2.0
-		xbox360,// - Xbox 360
-		ps3,	// - PlayStation 3
-		flash	// - Flash
+		d3d9 		= 0,	// - Direct3D 9
+		d3d11 		= 1,	// - Direct3D 11
+		opengl 		= 2,	// - OpenGL
+		gles 		= 3,	// - OpenGL ES 2.0
+		xbox360 	= 4,	// - Xbox 360
+		ps3 		= 5,	// - PlayStation 3
+		flash		= 6,	// - Flash
+		d3d11_9x 	= 7		// - Direct3D 11 windows RT
 	};
 	
 
@@ -42,7 +43,8 @@ namespace ShaderForge {
 			"OpenGL ES 2.0",
 			"Xbox 360",
 			"PlayStation 3",
-			"Flash"
+			"Flash",
+			"Direct3D 11 for Windows RT",
 		};
 
 

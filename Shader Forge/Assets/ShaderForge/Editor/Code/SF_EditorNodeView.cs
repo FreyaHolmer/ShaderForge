@@ -102,7 +102,7 @@ namespace ShaderForge {
 			Vector2 newWidth = new Vector2(rect.width,rect.height)/zoom;
 			Vector2 delta = newWidth - oldWidth;
 
-			Vector2 normalizedMouseCoords = (Event.current.mousePosition - new Vector2(editor.separatorLeft.rect.xMax,22));
+			Vector2 normalizedMouseCoords = (Event.current.mousePosition - new Vector2(editor.separatorLeft.rect.xMax,editor.TabOffset));
 
 			normalizedMouseCoords.x /= rect.width;
 			normalizedMouseCoords.y /= rect.height;
@@ -167,7 +167,7 @@ namespace ShaderForge {
 
 			//r = r.PadTop(Mathf.CeilToInt(22*zoom));
 
-			selection.OnGUI(); // To detect if you press things
+
 
 			editor.mousePosition = Event.current.mousePosition;
 			rect = r;
@@ -207,6 +207,10 @@ namespace ShaderForge {
 
 			SF_ZoomArea.Begin(zoom,rect,cameraPos);
 			{
+				selection.OnGUI(); // To detect if you press things
+				if(editor.nodeView != null)
+					editor.nodeView.selection.DrawBoxSelection();
+
 				// NODES
 				if( editor.nodes != null ) {
 					for(int i=0;i<editor.nodes.Count;i++) {
@@ -252,9 +256,10 @@ namespace ShaderForge {
 
 
 			if( Event.current.type == EventType.DragPerform ) {
-				if( DragAndDrop.objectReferences[0] is Texture2D ) {
+				Object droppedObj = DragAndDrop.objectReferences[0];
+				if( droppedObj is Texture2D || droppedObj is ProceduralTexture || droppedObj is RenderTexture ) {
 					SFN_Tex2d texNode = editor.nodeBrowser.OnStopDrag() as SFN_Tex2d;
-					texNode.TextureAsset = DragAndDrop.objectReferences[0] as Texture2D;
+					texNode.TextureAsset = droppedObj as Texture;
 					texNode.OnAssignedTexture();
 					Event.current.Use();
 				}
@@ -262,7 +267,8 @@ namespace ShaderForge {
 
 			if( Event.current.type == EventType.dragUpdated && Event.current.type != EventType.DragPerform ) {
 				if( DragAndDrop.objectReferences.Length > 0 ) {
-					if( DragAndDrop.objectReferences[0].GetType() == typeof( Texture2D ) ) {
+					Object dragObj = DragAndDrop.objectReferences[0];
+					if( dragObj is Texture2D || dragObj is ProceduralTexture || dragObj is RenderTexture  ) {
 						DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 						if( !editor.nodeBrowser.IsPlacing() )
 							editor.nodeBrowser.OnStartDrag( editor.GetTemplate<SFN_Tex2d>() );
@@ -723,7 +729,7 @@ namespace ShaderForge {
 
 		 
 		public Vector2 ZoomSpaceToScreenSpace( Vector2 in_vec ) {
-			return (in_vec - cameraPos + editor.separatorLeft.rect.TopRight() )*zoom + rect.TopLeft() + (Vector2.up * (22f))*(zoom-1);
+			return (in_vec - cameraPos + editor.separatorLeft.rect.TopRight() )*zoom + rect.TopLeft() + (Vector2.up * (editor.TabOffset))*(zoom-1);
 		}
 		public Rect ZoomSpaceToScreenSpace( Rect in_rect ) {
 			Vector2 offset = ZoomSpaceToScreenSpace(in_rect.TopLeft());
@@ -736,7 +742,7 @@ namespace ShaderForge {
 			return in_rect;
 		}
 		public Vector2 ScreenSpaceToZoomSpace( Vector2 in_vec ) {
-			return ( in_vec - (Vector2.up * (22f))*(zoom-1) - rect.TopLeft() ) / zoom - editor.separatorLeft.rect.TopRight() + cameraPos;
+			return ( in_vec - (Vector2.up * (editor.TabOffset))*(zoom-1) - rect.TopLeft() ) / zoom - editor.separatorLeft.rect.TopRight() + cameraPos;
 			//return in_vec + cameraPos;
 		}
 

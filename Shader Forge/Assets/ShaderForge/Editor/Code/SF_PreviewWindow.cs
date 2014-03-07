@@ -330,7 +330,14 @@ namespace ShaderForge {
 
 			Vector3 pos = new Vector3( -mesh.bounds.center.x, -mesh.bounds.center.y, -mesh.bounds.center.z);
 			pruCam.transform.localPosition = new Vector3( 0f,0f, -3f * meshExtents );
-			Graphics.DrawMesh( mesh, Quaternion.identity*pos, Quaternion.identity, InternalMaterial, 0, pruCam, 0 );
+
+			int smCount = mesh.subMeshCount;
+
+			for(int i=0;i<smCount;i++){
+				Graphics.DrawMesh( mesh, Quaternion.identity*pos, Quaternion.identity, InternalMaterial, 0, pruCam, i );
+			}
+
+
 
 
 			pruCam.farClipPlane = 3f * meshExtents * 2f;

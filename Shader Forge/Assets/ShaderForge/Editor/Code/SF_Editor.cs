@@ -134,11 +134,6 @@ namespace ShaderForge {
 
 		void OnDestroy(){
 
-			//Debug.Log ("Destroyed the editor window");
-
-
-
-
 		}
 
 		public static void Init( Shader initShader = null ) {
@@ -187,7 +182,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Min ), 			catArithmetic + "Min" );
 			AddTemplate( typeof( SFN_Multiply ), 		catArithmetic + "Multiply", KeyCode.M );
 			AddTemplate( typeof( SFN_Negate ), 			catArithmetic + "Negate" );
-			AddTemplate( typeof( SFN_Noise ), 			catArithmetic + "Noise" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Noise ), 			catArithmetic + "Noise" );
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
@@ -214,9 +209,12 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_ValueProperty ), 	catProps + "Value" );
 			AddTemplate( typeof( SFN_Vector4Property ), catProps + "Vector 4" );
 
+			//string catBranching = "Branching/"; 
+			//AddTemplate( typeof( SFN_StaticBranch ), catBranching + "Static Branch" );
+
 			string catVecOps = "Vector Operations/";
 			AddTemplate( typeof( SFN_Append ), 			catVecOps + "Append", KeyCode.Q );
-			AddTemplate( typeof( SFN_ChannelBlend ), 	catVecOps + "Channel Blend").MarkAsNewNode();
+			AddTemplate( typeof( SFN_ChannelBlend ), 	catVecOps + "Channel Blend");
 			AddTemplate( typeof( SFN_ComponentMask ),	catVecOps + "Component Mask", KeyCode.C );
 			AddTemplate( typeof( SFN_Cross ), 			catVecOps + "Cross Product" );
 			AddTemplate( typeof( SFN_Desaturate ), 		catVecOps + "Desaturate" );
@@ -651,7 +649,31 @@ namespace ShaderForge {
 				Repaint(); // Update GUI every frame if focused
 
 		}
-		
+
+	
+
+		MethodInfo isDockedMethod;
+
+		public bool Docked{
+			get{
+
+
+				if(isDockedMethod == null){
+					BindingFlags fullBinding = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+					isDockedMethod = typeof( EditorWindow ).GetProperty( "docked", fullBinding ).GetGetMethod( true );
+				}
+				
+				return ( bool ) isDockedMethod.Invoke(this, null);
+			}
+		}
+
+		public int TabOffset{
+			get{
+				return Docked ? 19 : 22;
+			}
+		}
+
+
 		
 		public double Now(){
 			TimeSpan t = ( DateTime.UtcNow - startTime );
@@ -730,13 +752,10 @@ namespace ShaderForge {
 			}
 
 
-			if(nodeView != null)
-				nodeView.selection.DrawBoxSelection();
+
 
 			//EditorGUILayout.BeginHorizontal();
 			//{
-
-
 			//float wPreview = leftSeparator;
 			//float wNodeBrowser = 130;
 
@@ -762,14 +781,17 @@ namespace ShaderForge {
 			if( SF_Debug.nodes ) {
 				Rect r = pRect; r.width = 256; r.height = 16;
 				for( int i = 0; i < nodes.Count; i++ ) {
-					GUI.Label( r, "Node[" + i + "] at {" + nodes[i].rect.x + ", " + nodes[i].rect.y + "}", EditorStyles.label );// nodes[i]
+					GUI.Label( r, "Node[" + i + "] at {" + nodes[i].rect.x + ", " + nodes[i].rect.y + "}", EditorStyles.label ); // nodes[i]
 					r = r.MovedDown();
 				}
 			}
 
-			
 
-			nodeView.OnLocalGUI( pRect.PadTop(22) );
+
+			nodeView.OnLocalGUI( pRect.PadTop(TabOffset) ); // 22 when not docked, 19 if docked
+			//GUI.EndGroup();
+
+			//pRect.yMin -= 3; // if docked
 
 
 

@@ -474,12 +474,22 @@ namespace ShaderForge {
 					App( "#pragma multi_compile_shadowcaster" );
 			}
 
+			foreach(SF_Node n in cNodes){
+				if(n.IsProperty() && n.property is SFP_Branch){
+					App(n.property.GetMulticompilePragma ());
+				}
+			}
+
 
 			
 			if( dependencies.DoesExcludePlatforms() )
 				App( "#pragma exclude_renderers " + dependencies.GetExcludePlatforms() );
-			if( dependencies.IsTargetingAboveDefault() )
-				App( "#pragma target " + dependencies.GetShaderTarget() );
+			if( dependencies.IsTargetingAboveDefault() ){
+				if( ps.catExperimental.force2point0 )
+					App( "#pragma target 2.0" );
+				else
+					App( "#pragma target " + dependencies.GetShaderTarget() );
+			}
 			if( editor.nodeView.treeStatus.mipInputUsed)
 				App ("#pragma glsl"); // Kills non DX instruction counts
 		}
@@ -2264,6 +2274,18 @@ namespace ShaderForge {
 				case ( "ShaderForge.SFN_Vector4Property" ):
 					SFN_Vector4Property vector4Node = (SFN_Vector4Property)node;
 					m.SetVector( vector4Node.property.GetVariable(), vector4Node.texture.dataUniform );
+					break;
+				case ( "ShaderForge.SFN_StaticBranch" ):
+					SFN_StaticBranch sbNode = (SFN_StaticBranch)node;
+					
+					if(sbNode.on){
+						//Debug.Log("Enabling keyword");
+						m.EnableKeyword(sbNode.property.nameInternal);
+					} else {
+						//Debug.Log("Disabling keyword");
+						m.DisableKeyword(sbNode.property.nameInternal);
+					}
+
 					break;
 			}
 		}

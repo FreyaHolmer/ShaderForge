@@ -41,14 +41,17 @@ namespace ShaderForge {
 
 		public bool IsAssetNormalMap() {
 
-			if( textureAsset == null ){
+			string path = AssetDatabase.GetAssetPath( textureAsset );
+			if( string.IsNullOrEmpty( path ) )
 				return false;
-			} else {
-				string path = AssetDatabase.GetAssetPath( textureAsset );
-				if( string.IsNullOrEmpty( path ) )
-					return false;
+			else{
+				AssetImporter importer = UnityEditor.AssetImporter.GetAtPath( path );
+				if(importer is TextureImporter)
+					return ((TextureImporter)importer).normalmap;
+				else if(textureAsset is ProceduralTexture && textureAsset.name.EndsWith("_Normal"))
+					return true; // When it's a ProceduralTexture having _Normal as a suffix
 				else
-					return ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).normalmap;
+					return false; // When it's a RenderTexture or ProceduralTexture
 			}
 
 		}
@@ -173,6 +176,12 @@ namespace ShaderForge {
 
 
 		public override bool Draw() {
+			if( IsGlobalProperty()){
+				rect.height = (int)(NODE_HEIGHT + 16f + 2);
+			} else {
+				rect.height = (int)(NODE_HEIGHT + 32f + 2);
+			}
+
 			ProcessInput();
 			DrawHighlight();
 			PrepareWindowColor();
@@ -190,17 +199,23 @@ namespace ShaderForge {
 			GUI.skin.box.clipping = TextClipping.Overflow;
 			GUI.BeginGroup( rect );
 
-			if( Event.current.type == EventType.DragPerform && rectInner.Contains(Event.current.mousePosition) ) {
-				if( DragAndDrop.objectReferences[0].GetType() == typeof( Texture2D ) ) {
+			if(IsGlobalProperty()){
+				GUI.enabled = false;
+			}
+
+			if( IsProperty() && Event.current.type == EventType.DragPerform && rectInner.Contains(Event.current.mousePosition) ) {
+				Object droppedObj = DragAndDrop.objectReferences[0];
+				if( droppedObj is Texture2D || droppedObj is ProceduralTexture || droppedObj is RenderTexture) {
 					Event.current.Use();
-					textureAsset = DragAndDrop.objectReferences[0] as Texture2D;
+					textureAsset = droppedObj as Texture;
 					OnAssignedTexture();
 				}
 			}
 			
-			if(Event.current.type == EventType.dragUpdated) {
+			if( IsProperty() && Event.current.type == EventType.dragUpdated ) {
 				if(DragAndDrop.objectReferences.Length > 0){
-					if( DragAndDrop.objectReferences[0].GetType() == typeof( Texture2D ) ) {
+					Object dragObj = DragAndDrop.objectReferences[0];
+					if( dragObj is Texture2D || dragObj is ProceduralTexture || dragObj is RenderTexture) {
 						DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 						editor.nodeBrowser.CancelDrag();
 						Event.current.Use();
@@ -210,6 +225,10 @@ namespace ShaderForge {
 				} else {
 					DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
 				}
+			}
+
+			if(IsGlobalProperty()){
+				GUI.enabled = true;
 			}
 
 
@@ -232,22 +251,22 @@ namespace ShaderForge {
 
 
 
-			if( rectInner.Contains( Event.current.mousePosition ) && !SF_NodeConnector.IsConnecting() ) {
+			if( rectInner.Contains( Event.current.mousePosition ) && !SF_NodeConnector.IsConnecting() && !IsGlobalProperty() ) {
 				Rect selectRect = new Rect( rectInner );
 				selectRect.yMin += 80;
 				selectRect.xMin += 40;
 
 				if(GUI.Button( selectRect, "Select", EditorStyles.miniButton )){
-					EditorGUIUtility.ShowObjectPicker<Texture2D>( textureAsset, false, "", this.id );
+					EditorGUIUtility.ShowObjectPicker<Texture>( textureAsset, false, "", this.id );
 					Event.current.Use();
 				}
 
 			}
 
 			
-			if( Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == this.id ) {
+			if( !IsGlobalProperty() && Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == this.id ) {
 				Event.current.Use();
-				textureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture2D;
+				textureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture;
 				OnAssignedTexture();
 			}
 
@@ -298,8 +317,15 @@ namespace ShaderForge {
 			string path = AssetDatabase.GetAssetPath( textureAsset );
 			if( string.IsNullOrEmpty( path ) )
 				newAssetIsNormalMap = false;
-			else
-				newAssetIsNormalMap = ( (TextureImporter)UnityEditor.AssetImporter.GetAtPath( path ) ).normalmap;
+			else{
+				AssetImporter importer = UnityEditor.AssetImporter.GetAtPath( path );
+				if(importer is TextureImporter)
+					newAssetIsNormalMap = ((TextureImporter)importer).normalmap;
+				else if(textureAsset is ProceduralTexture && textureAsset.name.EndsWith("_Normal"))
+					newAssetIsNormalMap = true; // When it's a ProceduralTexture having _Normal as a suffix
+				else
+					newAssetIsNormalMap = false; // When it's a RenderTexture or ProceduralTexture
+			}
 			
 			if(newAssetIsNormalMap){
 				noTexValue = NoTexValue.Bump;
@@ -317,8 +343,10 @@ namespace ShaderForge {
 			EditorGUI.BeginChangeCheck();
 			Rect tmp = lowerRect;
 			tmp.height = 16f;
-			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
-			tmp.y += tmp.height;
+			if(!IsGlobalProperty()){
+				noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
+				tmp.y += tmp.height;
+			}
 			bool preMarked = markedAsNormalMap;
 			markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
 			if(EditorGUI.EndChangeCheck()){
@@ -328,17 +356,19 @@ namespace ShaderForge {
 				OnUpdateNode();
 
 			}
-				
+
 		}
 
 
 		public override string SerializeSpecialData() {
+			string s = property.Serialize();
 			if( textureAsset == null )
-				return null;
-			return "tex:" + SF_Tools.AssetToGUID( textureAsset );
+				return s;
+			return s + "," + "tex:" + SF_Tools.AssetToGUID( textureAsset );
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
+			property.Deserialize(key,value);
 			switch( key ) {
 				case "tex":
 					textureAsset = (Texture)SF_Tools.GUIDToAsset( value, typeof( Texture ) );

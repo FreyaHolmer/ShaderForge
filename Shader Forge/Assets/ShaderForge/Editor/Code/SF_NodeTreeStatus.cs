@@ -104,10 +104,18 @@ namespace ShaderForge {
 
 				// Refresh property list
 				if( n.IsProperty() ) {
-					// Add if it doesn't contain it already
-					if( !propertyList.Contains( n ) ) {
-						propertyList.Add( n );
+					if(!n.IsGlobalProperty()){
+						// Add if it's local and doesn't contain it already
+						if( !propertyList.Contains( n ) ) {
+							propertyList.Add( n );
+						}
+					} else {
+						// Remove it if it's global and inside the list
+						if( propertyList.Contains( n ) ) {
+							propertyList.Remove( n );
+						}
 					}
+
 				}
 
 				if( n is SFN_SceneColor ){

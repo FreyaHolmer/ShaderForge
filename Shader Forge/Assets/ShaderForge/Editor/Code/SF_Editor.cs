@@ -308,8 +308,34 @@ namespace ShaderForge {
 			return GetNodeType(nodeName) != null;
 		}
 
+
+		static Assembly editorAssembly;
+		static Assembly EditorAssembly {
+			get {
+				if( editorAssembly == null ) {
+
+					Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+					foreach( Assembly assembly in assemblies ) {
+						if( assembly.FullName.Split( ',' )[0].Trim() == "Assembly-CSharp-Editor" ) {
+							editorAssembly = assembly;
+							break;
+						}
+					}
+					Debug.LogError("Unable to find the specified assembly");
+				}
+				return editorAssembly;
+			}
+		}
+
+
 		public static Type GetNodeType(string nodeName){
-			return Assembly.GetExecutingAssembly().GetType("ShaderForge." + nodeName);
+
+			Assembly asm = EditorAssembly;
+			string fullNodeName = "ShaderForge." + nodeName;
+			Debug.Log( "Trying to dynamically load [" + fullNodeName + "]" + " in assembly [" + asm.FullName + "]" );
+
+			return asm.GetType( fullNodeName );
 		}
 
 		public SF_EditorNodeData TryAddTemplateDynamic(string type, string label, KeyCode keyCode = KeyCode.None, string searchName = null ){
@@ -515,6 +541,8 @@ namespace ShaderForge {
 
 		public SF_Node AddNode( SF_EditorNodeData nodeData ) {
 			//Debug.Log( "nodeData: "+nodeData.type );
+			if( nodeData == null )
+				Debug.Log("Null node data passed into AddNode");
 
 			SF_Node node = nodeData.CreateInstance();
 			nodes.Add( node );

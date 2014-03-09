@@ -196,6 +196,8 @@ namespace ShaderForge {
 			// This is the data in a single node, without link information
 			// type:SFN_Final,id:6,x:33383,y:32591
 			foreach( string s in nData ) {
+				if(SF_Debug.deserialization)
+					Debug.Log("Deserializing node: " + s);
 				string[] split = s.Split( ':' );
 				string dKey = split[0];
 				string dValue = split[1];

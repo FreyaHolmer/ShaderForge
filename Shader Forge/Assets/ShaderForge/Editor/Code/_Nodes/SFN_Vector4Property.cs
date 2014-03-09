@@ -72,7 +72,7 @@ namespace ShaderForge {
 		}
 
 		public override string SerializeSpecialData() {
-			string s = base.SerializeSpecialData() + ",";
+			string s = property.Serialize() + ",";
 			s += "v1:" + texture.dataUniform[0] + ",";
 			s += "v2:" + texture.dataUniform[1] + ",";
 			s += "v3:" + texture.dataUniform[2] + ",";

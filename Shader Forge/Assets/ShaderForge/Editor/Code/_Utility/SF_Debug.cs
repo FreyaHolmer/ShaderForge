@@ -15,6 +15,7 @@ namespace ShaderForge{
 		public static bool performance = false;
 		public static bool nodePreviews = false;
 		public static bool dynamicNodeLoad = false;
+		public static bool deserialization = false;
 		
 	}
 

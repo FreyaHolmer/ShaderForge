@@ -236,6 +236,7 @@ namespace ShaderForge {
 
 			string catGeoData = "Geometry Data/";
 			AddTemplate( typeof( SFN_Binormal ), 				catGeoData + "Binormal Dir.");
+			AddTemplate( typeof( SFN_Depth ), 					catGeoData + "Depth").MarkAsNewNode();
 			AddTemplate( typeof( SFN_Fresnel ), 				catGeoData + "Fresnel", KeyCode.F );
 			AddTemplate( typeof( SFN_NormalVector ), 			catGeoData + "Normal Dir." );
 			AddTemplate( typeof( SFN_ObjectPosition ), 			catGeoData + "Object Position");

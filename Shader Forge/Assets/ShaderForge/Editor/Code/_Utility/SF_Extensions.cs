@@ -67,6 +67,14 @@ namespace ShaderForge{
 			return r;
 		}
 
+		public static Rect PadHorizontal(this Rect r, int pixels ){
+			return r.PadLeft(pixels).PadRight(pixels);
+		}
+
+		public static Rect PadVertical(this Rect r, int pixels ){
+			return r.PadTop(pixels).PadBottom(pixels);
+		}
+
 
 		public static Rect ClampWidth(this Rect r, int min, int max){
 			r.width = Mathf.Clamp(r.width, min, max);
@@ -138,14 +146,12 @@ namespace ShaderForge{
 			r.y = Mathf.Lerp(a.y,b.y,t);
 			r.width = Mathf.Lerp(a.width,b.width,t);
 			r.height = Mathf.Lerp(a.height,b.height,t);
-
 			return r;
 		}
 
 
 
-		public static Rect ScaleSizeBy(this Rect rect, float scale)
-		{
+		public static Rect ScaleSizeBy(this Rect rect, float scale){
 			return rect.ScaleSizeBy(scale, rect.center);
 		}
 		public static Rect ScaleSizeBy(this Rect rect, float scale, Vector2 pivotPoint){

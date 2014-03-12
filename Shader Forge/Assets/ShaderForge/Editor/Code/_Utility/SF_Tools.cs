@@ -25,7 +25,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 0;
-		public static int versionNumSecondary = 27;
+		public static int versionNumSecondary = 28;
 		public static string versionStage = "Beta";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge " + versionStage + " " + version;
@@ -46,6 +46,9 @@ namespace ShaderForge {
 			"Flash",
 			"Direct3D 11 for Windows RT",
 		};
+
+		public const string alphabetLower = "abcdefghijklmnopqrstuvwxyz";
+		public const string alphabetUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 
 		// Constants

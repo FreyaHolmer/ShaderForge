@@ -228,6 +228,11 @@ namespace ShaderForge {
 					dependencies.frag_pixelDepth = true;
 				}
 
+				if(n is SFN_Depth){
+					// (mul( UNITY_MATRIX_V, float4((_WorldSpaceCameraPos.rgb-i.posWorld.rgb),0) ).b - _ProjectionParams.g)
+					dependencies.NeedFragPixelDepth();
+				}
+
 				/*
 				if( n is SFN_Rotator ) {
 					if(!n.GetInputIsConnected("ANG"))
@@ -1407,11 +1412,15 @@ namespace ShaderForge {
 
 		void InitSceneColorAndDepth(){
 
+			//if(dependencies.frag_pixelDepth){
+			//	App ("float pixelDepth = mul( UNITY_MATRIX_V, float4((_WorldSpaceCameraPos.rgb-i.posWorld.rgb), 0) ).b - _ProjectionParams.g");
+			//}
+
 			if(dependencies.frag_sceneDepth){
-				App("float sceneZ = LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos))));");
+				App("float sceneZ = max(0,LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos)))) - _ProjectionParams.g);");
 			}
 			if(dependencies.frag_pixelDepth){
-				App("float partZ = i.projPos.z;");
+				App("float partZ = max(0,i.projPos.z - _ProjectionParams.g);");
 			}
 
 
@@ -2303,7 +2312,17 @@ namespace ShaderForge {
 				App(s);
 		}
 		public void App( string s ) {
-			shaderString += GetScopeTabs() + s + "\n";
+
+			if(s.Contains("\n")){
+				string[] split = s.Split('\n');
+				for(int i=0;i<split.Length;i++){
+					App(split[i]);
+				}
+			} else {
+				shaderString += GetScopeTabs() + s + "\n";
+			}
+
+
 		}
 		public void AppDebug( string s ) {
 			//if(DEBUG)

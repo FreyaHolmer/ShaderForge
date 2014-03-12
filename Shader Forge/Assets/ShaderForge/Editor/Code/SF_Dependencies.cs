@@ -42,6 +42,7 @@ namespace ShaderForge {
 		public bool frag_attenuation = false;
 		public bool frag_tangentTransform = false;
 		public bool frag_screenPos = false;
+		public bool frag_pixelDepth = false;
 		public bool vert_screenPos = false;
 
 
@@ -57,7 +58,7 @@ namespace ShaderForge {
 		public bool vert_objectPos = false;
 
 		public bool frag_sceneDepth = false;
-		public bool frag_pixelDepth = false;
+		//public bool frag_pixelDepth = false;
 
 		public bool frag_projPos = false;
 		
@@ -145,6 +146,12 @@ namespace ShaderForge {
 
 		public void NeedSceneUVs(){
 			scene_uvs = true;
+		}
+
+		public void NeedFragPixelDepth(){
+			NeedFragWorldPos();
+			frag_projPos = true;
+			frag_pixelDepth = true;
 		}
 
 		public void NeedGrabPass() {

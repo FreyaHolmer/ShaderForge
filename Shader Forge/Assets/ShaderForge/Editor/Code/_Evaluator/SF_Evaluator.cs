@@ -153,10 +153,7 @@ namespace ShaderForge {
 			//	dependencies.NeedFragBinormals();
 			//}
 
-			if( ps.catBlending.IsDoubleSided() && !IsShadowOrOutlinePass() ) {
-				dependencies.NeedFragViewDirection();
-				dependencies.NeedFragNormals();
-			}
+			
 
 			if( ps.catLighting.IsFragmentLit() && !IsShadowOrOutlinePass() ) {
 				dependencies.vert_in_normals = true;
@@ -370,6 +367,13 @@ namespace ShaderForge {
 						dependencies.NeedFragTangentTransform();
 					}
 				}
+
+
+				// This has to be done afterwards
+				if( dependencies.frag_normalDirection && ps.catBlending.IsDoubleSided() && !IsShadowOrOutlinePass() ) {
+					dependencies.NeedFragViewDirection();
+				}
+
 
 			}
 

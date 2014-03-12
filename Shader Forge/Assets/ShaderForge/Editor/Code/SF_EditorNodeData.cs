@@ -81,7 +81,7 @@ namespace ShaderForge {
 				this.nodeName = fullPath;
 			}
 
-		}
+		} 
 
 
 		public SF_Node CreateInstance() {
@@ -90,7 +90,11 @@ namespace ShaderForge {
 
 			// Might be dynamic...
 			if( fType == null ) {
+				if(SF_Debug.dynamicNodeLoad)
+					Debug.Log( "CreateInstance couldn't use GetType, attempting dynamic load..." );
 				fType = SF_Editor.GetNodeType( type );
+				if( SF_Debug.dynamicNodeLoad && fType == null )
+					Debug.Log( "Failed to load dynamic load fType is null" );
 			}
 
 

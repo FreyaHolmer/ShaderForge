@@ -136,13 +136,16 @@ namespace ShaderForge {
 
 		}
 
-		public static void Init( Shader initShader = null ) {
-			if(SF_Debug.evalFlow)
+		public static bool Init( Shader initShader = null ) {
+			if(SF_Debug.evalFlow || SF_Debug.dynamicNodeLoad)
 				Debug.Log( "[SF_LOG] - SF_Editor Init(" + initShader + ")" );
 			SF_Editor materialEditor = (SF_Editor)EditorWindow.GetWindow( typeof( SF_Editor ) );
 			SF_Editor.instance = materialEditor;
 			updateCheck = "";
-			materialEditor.InitializeInstance( initShader );
+			bool loaded = materialEditor.InitializeInstance( initShader );
+			if( !loaded )
+				return false;
+			return true;
 		}
 
 		/*
@@ -288,10 +291,10 @@ namespace ShaderForge {
 		//	AddTemplate( typeof( SFN_Code ), "Code" );
 
 
-			if( SF_Debug.dynamicNodeLoad ) {
-				TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" );
-				TryAddTemplateDynamic( "SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular" );
-			}
+			//if( SF_Debug.dynamicNodeLoad ) {
+			TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" );
+			TryAddTemplateDynamic( "SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular" );
+			//}
 			
 
 
@@ -320,21 +323,25 @@ namespace ShaderForge {
 					foreach( Assembly assembly in assemblies ) {
 						if( assembly.FullName.Split( ',' )[0].Trim() == "Assembly-CSharp-Editor" ) {
 							editorAssembly = assembly;
-							break;
+							return editorAssembly;
 						}
 					}
-					if( SF_Debug.dynamicNodeLoad )
-						Debug.LogError("Unable to find the specified assembly");
+					//if( SF_Debug.dynamicNodeLoad )
+					//	Debug.LogError("Unable to find the editor assembly" );
 				}
 				return editorAssembly;
 			}
 		}
 
-
+		 
 		public static Type GetNodeType(string nodeName){
 
 			Assembly asm = EditorAssembly;
-			string fullNodeName = "ShaderForge." + nodeName;
+			if( asm == null )
+				return null;
+			string fullNodeName = nodeName;
+			if(!nodeName.StartsWith("ShaderForge."))
+				fullNodeName = "ShaderForge." + nodeName;
 			if( SF_Debug.dynamicNodeLoad )
 				Debug.Log( "Trying to dynamically load [" + fullNodeName + "]" + " in assembly [" + asm.FullName + "]" );
 
@@ -346,8 +353,12 @@ namespace ShaderForge {
 			Type dynType = GetNodeType(type);
 
 			if(dynType != null){
+				if(SF_Debug.dynamicNodeLoad)
+					Debug.Log( "TryAddTemplateDynamic of " + type );
 				return AddTemplate( dynType, label, keyCode, searchName );
 			}
+			if( SF_Debug.dynamicNodeLoad )
+				Debug.Log( "TryAddTemplateDynamic of " + type + " was null" );
 			return null;
 		}
 
@@ -423,8 +434,9 @@ namespace ShaderForge {
 			return Vector3.zero;
 		}*/
 
-		public void InitializeInstance( Shader initShader = null ) {
-			//Debug.Log( "[SF_LOG] - SF_Editor InitializeInstance(" + initShader + ")" );
+		public bool InitializeInstance( Shader initShader = null ) {
+			if(SF_Debug.evalFlow)
+				Debug.Log( "[SF_LOG] - SF_Editor InitializeInstance(" + initShader + ")" );
 			//this.title = ;
 
 			SF_Settings.InitializeSettings();
@@ -473,7 +485,14 @@ namespace ShaderForge {
 				//CreateOutputNode();
 			} else {
 				currentShaderAsset = initShader;
-				SF_Parser.ParseNodeDataFromShader( this, initShader );
+				
+				bool loaded = SF_Parser.ParseNodeDataFromShader( this, initShader );
+				if( !loaded ) {
+					initShader = null;
+					DestroyImmediate( this );
+					return false;
+				}
+					
 				// Make preview material use this shader
 				//preview.material.shader = currentShaderAsset;
 				Material m = preview.InternalMaterial;
@@ -481,7 +500,7 @@ namespace ShaderForge {
 			}
 
 			// Load data if it was set to initialize things
-
+			return true; // Successfully loaded
 		}
 
 
@@ -548,6 +567,15 @@ namespace ShaderForge {
 				Debug.Log("Null node data passed into AddNode");
 
 			SF_Node node = nodeData.CreateInstance();
+
+			if( SF_Debug.dynamicNodeLoad ) {
+				if( node == null )
+					Debug.Log( "nodeData failed to create a node of full path: " + nodeData.fullPath );
+				else
+					Debug.Log( "Created a node of full path: " + nodeData.fullPath );
+			}
+				
+
 			nodes.Add( node );
 			if(Event.current != null)
 				Event.current.Use();

@@ -85,29 +85,45 @@ namespace ShaderForge {
 			return ( ( maj << 8 ) & 0xffff ) | min;
 		}
 		 * */
-
+		  
 
 		public static bool SerializedNodeIsProperty( string s ){
 			return s.Contains(",ptlb:"); // Property label
 		}
 
-		public static void ParseNodeDataFromShader( SF_Editor editor, Shader s ) {
+		public static bool ParseNodeDataFromShader( SF_Editor editor, Shader s ) {
 			SF_Parser.editor = editor;
 			SF_Parser.links = new List<SF_Link>();
 			// Search for Shader Forge data
 			string data = ExtractShaderForgeData( s );
 			if( string.IsNullOrEmpty( data ) ) {
 				editor.CreateOutputNode();
-				return;
+				return true; // Empty shader
 			}
-			LoadFromNodeData( data );
+			string missingNode;
+			bool didLoadFlawlessly = LoadFromNodeData( data, out missingNode );
+			 
+			if( !didLoadFlawlessly ) {
+				EditorUtility.DisplayDialog( "Failed to load shader", "Failed to open shader due to missing the node [" + missingNode + "]", "Close" );
+				editor.Close();
+//				editor.Init();
+				//editor.closeMe = true;
+				//editor.initialized = false;
+				//SF_Editor.instance = null;
+				//editor.Close();
+				return false;
+			}
+
+			return true;
+				
 		}
 
 
 
 
-		private static void LoadFromNodeData( string data ) {
+		private static bool LoadFromNodeData( string data, out string missingNode ) {
 			// First, split by rows (;)
+			missingNode = "";
 			string[] rows = data.Split( ';' ); // TODO: Escape ; and | characters in user created comments!
 
 			// TODO: Subshaders etc
@@ -116,7 +132,13 @@ namespace ShaderForge {
 			foreach( string row in rows ) {
 				if( row.StartsWith( "n:" ) ) {
 					//Debug.Log("Deserializing node:" + row);
-					DeserializeNode( row.Substring( 2 ), ref links );
+					SF_Node node = DeserializeNode( row.Substring( 2 ), ref links );
+					if( node == null ) {
+						missingNode = row.Substring( 2 ).Split(',')[0].Split(':')[1];
+						SF_Parser.settingUp = false;
+						SF_Parser.quickLoad = false;
+						return false; // Interrupt node loading, node wasn't found
+					}
 					continue;
 				}
 				if( row.StartsWith( "ps:" ) ) {
@@ -170,7 +192,7 @@ namespace ShaderForge {
 			//Debug.Log( "Centered camera, recompiling shader..." );
 			editor.materialOutput.OnUpdateNode( NodeUpdateType.Hard, true );
 
-
+			return true;
 		}
 
 		// This is the data per-node
@@ -205,7 +227,12 @@ namespace ShaderForge {
 				switch( dKey ) {
 					case "type":
 						//Debug.Log( "Deserializing " + dValue );
-						node = TryCreateNodeOfType( dValue ); if( node == null ) { Debug.LogError( "Node not found, returning..." ); return null; }
+						node = TryCreateNodeOfType( dValue );
+						if( node == null ) {
+							if(SF_Debug.dynamicNodeLoad)
+								Debug.LogError( "Node not found, returning..." );
+							return null;
+						}
 						break;
 					case "id":
 						node.id = int.Parse( dValue );
@@ -257,7 +284,7 @@ namespace ShaderForge {
 					}
 				}
 			}
-			if( node == null ) {
+			if( node == null && SF_Debug.dynamicNodeLoad ) {
 				Debug.LogError( "Type [" + nodeType + "] not found!" );
 			}
 			return node;

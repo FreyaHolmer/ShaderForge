@@ -263,6 +263,9 @@ namespace ShaderForge {
 					texNode.OnAssignedTexture();
 					Event.current.Use();
 				}
+				if(droppedObj is ProceduralMaterial){
+					OnDroppedSubstance(droppedObj as ProceduralMaterial);
+				}
 			}
 
 			if( Event.current.type == EventType.dragUpdated && Event.current.type != EventType.DragPerform ) {
@@ -274,6 +277,8 @@ namespace ShaderForge {
 							editor.nodeBrowser.OnStartDrag( editor.GetTemplate<SFN_Tex2d>() );
 						else
 							editor.nodeBrowser.UpdateDrag();
+					} else if(dragObj is ProceduralMaterial){
+						DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 					} else {
 						DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
 					}
@@ -330,6 +335,53 @@ namespace ShaderForge {
 			}
 
 
+		}
+
+
+		public void OnDroppedSubstance(ProceduralMaterial procMat){
+
+			Texture diffuse = TryGetProceduralTexture(procMat, "_MainTex");
+			Texture normal = TryGetProceduralTexture(procMat, "_BumpMap");
+			//Texture parallax = TryGetProceduralTexture(procMat, "_ParallaxMap");
+			//Texture emission = TryGetProceduralTexture(procMat, "_Illum");
+			//TryGetProceduralTexture("_MainTex");
+
+			SF_Node prevNode = TryLinkIfExistsAndOpenSlotAvailable(diffuse, "MainTex", editor.materialOutput.diffuse, "RGB");
+			TryLinkIfExistsAndOpenSlotAvailable(normal, "BumpMap", editor.materialOutput.normal, "RGB", prevNode);
+
+
+		}
+
+		// For connecting procedural materials to the main node
+		public SF_Node TryLinkIfExistsAndOpenSlotAvailable(Texture tex, string propertyName, SF_NodeConnector connector, string outChannel, SF_Node prevNode = null){
+
+			if(tex){
+				SFN_Tex2d tNode = editor.AddNode<SFN_Tex2d>();
+				if(prevNode != null){
+					Rect r = tNode.rect;
+					r = r.MovedDown(1);
+					r.y += 64;
+					tNode.rect = r;
+				}
+				tNode.TextureAsset = tex;
+				tNode.property.SetName(propertyName);
+				tNode.OnAssignedTexture();
+				if(connector.enableState == EnableState.Enabled && connector.availableState == AvailableState.Available && !connector.IsConnected()){
+					connector.LinkTo(tNode[outChannel]);
+				}
+				return tNode;
+			}
+			return null;
+		}
+
+		public Texture TryGetProceduralTexture(ProceduralMaterial procMat, string propName){
+			Texture returnTex = null;
+			try{
+				if(procMat.HasProperty(propName))
+					returnTex = procMat.GetTexture(propName);
+			} catch (UnityException e){
+			}
+			return returnTex;
 		}
 
 

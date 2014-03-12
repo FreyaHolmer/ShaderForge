@@ -480,10 +480,20 @@ namespace ShaderForge {
 					App( "#pragma multi_compile_shadowcaster" );
 			}
 
+			List<int> groups = new List<int>();
 			foreach(SF_Node n in cNodes){
-				if(n.IsProperty() && n.property is SFP_Branch){
-					App(n.property.GetMulticompilePragma ());
+				int group;
+				string[] mcPrags = n.TryGetMultiCompilePragmas(out group);
+				if(!groups.Contains(group) && mcPrags != null){
+					groups.Add(group);
+					for(int i=0;i<mcPrags.Length;i++){
+						App("#pragma multi_compile " + mcPrags[i]);
+					}
 				}
+				// Old branching tests
+				//if(n.IsProperty() && n.property is SFP_Branch){
+				//	App(n.property.GetMulticompilePragma ());
+				//}
 			}
 
 

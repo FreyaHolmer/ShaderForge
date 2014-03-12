@@ -1297,6 +1297,11 @@ namespace ShaderForge {
 			varDefined = true;
 		}
 
+		public virtual string[] TryGetMultiCompilePragmas( out int group ){
+			group = 0;
+			return null; // Override
+		}
+
 
 		public void DefineGhostsIfNeeded(ref List<SF_Node> ghosts) {
 

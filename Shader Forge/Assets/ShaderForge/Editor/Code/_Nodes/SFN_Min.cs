@@ -54,12 +54,12 @@ namespace ShaderForge {
 
 		public override float NodeOperator( int x, int y, int c ) {
 
-			float minimum = Mathf.Min( GetInputData( "A" )[x, y, c], GetInputData( "B" )[x, y, c] );
+			float minimum = Mathf.Min( GetInputData( "A", x, y, c ), GetInputData( "B", x, y, c ) );
 
 			// Loop through all chain childs
 			foreach(SF_NodeConnector con in connectors){
 				if(con.IsConnected() && con.IsChild()){
-					minimum = Mathf.Min(minimum, con.inputCon.node.texture[x,y,c] );
+					minimum = Mathf.Min(minimum, GetInputData( con.strID, x, y, c ) );
 				}
 			}
 

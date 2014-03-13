@@ -52,12 +52,12 @@ namespace ShaderForge {
 
 		public override float NodeOperator( int x, int y, int c ) {
 
-			float maximum = Mathf.Max( GetInputData( "A" )[x, y, c], GetInputData( "B" )[x, y, c] );
+			float maximum = Mathf.Max( GetInputData( "A" , x, y, c ), GetInputData( "B" , x, y, c ) );
 			
 			// Loop through all chain childs
 			foreach(SF_NodeConnector con in connectors){
 				if(con.IsConnected() && con.IsChild()){
-					maximum = Mathf.Max(maximum, con.inputCon.node.texture[x,y,c] );
+					maximum = Mathf.Max(maximum, GetInputData( con.strID , x, y, c ) );
 				}
 			}
 			

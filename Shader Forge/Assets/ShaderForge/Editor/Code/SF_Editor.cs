@@ -287,7 +287,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Tan ), 	catTrig + "Tan" );
 
 
-			// Uncategorized
+			// Code
 			string catCode = "Code/";
 			AddTemplate( typeof( SFN_Code ), catCode + "Code" ).MarkAsUnstableNode();
 

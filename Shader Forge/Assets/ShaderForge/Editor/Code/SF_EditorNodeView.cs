@@ -380,6 +380,7 @@ namespace ShaderForge {
 				if(procMat.HasProperty(propName))
 					returnTex = procMat.GetTexture(propName);
 			} catch (UnityException e){
+				e.Equals(e);
 			}
 			return returnTex;
 		}

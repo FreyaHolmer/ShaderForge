@@ -85,7 +85,41 @@ namespace ShaderForge {
 			}
 			GUILayout.Label(string.Empty);
 		}
-		
+
+		public static int ComponentCountOf(CustomValueType cvt){
+
+			switch(cvt){
+			case CustomValueType.Float:
+				return 1;
+			case CustomValueType.Half:
+				return 1;
+			case CustomValueType.Fixed:
+				return 1;
+			case CustomValueType.Float2:
+				return 2;
+			case CustomValueType.Half2:
+				return 2;
+			case CustomValueType.Fixed2:
+				return 2;
+			case CustomValueType.Float3:
+				return 3;
+			case CustomValueType.Half3:
+				return 3;
+			case CustomValueType.Fixed3:
+				return 3;
+			case CustomValueType.Float4:
+				return 4;
+			case CustomValueType.Half4:
+				return 4;
+			case CustomValueType.Fixed4:
+				return 4;
+			default:
+				Debug.Log("Invalid component count check of custom value type: " + cvt);
+				return 0;
+			}
+
+
+		}
 		
 
 		public static Color VectorToColor( float v ) {

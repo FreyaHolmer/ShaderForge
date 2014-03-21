@@ -62,6 +62,22 @@ namespace ShaderForge {
 		}
 
 
+		private static GUIStyle codeTextArea;
+		public static GUIStyle CodeTextArea {
+			get {
+				if( codeTextArea == null ) {
+					codeTextArea = new GUIStyle( GUI.skin.textArea );
+					codeTextArea.font = (Font)Resources.Load( SF_Paths.pFonts + "VeraMono", typeof(Font) );
+					codeTextArea.padding = new RectOffset(3,3,3,0);
+					codeTextArea.wordWrap = false;
+				}
+				return codeTextArea;
+			}
+		}
+
+		// Bitstream Vera Sans Mono
+
+
 		private static GUIStyle miniLabelOverflow;
 		public static GUIStyle MiniLabelOverflow {
 			get {

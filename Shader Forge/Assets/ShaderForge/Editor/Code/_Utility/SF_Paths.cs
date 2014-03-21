@@ -4,6 +4,7 @@ using System.Collections;
 public static class SF_Paths {
 
 	public const string pInterface = "Interface/";
+	public const string pFonts = pInterface + "Fonts/";
 	public const string pMeshes = "Meshes/";
 
 

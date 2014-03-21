@@ -34,6 +34,8 @@ namespace ShaderForge {
 		[SerializeField]
 		public bool isNew = false;
 		[SerializeField]
+		public bool isUnstable = false;
+		[SerializeField]
 		public string fullPath;
 		[SerializeField]
 		public string category;
@@ -105,6 +107,11 @@ namespace ShaderForge {
 
 		public SF_EditorNodeData MarkAsNewNode() {
 			isNew = true;
+			return this;
+		}
+
+		public SF_EditorNodeData MarkAsUnstableNode() {
+			isUnstable = true;
 			return this;
 		}
 

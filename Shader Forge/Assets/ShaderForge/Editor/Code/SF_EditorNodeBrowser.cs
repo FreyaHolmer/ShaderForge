@@ -253,11 +253,11 @@ namespace ShaderForge {
 
 
 			GUI.color = Color.white;
-			if( entry.isNew ) {
+			if( entry.isNew || entry.isUnstable) {
 				GUIStyle miniStyle = new GUIStyle( EditorStyles.miniBoldLabel );
 				miniStyle.alignment = TextAnchor.UpperRight;
 				miniStyle.normal.textColor = Color.red;
-				GUI.Label( btnRect, "New", miniStyle );
+				GUI.Label( btnRect, entry.isNew ? "New" : "Unstable", miniStyle );
 			}
 
 			SF_GUI.AssignCursor( btnRect, MouseCursor.Pan );

@@ -25,7 +25,7 @@ namespace ShaderForge {
 			SetName( node.GetVariableName() );
 		}
 
-		public string FormatInternalName(string s){
+		public static string FormatInternalName(string s){
 			Regex rgx = new Regex( "[^a-zA-Z0-9_]" );
 			s = rgx.Replace( s, "" );
 			return s;

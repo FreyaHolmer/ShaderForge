@@ -31,6 +31,41 @@ namespace ShaderForge {
 		public OutChannel outputChannel = OutChannel.All;
 		public ValueType valueType;
 		public ValueType valueTypeDefault;
+		[SerializeField]
+		private CustomValueType customValueType;
+		public CustomValueType CustomValueType{ // This is used when dealing with custom nodes
+			get{
+				return customValueType;
+			}
+			set{
+				CustomValueType cvtBef = customValueType;
+				customValueType = value;
+				bool changed = (customValueType != cvtBef);
+				if(changed){
+					switch(customValueType){
+					case CustomValueType.Float:
+						this.TypecastTo(1).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv1);
+						break;
+					case CustomValueType.Float2:
+						this.TypecastTo(2).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv2);
+						break;
+					case CustomValueType.Float3:
+						this.TypecastTo(3).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv3);
+						break;
+					case CustomValueType.Float4:
+						this.TypecastTo(4).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv4);
+						break;
+					//case CustomValueType.Texture:
+					//	this.TypecastTo(0).WithColor(SF_Node.colorExposed).SetValueType(this.valueTypeDefault = ValueType.TexAsset);
+					//	break;
+					}
+					
+				}
+
+
+			}
+
+		}
 		public string label;
 		public SF_NodeConnector inputCon;
 		public SF_NodeConnectionLine conLine;
@@ -726,7 +761,7 @@ namespace ShaderForge {
 
 
 			if( this.conType == other.conType ) {
-				Debug.Log("Invalid IO linking: " + other.node.nodeName);
+				Debug.Log("Invalid IO linking: " + other.node.nodeName + " con: " + other.label + " thisnode: " + node.nodeName + " con: " + this.label);
 				return;
 			}
 
@@ -920,6 +955,8 @@ namespace ShaderForge {
 			return false;
 		}
 
+		public const int defaultConnectorWidth = 25;
+
 		public void Draw( Vector2 pos ) {
 
 			bool isUnconnectedChild = IsChild() && !IsConnected();
@@ -930,7 +967,7 @@ namespace ShaderForge {
 
 			// Don't draw if invalid
 
-			rect = new Rect( pos.x, pos.y, 25, 14 );
+			rect = new Rect( pos.x, pos.y, defaultConnectorWidth, 14 );
 
 			if( conType == ConType.cOutput ) {
 				rect.xMin -= node.extraWidthOutput;

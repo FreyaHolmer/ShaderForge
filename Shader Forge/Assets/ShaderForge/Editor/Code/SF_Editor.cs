@@ -288,13 +288,14 @@ namespace ShaderForge {
 
 
 			// Uncategorized
-		//	AddTemplate( typeof( SFN_Code ), "Code" );
+			string catCode = "Code/";
+			AddTemplate( typeof( SFN_Code ), catCode + "Code" ).MarkAsUnstableNode();
 
 
-			//if( SF_Debug.dynamicNodeLoad ) {
-			TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" );
-			TryAddTemplateDynamic( "SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular" );
-			//}
+
+			TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" ).MarkAsNewNode();
+			TryAddTemplateDynamic( "SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular" ).MarkAsNewNode();
+
 			
 
 
@@ -1010,6 +1011,7 @@ namespace ShaderForge {
 							GUI.Label(previewLabelRect,shaderTitle,SF_Styles.GetNodeScreenshotTitleText());
 						}
 					}
+
 					Rect creditsLineRect = nodeWrap;
 					creditsLineRect.height = 32;
 					creditsLineRect.x -= nodeView.cameraPos.x;
@@ -1033,10 +1035,22 @@ namespace ShaderForge {
 					Rect crBottom = creditsRect;
 					crBottom = crBottom.MovedDown();
 					crBottom.height = 16;
-					crBottom.width += 256;
+					//crBottom.width += 256;
+					TextClipping prevClip = GUI.skin.label.clipping;
+					//GUI.skin.label.alignment = TextAnchor.MiddleLeft;
+					GUI.skin.label.clipping = TextClipping.Overflow;
 					GUI.Label(crBottom, SF_Tools.versionStage + " " + SF_Tools.version + " - http://u3d.as/6cc");
-					//GUI.color = new Color(1f,0f,0f,0.4f);
-					//GUI.DrawTexture(creditsRect, EditorGUIUtility.whiteTexture);
+					GUI.skin.label.clipping = prevClip;
+
+					if(SF_Debug.screenshot){
+						GUI.color = new Color(1f,0f,0f,0.4f);
+						GUI.DrawTexture(crBottom, EditorGUIUtility.whiteTexture);
+						GUI.color = new Color(0f,1f,0f,0.4f);
+						GUI.DrawTexture(creditsRect, EditorGUIUtility.whiteTexture);
+						GUI.color = new Color(0f,0f,1f,0.4f);
+						GUI.DrawTexture(crTop, EditorGUIUtility.whiteTexture);
+					}
+
 					//GUI.color = Color.white;
 					GUI.color = Color.white;
 

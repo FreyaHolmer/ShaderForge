@@ -634,6 +634,9 @@ namespace ShaderForge {
 			return !string.IsNullOrEmpty(comment);
 		}
 
+		float commentYposTarget;
+		float commentYposCurrent;
+
 
 		public void DrawWindow() {
 
@@ -643,12 +646,16 @@ namespace ShaderForge {
 			//Vector2 prev = new Vector2( rect.x, rect.y );
 			//int prevCont = GUIUtility.hotControl;
 
+			if(Event.current.type == EventType.repaint){
+				commentYposCurrent = Mathf.Lerp(commentYposCurrent, commentYposTarget, 0.4f);
+			}
+
 
 
 			GUI.Box( rect, nodeName, SF_Styles.NodeStyle );
 
 
-
+			 
 
 			ResetWindowColor();
 			//rect = GUI.Window( id, rect, NeatWindow, nodeName );
@@ -660,7 +667,7 @@ namespace ShaderForge {
 			} else if( SF_GUI.ReleasedRawLMB() ) {
 				OnRelease();
 			} else if( Event.current.type == EventType.ContextClick ) {
-				Vector2 mousePos = Event.current.mousePosition;
+				//Vector2 mousePos = Event.current.mousePosition;
 				if( MouseOverNode( world: true ) ) {
 					// Now create the menu, add items and show it
 					GenericMenu menu = new GenericMenu();
@@ -692,7 +699,11 @@ namespace ShaderForge {
 				editor.Defocus();
 			}
 
-			if( IsProperty() ) {
+			bool codeNode = this is SFN_Code;
+
+			bool mouseOver = rect.Contains( Event.current.mousePosition );
+
+			if( IsProperty() || codeNode ) {
 				PrepareWindowColor();
 				Rect nameRect = new Rect( rect );
 				nameRect.height = 20;
@@ -701,25 +712,31 @@ namespace ShaderForge {
 				//GUI.color = SF_Styles.nodeNameLabelBackgroundColor;
 				GUI.Box( nameRect, "", EditorStyles.textField );
 				GUI.color = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-				string oldName = IsGlobalProperty() ? property.nameInternal : property.nameDisplay;
+				string oldName = codeNode ? (this as SFN_Code).functionName : IsGlobalProperty() ? property.nameInternal : property.nameDisplay;
 				
 				GUI.SetNextControlName(focusName);
 				//Debug.Log();
 
 				string newName;
-				if(IsGlobalProperty())
+				if(codeNode)
+					newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
+				else if(IsGlobalProperty())
 					newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
 				else
 					newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
 
-	
-				SF_Tools.FormatSerializable( ref newName );
+				if(codeNode)
+					newName = SF_ShaderProperty.FormatInternalName(newName);
+				else
+					SF_Tools.FormatSerializable( ref newName );
 
 
 				
 				
 				if( oldName != newName ){
-					if(IsGlobalProperty())
+					if(codeNode)
+						(this as SFN_Code).functionName = newName.Replace(" ",string.Empty);
+					else if(IsGlobalProperty())
 						property.SetBothNameAndInternal( newName );
 					else
 						property.SetName( newName );
@@ -727,7 +744,7 @@ namespace ShaderForge {
 
 				bool focusedField = GUI.GetNameOfFocusedControl() == focusName;
 
-				bool mouseOver = nameRect.Contains( Event.current.mousePosition ) || rect.Contains( Event.current.mousePosition );
+				mouseOver = nameRect.Contains( Event.current.mousePosition ) || rect.Contains( Event.current.mousePosition );
 
 				if( focusedField )
 					editor.nodeView.selection.DeselectAll();
@@ -735,13 +752,13 @@ namespace ShaderForge {
 				if( selected || focusedField || mouseOver && !editor.screenshotInProgress ) {
 					GUI.color = new Color(1f,1f,1f,0.6f);
 					nameRect.x += nameRect.width;
-					if(!IsGlobalProperty()){
+					if(!IsGlobalProperty() && !codeNode){
 						GUI.Label( nameRect, property.nameInternal, EditorStyles.boldLabel );
 					}
 					nameRect.y -= 12;
 
 					// Right:
-					if(!IsGlobalProperty()){ // Global ones *only* have internal names, display as main instead
+					if(!IsGlobalProperty() && !codeNode){ // Global ones *only* have internal names, display as main instead
 						GUI.color = new Color( 1f, 1f, 1f, 0.3f );
 						GUI.Label( nameRect, "Internal name:", EditorStyles.miniLabel);
 					}
@@ -752,7 +769,7 @@ namespace ShaderForge {
 					nameRect.height = 20;
 					nameRect.y -= 33;
 					GUI.color = new Color( 1f, 1f, 1f, 0.6f );
-					GUI.Label( nameRect, !IsGlobalProperty() ? "Property label:" : "Internal name:", EditorStyles.miniLabel );
+					GUI.Label( nameRect, codeNode ? "Function name:" : !IsGlobalProperty() ? "Property label:" : "Internal name:", EditorStyles.miniLabel );
 
 
 					GUI.color = Color.white;
@@ -769,9 +786,20 @@ namespace ShaderForge {
 				cr.height = SF_Styles.GetNodeCommentLabelTextField().fontSize + 4;
 				cr.width = 2048;
 				cr.y -= cr.height + 2;
-				if( IsProperty() ){
-					cr.y -= 26;
+
+
+				commentYposTarget = cr.y;
+
+				//commentYposCurrent = 
+
+				if( IsProperty() || this is SFN_Code ){
+					commentYposTarget -= 19;
+					if( mouseOver || selected ){
+						commentYposTarget -= 8;
+					}
 				}
+
+				cr.y = Mathf.Round(commentYposCurrent);
 
 				if(isEditingNodeTextField){
 
@@ -1185,6 +1213,7 @@ namespace ShaderForge {
 				GUI.enabled = false;
 				GUI.skin.label.alignment = TextAnchor.MiddleCenter;
 				GUI.Label( lowerRect, "<Input missing>" );
+				GUI.skin.label.alignment = TextAnchor.MiddleLeft;
 				GUI.enabled = true;
 				return;
 			}

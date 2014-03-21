@@ -292,10 +292,13 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Code ), catCode + "Code" ).MarkAsUnstableNode();
 
 
+			SF_EditorNodeData ssDiff = TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" );
+			if(ssDiff != null)
+				ssDiff.MarkAsNewNode();
 
-			TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" ).MarkAsNewNode();
-			TryAddTemplateDynamic( "SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular" ).MarkAsNewNode();
-
+			SF_EditorNodeData ssSpec = TryAddTemplateDynamic( "SFN_SkyshopSpec", "Skyshop/" + "Skyshop Specular" );
+			if( ssSpec != null )
+				ssSpec.MarkAsNewNode();
 			
 
 

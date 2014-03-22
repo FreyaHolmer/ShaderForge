@@ -311,14 +311,14 @@ namespace ShaderForge {
 					dependencies.NeedLightColor();
 				}
 
-				/*
+
 				if( n is SFN_Parallax ) {
 					dependencies.NeedFragViewDirection();
 					dependencies.NeedFragTangentTransform();
 					if( !( n as SFN_Parallax ).GetInputIsConnected( "UVIN" ) ) {
 						dependencies.uv0 = true;
 					}
-				}*/
+				}
 
 				if( n.GetType() == typeof( SFN_Cubemap ) ) {
 					if( !n.GetInputIsConnected( "DIR" ) ) { // DIR connection, if not connected, we need default reflection vector

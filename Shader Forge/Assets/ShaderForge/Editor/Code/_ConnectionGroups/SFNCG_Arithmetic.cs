@@ -74,8 +74,19 @@ namespace ShaderForge {
 
 			output.SetValueType(vt);
 
+			int ccCalc;
+			if(SF_Tools.CompCountOf(vt, out ccCalc)){
+				if(ccCalc != output.node.texture.CompCount){
+					output.node.texture.CompCount = ccCalc;
+					output.node.OnUpdateNode(NodeUpdateType.Hard);
+				}
+			}
+
+
 			//Debug.Log("Setting output type of " + output.node.nodeName + " to " + output.valueType); // THIS IS SET TO PENDING VOR VEC1 INPUTS
 		}
+
+
 		
 		
 		// This is only run if there are no inputs missing!

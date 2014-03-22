@@ -42,6 +42,10 @@ namespace ShaderForge {
 			
 		}
 
+		public override int GetEvaluatedComponentCount(){
+			return 1;
+		}
+
 
 		public override void DrawLowerPropertyBox() {
 			//float vecPrev = texture.dataUniform[0];

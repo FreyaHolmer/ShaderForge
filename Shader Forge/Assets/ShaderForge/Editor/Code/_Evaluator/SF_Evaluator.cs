@@ -2017,8 +2017,6 @@ namespace ShaderForge {
 		public void LightPass() {
 
 			// TODO: FIX
-
-
 			// Only when real-time light things are connected. These are:
 			// Diffuse
 			// Specular

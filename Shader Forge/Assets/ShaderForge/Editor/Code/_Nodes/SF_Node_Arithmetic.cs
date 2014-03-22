@@ -32,6 +32,7 @@ namespace ShaderForge {
 			foreach(SF_NodeConnector con in connectors){
 				if( con.conType == ConType.cOutput || !con.IsConnected()) // Only connected ones, for now
 					continue;
+				//Debug.Log("GetEvaluatedComponentCount from node " + nodeName + " [" + con.label + "] cc = " + con.GetCompCount());
 				max = Mathf.Max( max, con.GetCompCount() );
 			}
 			return max;

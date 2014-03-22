@@ -142,9 +142,19 @@ namespace ShaderForge {
 		// TODO: Matrices & Samplers?
 		// TODO: Precision
 		public string GetVariableType() {
-			if( texture.CompCount == 1 )
+
+			int cc = GetEvaluatedComponentCount();
+			if(cc == 0)
+				cc = texture.CompCount;
+
+
+			if(cc == 1)
 				return "float";
-			return "float" + texture.CompCount;
+			return "float" + cc;
+
+			//if( texture.CompCount == 1 )
+			//	return "float";
+			//return "float" + texture.CompCount;
 		}
 
 		public string GetVariableName() {
@@ -407,7 +417,16 @@ namespace ShaderForge {
 					break;
 			}
 
-			return GetInputData( id )[x, y, c];
+			int cc = GetEvaluatedComponentCount();
+
+			if(cc > 1){
+				if(c > cc-1){
+					return 0f;
+				}
+			}
+
+			//return GetInputData( id, x, y, c );
+			return GetInputData( id ) [ x, y, c ];
 		}
 
 		/*

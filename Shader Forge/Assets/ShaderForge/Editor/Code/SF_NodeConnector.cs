@@ -322,6 +322,11 @@ namespace ShaderForge {
 			if( oc == OutChannel.RG )
 				return 2;
 
+			int custCount = SF_Tools.ComponentCountOf(customValueType);
+			if(custCount != 0){
+				return custCount;
+			}
+
 			return 1;
 		}
 

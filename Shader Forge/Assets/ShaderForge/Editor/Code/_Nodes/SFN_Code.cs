@@ -46,7 +46,12 @@ namespace ShaderForge {
 		}
 
 		public string GetFunctionName(){
-			return "CustomCode_" + id;
+			return functionName;
+			//return "CustomCode_" + id;
+		}
+
+		public override int GetEvaluatedComponentCount (){
+			return SF_Tools.ComponentCountOf(connectors[0].CustomValueType);
 		}
 
 		public override string GetPrepareUniformsAndFunctions(){

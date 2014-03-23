@@ -187,6 +187,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Negate ), 			catArithmetic + "Negate" );
 			AddTemplate( typeof( SFN_Noise ), 			catArithmetic + "Noise" );
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
+			AddTemplate( typeof( SFN_Posterize ), 		catArithmetic + "Posterize" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
 			AddTemplate( typeof( SFN_RemapRangeAdvanced ),catArithmetic + "Remap" );

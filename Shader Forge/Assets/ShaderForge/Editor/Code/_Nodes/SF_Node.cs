@@ -417,13 +417,16 @@ namespace ShaderForge {
 					break;
 			}
 
-			int cc = GetEvaluatedComponentCount();
-
-			if(cc > 1){
-				if(c > cc-1){
-					return 0f;
+			int cc; //GetEvaluatedComponentCount();
+			if(SF_Tools.CompCountOf(con.valueType, out cc)){
+				if(cc > 1){
+					if(c > cc-1){
+						return 0f;
+					}
 				}
 			}
+
+
 
 			//return GetInputData( id, x, y, c );
 			return GetInputData( id ) [ x, y, c ];

@@ -28,6 +28,7 @@ namespace ShaderForge {
 		public bool varDefined = false; // Whether or not this node has had its variable defined already.
 		public bool varPreDefined = false; // Whether or not this variable has done its prefefs
 		public bool alwaysDefineVariable = false;
+		public bool neverDefineVariable = false;
 		public bool onlyPreDefine = false;	// If it should only do the pre-define, and skip the regular variable or not (Used in branching)
 
 		public static Color colorExposed = new Color( 0.8f, 1f, 0.9f );
@@ -158,8 +159,12 @@ namespace ShaderForge {
 		}
 
 		public string GetVariableName() {
-			if( IsProperty() && !ShouldDefineVariable())
-				return property.nameInternal + "_var";
+			if(IsProperty()){
+				if(!ShouldDefineVariable() && !neverDefineVariable)
+					return property.nameInternal + "_var";
+				else
+					return property.nameInternal;
+			}
 			return "node_" + id;
 		}
 
@@ -1410,6 +1415,8 @@ namespace ShaderForge {
 
 
 		public bool ShouldDefineVariable() {
+			if(neverDefineVariable)
+				return false;
 			return ((UsedMultipleTimes() || alwaysDefineVariable) /*&& !varDefined*/);
 		}
 

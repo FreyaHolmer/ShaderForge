@@ -21,6 +21,29 @@
 CLEANUP/*
 OLD_FILES/AutoPlaceScreenshots*
 Shader Forge/Assets/Experiments/*
+Shader Forge/Assets/Experiments.meta
+Shader Forge/Assets/Emily/*
+Shader Forge/Assets/Emily.meta
+Shader Forge/Assets/AssetStoreTools/*
+Shader Forge/Assets/AssetStoreTools.meta
+
+Shader Forge/Assets/ConsolePro/*
+Shader Forge/Assets/ConsolePro.meta
+
+Shader Forge/Assets/Editor/*
+Shader Forge/Assets/Editor.meta
+
+Shader Forge/Assets/Standard Assets/*
+Shader Forge/Assets/Standard Assets.meta
+
+Shader Forge/Assets/ConsolePro/*
+Shader Forge/Assets/ConsolePro.meta
+
+Shader Forge/Assets/Alpha Tests/*
+Shader Forge/Assets/Alpha Tests.meta
+
+Shader Forge/Assets/StrumpyShaderEditor/*
+Shader Forge/Assets/StrumpyShaderEditor.meta
 
 Shader Forge/Assets/LightmapTestNew/*
 Shader Forge/Assets/LightmapTestNew.meta

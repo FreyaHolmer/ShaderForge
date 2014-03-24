@@ -17,7 +17,8 @@ namespace ShaderForge {
 		Fixed,
 		Fixed2,
 		Fixed3,
-		Fixed4
+		Fixed4,
+		Sampler2D
 		/*, Texture*/ };
 
 	[System.Serializable]
@@ -42,6 +43,7 @@ namespace ShaderForge {
 				SF_NodeConnector.Create(this,"OUT","Out",ConType.cOutput,ValueType.VTvPending)
 			};
 			controlName = base.id + "_codeArea";
+			connectors[0].CustomValueType = CustomValueType.Float3;
 			//Debug.Log("Creating thing " + base.id);
 		}
 
@@ -74,24 +76,10 @@ namespace ShaderForge {
 		}
 
 		private string ToCodeType(CustomValueType cvt){
-
-			return cvt.ToString().ToLower();
-			/*
-			switch(cvt){
-			case CustomValueType.Float:
-				return "float";
-			case CustomValueType.Float2:
-				return "float2";
-			case CustomValueType.Float3:
-				return "float3";
-			case CustomValueType.Float4:
-				return "float4";
-			//case CustomValueType.Texture:
-			//	return "sampler2D";
-			default:
-				return "";
-			}*/
-
+			if(cvt == CustomValueType.Sampler2D)
+				return "sampler2D"; // Uppercase D
+			else
+				return cvt.ToString().ToLower();
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -154,7 +142,7 @@ namespace ShaderForge {
 
 
 			if(!isEditing) // Don't resize while editing
-				targetSideButtonWidth = (selected) ? 64f : 0f;
+				targetSideButtonWidth = (selected) ? 70f : 0f;
 
 
 			int sideButtonHeight = 16;

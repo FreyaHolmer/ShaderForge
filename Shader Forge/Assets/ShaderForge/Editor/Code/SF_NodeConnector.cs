@@ -55,9 +55,33 @@ namespace ShaderForge {
 					case CustomValueType.Float4:
 						this.TypecastTo(4).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv4);
 						break;
-					//case CustomValueType.Texture:
-					//	this.TypecastTo(0).WithColor(SF_Node.colorExposed).SetValueType(this.valueTypeDefault = ValueType.TexAsset);
-					//	break;
+					case CustomValueType.Half:
+						this.TypecastTo(1).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv1);
+						break;
+					case CustomValueType.Half2:
+						this.TypecastTo(2).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv2);
+						break;
+					case CustomValueType.Half3:
+						this.TypecastTo(3).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv3);
+						break;
+					case CustomValueType.Half4:
+						this.TypecastTo(4).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv4);
+						break;
+					case CustomValueType.Fixed:
+						this.TypecastTo(1).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv1);
+						break;
+					case CustomValueType.Fixed2:
+						this.TypecastTo(2).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv2);
+						break;
+					case CustomValueType.Fixed3:
+						this.TypecastTo(3).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv3);
+						break;
+					case CustomValueType.Fixed4:
+						this.TypecastTo(4).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTv4);
+						break;
+					case CustomValueType.Sampler2D:
+						this.TypecastTo(0).WithColor(SF_Node.colorExposed).SetValueType(this.valueTypeDefault = ValueType.TexAsset);
+						break;
 					}
 					
 				}

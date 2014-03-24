@@ -21,6 +21,8 @@ namespace ShaderForge {
 			node_height = (int)(rect.height - 6f); // Odd, but alright...
 			base.UseLowerPropertyBox( true, true );
 			base.texture.CompCount = 4;
+			neverDefineVariable = true;
+			//alwaysDefineVariable = true;
 			property = ScriptableObject.CreateInstance<SFP_Tex2d>().Initialize( this );
 
 			connectors = new SF_NodeConnector[]{
@@ -66,8 +68,10 @@ namespace ShaderForge {
 		// TODO: MIP selection
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 
-			if( varDefined )
+			//if( varDefined )
 				return GetVariableName();
+			//else
+				//DefineVariable(); // This lags for some reason
 
 			/*
 			bool useLOD = GetInputIsConnected( 1 ) || (SF_Evaluator.inVert || SF_Evaluator.inTess);

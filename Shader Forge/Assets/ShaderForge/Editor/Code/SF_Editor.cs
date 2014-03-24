@@ -287,10 +287,11 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Sin ), 	catTrig + "Sin" );
 			AddTemplate( typeof( SFN_Tan ), 	catTrig + "Tan" );
 
-
-			// Code
 			string catCode = "Code/";
-			AddTemplate( typeof( SFN_Code ), catCode + "Code" ).MarkAsUnstableNode();
+			AddTemplate( typeof( SFN_Code ), catCode + "Code" );
+
+			string catUtility = "Utility/";
+			AddTemplate( typeof( SFN_Relay ), catUtility + "Relay" ).MarkAsNewNode();
 
 
 			SF_EditorNodeData ssDiff = TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" );

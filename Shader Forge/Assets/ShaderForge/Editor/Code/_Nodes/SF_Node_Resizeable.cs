@@ -177,6 +177,11 @@ namespace ShaderForge {
 
 
 			if(resizing && Event.current.type == EventType.mouseDrag){
+
+				if(Event.current.delta.sqrMagnitude > 0){
+					UndoRecord("resize node");
+				}
+
 				if(xDrag == 1)
 					rect.width += Event.current.delta.x;
 				else if(xDrag == -1)

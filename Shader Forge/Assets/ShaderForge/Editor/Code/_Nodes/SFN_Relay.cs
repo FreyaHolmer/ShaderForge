@@ -19,6 +19,7 @@ namespace ShaderForge {
 			lowerRect.y -= 8;
 			lowerRect.height = 28;
 			base.showColor = false;
+			base.discreteTitle = true;
 			base.UseLowerPropertyBox( true, true );
 			extraWidthInput = -9;
 			extraWidthOutput = -9;

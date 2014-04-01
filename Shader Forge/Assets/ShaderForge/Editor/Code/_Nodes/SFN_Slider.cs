@@ -24,6 +24,7 @@ namespace ShaderForge {
 			node_height = 58;
 			base.Initialize( "Slider" );
 			base.showColor = false;
+			base.neverDefineVariable = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.uniform = true;
 			base.texture.CompCount = 1;
@@ -71,19 +72,22 @@ namespace ShaderForge {
 
 			GUI.Label( r, "Min" );
 			r.x += r.width;
-			min = EditorGUI.FloatField( r, min, centerFloatField );
+			//min = EditorGUI.FloatField( r, min, centerFloatField );
+			min = UndoableFloatField(r, min, "slider min value", centerFloatField);
 			r.x += r.width;
 			r.width = sliderWidth;
 			float beforeSlider = current;
 
 			string sliderName = "slider" + this.id;
 			GUI.SetNextControlName( sliderName );
-			current = GUI.HorizontalSlider( r, current, min, max );
+			//current = GUI.HorizontalSlider( r, current, min, max );
+			current = UndoableHorizontalSlider(r, current, min, max, "value" );
 			if( beforeSlider != current )
 				GUI.FocusControl( sliderName );
 			r.x += r.width;
 			r.width = labelWidth;
-			max = EditorGUI.FloatField( r, max, centerFloatField );
+			//max = EditorGUI.FloatField( r, max, centerFloatField );
+			max = UndoableFloatField(r, max, "slider max value", centerFloatField);
 			r.x += r.width;
 			GUI.Label( r, "Max" );
 

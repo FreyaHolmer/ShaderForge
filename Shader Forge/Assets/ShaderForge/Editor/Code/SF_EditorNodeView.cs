@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 using System.Xml;
 using System.IO;
 
@@ -67,19 +68,50 @@ namespace ShaderForge {
 		}
 
 		public void StopCutting(){
+			List<SF_NodeConnector> disconnectors = new List<SF_NodeConnector>();
 			for (int i = 0; i < editor.nodes.Count; i++) {
 				SF_Node n = editor.nodes [i];
 				for (int j = 0; j < n.connectors.Length; j++) {
 					SF_NodeConnector con = n.connectors [j];
 					if (con.IsConnected () && con.conType == ConType.cInput) {
 						if (con.conLine.aboutToBeDeleted) {
-							con.Disconnect ();
+							disconnectors.Add(con);
 						}
 					}
 				}
 			}
-			isCutting = false;
+
+			if(disconnectors.Count == 0){
+				isCutting = false;
+				return;
+			}
+
 			UnmarkDeleteHighlights();
+
+			//Undo.RecordObject((Object)con, "cut"
+			string undoMsg = "cut ";
+			if(disconnectors.Count > 1){
+				undoMsg += disconnectors.Count + " ";
+				undoMsg += "connections";
+			} else {
+				undoMsg += "connection: ";
+				undoMsg += disconnectors[0].node.nodeName;
+				undoMsg += "[" + disconnectors[0].label + "]";
+				undoMsg += " <--- ";
+				undoMsg += "[" + disconnectors[0].inputCon.label + "]";
+				undoMsg += disconnectors[0].inputCon.node.nodeName;
+			} // = disconnectors.Count > 1 ? "cut "+disconnectors.Count+" connections" : "cut connection " + disconnectors[i].node.name + "[" + 
+
+			foreach(SF_NodeConnector con in disconnectors){
+				Undo.RecordObject(con, undoMsg);
+			}
+
+			foreach(SF_NodeConnector con in disconnectors){
+				con.Disconnect();
+			}
+
+			isCutting = false;
+
 		}
 
 		public void UnmarkDeleteHighlights(){
@@ -297,7 +329,7 @@ namespace ShaderForge {
 				bool ifCursorStayed = Vector2.SqrMagnitude( mousePosStart - Event.current.mousePosition ) < SF_Tools.stationaryCursorRadius;
 
 				if( ifCursorStayed && !SF_GUI.MultiSelectModifierHeld() )
-					selection.DeselectAll();
+					selection.DeselectAll(registerUndo:true);
 
 
 				//editor.Defocus( deselectNodes: ifCursorStayed );
@@ -484,7 +516,7 @@ namespace ShaderForge {
 
 		public void ContextClick( object o ) {
 			SF_EditorNodeData nodeData = o as SF_EditorNodeData;
-			editor.AddNode( nodeData );
+			editor.AddNode( nodeData, true );
 		}
 
 
@@ -597,7 +629,6 @@ namespace ShaderForge {
 							con.inputCon.LinkTo( con, LinkingMethod.Default );
 						}
 					}
-
 				}
 				depth--;
 			}
@@ -667,55 +698,7 @@ namespace ShaderForge {
 		}
 
 		void DrawToolbar( Rect r ) {
-			/*
-			GUI.color = Color.white;
-			GUI.Box( r, "", toolbarStyle );
-			r.x += 6;
-
-			r.width = 108;
-*/
-		/*
-			GUI.color = SF_GUI.outdatedStateColors[(int)editor.ShaderOutdated];
-			if( GUI.Button( r, "Compile shader", EditorStyles.toolbarButton ) ) {
-				if(treeStatus.CheckCanCompile())
-					editor.shaderEvaluator.Evaluate();
-			}
-			GUI.color = Color.white;
-
-			DrawRecompileTimer(r);
-
-			r.x += r.width + 4;
-			r.width = 100;
-			SF_Settings.AutoRecompile = GUI.Toggle( r, SF_Settings.AutoRecompile, "Auto-compile" );
-			*/
-			/*
-			r.x += r.width + 20;
-			r.width = 140;
-			SF_Settings.HierarcyMove = GUI.Toggle( r, SF_Settings.HierarcyMove, "Hierarchal Node Move" );
-			r.x += r.width + 20;
-			r.width = 60;
-			*/
-			//GUI.Label( r, "Con. style:", EditorStyles.miniLabel );
-			//r.x += r.width + 2;
-			//SF_Settings.ConnectionLineStyle = (ConnectionLineStyle)EditorGUI.EnumPopup( r, SF_Settings.ConnectionLineStyle, EditorStyles.toolbarPopup);
-
-
-			//GUILayout.FlexibleSpace();
-
-			//r.x += r.width + 20;
-			/*
-			GUI.color = new Color(0.8f,1f,0.8f,1f);
-			r.width = 110;
-			SF_Tools.LinkButton( r, SF_Tools.manualLabel, SF_Tools.manualURL, EditorStyles.toolbarButton );
-			r.x += r.width + 2;
-			r.width = 120;
-			SF_Tools.LinkButton( r, SF_Tools.bugReportLabel, SF_Tools.bugReportURL, EditorStyles.toolbarButton );
-			r.x += r.width + 2;
-			r.width = 80;
-			SF_Tools.LinkButton( r, SF_Tools.featureListLabel, SF_Tools.featureListURL, EditorStyles.toolbarButton );
-			GUI.color = Color.white;
-			*/
-
+			
 		}
 
 		void UpdateCameraPanning() {
@@ -813,21 +796,6 @@ namespace ShaderForge {
 
 			return in_rect;
 		}
-
-
-		/*
-		float zoomAbsolute = 1f;
-		float zoom = 1f;
-		public void UpdateCameraZoomInput() {
-			if( Event.current.type == EventType.ScrollWheel ) {
-				zoomAbsolute = Mathf.Clamp(zoomAbsolute - Event.current.delta.y*0.025f, 0.1f,1f );
-			}
-		}
-
-		public void UpdateCameraZoomValue() {
-			zoom = Mathf.Lerp( zoom, zoomAbsolute, 0.05f);
-		}
-		*/
 
 
 	}

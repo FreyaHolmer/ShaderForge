@@ -56,7 +56,8 @@ namespace ShaderForge {
 			r.yMin += 4;
 			r.yMax -= 2;
 			r.xMin += 2;
-			SF_GUI.EnterableFloatField( this, r, ref texture.dataUniform.r, SF_Styles.LargeTextField );
+			//SF_GUI.EnterableFloatField( this, r, ref texture.dataUniform.r, SF_Styles.LargeTextField );
+			UndoableEnterableFloatField(r, ref texture.dataUniform.r, "value", SF_Styles.LargeTextField);
 			r.x += r.width + 6;
 			r.width = r.height;
 			Rect texCoords = new Rect( r );

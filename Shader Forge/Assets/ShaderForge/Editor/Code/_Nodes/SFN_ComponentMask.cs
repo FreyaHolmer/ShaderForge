@@ -89,12 +89,12 @@ namespace ShaderForge {
 			popupStyle.fontStyle = FontStyle.Bold;
 
 			connectors = new SF_NodeConnector[]{
-				SF_NodeConnector.Create(this,"OUT","-",ConType.cOutput,ValueType.VTvPending,false).Outputting(OutChannel.All),
-				SF_NodeConnector.Create(this,"IN","In",ConType.cInput,ValueType.VTvPending,false).SetRequired(true),
-				SF_NodeConnector.Create(this,"R","R",ConType.cOutput,	ValueType.VTv1)	.WithColor(Color.red)	.Outputting(OutChannel.R),
-				SF_NodeConnector.Create(this,"G","G",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.green)	.Outputting(OutChannel.G),
-				SF_NodeConnector.Create(this,"B","B",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.blue)	.Outputting(OutChannel.B),
-				SF_NodeConnector.Create(this,"A","A",ConType.cOutput,ValueType.VTv1)							.Outputting(OutChannel.A)
+				SF_NodeConnector.Create(this,"OUT",	"-",	ConType.cOutput,	ValueType.VTvPending,false)	.Outputting(OutChannel.All),
+				SF_NodeConnector.Create(this,"IN",	"In",	ConType.cInput,		ValueType.VTvPending,false)	.SetRequired(true),
+				SF_NodeConnector.Create(this,"R",	"R",	ConType.cOutput,	ValueType.VTv1)				.WithColor(Color.red)	.Outputting(OutChannel.R),
+				SF_NodeConnector.Create(this,"G",	"G",	ConType.cOutput,	ValueType.VTv1)				.WithColor(Color.green)	.Outputting(OutChannel.G),
+				SF_NodeConnector.Create(this,"B",	"B",	ConType.cOutput,	ValueType.VTv1)				.WithColor(Color.blue)	.Outputting(OutChannel.B),
+				SF_NodeConnector.Create(this,"A",	"A",	ConType.cOutput,	ValueType.VTv1)										.Outputting(OutChannel.A)
 			};
 			outCompCount = 1;
 			UpdateOutput();
@@ -130,7 +130,7 @@ namespace ShaderForge {
 			return GetConnectorByStringID( "IN" ).TryEvaluate() + componentString;
 		}
 
-
+		static string[] writtenNumber = new string[]{"first", "second", "third", "fourth"};
 
 		int outCompCount = 1;
 		int inCompCount = 4;
@@ -171,7 +171,10 @@ namespace ShaderForge {
 					int curDisplayIndex = (int)components[i]-labelOffset;
 					string[] dispLabels = labels[inCompCount-1];
 					GUI.color = chanColors[Mathf.Clamp((int)components[i]+1,0,4)];
-					components[i] = (CompChannel)(EditorGUI.Popup( r, curDisplayIndex, dispLabels, popupStyle )+labelOffset);
+
+					components[i] = (CompChannel)(UndoablePopup( r, curDisplayIndex, dispLabels, "set "+writtenNumber[i]+" component mask channel", popupStyle )+labelOffset);
+
+					//components[i] = (CompChannel)(EditorGUI.Popup( r, curDisplayIndex, dispLabels, popupStyle )+labelOffset);
 				}
 
 

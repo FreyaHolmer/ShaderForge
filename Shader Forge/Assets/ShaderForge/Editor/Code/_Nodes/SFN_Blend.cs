@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System;
 
 namespace ShaderForge{
 	public class SFN_Blend : SF_Node_Arithmetic {
@@ -66,8 +67,11 @@ namespace ShaderForge{
 		}
 
 	
-		public void StepBlendMode(int inc){
+		public void StepBlendMode(int inc, bool registerUndo){
 			int nextBlendIndex = (int)currentBlendMode + inc;
+
+
+
 
 			restart:
 			foreach(int i in skipEnum){
@@ -79,17 +83,31 @@ namespace ShaderForge{
 
 
 			if(nextBlendIndex == -1){
-				currentBlendMode = (BlendMode)maxEnum;
+				BlendMode nextBlendMode = (BlendMode)maxEnum;
+				if(registerUndo){
+					UndoRecord("switch blend mode to " + nextBlendMode.ToString());
+				}
+				currentBlendMode = nextBlendMode;
 				return;
 			} else if(nextBlendIndex > maxEnum){
-				currentBlendMode = (BlendMode)0;
+				BlendMode nextBlendMode = (BlendMode)0;
+				if(registerUndo){
+					UndoRecord("switch blend mode to " + nextBlendMode.ToString());
+				}
+				currentBlendMode = nextBlendMode;
 				return;
+			}
+
+			if(registerUndo){
+				UndoRecord("switch blend mode to " + (BlendMode)nextBlendIndex);
 			}
 
 			currentBlendMode = (BlendMode)nextBlendIndex;
 
 		}
-		
+
+
+
 
 
 		public override void RefreshValue() {
@@ -101,20 +119,22 @@ namespace ShaderForge{
 			EditorGUI.BeginChangeCheck();
 			Rect r = lowerRect;
 			r.height = 17;
-			currentBlendMode = (BlendMode)EditorGUI.EnumPopup( r, currentBlendMode );
+
+			currentBlendMode = (BlendMode)UndoableEnumPopup(r, currentBlendMode, "switch blend mode");
+
 			r = r.MovedDown();
 			r.width -= r.height*2+8;
-			clamp = GUI.Toggle(r,clamp,"Clamp", SF_Styles.ToggleDiscrete);
+			UndoableToggle(r,ref clamp, "Clamp", "blend node clamp", SF_Styles.ToggleDiscrete);
 			r.width = lowerRect.width;
 			r = r.MovedRight();
 			r.width = r.height+4;
 			r = r.MovedLeft(2);
 			if(GUI.Button(r,"\u25B2")){
-				StepBlendMode(-1);
+				StepBlendMode(-1, registerUndo:true);
 			}
 			r = r.MovedRight();
 			if(GUI.Button(r, "\u25BC")){
-				StepBlendMode(1);
+				StepBlendMode(1, registerUndo:true);
 			}
 
 

@@ -108,11 +108,13 @@ namespace ShaderForge {
 			EditorGUI.BeginChangeCheck();
 			Rect tmp = lowerRect;
 			tmp.height = 16f;
-			noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp , "Default", noTexValue, EditorStyles.miniLabel, false );
+			noTexValue = (NoTexValue)UndoableLabeledEnumPopup(tmp, "Default", noTexValue, "swith default color of " + property.nameDisplay );
 			tmp.y += tmp.height;
 			bool preMarked = markedAsNormalMap;
 
-			markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
+
+			UndoableToggle(tmp, ref markedAsNormalMap, "Normal map", "normal map decode of " + property.nameDisplay, null);
+			//markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
 
 			if(EditorGUI.EndChangeCheck()){
 				if(markedAsNormalMap && !preMarked)
@@ -288,7 +290,7 @@ namespace ShaderForge {
 
 			DrawWindow();
 			ResetWindowColor();
-			return !CheckIfDeleted();
+			return true;//!CheckIfDeleted();
 		}
 
 
@@ -378,8 +380,16 @@ namespace ShaderForge {
 
 			if( IsProperty() && Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == this.id ) {
 				Event.current.Use();
-				TextureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture;
-				OnAssignedTexture();
+				Texture newTextureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture;
+				if(newTextureAsset != TextureAsset){
+					if(newTextureAsset == null){
+						UndoRecord("unassign texture of " + property.nameDisplay);
+					} else {
+						UndoRecord("switch texture to " + newTextureAsset.name + " in " + property.nameDisplay);
+					}
+					TextureAsset = newTextureAsset;
+					OnAssignedTexture();
+				}
 			}
 
 			GUI.EndGroup();

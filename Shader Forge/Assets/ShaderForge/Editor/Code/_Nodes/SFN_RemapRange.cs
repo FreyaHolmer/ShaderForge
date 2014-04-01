@@ -70,9 +70,11 @@ namespace ShaderForge {
 		public void DrawRemapLine(ref Rect r, string label, ref Vector2 target){
 			GUI.Label(r.PadRight(4),label,SF_Styles.MiniLabelRight);
 			r = r.MovedRight();
-			SF_GUI.EnterableFloatField( this, r, ref target.x, EditorStyles.textField );
+			//SF_GUI.EnterableFloatField( this, r, ref target.x, EditorStyles.textField );
+			UndoableEnterableFloatField(r, ref target.x, "lower '" + label.ToLower() + "' value", EditorStyles.textField);
 			r = r.MovedRight();
-			SF_GUI.EnterableFloatField( this, r, ref target.y, EditorStyles.textField );
+			//SF_GUI.EnterableFloatField( this, r, ref target.y, EditorStyles.textField );
+			UndoableEnterableFloatField(r, ref target.y, "upper '" + label.ToLower() + "' value", EditorStyles.textField);
 			r = r.MovedDown().MovedLeft(2);
 		}
 

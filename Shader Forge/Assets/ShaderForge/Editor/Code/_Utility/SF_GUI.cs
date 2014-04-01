@@ -435,6 +435,11 @@ namespace ShaderForge {
 		}
 
 
+
+
+
+
+
 		public static void EnterableTextField( SF_Node n, Rect r, ref string str, GUIStyle style, bool update = true ) {
 			if( style == null )
 				style = EditorStyles.textField;
@@ -460,6 +465,9 @@ namespace ShaderForge {
 			}
 
 		}
+
+
+
 		
 		
 		public static void ConditionalToggle(Rect r, ref bool value, bool usableIf, bool disabledDisplayValue, string label){
@@ -473,11 +481,16 @@ namespace ShaderForge {
 		}
 
 
+
+
+
+
+
 		public static int ContentScaledToolbar(Rect r, string label, int selected, string[] labels ) {
 			
 			r.height = 15;
 			
-			Rect rLeft = new Rect( r );
+			Rect rLeft  = new Rect( r );
 			Rect rRight = new Rect( r );
 			
 			rLeft.width = SF_GUI.WidthOf( label, EditorStyles.miniLabel )+4;

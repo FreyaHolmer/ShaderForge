@@ -40,9 +40,11 @@ namespace ShaderForge {
 
 			Color cPrev = texture.dataUniform;
 			Rect tRect = lowerRect;
-			SF_GUI.EnterableFloatField( this, tRect, ref texture.dataUniform.r, null );
+			//SF_GUI.EnterableFloatField( this, tRect, ref texture.dataUniform.r, null );
+			UndoableEnterableFloatField(tRect,ref texture.dataUniform.r, "R channel", null);
 			tRect.x += tRect.width;
-			SF_GUI.EnterableFloatField( this, tRect, ref texture.dataUniform.g, null );
+			//SF_GUI.EnterableFloatField( this, tRect, ref texture.dataUniform.g, null );
+			UndoableEnterableFloatField(tRect,ref texture.dataUniform.g, "G channel", null);
 			if( texture.dataUniform != cPrev )
 				OnUpdateNode();
 			 

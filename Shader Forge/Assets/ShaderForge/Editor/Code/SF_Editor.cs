@@ -189,8 +189,8 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Posterize ), 		catArithmetic + "Posterize" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
-			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
 			AddTemplate( typeof( SFN_RemapRangeAdvanced ),catArithmetic + "Remap" );
+			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
 			AddTemplate( typeof( SFN_Round ), 			catArithmetic + "Round" );
 			AddTemplate( typeof( SFN_Sign ), 			catArithmetic + "Sign" );
 			AddTemplate( typeof( SFN_Sqrt ), 			catArithmetic + "Sqrt" );
@@ -546,9 +546,8 @@ namespace ShaderForge {
 					return;
 				}
 					
-
 				if( nData.CheckHotkeyInput() ) {
-					AddNode( nData );
+					AddNode( nData, true );
 				}
 			}
 			/*foreach(KeyValuePair<SF_EditorNodeData, Func<SF_Node>> entry in inputInstancers){
@@ -567,10 +566,11 @@ namespace ShaderForge {
 			return AddNode( GetTemplate( typeName ) );
 		}
 
-		public SF_Node AddNode( SF_EditorNodeData nodeData ) {
-			//Debug.Log( "nodeData: "+nodeData.type );
-			if( nodeData == null )
+		public SF_Node AddNode( SF_EditorNodeData nodeData, bool registerUndo = false ) {
+
+			if( nodeData == null ){
 				Debug.Log("Null node data passed into AddNode");
+			}
 
 			SF_Node node = nodeData.CreateInstance();
 
@@ -580,7 +580,11 @@ namespace ShaderForge {
 				else
 					Debug.Log( "Created a node of full path: " + nodeData.fullPath );
 			}
-				
+
+			if(registerUndo){
+				Undo.RecordObject(this, "add node " + node.nodeName);
+			}
+
 
 			nodes.Add( node );
 			if(Event.current != null)
@@ -620,12 +624,6 @@ namespace ShaderForge {
 		void StartCoroutine (IEnumerator routine){
 			coroutines.Add(routine);
 		}
-
-
-
-
-
-
 
 
 
@@ -692,16 +690,12 @@ namespace ShaderForge {
 	
 
 		MethodInfo isDockedMethod;
-
 		public bool Docked{
 			get{
-
-
 				if(isDockedMethod == null){
 					BindingFlags fullBinding = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 					isDockedMethod = typeof( EditorWindow ).GetProperty( "docked", fullBinding ).GetGetMethod( true );
 				}
-				
 				return ( bool ) isDockedMethod.Invoke(this, null);
 			}
 		}
@@ -729,6 +723,7 @@ namespace ShaderForge {
 		}
 
 		void ForceClose() {
+			//Debug.Log("Force close");
 			closeMe = true;
 			GUIUtility.ExitGUI();
 		}
@@ -1302,9 +1297,13 @@ namespace ShaderForge {
 
 		public void Defocus(bool deselectNodes = false) {
 			//Debug.Log("DEFOCUS");
-			GUI.FocusControl("defocus");
+			string currentFocus = GUI.GetNameOfFocusedControl();
+			if( currentFocus != "defocus"){
+				GUI.FocusControl("defocus");
+			}
+
 			if( deselectNodes )
-				nodeView.selection.DeselectAll();
+				nodeView.selection.DeselectAll(registerUndo:true);
 		}
 
 
@@ -1451,6 +1450,7 @@ namespace ShaderForge {
 			CreditsLine( "Tim 'Stramit' Cooper & David 'Texel' Jones", "For giving helpful tips");
 			CreditsLine( "Sander 'Zerot' Homan", "For helping out stealing Unity's internal RT code");
 			CreditsLine( "Carlos 'Darkcoder' Wilkes", "For helping out with various serialization issues");
+			CreditsLine( "Ville 'wiliz' Mäkynen", "For helping out with the undo system");
 			CreditsLine( "Daniele Giardini", "For his editor window icon script (also, check out his plugin HOTween!)");
 			CreditsLine( "Beck Sebenius", "For helping out getting coroutines to run in the Editor");
 			CreditsLine( "James 'Farfarer' O'Hare", "For asking all the advanced shader questions on the forums so I didn't have to");

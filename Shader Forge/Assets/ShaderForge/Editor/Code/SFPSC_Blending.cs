@@ -284,7 +284,7 @@ namespace ShaderForge {
 			r.xMin += 20; // Indent
 			
 			BlendModePreset before = blendModePreset;
-			blendModePreset = (BlendModePreset)SF_GUI.LabeledEnumField( r, "Blend Mode", blendModePreset, EditorStyles.miniLabel );
+			blendModePreset = (BlendModePreset)UndoableLabeledEnumPopup( r, "Blend Mode", blendModePreset, "blend mode");
 			if( blendModePreset != before ) {
 				ConformBlendsToPreset();
 			}
@@ -310,17 +310,17 @@ namespace ShaderForge {
 				Rect rDstField =	new Rect(rSrcField);	rDstField.x = rDstLb.xMax;
 				
 				GUI.Label( rSrcLb, srcStr, EditorStyles.miniLabel );
-				blendSrc = (BlendMode)EditorGUI.EnumPopup(rSrcField, blendSrc );
+				blendSrc = (BlendMode)UndoableEnumPopup(rSrcField, blendSrc, "blend source" );
 				GUI.Label( rDstLb, dstStr, EditorStyles.miniLabel );
-				blendDst = (BlendMode)EditorGUI.EnumPopup(rDstField, blendDst );
+				blendDst = (BlendMode)UndoableEnumPopup(rDstField, blendDst, "blend destination" );
 				
 				if( blendModePreset != BlendModePreset.Custom )
 					GUI.enabled = true;
 				
 				r.y += 20;
 			}
-			
-			cullMode = (CullMode)SF_GUI.LabeledEnumField( r, "Face Culling", cullMode, EditorStyles.miniLabel );
+
+			cullMode = (CullMode)UndoableLabeledEnumPopup( r, "Face Culling", cullMode, "face culling" );
 			r.y += 20;
 			
 			
@@ -405,13 +405,13 @@ namespace ShaderForge {
 			GUI.Label(rOfs, "Offset Factor");
 			rOfs = rOfs.MovedRight();
 			rOfs.width /= 2;
-			offsetFactor = EditorGUI.IntField(rOfs,offsetFactor);
+			offsetFactor = UndoableIntField(rOfs,offsetFactor,"offset factor");
 			rOfs = rOfs.MovedRight();
 			rOfs.width *= 2;
 			GUI.Label(rOfs.PadLeft(4), "Offset Units");
 			rOfs = rOfs.MovedRight();
 			rOfs.width /= 2;
-			offsetUnits = EditorGUI.IntField(rOfs,offsetUnits);
+			offsetUnits = UndoableIntField(rOfs,offsetUnits,"offset units");
 			r.y += 20;
 			ps.EndIgnoreChangeCheck();
 		}
@@ -507,7 +507,7 @@ namespace ShaderForge {
 			
 			ps.StartIgnoreChangeCheck();
 			bool prevAutoSort = autoSort;
-			autoSort = GUI.Toggle(r, autoSort, autoSort ? "Auto Sort..." : "Auto Sort" );
+			autoSort = UndoableToggle(r, autoSort, autoSort ? "Auto Sort..." : "Auto Sort", "auto sort", null );
 			if( autoSort != prevAutoSort && autoSort )
 				UpdateAutoSettings();
 			ps.EndIgnoreChangeCheck();
@@ -528,24 +528,29 @@ namespace ShaderForge {
 				tRect.width = wOrder;
 				GUI.Label(tRect, new GUIContent( "Order", "Determines in which order this shader is rendered relative to others" ), EditorStyles.miniLabel );
 				SF_GUI.MoveRight( ref tRect, wField );
-				queuePreset = (Queue)EditorGUI.Popup(tRect, (int)queuePreset, strQueue );
+				//queuePreset = (Queue)EditorGUI.Popup(tRect, (int)queuePreset, strQueue );
+				queuePreset = (Queue)UndoableEnumPopupNamed(tRect, queuePreset, strQueue, "render queue order");
 				SF_GUI.MoveRight( ref tRect, wPlus );
 				GUI.Label(tRect, "+" );
 				SF_GUI.MoveRight( ref tRect, wOffset );
-				queueOffset = EditorGUI.IntField(tRect, queueOffset );
+				queueOffset = UndoableIntField(tRect, queueOffset, "render queue offset");
 				SF_GUI.MoveRight( ref tRect, wEquals );
 				GUI.Label( tRect, "=");
 				SF_GUI.MoveRight( ref tRect, wResult );
 				GUI.Label( tRect, ( queueNumbers[(int)queuePreset] + queueOffset ).ToString());
 				r.y += 20;
-				renderType = (RenderType)SF_GUI.LabeledEnumField( r,new GUIContent("Render Type","Defines shader replacement; required for some rendering effects, such as SSAO"), renderType, EditorStyles.miniLabel );
+				//renderType = (RenderType)SF_GUI.LabeledEnumField( r,new GUIContent("Render Type","Defines shader replacement; required for some rendering effects, such as SSAO"), renderType, EditorStyles.miniLabel );
+				renderType = (RenderType)UndoableLabeledEnumPopup( r, "Render Type", renderType, "render type" );
 				r.y += 20;
-				depthTest = (DepthTest)SF_GUI.LabeledEnumFieldNamed( r, strDepthTest, new GUIContent( "Depth Test", "Compared to the existing geometry in the scene, \nthis determines when to render this geometry. \u2264 is default, meaning:\n\"If this part is closer or as close to the camera as existing geometry, draw me!\"" ), (int)depthTest, EditorStyles.miniLabel );
+				//depthTest = (DepthTest)SF_GUI.LabeledEnumFieldNamed( r, strDepthTest, new GUIContent( "Depth Test", "Compared to the existing geometry in the scene, \nthis determines when to render this geometry. \u2264 is default, meaning:\n\"If this part is closer or as close to the camera as existing geometry, draw me!\"" ), (int)depthTest, EditorStyles.miniLabel );
+				depthTest = (DepthTest)UndoableLabeledEnumPopupNamed( r, "Depth Test", depthTest, strDepthTest, "depth test" );
+				r.y += 20;
+				//ignoreProjector = GUI.Toggle(r, ignoreProjector, "Ignore Projectors" );
+				ignoreProjector = UndoableToggle(r, ignoreProjector, "Ignore Projectors", "ignore projectors", null );
 				r.y += 20;	
-				ignoreProjector = GUI.Toggle(r, ignoreProjector, "Ignore Projectors" );
-				r.y += 20;	
-				writeDepth = GUI.Toggle( r, writeDepth, "Write to Depth buffer" );
-				r.y += 20;	
+				//writeDepth = GUI.Toggle( r, writeDepth, "Write to Depth buffer" );
+				writeDepth = UndoableToggle(r, writeDepth, "Write to Depth buffer", "depth buffer write", null );
+				r.y += 20;
 			}
 			GUI.enabled = prevGUI;
 			
@@ -555,8 +560,8 @@ namespace ShaderForge {
 		
 		
 		public void FogBlock(ref Rect r) {
-			
-			useFog = GUI.Toggle( r, useFog, "Receive Fog" );
+
+			useFog = UndoableToggle(r, useFog, "Receive Fog", "receive fog", null );
 			r.y += 20;
 			
 			if(!useFog)

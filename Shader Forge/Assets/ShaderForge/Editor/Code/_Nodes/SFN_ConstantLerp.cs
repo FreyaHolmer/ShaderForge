@@ -10,8 +10,8 @@ namespace ShaderForge {
 
 		// SF_Node tNode;
 
-		float lerp_a = 0f;
-		float lerp_b = 1f;
+		public float lerp_a = 0f;
+		public float lerp_b = 1f;
 
 
 		public SFN_ConstantLerp() {
@@ -55,19 +55,21 @@ namespace ShaderForge {
 
 		public override void DrawLowerPropertyBox() {
 
-			EditorGUI.BeginChangeCheck();
+			//EditorGUI.BeginChangeCheck();
 			Rect r = lowerRect;
 			r.width /= 8;
 			GUI.Label( r, "A" );
 			r.x += r.width;
 			r.width *= 3;
-			SF_GUI.EnterableFloatField(this, r, ref lerp_a, null );
+			//SF_GUI.EnterableFloatField(this, r, ref lerp_a, null );
+			UndoableEnterableFloatField(r, ref lerp_a, "A value",null);
 			r.x += r.width;
 			r.width /= 3;
 			GUI.Label( r, "B" );
 			r.x += r.width;
 			r.width *= 3;
-			SF_GUI.EnterableFloatField( this, r, ref lerp_b, null );
+			//SF_GUI.EnterableFloatField( this, r, ref lerp_b, null );
+			UndoableEnterableFloatField(r, ref lerp_b, "B value",null);
 
 		}
 

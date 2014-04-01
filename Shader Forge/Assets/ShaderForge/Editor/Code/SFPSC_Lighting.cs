@@ -122,28 +122,30 @@ namespace ShaderForge {
 			
 			r.xMin += 20;
 			r.y += 20;
-			lightMode = (LightMode)SF_GUI.ContentScaledToolbar( r, "Light Mode", (int)lightMode, strLightMode );
+			lightMode = (LightMode)UndoableContentScaledToolbar( r, "Light Mode", (int)lightMode, strLightMode, "light mode" );
 			r.y += 20;
 
-			
-			SF_GUI.ConditionalToggle(r, ref doubleIncomingLight,
+
+			UndoableConditionalToggle(r, ref doubleIncomingLight,
 			                         usableIf: 				ps.catLighting.IsLit(),
 			                         disabledDisplayValue: 	false,
-			                         label: 					"Double incoming light"
+			                         label: 				"Double incoming light",
+			                         undoSuffix:			"double incoming light"
 			                         );
 			r.y += 20;
 			
-			SF_GUI.ConditionalToggle(r, ref remapGlossExponentially,
+			UndoableConditionalToggle(r, ref remapGlossExponentially,
 			                         usableIf: 				ps.HasGloss(),
 			                         disabledDisplayValue: 	false,
-			                         label: 					"Remap gloss from [0-1] to [1-2048]"
+			                         label: 				"Remap gloss from [0-1] to [1-2048]",
+			                         undoSuffix:			"gloss remap"
 			                         );
 			r.y += 20;
 			
 			if( lightMode == LightMode.PBL ) {
-				fresnelTerm = GUI.Toggle( r, fresnelTerm, "[PBL] Fresnel term");
+				fresnelTerm = UndoableToggle( r, fresnelTerm, "[PBL] Fresnel term", "PBL fresnel term", null );
 				r.y += 20;
-				visibilityTerm = GUI.Toggle( r, visibilityTerm, "[PBL] Visibility term" );
+				visibilityTerm = UndoableToggle( r, visibilityTerm, "[PBL] Visibility term", "PBL visibility term", null );
 				r.y += 20;
 			}
 			
@@ -155,7 +157,8 @@ namespace ShaderForge {
 				if( lightMode == LightMode.PBL )
 					GUI.Toggle( r, true, "Energy Conserving" ); // Dummy display of a checked energy conserve
 				else
-					energyConserving = GUI.Toggle( r, energyConserving, "Energy Conserving" );
+					energyConserving = UndoableToggle( r, energyConserving, "Energy Conserving", "energy conservation", null );
+					//energyConserving = GUI.Toggle( r, energyConserving, "Energy Conserving" );
 				
 				r.y += 20;
 				GUI.enabled = true;
@@ -163,28 +166,30 @@ namespace ShaderForge {
 			
 			
 			
-			lightCount = (LightCount)SF_GUI.ContentScaledToolbar(r, "Light Count", (int)lightCount, strLightCount );
+			lightCount = (LightCount)UndoableContentScaledToolbar(r, "Light Count", (int)lightCount, strLightCount, "light count" );
 			r.y += 20;
 			
 			
 			//lightPrecision = (LightPrecision)ContentScaledToolbar(r, "Light Quality", (int)lightPrecision, strLightPrecision ); // TODO: Too unstable for release
 			//r.y += 20;	
 			
-			normalQuality = (NormalQuality)SF_GUI.ContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality );
+			normalQuality = (NormalQuality)UndoableContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality, "normal quality" );
 			r.y += 20;
 			
-			SF_GUI.ConditionalToggle(r, ref lightmapped,
+			UndoableConditionalToggle(r, ref lightmapped,
 			                         usableIf: 				ps.HasDiffuse() && lightMode != LightMode.Unlit,
 			                         disabledDisplayValue: 	false,
-			                         label: 					"Lightmap support" 
+			                         label: 				"Lightmap support",
+			                         undoSuffix:			"lightmap support"
 			                         );
 			r.y += 20;
 
 			//lightprobed = GUI.Toggle( r, lightprobed, "Light probe support" );
-			SF_GUI.ConditionalToggle(r, ref lightprobed,
+			UndoableConditionalToggle(r, ref lightprobed,
 			                         usableIf: 				ps.HasDiffuse() && lightMode != LightMode.Unlit,
 			                         disabledDisplayValue: 	false,
-			                         label: 					"Light probe support"
+			                         label: 				"Light probe support",
+			                         undoSuffix:			"light probe support"
 			                         );
 			r.y += 20;
 			
@@ -201,10 +206,11 @@ namespace ShaderForge {
 			
 			
 			
-			SF_GUI.ConditionalToggle(r, ref useAmbient,
+			UndoableConditionalToggle(r, ref useAmbient,
 			                         usableIf: 				!lightprobed && ps.catLighting.IsLit(),
 			                         disabledDisplayValue: 	lightprobed,
-			                         label: 					"Receive Ambient Light"
+			                         label: 				"Receive Ambient Light",
+			                         undoSuffix:			"receive ambient light"
 			                         );
 			r.y += 20;
 			
@@ -220,7 +226,7 @@ namespace ShaderForge {
 			
 			//r.y += 20;
 			if(ps.catLighting.HasSpecular()){
-				maskedSpec = GUI.Toggle( r, maskedSpec, "Mask directional light specular by shadows" );
+				maskedSpec = UndoableToggle( r, maskedSpec, "Mask directional light specular by shadows", "directional light specular shadow masking", null );
 			} else {
 				GUI.enabled = false;
 				GUI.Toggle( r, false, "Mask directional light specular by shadows" );

@@ -40,7 +40,8 @@ namespace ShaderForge {
 		public override void DrawLowerPropertyBox() {
 			GUI.color = Color.white;
 			EditorGUI.BeginChangeCheck();
-			currentType = (ScreenPosType)EditorGUI.EnumPopup( lowerRect, currentType );
+			//currentType = (ScreenPosType)EditorGUI.EnumPopup( lowerRect, currentType );
+			currentType = (ScreenPosType)UndoableEnumPopup(lowerRect, currentType, "switch screen position type");
 			if( EditorGUI.EndChangeCheck() ) {
 				UpdateIcon();
 				OnUpdateNode();

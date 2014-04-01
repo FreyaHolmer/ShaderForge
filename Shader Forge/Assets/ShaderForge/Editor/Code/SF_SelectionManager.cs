@@ -33,6 +33,10 @@ namespace ShaderForge {
 			foreach(SF_Node n in selection){
 				if( n == ignore )
 					continue;
+				//if(selection.Count > 1){
+					//Debug.Log("Selection count = " + selection.Count + " thus nodes");
+					n.UndoRecord("move nodes");
+				//}
 				n.rect.x += delta.x;
 				n.rect.y += delta.y;
 			}
@@ -68,7 +72,7 @@ namespace ShaderForge {
 				boxSelecting = true;
 
 				if( !SF_GUI.MultiSelectModifierHeld() )
-					DeselectAll();
+					DeselectAll(registerUndo:true);
 
 				selectionBox.x = Event.current.mousePosition.x;
 				selectionBox.y = Event.current.mousePosition.y;
@@ -123,7 +127,7 @@ namespace ShaderForge {
 			boxSelecting = false;
 			foreach( SF_Node n in editor.nodes ) {
 				if( SF_Tools.Intersects( n.rect, selectionBox ) ){
-					n.Select();
+					n.Select(registerUndo:true);
 				}
 			}
 			Event.current.Use();
@@ -132,9 +136,39 @@ namespace ShaderForge {
 
 
 		public void DeleteSelected() {
+
+
+			if(Selection.Contains(editor.materialOutput)){
+				editor.materialOutput.Deselect(registerUndo:false); // Deselect main node if you press delete
+			}
+
+			int selCount = Selection.Count;
+
+			Debug.Log("Delete selected, count = " + selCount);
+
+			if(selCount == 0)
+				return;
+
+			string undoMsg = "";
+
+			if(selCount == 1)
+				undoMsg = "delete " + Selection[0].nodeName;
+			else
+				undoMsg = "delete " + selCount + " nodes";
+			Debug.Log("Selection delete initiated - " + undoMsg );
+
+			Undo.RecordObject(editor,undoMsg);
+
+			foreach(SF_Node node in editor.nodes){
+				Undo.RecordObject(node, undoMsg);
+			}
+
+			Undo.RecordObject(this,undoMsg);
+
+
 			for( int i = editor.nodes.Count - 1; i >= 0; i-- ) {
 				if( editor.nodes[i].selected ) {
-					editor.nodes[i].Delete();
+					editor.nodes[i].Delete(registerUndo:false, undoMsg:undoMsg);
 				}
 			}
 		}
@@ -160,6 +194,10 @@ namespace ShaderForge {
 		public void CutSelection(){
 			if(selection.Count == 0)
 				return;
+			//if(selection.Count == 1)
+			//	Undo.RecordObject(editor,"cut node");
+			//else
+				//Undo.RecordObject(editor,"cut nodes");
 			CbNodes = GetSelectionSerialized();
 			DeleteSelected();
 			Event.current.Use();
@@ -178,26 +216,50 @@ namespace ShaderForge {
 			
 			//Rect selBounds = GetSelectionBounds();
 			//Vector2 posOffset = ;
+
+			string undoMsg = "paste ";
+
+			if(CbNodes.Length == 1)
+				undoMsg += "node";
+			else
+				undoMsg += CbNodes.Length + " nodes";
+
+			RecordUndoNodeCreationAndSelectionStates(undoMsg);
 			
-			InstantiateNodes(CbNodes, new Vector2(64f,64f));
+			InstantiateNodes(CbNodes, new Vector2(64f,64f), undoMsg); // TODO
 			CbNodes = GetSelectionSerialized(); // This is now the new clipboard!
 		}
-		
+
+		public void RecordUndoNodeCreationAndSelectionStates(string undoMsg){
+			Undo.RecordObject(editor,undoMsg);
+			Undo.RecordObject(editor.nodeView.treeStatus,undoMsg);
+			Undo.RecordObject(editor.nodeView.selection,undoMsg);
+		}
 		
 		public void DuplicateSelection(){
+			DeselectMainNode();
 			string[] selectionSerialized = GetSelectionSerialized();
 			if(selectionSerialized.Length == 0)
 				return;
+
+			string undoMsg = "duplicate ";
+
+			if(Selection.Count > 1)
+				undoMsg += "nodes";
+			else
+				undoMsg += Selection[0].nodeName;
+
+			RecordUndoNodeCreationAndSelectionStates(undoMsg);
 			
 			//Rect selBounds = GetSelectionBounds();
 			Vector2 posOffset = new Vector2(64,64);
 			
-			InstantiateNodes(selectionSerialized, posOffset);
+			InstantiateNodes(selectionSerialized, posOffset, undoMsg);
 			
 		}
 		
 		
-		void InstantiateNodes(string[] serializedNodes, Vector2 posOffset){
+		void InstantiateNodes(string[] serializedNodes, Vector2 posOffset, string undoMsg){
 			// Make sure it knows about the editor
 			SF_Parser.editor = editor;
 			
@@ -225,14 +287,21 @@ namespace ShaderForge {
 				link.Remap(idOld, idNew);
 				link.Establish(editor,LinkingMethod.Default);
 			}
-				
-			DeselectAll();
+			Undo.IncrementCurrentGroup();
+			DeselectAll(registerUndo:true, undoMsg:undoMsg);
+			Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
 			Event.current.Use();
 			foreach(SF_Node n in newNodes)
-				n.Select();
+				n.Select(registerUndo:false);
 		}
 		
-		
+		public void DeselectMainNode(){
+			for(int i=0;i<selection.Count;i++){
+				if(selection[i] is SFN_Final){
+					selection[i].Deselect(registerUndo:false);
+				}
+			}
+		}
 		
 		// Get serialized selection, ignore SFN_Final
 		public string[] GetSelectionSerialized(){
@@ -289,10 +358,10 @@ namespace ShaderForge {
 			Selection.Remove( n );
 		}
 
-		public void DeselectAll() {
+		public void DeselectAll(bool registerUndo, string undoMsg = null) {
 			editor.ResetRunningOutdatedTimer();
 			foreach( SF_Node n in editor.nodes ) {
-				n.Deselect();
+				n.Deselect(registerUndo, undoMsg);
 			}
 		}
 

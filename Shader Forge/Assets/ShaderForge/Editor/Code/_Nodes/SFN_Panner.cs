@@ -11,7 +11,7 @@ namespace ShaderForge {
 		// SF_Node tNode;
 
 
-		Vector2 speed = new Vector2(1,1);
+		public Vector2 speed = new Vector2(1,1);
 
 		public SFN_Panner() {
 
@@ -39,14 +39,16 @@ namespace ShaderForge {
 			GUI.Label(r,"U");
 			r.x += r.width;
 			r.width *= 3;
-			SF_GUI.EnterableFloatField( this, r, ref speed.x, EditorStyles.textField );
+			//SF_GUI.EnterableFloatField( this, r, ref speed.x, EditorStyles.textField );
+			UndoableEnterableFloatField( r, ref speed.x, "U speed", EditorStyles.textField );
 			//speed.x = EditorGUI.FloatField( r, speed.x );
 			r.x += r.width;
 			r.width /= 3;
 			GUI.Label( r, "V" );
 			r.x += r.width;
 			r.width *= 3;
-			SF_GUI.EnterableFloatField( this, r, ref speed.y, EditorStyles.textField );
+			//SF_GUI.EnterableFloatField( this, r, ref speed.y, EditorStyles.textField );
+			UndoableEnterableFloatField( r, ref speed.y, "V speed", EditorStyles.textField );
 			//speed.y = EditorGUI.FloatField( r, speed.y );
 
 			//if( EditorGUI.EndChangeCheck() ) {

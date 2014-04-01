@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System;
 
 namespace ShaderForge {
 	
@@ -135,6 +136,200 @@ namespace ShaderForge {
 			r.xMin -= 20;
 			GUI.enabled = true;
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		public int UndoableContentScaledToolbar(Rect r, string label, int selected, string[] labels, string undoInfix){
+			int newValue = SF_GUI.ContentScaledToolbar( r, label, selected, labels );
+			if(newValue != selected){
+				string undoName = "set " + undoInfix + " to " + labels[newValue];
+				Undo.RecordObject(this,undoName);
+				return newValue;
+			}
+			return selected;
+		}
+
+
+		public void UndoableConditionalToggle(Rect r, ref bool value, bool usableIf, bool disabledDisplayValue, string label, string undoSuffix){
+			bool nextValue = value;
+			SF_GUI.ConditionalToggle(r,ref nextValue, usableIf,disabledDisplayValue,label);
+			if(nextValue != value){	
+				string undoName = (nextValue ? "enable" : "disable") + " " + undoSuffix;
+				Undo.RecordObject(this,undoName);
+				value = nextValue;
+			}
+		}
+
+
+		public bool UndoableToggle(Rect r, bool boolVar, string label, string undoActionName, GUIStyle style = null){
+			if(style == null)
+				style = EditorStyles.toggle;
+			bool newValue = GUI.Toggle(r, boolVar, label, style);
+			if(newValue != boolVar){
+				string undoName = (newValue ? "enable" : "disable") + " " + undoActionName;
+				Undo.RecordObject(this,undoName);
+				return newValue;
+			}
+			return boolVar;
+		}
+
+		public bool UndoableToggle(Rect r, bool boolVar, string undoActionName, GUIStyle style = null){
+			if(style == null)
+				style = EditorStyles.toggle;
+			bool newValue = GUI.Toggle(r, boolVar, new GUIContent(""));
+			if(newValue != boolVar){
+				string undoName = (newValue ? "enable" : "disable") + " " + undoActionName;
+				Undo.RecordObject(this,undoName);
+				return newValue;
+			}
+			return boolVar;
+		}
+
+
+		public Enum UndoableEnumPopup(Rect r, Enum enumValue, string undoInfix){
+			Enum nextEnum = EditorGUI.EnumPopup( r, enumValue );
+
+			if(nextEnum.ToString() != enumValue.ToString()){
+				string undoName = "set " + undoInfix + " to " + nextEnum;
+				Undo.RecordObject(this,undoName);
+				enumValue = nextEnum;
+			}
+			return enumValue;
+		}
+
+
+		public Enum UndoableLabeledEnumPopup(Rect r, string label, Enum enumValue, string undoInfix){
+			Enum nextEnum = SF_GUI.LabeledEnumField( r, label, enumValue, EditorStyles.miniLabel );
+			if(nextEnum.ToString() != enumValue.ToString()){
+				string undoName = "set " + undoInfix + " to " + nextEnum;
+				Undo.RecordObject(this,undoName);
+				enumValue = nextEnum;
+			}
+			return enumValue;
+		}
+
+
+		public int UndoableEnumPopupNamed(Rect r, Enum enumValue, string[] displayedOptions, string undoInfix){
+			int nextEnum = EditorGUI.Popup( r, (int)((object)enumValue), displayedOptions);
+			if(nextEnum != ((int)((object)enumValue))){
+				string undoName = "set " + undoInfix + " to " + displayedOptions[nextEnum];
+				Undo.RecordObject(this,undoName);
+				return nextEnum;
+			}
+			return (int)((object)enumValue);
+		}
+
+		public int UndoableLabeledEnumPopupNamed(Rect r, string label, Enum enumValue, string[] displayedOptions, string undoInfix){
+			int nextEnum = SF_GUI.LabeledEnumFieldNamed( r, displayedOptions, new GUIContent(label), (int)((object)enumValue), EditorStyles.miniLabel);
+			if(nextEnum != ((int)((object)enumValue))){
+				string undoName = "set " + undoInfix + " to " + displayedOptions[nextEnum];
+				Undo.RecordObject(this,undoName);
+				return nextEnum;
+			}
+			return (int)((object)enumValue);
+		}
+
+
+		//UndoablePopup
+
+		public float UndoableFloatField(Rect r, float value, string undoInfix, GUIStyle style = null){
+			if(style == null)
+				style = EditorStyles.textField;
+			float newValue = EditorGUI.FloatField( r, value, style );
+			if(newValue != value){
+				string undoName = "set " + undoInfix + " to " + newValue;
+				Undo.RecordObject(this,undoName);
+				return newValue;
+			}
+			return value;
+		}
+
+		public int UndoableIntField(Rect r, int value, string undoInfix, GUIStyle style = null){
+			if(style == null)
+				style = EditorStyles.textField;
+			int newValue = EditorGUI.IntField( r, value, style );
+			if(newValue != value){
+				string undoName = "set " + undoInfix + " to " + newValue;
+				Undo.RecordObject(this,undoName);
+				return newValue;
+			}
+			return value;
+		}
+
+
+
+
+		public string UndoableTextField(Rect r, string value, string undoInfix, GUIStyle style = null){
+			if(style == null)
+				style = EditorStyles.textField;
+			string newValue = GUI.TextField( r, value, style );
+			if(newValue != value){
+				string undoName = "change " + undoInfix + " to " + newValue;
+				Undo.RecordObject(this,undoName);
+				return newValue;
+			}
+			return value;
+		}
+
+
+		public string UndoableTextField(Rect r, string value, string undoInfix, GUIStyle style = null, UnityEngine.Object extra = null, bool showContent = true){
+			if(style == null)
+				style = EditorStyles.textField;
+			string newValue = GUI.TextField( r, value, style );
+			if(newValue != value){
+				string undoName = "change " + undoInfix;
+				if(showContent)
+					undoName += " to " + newValue;
+				Undo.RecordObject(this, undoName);
+				if(extra != null)
+					Undo.RecordObject(extra, undoName);
+				return newValue;
+			}
+			return value;
+		}
+
+
+		public void UndoableEnterableNodeTextField(SF_Node node, Rect r, ref string value, string undoMsg, bool update = true, UnityEngine.Object extra = null){
+			string nextValue = value;
+			SF_GUI.EnterableTextField(node, r, ref nextValue, EditorStyles.textField, update );
+			if(nextValue != value){
+				Undo.RecordObject(this, undoMsg );
+				if(extra != null)
+					Undo.RecordObject(extra, undoMsg);
+				value = nextValue;
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

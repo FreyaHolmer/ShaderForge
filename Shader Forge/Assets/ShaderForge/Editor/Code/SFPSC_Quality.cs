@@ -44,10 +44,12 @@ namespace ShaderForge {
 			
 			r.xMin += 20;
 			r.y += 20;
+			//highQualityScreenCoords = GUI.Toggle( r, highQualityScreenCoords, "Per-pixel screen coordinates" );
+			highQualityScreenCoords = UndoableToggle( r, highQualityScreenCoords, "Per-pixel screen coordinates", "per-pixel screen coordinates", null );
 
-			highQualityScreenCoords = GUI.Toggle( r, highQualityScreenCoords, "Per-pixel screen coordinates" );
 			r.y += 20;
-			highQualityLightProbes = GUI.Toggle( r, highQualityLightProbes, "Per-pixel light probe sampling" );
+			//highQualityLightProbes = GUI.Toggle( r, highQualityLightProbes, "Per-pixel light probe sampling" );
+			highQualityLightProbes = UndoableToggle( r, highQualityLightProbes, "Per-pixel light probe sampling", "per-pixel light probe sampling", null );
 			r.y += 20;
 
 			r.y += prevYpos;

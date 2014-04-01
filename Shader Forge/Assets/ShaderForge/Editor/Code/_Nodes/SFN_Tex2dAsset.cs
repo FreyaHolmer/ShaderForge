@@ -191,7 +191,7 @@ namespace ShaderForge {
 			PrepareWindowColor();
 			DrawWindow();
 			ResetWindowColor();
-			return !CheckIfDeleted();
+			return true;//!CheckIfDeleted();
 		}
 
 		public override void OnDelete() {
@@ -270,8 +270,17 @@ namespace ShaderForge {
 			
 			if( !IsGlobalProperty() && Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == this.id ) {
 				Event.current.Use();
-				textureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture;
-				OnAssignedTexture();
+				Texture newTextureAsset = EditorGUIUtility.GetObjectPickerObject() as Texture;
+				if(newTextureAsset != textureAsset){
+					if(newTextureAsset == null){
+						UndoRecord("unassign texture of " + property.nameDisplay);
+					} else {
+						UndoRecord("switch texture to " + newTextureAsset.name + " in " + property.nameDisplay);
+					}
+					textureAsset = newTextureAsset;
+					OnAssignedTexture();
+				}
+
 			}
 
 			GUI.EndGroup();
@@ -348,11 +357,13 @@ namespace ShaderForge {
 			Rect tmp = lowerRect;
 			tmp.height = 16f;
 			if(!IsGlobalProperty()){
-				noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
+				noTexValue = (NoTexValue)UndoableLabeledEnumPopup(tmp, "Default", noTexValue, "swith default color of " + property.nameDisplay );
+				//noTexValue = (NoTexValue)SF_GUI.LabeledEnumField( tmp, "Default", noTexValue, EditorStyles.miniLabel );
 				tmp.y += tmp.height;
 			}
 			bool preMarked = markedAsNormalMap;
-			markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
+			UndoableToggle(tmp, ref markedAsNormalMap, "Normal map", "normal map decode of " + property.nameDisplay, null);
+			//markedAsNormalMap = GUI.Toggle(tmp, markedAsNormalMap, "Normal map" );
 			if(EditorGUI.EndChangeCheck()){
 
 				if(markedAsNormalMap && !preMarked)

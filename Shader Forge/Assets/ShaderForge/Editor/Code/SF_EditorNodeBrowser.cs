@@ -283,7 +283,7 @@ namespace ShaderForge {
 				return null;
 			SF_Node newNode = null;
 			if(editor.nodeView.rect.Contains(Event.current.mousePosition))
-				newNode = editor.AddNode( dragNode );
+				newNode = editor.AddNode( dragNode, registerUndo:true );
 			dragNode = null;
 			return newNode;
 		}

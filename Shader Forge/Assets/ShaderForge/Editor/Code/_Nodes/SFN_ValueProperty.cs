@@ -19,6 +19,7 @@ namespace ShaderForge {
 			lowerRect.y -= 8;
 			lowerRect.height = 28;
 			base.showColor = false;
+			base.neverDefineVariable = true;
 			base.UseLowerPropertyBox( true );
 			base.texture.uniform = true;
 			base.texture.CompCount = 1;
@@ -57,7 +58,8 @@ namespace ShaderForge {
 				GUI.enabled = true;
 
 			} else {
-				fVal = EditorGUI.FloatField( r, texture.dataUniform[0], SF_Styles.LargeTextField );
+				fVal = UndoableFloatField(r, texture.dataUniform[0], "value" , SF_Styles.LargeTextField);
+				//fVal = EditorGUI.FloatField( r, texture.dataUniform[0], SF_Styles.LargeTextField );
 			}
 			r.x += r.width + 6;
 			r.width = r.height;

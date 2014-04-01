@@ -15,6 +15,7 @@ namespace ShaderForge {
 			base.Initialize( "Vector 4" );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true );
+			base.neverDefineVariable = true;
 			base.texture.uniform = true;
 			base.texture.CompCount = 4;
 			lowerRect.width /= 4;
@@ -53,13 +54,13 @@ namespace ShaderForge {
 				GUI.enabled = false;
 			}
 			Rect tRect = lowerRect;
-			texture.dataUniform[0] = EditorGUI.FloatField( tRect, texture.dataUniform[0] );
+			texture.dataUniform[0] = UndoableFloatField(tRect, texture.dataUniform[0], "R channel");
 			tRect.x += tRect.width;
-			texture.dataUniform[1] = EditorGUI.FloatField( tRect, texture.dataUniform[1] );
+			texture.dataUniform[1] = UndoableFloatField(tRect, texture.dataUniform[1], "G channel");
 			tRect.x += tRect.width;
-			texture.dataUniform[2] = EditorGUI.FloatField( tRect, texture.dataUniform[2] );
+			texture.dataUniform[2] = UndoableFloatField(tRect, texture.dataUniform[2], "B channel");
 			tRect.x += tRect.width;
-			texture.dataUniform[3] = EditorGUI.FloatField( tRect, texture.dataUniform[3] );
+			texture.dataUniform[3] = UndoableFloatField(tRect, texture.dataUniform[3], "A channel");
 			if(IsGlobalProperty()){
 				GUI.enabled = true;
 			}

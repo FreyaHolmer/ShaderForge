@@ -10,8 +10,8 @@ namespace ShaderForge {
 
 		// SF_Node tNode;
 
-		float min = 0f;
-		float max = 1f;
+		public float min = 0f;
+		public float max = 1f;
 
 
 		public SFN_ConstantClamp() {
@@ -51,6 +51,12 @@ namespace ShaderForge {
 
 
 
+		/*
+		public void UndoableEnterableFloatField(Rect r, ref float value, string undoMessage, GUIStyle style){
+			SF_GUI.EnterableFloatField(this, r, ref value, null );
+		}
+*/
+
 		
 
 		public override void DrawLowerPropertyBox() {
@@ -60,11 +66,13 @@ namespace ShaderForge {
 			r.width /= 4;
 			GUI.Label( r, "Min", EditorStyles.miniLabel );
 			r.x += r.width;
-			SF_GUI.EnterableFloatField(this, r, ref min, null );
+			//SF_GUI.EnterableFloatField(this, r, ref min, null );
+			UndoableEnterableFloatField(r, ref min, "min value", null);
 			r.x += r.width;
 			GUI.Label( r, "Max", EditorStyles.miniLabel );
 			r.x += r.width;
-			SF_GUI.EnterableFloatField( this, r, ref max, null );
+			//SF_GUI.EnterableFloatField( this, r, ref max, null );
+			UndoableEnterableFloatField(r, ref max, "max value", null);
 
 		}
 

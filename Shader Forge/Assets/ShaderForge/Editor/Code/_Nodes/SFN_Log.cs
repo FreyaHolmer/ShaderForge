@@ -58,7 +58,8 @@ namespace ShaderForge {
 
 		public override void DrawLowerPropertyBox() {
 			EditorGUI.BeginChangeCheck();
-			logType = (LogType)EditorGUI.EnumPopup( lowerRect, logType );
+			logType = (LogType)UndoableEnumPopup( lowerRect, logType, "switch log type");
+			//logType = (LogType)EditorGUI.EnumPopup( lowerRect, logType );
 			if( EditorGUI.EndChangeCheck() )
 				OnUpdateNode();
 		}

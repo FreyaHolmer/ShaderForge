@@ -490,7 +490,7 @@ namespace ShaderForge {
 
 			if( Clicked() ) {
 				SF_NodeConnector.pendingConnectionSource = this;
-				editor.nodeView.selection.DeselectAll();
+				editor.nodeView.selection.DeselectAll(registerUndo:false);
 				Event.current.Use();
 			}
 
@@ -767,7 +767,7 @@ namespace ShaderForge {
 				return; // TODO: Display message
 			}
 
-			LinkTo( SF_NodeConnector.pendingConnectionSource );
+			LinkTo( SF_NodeConnector.pendingConnectionSource,LinkingMethod.Default, registerUndo:true );
 
 			SF_NodeConnector.pendingConnectionSource = null;
 		}
@@ -784,7 +784,7 @@ namespace ShaderForge {
 			valueType = valueTypeDefault;
 		}
 
-		public void LinkTo( SF_NodeConnector other, LinkingMethod linkMethod = LinkingMethod.Default ) {
+		public void LinkTo( SF_NodeConnector other, LinkingMethod linkMethod = LinkingMethod.Default, bool registerUndo = false ) {
 
 
 
@@ -795,7 +795,7 @@ namespace ShaderForge {
 			}
 
 			if( conType == ConType.cInput ) {
-				other.LinkTo( this, linkMethod ); // Reverse connection if dragged other way
+				other.LinkTo( this, linkMethod, registerUndo ); // Reverse connection if dragged other way
 				return;
 			}
 
@@ -804,6 +804,9 @@ namespace ShaderForge {
 
 			// Other is the input node
 			// [other] <---- [this]
+
+			bool registeredUndo = false;
+
 
 			// Verify, if default. Not if it's without update
 			if( linkMethod == LinkingMethod.Default ) {
@@ -815,13 +818,39 @@ namespace ShaderForge {
 					return;
 				}
 
+				if(registerUndo && !registeredUndo){
+
+					string undoMsg = "connect " + other.node.nodeName + "["+other.label+"] <-- ["+ this.label +"]" + this.node.nodeName;
+
+					this.node.UndoRecord(undoMsg);
+					other.node.UndoRecord(undoMsg);
+
+					//Undo.RecordObject(this,undoMsg);
+					//Undo.RecordObject(other,undoMsg);
+
+					registeredUndo = true;
+
+				}
+
 				// In case there's an existing one
 				if( other.IsConnected() )
 					other.Disconnect(true,false,reconnection:true);
 
 			}
 
+			if(registerUndo && !registeredUndo){
+				string undoMsg = "connect " + other.node.nodeName + "["+other.label+"] <-- ["+ this.label +"]" + this.node.nodeName;
+				this.node.UndoRecord(undoMsg);
+				other.node.UndoRecord(undoMsg);
+				//Undo.RecordObject(this,undoMsg);
+				//Undo.RecordObject(other,undoMsg);
+
+				registeredUndo = true;
+			}
+
 			//Debug.Log("Linking " + other.node.nodeName + "["+other.label+"] <--- ["+ this.label +"]" + this.node.nodeName );
+
+
 
 			// Connect
 			other.valueType = this.valueType;

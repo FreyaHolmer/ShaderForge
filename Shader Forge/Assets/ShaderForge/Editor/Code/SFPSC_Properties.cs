@@ -98,6 +98,7 @@ namespace ShaderForge {
 				// Execute reordering!
 				if( moveDist != 0 ) { // See if it actually moved to another slot
 					int newIndex = Mathf.Clamp( dragStartIndex + moveDist, 0, propCount - 1 );
+					Undo.RecordObject(editor.nodeView.treeStatus,"property reorder");
 					editor.nodeView.treeStatus.propertyList.RemoveAt( dragStartIndex );
 					//if( newIndex > dragStartIndex )
 					//	newIndex--;
@@ -232,7 +233,7 @@ namespace ShaderForge {
 				string bef = prop.property.nameDisplay;
 				SF_GUI.AssignCursor( dispNameRect, MouseCursor.Text );
 				//if( mouseOver )
-				SF_GUI.EnterableTextField( prop, dispNameRect, ref prop.property.nameDisplay, EditorStyles.textField, update:false);
+				UndoableEnterableNodeTextField(prop.property.node, dispNameRect, ref prop.property.nameDisplay, "change property name", update:false, extra:prop.property);
 				//else
 				//GUI.Label( dispNameRect, prop.property.nameDisplay, EditorStyles.boldLabel );
 				if( prop.property.nameDisplay != bef ) { // Changed
@@ -271,7 +272,9 @@ namespace ShaderForge {
 					GUI.Label( sR, "Min" );
 					//sR.x += sR.width;
 					sR = sR.MovedRight();
-					SF_GUI.EnterableFloatField(prop, sR, ref slider.min, EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref slider.min, "min value",null);
+
+
 					sR = sR.MovedRight();
 					
 					sR.width = r.width - 164;
@@ -280,18 +283,20 @@ namespace ShaderForge {
 					
 					string sliderName = "slider" + slider.id;
 					GUI.SetNextControlName( sliderName );
-					SF_GUI.AssignCursor( sR, MouseCursor.Arrow );
+
 					sR.xMin += 4;
 					sR.xMax -= 4;
-					slider.current = GUI.HorizontalSlider( sR, slider.current, slider.min, slider.max );
+
+					slider.current = prop.UndoableHorizontalSlider(sR, slider.current, slider.min, slider.max, "value");
 					if( beforeSlider != slider.current ) {
 						GUI.FocusControl( sliderName );
 						slider.OnValueChanged();
 					}
+					//SF_GUI.AssignCursor( sR, MouseCursor.Arrow );
 					
 					sR.x += sR.width+4;
 					sR.width = 32;
-					SF_GUI.EnterableFloatField( prop, sR, ref slider.max, EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref slider.max, "max value",null);
 					sR.x += sR.width;
 					GUI.Label( sR, "Max" );
 					
@@ -314,7 +319,8 @@ namespace ShaderForge {
 					SF_GUI.AssignCursor( texRect, MouseCursor.Arrow );
 					
 					ps.StartIgnoreChangeCheck();
-					Color col = EditorGUI.ColorField( texRect, colNode.texture.dataUniform );
+					//Color col = EditorGUI.ColorField( texRect, colNode.texture.dataUniform );
+					Color col = colNode.UndoableColorField(texRect, colNode.texture.dataUniform, "set color of " + colNode.property.nameDisplay);
 					ps.EndIgnoreChangeCheck();
 					colNode.SetColor( col );
 					GUI.color = c;
@@ -328,11 +334,17 @@ namespace ShaderForge {
 					sR.width = 20;
 					
 					int lbWidth = 12;
+
+
+					string channelStr = "XYZW";
+
+
+
 					sR.width = lbWidth;
 					GUI.Label( sR, "X", EditorStyles.miniLabel );
 					sR.x += sR.width;
 					sR.width = 32;
-					SF_GUI.EnterableFloatField( prop, sR, ref vec4.texture.dataUniform.r, EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.r, "X channel", EditorStyles.textField );
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 					sR.x += sR.width + 3;
 					
@@ -341,7 +353,7 @@ namespace ShaderForge {
 					GUI.Label( sR, "Y", EditorStyles.miniLabel );
 					sR.x += sR.width;
 					sR.width = 32;
-					SF_GUI.EnterableFloatField( prop, sR, ref vec4.texture.dataUniform.g, EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.g, "Y channel", EditorStyles.textField );
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 					sR.x += sR.width+3;
 					
@@ -350,7 +362,7 @@ namespace ShaderForge {
 					GUI.Label( sR, "Z", EditorStyles.miniLabel );
 					sR.x += sR.width;
 					sR.width = 32;
-					SF_GUI.EnterableFloatField( prop, sR, ref vec4.texture.dataUniform.b, EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.b, "Z channel", EditorStyles.textField );
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 					sR.x += sR.width + 3;
 					
@@ -359,9 +371,9 @@ namespace ShaderForge {
 					GUI.Label( sR, "W", EditorStyles.miniLabel );
 					sR.x += sR.width;
 					sR.width = 32;
-					SF_GUI.EnterableFloatField( prop, sR, ref vec4.texture.dataUniform.a, EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.a, "W channel", EditorStyles.textField );
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
-					//sR.x += sR.width;
+
 					
 					
 					
@@ -380,7 +392,8 @@ namespace ShaderForge {
 					GUI.Label( sR, "Value", EditorStyles.miniLabel );
 					sR.x += sR.width;
 					sR.width = 55;
-					SF_GUI.EnterableFloatField( prop, sR, ref val.texture.dataUniform.r, EditorStyles.textField );
+					//SF_GUI.EnterableFloatField( prop, sR, ref val.texture.dataUniform.r, EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref val.texture.dataUniform.r, "value", EditorStyles.textField);
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 					ps.EndIgnoreChangeCheck();
 				}

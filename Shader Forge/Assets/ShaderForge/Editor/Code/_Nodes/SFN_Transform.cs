@@ -186,9 +186,10 @@ namespace ShaderForge {
 			GUI.Label(r,"From",SF_Styles.MiniLabelOverflow);
 			r.x += r.width;
 			r.width = (lowerRect.width-dirLabelWidth);
-			spaceSelFrom = (Space)EditorGUI.Popup(r, (int)spaceSelFrom, spaceLabels);
+
+			spaceSelFrom = (Space)UndoablePopup(r, (int)spaceSelFrom, spaceLabels, "switch transform 'from' setting");
 			r.y += r.height;
-			spaceSelTo = (Space)EditorGUI.Popup(r, (int)spaceSelTo, spaceLabels);
+			spaceSelTo = (Space)UndoablePopup(r, (int)spaceSelTo, spaceLabels, "switch transform 'to' setting");
 			r.x = 0;
 			r.width = dirLabelWidth;
 			GUI.Label(r,"To",SF_Styles.MiniLabelOverflow);

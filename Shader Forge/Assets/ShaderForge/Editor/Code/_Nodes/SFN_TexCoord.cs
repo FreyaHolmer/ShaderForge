@@ -43,7 +43,8 @@ namespace ShaderForge {
 		public override void DrawLowerPropertyBox() {
 			GUI.color = Color.white;
 			EditorGUI.BeginChangeCheck();
-			currentUV = (UV)EditorGUI.EnumPopup( lowerRect, currentUV );
+			currentUV = (UV)UndoableEnumPopup(lowerRect, currentUV, "switch UV channel");
+			//currentUV = (UV)EditorGUI.EnumPopup( lowerRect, currentUV );
 			if(EditorGUI.EndChangeCheck())
 				OnUpdateNode();
 		}

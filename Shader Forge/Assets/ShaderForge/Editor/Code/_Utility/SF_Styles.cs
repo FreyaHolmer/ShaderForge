@@ -218,6 +218,19 @@ namespace ShaderForge {
 		}
 
 
+		private static GUIStyle nodeStyleDiscrete;
+		public static GUIStyle NodeStyleDiscrete{
+			get {
+				if( nodeStyleDiscrete == null ) {
+					nodeStyleDiscrete = new GUIStyle(NodeStyle);
+					nodeStyleDiscrete.normal.textColor = SF_GUI.ProSkin ? new Color( 1f, 1f, 1f, 0.75f/5f ) : new Color( 0f, 0f, 0f, 0.7f/5f );
+				}
+				return nodeStyleDiscrete;
+			}
+		}
+		//NodeStyleDiscrete
+
+
 		private static GUIStyle toggleDiscrete;
 		public static GUIStyle ToggleDiscrete {
 			get {

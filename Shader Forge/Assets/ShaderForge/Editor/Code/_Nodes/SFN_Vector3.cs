@@ -40,11 +40,11 @@ namespace ShaderForge {
 
 			//Color vecPrev = texture.dataUniform;
 			Rect tRect = lowerRect;
-			SF_GUI.EnterableFloatField( this, tRect, ref texture.dataUniform.r, null );
+			UndoableEnterableFloatField( tRect, ref texture.dataUniform.r, "R channel", null);
 			tRect.x += tRect.width;
-			SF_GUI.EnterableFloatField( this, tRect, ref texture.dataUniform.g, null );
+			UndoableEnterableFloatField( tRect, ref texture.dataUniform.g, "G channel", null);
 			tRect.x += tRect.width;
-			SF_GUI.EnterableFloatField( this, tRect, ref texture.dataUniform.b, null );
+			UndoableEnterableFloatField( tRect, ref texture.dataUniform.b, "B channel", null);
 		}
 
 		public override string SerializeSpecialData() {

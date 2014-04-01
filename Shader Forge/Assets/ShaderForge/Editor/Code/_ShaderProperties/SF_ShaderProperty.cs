@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -58,9 +59,17 @@ namespace ShaderForge {
 		}
 
 		public void ToggleGlobal(){
-			global = !global;
+
+
+
+			string undoMsg = global ? "make " + nameDisplay + " local" : "make " + nameDisplay + " global";
+			Undo.RecordObject(this,undoMsg);
+			Undo.RecordObject(node.editor.nodeView.treeStatus,undoMsg);
 
 			List<SF_Node> propList = node.editor.nodeView.treeStatus.propertyList;
+
+			global = !global;
+
 
 			if(global){
 

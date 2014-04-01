@@ -232,7 +232,8 @@ namespace ShaderForge {
 					//Debug.Log("Setting control name to " + controlName + " my id is " + id);
 				//}
 				string codeBefore = code;
-				code = GUI.TextArea(txtRect,code,SF_Styles.CodeTextArea);
+				//code = GUI.TextArea(txtRect,code,SF_Styles.CodeTextArea);
+				code = UndoableTextArea(txtRect, code, "code", SF_Styles.CodeTextArea);
 
 				SF_GUI.AssignCursor( txtRect , MouseCursor.Text );
 
@@ -254,6 +255,7 @@ namespace ShaderForge {
 
 				if(Event.current.keyCode == KeyCode.Tab && Event.current.type == EventType.keyDown){
 					//Debug.Log("Tab");
+					UndoRecord("insert tab in " + functionName + " code");
 					code = code.Insert(txtEditor.pos,"\t");
 					//Debug.Log("Caret position = " + txtEditor.pos);
 					savedCaretPosition = txtEditor.pos;
@@ -373,6 +375,7 @@ namespace ShaderForge {
 			// ADD INPUT BUTTON
 			GUI.color = new Color(0.7f,1f,0.7f,1f);
 			if(GUI.Button(btnR,"Add input", EditorStyles.miniButton)){
+				UndoRecord("add input to " + functionName);
 				AddInput();
 			}
 			GUI.color = Color.white;
@@ -408,7 +411,14 @@ namespace ShaderForge {
 			base.ClampSize();
 		}
 
-		public void RemoveConnector(SF_NodeConnector con){
+		public void RemoveConnector(SF_NodeConnector con, bool undoRecord){
+
+			string undoString = "";
+			if(undoRecord){
+				undoString = "remove input from " + functionName;
+				Undo.RecordObject(con, undoString);
+				UndoRecord(undoString);
+			}
 
 			con.Disconnect();
 
@@ -419,7 +429,10 @@ namespace ShaderForge {
 				}
 			}
 
-			DestroyImmediate(con);
+			if(undoRecord)
+				Undo.DestroyObjectImmediate(con);
+			else
+				DestroyImmediate(con);
 			connectors = conList.ToArray();
 
 			RefreshConnectorStringIDs();
@@ -574,7 +587,7 @@ namespace ShaderForge {
 			if(isInput){
 				GUI.color = new Color(1f,0.7f,0.7f,1f);
 				if(GUI.Button(closeRect,"-")){
-					RemoveConnector(con);
+					RemoveConnector(con, undoRecord:true);
 					return;
 				}
 				GUI.color = Color.white;
@@ -583,7 +596,8 @@ namespace ShaderForge {
 				dropdownRect.xMax -= 50;
 				r.xMin += dropdownRect.width;
 				int cvtccBef = SF_Tools.ComponentCountOf(con.CustomValueType );
-				con.CustomValueType = (CustomValueType)EditorGUI.EnumPopup(dropdownRect, con.CustomValueType);
+				//con.CustomValueType = (CustomValueType)EditorGUI.EnumPopup(dropdownRect, con.CustomValueType);
+				con.CustomValueType = (CustomValueType)UndoableEnumPopup(dropdownRect, con.CustomValueType, "set input " + con.label + " value type");
 				if(cvtccBef != SF_Tools.ComponentCountOf(con.CustomValueType)){
 					con.Disconnect();
 				}
@@ -596,7 +610,8 @@ namespace ShaderForge {
 				}
 			} else {
 				int cvtccBef = SF_Tools.ComponentCountOf(con.CustomValueType );
-				con.CustomValueType = (CustomValueType)EditorGUI.EnumPopup(r, con.CustomValueType);
+				//con.CustomValueType = (CustomValueType)EditorGUI.EnumPopup(r, con.CustomValueType);
+				con.CustomValueType = (CustomValueType)UndoableEnumPopup(r, con.CustomValueType, "set output value type");
 				if(cvtccBef != SF_Tools.ComponentCountOf(con.CustomValueType)){
 					con.Disconnect();
 				}

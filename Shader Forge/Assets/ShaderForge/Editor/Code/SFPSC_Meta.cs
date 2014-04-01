@@ -76,7 +76,8 @@ namespace ShaderForge {
 			ps.StartIgnoreChangeCheck();
 			GUI.SetNextControlName( "shdrpath" );
 			string prev = editor.currentShaderPath;
-			editor.currentShaderPath = GUI.TextField( r, editor.currentShaderPath,EditorStyles.textField );
+			//editor.currentShaderPath = GUI.TextField( r, editor.currentShaderPath,EditorStyles.textField );
+			editor.currentShaderPath = UndoableTextField( r, editor.currentShaderPath, "shader path", null, editor, showContent:false );
 			if( editor.currentShaderPath != prev ) {
 				SF_Tools.FormatShaderPath( ref editor.currentShaderPath );
 			}
@@ -101,7 +102,7 @@ namespace ShaderForge {
 			ps.StartIgnoreChangeCheck();
 			GUI.SetNextControlName( "shdrpath" );
 			prev = fallback;
-			fallback = GUI.TextField( r, fallback, EditorStyles.textField );
+			fallback = UndoableTextField( r, fallback, "shader fallback", null, null, showContent:false );
 			r.x += r.width + 2;
 			r.width = 42;
 			ShaderPicker( r, "Pick");
@@ -125,7 +126,7 @@ namespace ShaderForge {
 			r.xMin += 30;
 			r.height = 17;
 			r.xMax -= 3;
-			LOD = EditorGUI.IntField( r, LOD );
+			LOD = UndoableIntField( r, LOD, "LOD");
 			r.xMin -= 30;
 			r.height = 20;
 			r.xMax += 3;
@@ -160,7 +161,8 @@ namespace ShaderForge {
 					GUI.enabled = false;
 					EditorGUI.Toggle( r, false );
 				} else {
-					usedRenderers[i] = EditorGUI.Toggle( r, usedRenderers[i] );
+					usedRenderers[i] = UndoableToggle( r, usedRenderers[i], SF_Tools.rendererLabels[i] + " renderer");
+					//usedRenderers[i] = EditorGUI.Toggle( r, usedRenderers[i] );
 				}
 				
 				
@@ -197,6 +199,7 @@ namespace ShaderForge {
 		private void OnSelectedShaderPopup( string command, Shader shader ) {
 			if( shader != null ) {
 				if( fallback != shader.name ) {
+					Undo.RecordObject(this, "pick fallback shader");
 					fallback = shader.name;
 					editor.Defocus();
 					//editor.OnShaderModified( NodeUpdateType.Hard );

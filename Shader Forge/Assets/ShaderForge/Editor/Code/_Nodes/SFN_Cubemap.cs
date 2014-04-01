@@ -13,7 +13,8 @@ namespace ShaderForge {
 		public Cubemap cubemapAsset;
 		Texture2D textureAsset;
 
-		CubemapFace previewFace;
+
+		public CubemapFace previewFace;
 
 		public SFN_Cubemap() {
 
@@ -125,7 +126,7 @@ namespace ShaderForge {
 			PrepareWindowColor();
 			DrawWindow();
 			ResetWindowColor();
-			return !CheckIfDeleted();
+			return true;//!CheckIfDeleted();
 		}
 
 		public override void NeatWindow( ) {
@@ -141,8 +142,17 @@ namespace ShaderForge {
 			//GUI.DragWindow();
 
 			EditorGUI.BeginChangeCheck();
-			
-			cubemapAsset = (Cubemap)EditorGUI.ObjectField( rectInner, cubemapAsset, typeof( Cubemap ), false );
+
+			Cubemap newCubemap = (Cubemap)EditorGUI.ObjectField( rectInner, cubemapAsset, typeof( Cubemap ), false );
+			if(newCubemap != cubemapAsset){
+				if(newCubemap == null){
+					UndoRecord("unassign cubemap from " + property.nameDisplay);
+				} else {
+					UndoRecord("switch cubemap to " + newCubemap.name + " in " + property.nameDisplay);
+				}
+				cubemapAsset = newCubemap;
+			}
+
 			
 
 			if( changedFace || EditorGUI.EndChangeCheck() ) {
@@ -155,7 +165,8 @@ namespace ShaderForge {
 
 		public override void DrawLowerPropertyBox() {
 			PrepareWindowColor();
-			previewFace = (CubemapFace)EditorGUI.EnumPopup( lowerRect, previewFace );
+			previewFace = (CubemapFace)UndoableEnumPopup(lowerRect, previewFace, "switch displayed cubemap face");
+			//previewFace = (CubemapFace)EditorGUI.EnumPopup( lowerRect, previewFace );
 			ResetWindowColor();
 		}
 

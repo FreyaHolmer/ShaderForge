@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
+using System;
 
 
 namespace ShaderForge {
@@ -25,6 +26,8 @@ namespace ShaderForge {
 
 		public bool selected = false;
 
+		public bool discreteTitle = false;
+
 		public bool varDefined = false; // Whether or not this node has had its variable defined already.
 		public bool varPreDefined = false; // Whether or not this variable has done its prefefs
 		public bool alwaysDefineVariable = false;
@@ -38,7 +41,18 @@ namespace ShaderForge {
 
 		public static Color colorGlobal = new Color( 1f, 0.8f, 0.7f); // ( 1f, 0.9f, 0.8f);
 
-
+		public void UndoRecord(string undoMsg){
+			Undo.RecordObject(this,undoMsg);
+			if(texture != null)
+				Undo.RecordObject(texture, undoMsg);
+			if(property != null)
+				Undo.RecordObject(property, undoMsg);
+			if(status != null)
+				Undo.RecordObject(status, undoMsg);
+			foreach(SF_NodeConnector con in connectors){
+				Undo.RecordObject(con, undoMsg);
+			}
+		}
 		
 
 		public Color colorDefault{
@@ -162,7 +176,7 @@ namespace ShaderForge {
 			if(IsProperty()){
 				if(!ShouldDefineVariable() && !neverDefineVariable)
 					return property.nameInternal + "_var";
-				else
+				else if( neverDefineVariable)
 					return property.nameInternal;
 			}
 			return "node_" + id;
@@ -230,6 +244,181 @@ namespace ShaderForge {
 
 
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		public void UndoableToggle(Rect r, ref bool boolVar, string label, string undoActionName, GUIStyle style){
+			if(style == null)
+				style = EditorStyles.toggle;
+			bool newValue = GUI.Toggle(r,boolVar,label, style);
+			if(newValue != boolVar){
+				UndoRecord((newValue ? "enable" : "disable") + " " + undoActionName);
+				boolVar = newValue;
+			}
+		}
+
+
+		public Enum UndoableEnumPopup(Rect r, Enum enumValue, string undoPrefix){
+			Enum nextEnum = EditorGUI.EnumPopup( r, enumValue );
+			if(nextEnum.ToString() != enumValue.ToString()){
+				string undoName = undoPrefix + " to " + nextEnum;
+				UndoRecord(undoName);
+				enumValue = nextEnum;
+			}
+			return enumValue;
+		}
+
+		public Enum UndoableLabeledEnumPopup(Rect r, string label, Enum enumValue, string undoPrefix){
+			Enum nextEnum = SF_GUI.LabeledEnumField( r, label, enumValue, EditorStyles.miniLabel );
+			if(nextEnum.ToString() != enumValue.ToString()){
+				UndoRecord(undoPrefix + " to " + nextEnum);
+				Undo.IncrementCurrentGroup();
+				enumValue = nextEnum;
+			}
+			return enumValue;
+		}
+
+
+		public int UndoablePopup(Rect r, int selected, string[] displayedOptions, string undoPrefix, GUIStyle style = null){
+			if(style == null)
+				style = EditorStyles.popup;
+			int pickedID = EditorGUI.Popup( r, selected, displayedOptions,style);
+			if(pickedID != selected){
+				UndoRecord(undoPrefix + " to " + displayedOptions[pickedID]);
+				selected = pickedID;
+			}
+			return selected;
+		}
+
+		//EditorGUI.FloatField( r, texture.dataUniform[0], SF_Styles.LargeTextField );
+
+		public float UndoableFloatField(Rect r, float value, string undoInfix, GUIStyle style = null){
+			if(style == null)
+				style = EditorStyles.textField;
+			float newValue = EditorGUI.FloatField( r, value, style );
+			if(newValue != value){
+				if(IsProperty() || IsGlobalProperty()){
+					UndoRecord("set " + undoInfix + " of " + (IsGlobalProperty() ? property.nameInternal : property.nameDisplay));
+				} else {
+					UndoRecord("set " + undoInfix + " of " + nodeName + " node");
+				}
+				return newValue;
+			}
+			return value;
+		}
+
+		// (r, ref texture.dataUniform.r, "value", SF_Styles.LargeTextField);
+
+		public void UndoableEnterableFloatField(Rect r, ref float value, string undoInfix, GUIStyle style){
+			if(style == null)
+				style = EditorStyles.textField;
+			float previousValue = value;
+			SF_GUI.EnterableFloatField(this, r, ref value, style );
+			float newValue = value;
+			if(previousValue != value){
+				value = previousValue;
+				UndoRecord("set " + undoInfix + " of " + nodeName + " node");
+				value = newValue;
+			}
+		}
+
+		public float UndoableHorizontalSlider(Rect r, float value, float min, float max, string undoInfix){
+			float newValue = GUI.HorizontalSlider( r, value, min, max );
+			if(newValue != value){
+				if(IsProperty() || IsGlobalProperty()){
+					UndoRecord("set " + undoInfix + " of " + (IsGlobalProperty() ? property.nameInternal : property.nameDisplay));
+				} else {
+					UndoRecord("set " + undoInfix + " of " + nodeName + " node");
+				}
+				
+				return newValue;
+			}
+			return value;
+		}
+
+		// code = GUI.TextArea(txtRect,code,SF_Styles.CodeTextArea);
+		public string UndoableTextArea(Rect r, string value, string undoInfix, GUIStyle style){
+			string newValue = GUI.TextArea( r, value, style );
+			if(newValue != value){
+				if(this is SFN_Code){
+					UndoRecord("edit " + undoInfix + " of " + (this as SFN_Code).functionName);
+				} else if(IsProperty() || IsGlobalProperty()){
+					UndoRecord("edit " + undoInfix + " of " + (IsGlobalProperty() ? property.nameInternal : property.nameDisplay));
+				} else {
+					UndoRecord("edit " + undoInfix + " of " + nodeName + " node");
+				}
+				
+				return newValue;
+			}
+			return value;
+		}
+
+		public string UndoableTextField(Rect r, string value, string undoInfix, GUIStyle style, bool readPropertyName = true){
+			if(style == null)
+				style = EditorStyles.textField;
+			string newValue = GUI.TextField( r, value, style );
+			if(newValue != value){
+				if(this is SFN_Code && readPropertyName){
+					UndoRecord("edit " + undoInfix + " of " + (this as SFN_Code).functionName);
+				} else if( ( IsProperty() || IsGlobalProperty() ) && readPropertyName){
+					UndoRecord("edit " + undoInfix + " of " + (IsGlobalProperty() ? property.nameInternal : property.nameDisplay));
+				} else {
+					UndoRecord("edit " + undoInfix + " of " + nodeName + " node");
+				}
+				
+				return newValue;
+			}
+			return value;
+		}
+
+		public Color UndoableColorField(Rect r, Color color, string undoMsg){
+			Color newColor = EditorGUI.ColorField( r, color );
+			if(newColor != color){
+				UndoRecord(undoMsg);
+				return newColor;
+			}
+			return color;
+		}
+
+
+
+		// UndoableTextField
+
+
+
+		/*
+		public int UndoableEnterableTextField(Rect r, ref string str, ){
+
+			SF_GUI.EnterableTextField(this, r,
+
+		}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		//	public virtual void OnConnectedNode(){
 		//		Debug.Log("OnConnectedNode " + name);
@@ -564,15 +753,16 @@ namespace ShaderForge {
 			return rect.Contains( Event.current.mousePosition );
 		}
 
+		/*
 		public bool CheckIfDeleted() {
 
 			if( Event.current.keyCode == KeyCode.Delete && Event.current.type == EventType.keyDown && selected ) {
-				Delete();
+				Delete(true,"delete " + nodeName);
 				return true;
 			}
 			return false;
 
-		}
+		}*/
 
 		public void PrepareWindowColor() {
 
@@ -596,7 +786,7 @@ namespace ShaderForge {
 			if( MouseOverNode( world: true ) && Event.current.isMouse ) {
 				editor.ResetRunningOutdatedTimer();
 				if( !selected && !SF_GUI.MultiSelectModifierHeld() )
-					editor.nodeView.selection.DeselectAll();
+					editor.nodeView.selection.DeselectAll(registerUndo:true);
 				
 				StartDragging();
 				
@@ -621,13 +811,13 @@ namespace ShaderForge {
 			if( hover && stationary && !placingNew ) { // If you released on the node without dragging
 				if( SF_GUI.MultiSelectModifierHeld() ) {
 					if( selected )
-						Deselect();
+						Deselect(registerUndo:true);
 					else
-						Select();
+						Select(registerUndo:true);
 					Event.current.Use();
 				} else if(!selected) {
-					editor.nodeView.selection.DeselectAll();
-					Select();
+					editor.nodeView.selection.DeselectAll(registerUndo:true);
+					Select(registerUndo:true);
 					Event.current.Use();
 				}
 			}
@@ -679,7 +869,7 @@ namespace ShaderForge {
 
 
 
-			GUI.Box( rect, nodeName, SF_Styles.NodeStyle );
+			GUI.Box( rect, nodeName, discreteTitle ? SF_Styles.NodeStyleDiscrete : SF_Styles.NodeStyle );
 
 
 			 
@@ -745,12 +935,15 @@ namespace ShaderForge {
 				//Debug.Log();
 
 				string newName;
-				if(codeNode)
-					newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
-				else if(IsGlobalProperty())
-					newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
-				else
-					newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
+				//if(codeNode)
+				//	newName = UndoableTextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() ); // newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
+				//else if(IsGlobalProperty())
+				//	newName = GUI.TextField( nameRect, oldName, SF_Styles.GetNodeNameLabelText() );
+				//else
+
+
+				string labelType = codeNode ? "function name" : !IsGlobalProperty() ? "property name" : "internal name";
+				newName = UndoableTextField( nameRect, oldName, labelType, SF_Styles.GetNodeNameLabelText(), readPropertyName:false );
 
 				if(codeNode)
 					newName = SF_ShaderProperty.FormatInternalName(newName);
@@ -774,7 +967,7 @@ namespace ShaderForge {
 				mouseOver = nameRect.Contains( Event.current.mousePosition ) || rect.Contains( Event.current.mousePosition );
 
 				if( focusedField )
-					editor.nodeView.selection.DeselectAll();
+					editor.nodeView.selection.DeselectAll(registerUndo:true);
 
 				if( selected || focusedField || mouseOver && !editor.screenshotInProgress ) {
 					GUI.color = new Color(1f,1f,1f,0.6f);
@@ -846,7 +1039,9 @@ namespace ShaderForge {
 					GUI.SetNextControlName(fieldStr);
 					Rect tmp = cr;
 					tmp.width = 256;
-					comment = GUI.TextField(tmp, comment, SF_Styles.GetNodeCommentLabelTextField());
+					//comment = GUI.TextField(tmp, comment, SF_Styles.GetNodeCommentLabelTextField());
+					comment = UndoableTextField(tmp, comment, "comment", SF_Styles.GetNodeCommentLabelTextField());
+
 					SF_Tools.FormatSerializableComment(ref comment);
 
 
@@ -908,6 +1103,8 @@ namespace ShaderForge {
 
 
 			editor.ResetRunningOutdatedTimer();
+
+			UndoRecord("move " + nodeName + " node");
 
 			dragDelta += delta;
 			Vector2 finalDelta = new Vector2( rect.x, rect.y );
@@ -1026,14 +1223,25 @@ namespace ShaderForge {
 			return count;
 		}
 
-		public void Select() {
+		public void UndoRecordSelectionState(string undoMsg){
+			UndoRecord(undoMsg);
+			Undo.RecordObject(editor.nodeView.selection, undoMsg);
+		}
+
+		public void Select(bool registerUndo) {
 			if( !editor.nodeView.selection.Selection.Contains( this ) ) {
+				if(registerUndo)
+					UndoRecordSelectionState("select");
 				editor.nodeView.selection.Add( this );
 				selected = true;
 			}
 		}
 
-		public void Deselect() {
+		public void Deselect(bool registerUndo, string undoMsg = null) {
+			if(undoMsg == null)
+				undoMsg = "deselect";
+			if(registerUndo)
+				UndoRecordSelectionState(undoMsg);
 			editor.nodeView.selection.Remove( this );
 			selected = false;
 		}
@@ -1191,13 +1399,23 @@ namespace ShaderForge {
 			
 			
 			Color pickedColor = EditorGUI.ColorField( pickRect, texture.ConvertToDisplayColor( texture.dataUniform ) );
-			SetColor( pickedColor );
+			SetColor( pickedColor, true );
 			
 		}
 
-		public void SetColor(Color c) {
+		public void SetColor(Color c, bool registerUndo = false) {
 			if( c != texture.dataUniform ) {
-				texture.dataUniform = texture.ConvertToDisplayColor( c );
+				Color newColor = texture.ConvertToDisplayColor( c );
+				if(registerUndo){
+					if(IsProperty()){
+						UndoRecord("set color of " + property.nameDisplay);
+					} else {
+						UndoRecord("set color of " + nodeName);
+					}
+
+				}
+
+				texture.dataUniform = newColor;
 				if( IsProperty() ) {
 					if( property is SFP_Color ) {
 						( this as SFN_Color ).OnUpdateValue();
@@ -1260,7 +1478,7 @@ namespace ShaderForge {
 			// Override
 		}
 
-		public void Delete() {
+		public void Delete(bool registerUndo = false, string undoMsg = "") {
 
 			if( this is SFN_Final )
 				return;
@@ -1271,29 +1489,61 @@ namespace ShaderForge {
 			if(SF_Debug.nodeActions)
 				Debug.Log("Deleting node " + nodeName);
 
+			if(registerUndo){
+
+
+				//Undo.RecordObject(editor,undoMsg);	// For the node list
+				Undo.IncrementCurrentGroup();
+				Undo.RecordObject(editor.nodeView.treeStatus,undoMsg); // For the property list (if applicable)
+				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
+				Undo.IncrementCurrentGroup();
+				UndoRecord(undoMsg);	// For the node itself
+				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
+				//Undo.RecordObject(this,undoMsg);
+			}
+
 			OnDelete();
 
 
-			Deselect();
+			Deselect(registerUndo:false);
 			editor.nodes.Remove( this );
 			if( editor.nodeView.treeStatus.propertyList.Contains( this ) )
 				editor.nodeView.treeStatus.propertyList.Remove( this );
 
 			for( int i = 0; i < connectors.Length; i++ ) {
 				connectors[i].Disconnect(true, false);
-				connectors[i] = null;
+				//connectors[i] = null; // TODO
 			}
-			connectors = null;
+			//connectors = null; // TODO
 
 
 			//SF_Editor.instance.CheckForBrokenConnections();
 			//SF_Editor.instance.Repaint();
 
 			texture.DestroyTexture();
-			DestroyImmediate( texture );
-			ScriptableObject.DestroyImmediate( status );
-			
-			ScriptableObject.DestroyImmediate(this);
+
+
+
+			if(registerUndo){
+				/*
+				Undo.IncrementCurrentGroup();
+				Undo.DestroyObjectImmediate(texture);
+				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
+				Undo.IncrementCurrentGroup();
+				Undo.DestroyObjectImmediate(status);
+				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
+				Undo.IncrementCurrentGroup();*/
+				//Undo.IncrementCurrentGroup();
+				//Undo.DestroyObjectImmediate(this);
+				//Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
+			} else {
+				DestroyImmediate( texture );
+				ScriptableObject.DestroyImmediate( status );
+				
+				ScriptableObject.DestroyImmediate(this);
+			}
+
+
 
 			editor.OnShaderModified(NodeUpdateType.Soft);
 
@@ -1319,7 +1569,7 @@ namespace ShaderForge {
 			// If it shouldn't be defined, get raw value
 			if( !ShouldDefineVariable() ) {
 				return Evaluate();
-			} else if( !varDefined ) { // If it's not defined yet, define it! Append a new row
+			} else if( !varDefined && !neverDefineVariable ) { // If it's not defined yet, define it! Append a new row
 				DefineVariable();
 			}
 
@@ -1332,7 +1582,7 @@ namespace ShaderForge {
 			//if(this is SFN_If)
 				//Debug.Log("Defining variable");
 
-			if( varDefined ) {
+			if( varDefined || neverDefineVariable ) {
 				//Debug.Log( "Already defined!" );
 				return;
 			}

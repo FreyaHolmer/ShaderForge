@@ -43,7 +43,7 @@ namespace ShaderForge {
 			GUI.Label(r, "Experimental features may not work");
 			r.xMin -= 20;
 			r.y += 20;
-			force2point0 = GUI.Toggle( r, force2point0, "Force Shader Model 2.0" );
+			force2point0 = UndoableToggle( r, force2point0, "Force Shader Model 2.0", "shader model 2.0 forcing", null );
 			r.y += 20;
 
 			r.y += prevYpos;

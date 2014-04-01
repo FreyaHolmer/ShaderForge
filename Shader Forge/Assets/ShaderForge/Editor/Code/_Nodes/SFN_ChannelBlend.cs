@@ -76,9 +76,9 @@ namespace ShaderForge {
 				// Disconnect if going hidden while connected, but not during load, as it might connect an unevaluated cc
 				//if(!SF_Parser.quickLoad && !SF_Parser.settingUp){
 				if(con.IsConnected() && con.enableState == EnableState.Disabled){
-						//connectors[i+2].Disconnect();
-						//Debug.Log("Disconnecting thing due to things!");
-					}
+					//connectors[i+2].Disconnect();
+					//Debug.Log("Disconnecting thing due to things!");
+				}
 				//}
 
 			}

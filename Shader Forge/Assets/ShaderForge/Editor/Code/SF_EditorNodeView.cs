@@ -245,10 +245,23 @@ namespace ShaderForge {
 
 				// NODES
 				if( editor.nodes != null ) {
-					for(int i=0;i<editor.nodes.Count;i++) {
-						if( !editor.nodes[i].Draw() )
-							break;
+
+					// If we're repainting, draw in reverse to sort properly
+					if(Event.current.rawType == EventType.repaint){
+						for (int i = editor.nodes.Count - 1; i >= 0; i--) {
+							if( !editor.nodes[i].Draw() )
+								break;
+						}
+					} else {
+						for(int i=0;i<editor.nodes.Count;i++) {
+							if( !editor.nodes[i].Draw() )
+								break;
+						}
 					}
+
+
+
+
 					for(int i=0;i<editor.nodes.Count;i++)
 						editor.nodes[i].DrawConnectors();
 				}

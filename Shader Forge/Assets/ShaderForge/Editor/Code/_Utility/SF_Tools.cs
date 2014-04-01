@@ -73,7 +73,7 @@ namespace ShaderForge {
 		}
 		
 		public static bool CanRunShaderForge(){
-			return (currentUnityVersion >= minimumUnityVersion);
+			return (CurrentUnityVersion >= minimumUnityVersion);
 		}
 
 		

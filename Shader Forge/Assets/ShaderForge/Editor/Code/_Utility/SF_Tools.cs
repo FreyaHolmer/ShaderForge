@@ -60,15 +60,20 @@ namespace ShaderForge {
 		public static int stationaryCursorRadius = 7;
 		
 		
-		public const string minimumUnityVersion = "4.2";
-		
-		public static bool CanRunShaderForge(){	
+		public const float minimumUnityVersion = 4.3f;
 
-		#if UNITY_2_6 || UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_1
-			return false;
-		#else
-			return true;
-		#endif
+		private static float currentUnityVersion = 0f;
+		public static float CurrentUnityVersion{
+			get{
+				if(currentUnityVersion == 0f){
+					currentUnityVersion = float.Parse(Application.unityVersion.Substring(0,3));
+				}
+				return currentUnityVersion;
+			}
+		}
+		
+		public static bool CanRunShaderForge(){
+			return (currentUnityVersion >= minimumUnityVersion);
 		}
 
 		

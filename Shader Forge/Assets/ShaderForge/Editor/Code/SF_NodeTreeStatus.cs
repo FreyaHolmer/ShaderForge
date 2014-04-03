@@ -12,6 +12,7 @@ namespace ShaderForge {
 		public SF_Editor editor;
 		public List<SF_ErrorEntry> errors;
 		public bool mipInputUsed = false; // If this is true, only DX is allowed :< OR: Enable glsl pragma
+		public bool texturesInVertShader = false;
 		public bool usesSceneData = false;
 		// public bool lightNodesUsed = false; // Used to re-enable light settings when shader is set to unlit
 
@@ -97,6 +98,7 @@ namespace ShaderForge {
 			//if( editor.shaderEvaluator.ghostNodes != null )
 				//Debug.Log( "Ghost nodes: " + editor.shaderEvaluator.ghostNodes.Count );
 
+			texturesInVertShader = false;
 			bool foundMipUsed = false;
 			SF_Node mipNode = null;
 			usesSceneData = false;
@@ -154,6 +156,14 @@ namespace ShaderForge {
 				}
 			}
 
+
+
+			// Check if there are any textures in the vertex input
+			texturesInVertShader = HasTextureInput(editor.materialOutput.vertexOffset) || HasTextureInput(editor.materialOutput.outlineWidth);
+
+
+
+
 			editor.shaderEvaluator.RemoveGhostNodes();
 
 
@@ -167,15 +177,39 @@ namespace ShaderForge {
 
 
 
-			
-
-
 
 			if(errors.Count == 0)
 				return true;
 			DisplayErrors();
 			return false;
 		}
+
+
+
+		public bool HasTextureInput(SF_NodeConnector con){
+
+			if(con.IsConnectedEnabledAndAvailable()){
+
+				if(con.inputCon.node is SFN_Tex2d){
+					return true;
+				}
+
+				// Recursively loop through inputs of the connnected node
+				foreach(SF_NodeConnector c in con.inputCon.node.connectors){
+					if(c.conType == ConType.cOutput)
+						continue;
+					if(!c.IsConnected())
+						continue;
+					if(HasTextureInput(c)){
+						return true;
+					}
+				}
+
+			}
+			return false;
+		}
+
+
 
 		public void DisplayErrors(){
 			//foreach(SF_ErrorEntry err in errors){

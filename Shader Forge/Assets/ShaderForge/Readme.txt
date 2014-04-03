@@ -8,8 +8,6 @@ You hopefully can't wait to get started, but you should give this document a rea
 
 Shader Forge is currently in beta, which means that things could potentially change in a way that alters your shaders,
 when opening them with a newer version. I will, however, try to avoid this. I honestly don't think it will happen, but it could.
-Beta also means that these first few weeks will focus primarily on bugfixes, workflow and interaction design, rather than features!
-
 
 Contact / Support:
 ------------------

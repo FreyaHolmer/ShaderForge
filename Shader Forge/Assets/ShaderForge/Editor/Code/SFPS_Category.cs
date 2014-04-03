@@ -106,6 +106,7 @@ namespace ShaderForge {
 			GUI.color = new Color(0,0,0,0);
 			if( GUI.Button( r, string.Empty , EditorStyles.foldout ) ){
 				Event.current.Use();
+				Undo.RecordObject(this, foldVar ? "collapse " + labelExpanded : "expand " + labelExpanded);
 				foldVar = !foldVar;
 			}
 			GUI.color = prev;

@@ -247,17 +247,17 @@ namespace ShaderForge {
 				if( editor.nodes != null ) {
 
 					// If we're repainting, draw in reverse to sort properly
-					if(Event.current.rawType == EventType.repaint){
+					//if(Event.current.rawType == EventType.repaint){
 						for (int i = editor.nodes.Count - 1; i >= 0; i--) {
 							if( !editor.nodes[i].Draw() )
 								break;
 						}
-					} else {
+					/*} else {
 						for(int i=0;i<editor.nodes.Count;i++) {
 							if( !editor.nodes[i].Draw() )
 								break;
 						}
-					}
+					}*/
 
 
 

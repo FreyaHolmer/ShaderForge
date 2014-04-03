@@ -29,7 +29,7 @@ namespace ShaderForge {
 		public bool discreteTitle = false;
 
 		public bool varDefined = false; // Whether or not this node has had its variable defined already.
-		public bool varPreDefined = false; // Whether or not this variable has done its prefefs
+		public bool varPreDefined = false; // Whether or not this variable has done its predefs
 		public bool alwaysDefineVariable = false;
 		public bool neverDefineVariable = false;
 		public bool onlyPreDefine = false;	// If it should only do the pre-define, and skip the regular variable or not (Used in branching)
@@ -41,7 +41,8 @@ namespace ShaderForge {
 
 		public static Color colorGlobal = new Color( 1f, 0.8f, 0.7f); // ( 1f, 0.9f, 0.8f);
 
-		public void UndoRecord(string undoMsg){
+		public void UndoRecord(string undoMsg, UpToDateState tempOutdatedState = UpToDateState.OutdatedHard){
+			SetDirty(tempOutdatedState); // This will only be in the restored undo state
 			Undo.RecordObject(this,undoMsg);
 			if(texture != null)
 				Undo.RecordObject(texture, undoMsg);
@@ -52,6 +53,7 @@ namespace ShaderForge {
 			foreach(SF_NodeConnector con in connectors){
 				Undo.RecordObject(con, undoMsg);
 			}
+			SetDirty(UpToDateState.UpToDate); // Might need to comment this for Redo to work, it seems
 		}
 		
 
@@ -330,6 +332,7 @@ namespace ShaderForge {
 			float newValue = value;
 			if(previousValue != value){
 				value = previousValue;
+
 				UndoRecord("set " + undoInfix + " of " + nodeName + " node");
 				value = newValue;
 			}
@@ -1224,7 +1227,7 @@ namespace ShaderForge {
 		}
 
 		public void UndoRecordSelectionState(string undoMsg){
-			UndoRecord(undoMsg);
+			UndoRecord(undoMsg, UpToDateState.OutdatedSoft);
 			Undo.RecordObject(editor.nodeView.selection, undoMsg);
 		}
 
@@ -1238,6 +1241,8 @@ namespace ShaderForge {
 		}
 
 		public void Deselect(bool registerUndo, string undoMsg = null) {
+			if(!selected)
+				return;
 			if(undoMsg == null)
 				undoMsg = "deselect";
 			if(registerUndo)
@@ -1477,6 +1482,35 @@ namespace ShaderForge {
 		public virtual void OnDelete() {
 			// Override
 		}
+
+		[SerializeField]
+		public UpToDateState dirtyState = UpToDateState.UpToDate;
+
+		public void CheckIfDirty(){
+
+			if(dirtyState == UpToDateState.UpToDate)
+				return;
+
+
+
+			//Debug.Log("Cleaning up " + nodeName);
+
+			NodeUpdateType updType = NodeUpdateType.Hard;
+			if(dirtyState == UpToDateState.OutdatedHard)
+				updType = NodeUpdateType.Hard;
+			if(dirtyState == UpToDateState.OutdatedSoft)
+				updType = NodeUpdateType.Soft;
+
+
+			OnUpdateNode(updType, true);
+			dirtyState = UpToDateState.UpToDate;
+		}
+
+		public void SetDirty(UpToDateState dirtyState){
+			this.dirtyState = dirtyState;
+		}
+
+
 
 		public void Delete(bool registerUndo = false, string undoMsg = "") {
 

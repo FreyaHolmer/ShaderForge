@@ -763,6 +763,15 @@ namespace ShaderForge {
 
 			//UpdateCameraZoomInput();
 
+
+			if(Event.current.rawType == EventType.ValidateCommand && Event.current.commandName == "UndoRedoPerformed"){
+				Defocus(deselectNodes:false);
+				CheckForDirtyNodes(); // When undoing, some nodes will come back as dirty, which means they need to update their values
+				shaderEvaluator.ps.fChecker.UpdateAvailability();
+				ResetRunningOutdatedTimer();
+			}
+
+
 			if( nodes != null ) {
 
 				//foreach( SF_Node n in nodes ) {
@@ -884,6 +893,23 @@ namespace ShaderForge {
 			DrawTooltip();
 
 		}
+
+
+		public void CheckForDirtyNodes(){
+
+			for(int i=0;i<nodes.Count;i++){
+				nodes[i].CheckIfDirty();
+			}
+
+		}
+
+
+
+
+
+
+
+
 
 		Color ssButtonColor = Color.black;
 		Color ssButtonColorTarget = Color.black;

@@ -35,7 +35,7 @@ namespace ShaderForge {
 					continue;
 				//if(selection.Count > 1){
 					//Debug.Log("Selection count = " + selection.Count + " thus nodes");
-					n.UndoRecord("move nodes");
+					n.UndoRecord("move nodes", UpToDateState.OutdatedSoft);
 				//}
 				n.rect.x += delta.x;
 				n.rect.y += delta.y;
@@ -144,7 +144,7 @@ namespace ShaderForge {
 
 			int selCount = Selection.Count;
 
-			Debug.Log("Delete selected, count = " + selCount);
+//			Debug.Log("Delete selected, count = " + selCount);
 
 			if(selCount == 0)
 				return;
@@ -155,20 +155,36 @@ namespace ShaderForge {
 				undoMsg = "delete " + Selection[0].nodeName;
 			else
 				undoMsg = "delete " + selCount + " nodes";
-			Debug.Log("Selection delete initiated - " + undoMsg );
+			//Debug.Log("Selection delete initiated - " + undoMsg );
 
 			Undo.RecordObject(editor,undoMsg);
 
 			foreach(SF_Node node in editor.nodes){
-				Undo.RecordObject(node, undoMsg);
+				node.UndoRecord(undoMsg);
+				// Undo.RecordObject(node, undoMsg);
 			}
 
 			Undo.RecordObject(this,undoMsg);
 
 
+
+			// Undo recording is weird :(
+
+
+
+
+
+
 			for( int i = editor.nodes.Count - 1; i >= 0; i-- ) {
 				if( editor.nodes[i].selected ) {
-					editor.nodes[i].Delete(registerUndo:false, undoMsg:undoMsg);
+					foreach(SF_NodeConnector con in editor.nodes[i].connectors){
+						if(con.conType == ConType.cOutput){
+							con.Disconnect();
+						}
+					}
+					editor.nodes.RemoveAt(i);
+
+					//editor.nodes[i].Delete(registerUndo:false, undoMsg:undoMsg);
 				}
 			}
 		}

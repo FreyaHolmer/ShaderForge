@@ -89,8 +89,8 @@ namespace ShaderForge {
 				s = "UnpackNormal(" + s + ")";
 			}
 			*/
-			Debug.LogError( "Invalid evaluation of " + property.name );
-			return "";
+			//Debug.LogError( "Invalid evaluation of " + property.name );
+//			return "";
 		}
 
 		// TODO: EditorUtility.SetTemporarilyAllowIndieRenderTexture(true);

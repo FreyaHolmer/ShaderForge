@@ -336,7 +336,7 @@ namespace ShaderForge {
 					int lbWidth = 12;
 
 
-					string channelStr = "XYZW";
+					//string channelStr = "XYZW";
 
 
 

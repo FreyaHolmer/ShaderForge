@@ -1064,7 +1064,11 @@ namespace ShaderForge {
 				GUI.Box( rect, string.Empty );
 			}
 
-			GUI.color = DisplayAsValid() ? Color.white : Color.grey;
+			if( SF_GUI.ProSkin ){
+				GUI.color = DisplayAsValid() ? Color.white : Color.grey;
+			} else {
+				GUI.color = DisplayAsValid() ? Color.white : new Color(1f,1f,1f,0.25f);
+			}
 
 			if( HasErrors() && !(Hovering(true) && CanValidlyConnectTo(SF_NodeConnector.pendingConnectionSource)) ) {
 				Rect iconRect = new Rect( rect );

@@ -30,7 +30,7 @@ namespace ShaderForge {
 		public bool boxSelecting = false;
 
 		public void MoveSelection(Vector2 delta, SF_Node ignore) {
-			foreach(SF_Node n in selection){
+			foreach(SF_Node n in Selection){
 				if( n == ignore )
 					continue;
 				//if(selection.Count > 1){

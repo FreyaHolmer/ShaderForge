@@ -1511,7 +1511,7 @@ namespace ShaderForge {
 		}
 
 
-
+		// CURRENTLY ONLY USED BY GHOST NODES
 		public void Delete(bool registerUndo = false, string undoMsg = "") {
 
 			if( this is SFN_Final )
@@ -1559,14 +1559,14 @@ namespace ShaderForge {
 
 
 			if(registerUndo){
-				/*
+
 				Undo.IncrementCurrentGroup();
 				Undo.DestroyObjectImmediate(texture);
 				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
 				Undo.IncrementCurrentGroup();
 				Undo.DestroyObjectImmediate(status);
 				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
-				Undo.IncrementCurrentGroup();*/
+				Undo.IncrementCurrentGroup();
 				//Undo.IncrementCurrentGroup();
 				//Undo.DestroyObjectImmediate(this);
 				//Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
@@ -1585,6 +1585,7 @@ namespace ShaderForge {
 			//	editor.ShaderOutdated = UpToDateState.OutdatedHard; // TODO: Only if connected
 			//}
 		}
+
 
 
 		// TODO: Channels etc

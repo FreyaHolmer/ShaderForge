@@ -158,6 +158,7 @@ namespace ShaderForge {
 			//Debug.Log("Selection delete initiated - " + undoMsg );
 
 			Undo.RecordObject(editor,undoMsg);
+			Undo.RecordObject(editor.nodeView.treeStatus, undoMsg);
 
 			foreach(SF_Node node in editor.nodes){
 				node.UndoRecord(undoMsg);
@@ -182,7 +183,10 @@ namespace ShaderForge {
 							con.Disconnect();
 						}
 					}
+					if( editor.nodeView.treeStatus.propertyList.Contains( editor.nodes[i] ) )
+						editor.nodeView.treeStatus.propertyList.Remove( editor.nodes[i] );
 					editor.nodes.RemoveAt(i);
+
 
 					//editor.nodes[i].Delete(registerUndo:false, undoMsg:undoMsg);
 				}

@@ -35,7 +35,7 @@ namespace ShaderForge {
 					continue;
 				//if(selection.Count > 1){
 					//Debug.Log("Selection count = " + selection.Count + " thus nodes");
-					n.UndoRecord("move nodes", UpToDateState.OutdatedSoft);
+					Undo.RecordObject(n,"move nodes");
 				//}
 				n.rect.x += delta.x;
 				n.rect.y += delta.y;

@@ -802,7 +802,18 @@ namespace ShaderForge {
 
 		public void OnRelease() {
 
-			isDragging = false;
+
+			if(isDragging){
+				isDragging = false;
+				Vector2 tmp = new Vector2(rect.x, rect.y);
+				rect.x = dragStart.x;
+				rect.y = dragStart.y;
+				UndoRecord("move " + nodeName + " node");
+				rect.x = tmp.x;
+				rect.y = tmp.y;
+
+			}
+			//isDragging = false;
 
 			if( SF_NodeConnector.pendingConnectionSource != null )
 				return;
@@ -1107,7 +1118,7 @@ namespace ShaderForge {
 
 			editor.ResetRunningOutdatedTimer();
 
-			UndoRecord("move " + nodeName + " node");
+			//UndoRecord("move " + nodeName + " node");
 
 			dragDelta += delta;
 			Vector2 finalDelta = new Vector2( rect.x, rect.y );

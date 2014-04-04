@@ -185,6 +185,7 @@ namespace ShaderForge {
 					}
 					if( editor.nodeView.treeStatus.propertyList.Contains( editor.nodes[i] ) )
 						editor.nodeView.treeStatus.propertyList.Remove( editor.nodes[i] );
+					editor.nodes[i].Deselect(registerUndo:false);
 					editor.nodes.RemoveAt(i);
 
 

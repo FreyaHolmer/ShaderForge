@@ -403,6 +403,10 @@ namespace ShaderForge {
 			//Debug.Log("Printing properties, count = " + editor.nodeView.treeStatus.propertyList.Count);
 
 			for( int i = 0; i < editor.nodeView.treeStatus.propertyList.Count; i++ ) {
+				if(editor.nodeView.treeStatus.propertyList[i] == null){
+					editor.nodeView.treeStatus.propertyList.RemoveAt(i);
+					i = -1; // restart
+				}
 				if( editor.nodeView.treeStatus.propertyList[i].IsProperty() ) {
 					string line = editor.nodeView.treeStatus.propertyList[i].property.GetInitializationLine();
 					App( line );

@@ -946,10 +946,11 @@ namespace ShaderForge {
 
 		void CalcGloss(){
 			AppDebug("Gloss");
+			App( "float gloss = " + ps.n_gloss + ";");
 			if( ps.catLighting.remapGlossExponentially ) {
-				App( "float gloss = exp2(" + ps.n_gloss + "*10.0+1.0);" );
+				App( "float specPow = exp2( gloss * 10.0+1.0);" );
 			} else {
-				App( "float gloss = " + ps.n_gloss+";" );
+				App( "float specPow = gloss;" );
 			}
 		}
 
@@ -1009,7 +1010,7 @@ namespace ShaderForge {
 			if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.BlinnPhong || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
 				s += " * pow(max(0,dot(halfDirection,"+VarNormalDir()+"))";
 			}
-			s += ",gloss)";
+			s += ",specPow)";
 
 			bool initialized_NdotV = false;
 
@@ -1032,7 +1033,11 @@ namespace ShaderForge {
 					if(DoAmbientSpecThisPass()){
 						App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
 						initialized_NdotV = true;
-						App (fTermDef.Replace("HdotL","NdotV").Replace("fresnelTerm","fresnelTermAmb"));
+						//App (fTermDef.Replace("HdotL","NdotV").Replace("fresnelTerm","fresnelTermAmb"));
+
+						string fTermAmbDef = "float3 fresnelTermAmb = specularColor + ( 1.0 - specularColor ) * ( pow((1.0 - NdotV),5) / (4-3*gloss) );";
+						App( fTermAmbDef );
+
 						sAmb += " * fresnelTermAmb";
 					}
 
@@ -1046,7 +1051,7 @@ namespace ShaderForge {
 					//App( "float NdotL = max(0.0,dot( "+VarNormalDir()+", lightDirection ));" ); // This should already be defined in the diffuse calc. TODO: Redefine if diffuse is not used
 					if(!initialized_NdotV) // Already defined?
 						App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
-					App( "float alpha = 1.0 / ( sqrt( (Pi/4.0) * gloss + Pi/2.0 ) );" );
+					App( "float alpha = 1.0 / ( sqrt( (Pi/4.0) * specPow + Pi/2.0 ) );" );
 					string vTermDef = "float visTerm = ( NdotL * ( 1.0 - alpha ) + alpha ) * ( NdotV * ( 1.0 - alpha ) + alpha );";
 					App( vTermDef );
 					App( "visTerm = 1.0 / visTerm;" );
@@ -1070,9 +1075,9 @@ namespace ShaderForge {
 			if( ps.catLighting.IsEnergyConserving() ) {
 				// NORMALIZATION TERM
 				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.Phong ){
-					App( "float normTerm = (gloss + 2.0 ) / (2.0 * Pi);" );
+					App( "float normTerm = (specPow + 2.0 ) / (2.0 * Pi);" );
 				} else if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.BlinnPhong || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
-					App( "float normTerm = (gloss + 8.0 ) / (8.0 * Pi);" );
+					App( "float normTerm = (specPow + 8.0 ) / (8.0 * Pi);" );
 				}
 
 				if(DoAmbientSpecThisPass()){

@@ -38,7 +38,7 @@ namespace ShaderForge {
 			if(this["M"].IsConnected()){
 				UpdateMaskCompCountInputs();
 			}
-			base.OnUpdateNode( updType );
+			//base.OnUpdateNode( updType );
 		}
 
 		public override bool IsUniformOutput() {

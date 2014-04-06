@@ -92,7 +92,7 @@ namespace ShaderForge {
 				Debug.Log( "Removing ghost nodes. Count: " + ghostNodes.Count );
 			for( int i = ghostNodes.Count - 1; i >= 0; i-- ) {
 				editor.nodes.Remove( ghostNodes[i] );
-				ghostNodes[i].Delete();
+				ghostNodes[i].DeleteGhost();
 				ghostNodes.Remove( ghostNodes[i] );
 			}
 			//Debug.Log( "Done removing ghost nodes. Count: " + ghostNodes.Count );

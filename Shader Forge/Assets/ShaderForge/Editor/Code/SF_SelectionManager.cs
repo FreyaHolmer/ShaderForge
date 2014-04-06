@@ -177,7 +177,22 @@ namespace ShaderForge {
 
 
 			for( int i = editor.nodes.Count - 1; i >= 0; i-- ) {
-				if( editor.nodes[i].selected ) {
+				SF_Node n = editor.nodes[i];
+				if( n.selected ) {
+
+					if(n is SFN_Relay){
+						SF_NodeConnector inCon = n["IN"];
+						SF_NodeConnector outCon = n["OUT"];
+						if(inCon.IsConnected() && outCon.IsConnected() ){
+							Debug.Log("Relinking stuff");
+							// Relink all outputs to the incoming connectors
+							for (int ir = outCon.outputCons.Count - 1; ir >= 0; ir--) {
+								outCon.outputCons[ir].LinkTo(inCon.inputCon);
+							}
+							inCon.Disconnect();
+						}
+					}
+
 					foreach(SF_NodeConnector con in editor.nodes[i].connectors){
 						if(con.conType == ConType.cOutput){
 							con.Disconnect();

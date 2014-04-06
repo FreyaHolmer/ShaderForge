@@ -1523,7 +1523,7 @@ namespace ShaderForge {
 
 
 		// CURRENTLY ONLY USED BY GHOST NODES
-		public void Delete(bool registerUndo = false, string undoMsg = "") {
+		public void DeleteGhost(bool registerUndo = false, string undoMsg = "") {
 
 			if( this is SFN_Final )
 				return;
@@ -1534,18 +1534,7 @@ namespace ShaderForge {
 			if(SF_Debug.nodeActions)
 				Debug.Log("Deleting node " + nodeName);
 
-			if(registerUndo){
 
-
-				//Undo.RecordObject(editor,undoMsg);	// For the node list
-				Undo.IncrementCurrentGroup();
-				Undo.RecordObject(editor.nodeView.treeStatus,undoMsg); // For the property list (if applicable)
-				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
-				Undo.IncrementCurrentGroup();
-				UndoRecord(undoMsg);	// For the node itself
-				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
-				//Undo.RecordObject(this,undoMsg);
-			}
 
 			OnDelete();
 
@@ -1569,24 +1558,12 @@ namespace ShaderForge {
 
 
 
-			if(registerUndo){
 
-				Undo.IncrementCurrentGroup();
-				Undo.DestroyObjectImmediate(texture);
-				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
-				Undo.IncrementCurrentGroup();
-				Undo.DestroyObjectImmediate(status);
-				Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
-				Undo.IncrementCurrentGroup();
-				//Undo.IncrementCurrentGroup();
-				//Undo.DestroyObjectImmediate(this);
-				//Undo.CollapseUndoOperations(Undo.GetCurrentGroup() - 1);
-			} else {
-				DestroyImmediate( texture );
-				ScriptableObject.DestroyImmediate( status );
-				
-				ScriptableObject.DestroyImmediate(this);
-			}
+			DestroyImmediate( texture );
+			ScriptableObject.DestroyImmediate( status );
+			
+			ScriptableObject.DestroyImmediate(this);
+
 
 
 

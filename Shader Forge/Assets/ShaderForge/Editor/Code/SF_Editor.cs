@@ -1371,7 +1371,7 @@ namespace ShaderForge {
 
 				if(latestMajor > SF_Tools.versionNumPrimary){
 					outOfDate = true;
-				} else if(latestMinor > SF_Tools.versionNumSecondary){
+				} else if(latestMajor == SF_Tools.versionNumPrimary && latestMinor > SF_Tools.versionNumSecondary){
 					outOfDate = true;
 				} else {
 					outOfDate = false;

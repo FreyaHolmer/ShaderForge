@@ -134,10 +134,10 @@ namespace ShaderForge {
 
 				//if(SF_Debug.dynamicNodeLoad)
 				if(SF_Editor.NodeExistsAndIs(n, "SFN_SkyshopSpec")){
-					if(n.GetInputIsConnected("GLOSS")){
+					//if(n.GetInputIsConnected("GLOSS")){
 						foundMipUsed = true;
 						mipNode = n;
-					}
+					//}
 				}
 
 

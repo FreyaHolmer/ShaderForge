@@ -187,7 +187,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Negate ), 			catArithmetic + "Negate" );
 			AddTemplate( typeof( SFN_Noise ), 			catArithmetic + "Noise" );
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
-			AddTemplate( typeof( SFN_Posterize ), 		catArithmetic + "Posterize" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Posterize ), 		catArithmetic + "Posterize" );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
 			AddTemplate( typeof( SFN_RemapRangeAdvanced ),catArithmetic + "Remap" );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
@@ -291,7 +291,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Code ), catCode + "Code" );
 
 			string catUtility = "Utility/";
-			AddTemplate( typeof( SFN_Relay ), catUtility + "Relay" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Relay ), catUtility + "Relay" );
 
 
 			SF_EditorNodeData ssDiff = TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" );

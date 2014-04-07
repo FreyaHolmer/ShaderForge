@@ -184,7 +184,6 @@ namespace ShaderForge {
 						SF_NodeConnector inCon = n["IN"];
 						SF_NodeConnector outCon = n["OUT"];
 						if(inCon.IsConnected() && outCon.IsConnected() ){
-							Debug.Log("Relinking stuff");
 							// Relink all outputs to the incoming connectors
 							for (int ir = outCon.outputCons.Count - 1; ir >= 0; ir--) {
 								outCon.outputCons[ir].LinkTo(inCon.inputCon);

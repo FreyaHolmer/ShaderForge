@@ -27,11 +27,17 @@ namespace ShaderForge {
 				SF_NodeConnector.Create(this,"DES","Des",ConType.cInput,ValueType.VTv1,false).SetRequired(false)
 			};
 
-			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2] );
+			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1] );
+			(conGroup as SFNCG_Arithmetic).lockedOutput = true;
 
 		}
 
 		public override void OnUpdateNode( NodeUpdateType updType, bool cascade = true ) {
+			if(GetEvaluatedComponentCount() == 3){
+				this["OUT"].valueType = ValueType.VTv3;
+			} else {
+				this["OUT"].valueType = ValueType.VTv1;
+			}
 			if( InputsConnected() )
 				RefreshValue( 1, 2 );
 			base.OnUpdateNode( updType );

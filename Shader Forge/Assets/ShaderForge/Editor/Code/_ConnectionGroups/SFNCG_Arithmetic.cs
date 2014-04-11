@@ -77,8 +77,10 @@ namespace ShaderForge {
 			int ccCalc;
 			if(SF_Tools.CompCountOf(vt, out ccCalc)){
 				if(ccCalc != output.node.texture.CompCount){
+					//Debug.Log("Trying to set to " + ccCalc + " from " + vt);
 					output.node.texture.CompCount = ccCalc;
-					output.node.OnUpdateNode(NodeUpdateType.Hard);
+					//output.node.OnUpdateNode(NodeUpdateType.Hard);
+					output.node.texture.UpdateColorPreview();
 				}
 			}
 

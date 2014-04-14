@@ -1350,11 +1350,14 @@ namespace ShaderForge {
 
 
 					// To make diffuse/spec tradeoff better
-					if(ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL && DoPassDiffuse() && DoPassSpecular()){
-						App ("diffuseLight *= 1-specularMonochrome;");
-					} else if(ps.catLighting.energyConserving){
-						App ("diffuseLight *= 1-specularMonochrome;");
+					if(DoPassDiffuse() && DoPassSpecular()){
+						if(ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL){
+							App ("diffuseLight *= 1-specularMonochrome;");
+						} else if(ps.catLighting.energyConserving){
+							App ("diffuseLight *= 1-specularMonochrome;");
+						}
 					}
+
 
 					//if(parenthesize)
 					//	diffuseLight += " )";

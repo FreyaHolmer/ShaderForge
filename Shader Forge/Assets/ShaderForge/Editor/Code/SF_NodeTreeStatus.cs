@@ -50,7 +50,11 @@ namespace ShaderForge {
 			for( int i = 0; i < split.Length; i++ ) {
 				//Debug.Log("Found " + GetNodeByID( int.Parse( split[i] )).nodeName);
 				//Debug.Log ("Attempting deserialization. int parse of ["+split[i]+"]");
-				propertyList.Add( GetNodeByID( int.Parse( split[i] ) ) );
+
+				SF_Node foundNode = GetNodeByID( int.Parse( split[i] ) );
+				if(foundNode != null)
+					propertyList.Add( foundNode );
+
 			}
 		}
 
@@ -59,7 +63,7 @@ namespace ShaderForge {
 				if( n.id == id )
 					return n;
 			}
-			Debug.LogError( "Property node with ID " + id + " not found while deserializing" );
+			Debug.LogError( "Property node with ID " + id + " not found while deserializing, removing..." );
 			return null;
 		}
 

@@ -47,29 +47,52 @@ namespace ShaderForge {
 			//lowerRect.width = Mathf.Max( 32, strWidth );
 			Rect r = new Rect( lowerRect );
 			r.width -= 75;
+			r.width *= 2;
 			r.yMin += 4;
 			r.yMax -= 2;
 			r.xMin += 2;
-			float fVal;
+			float fVal = texture.dataUniform[0];;
 
-			GUI.enabled = false;
-			fVal = EditorGUI.FloatField(r, texture.dataUniform[0], SF_Styles.LargeTextField);
-			GUI.enabled = true;
+			//GUI.enabled = false;
+			//fVal = EditorGUI.FloatField(r, texture.dataUniform[0], SF_Styles.LargeTextField);
+			//GUI.enabled = true;
+
+			//r.x += r.width + 6;
 
 
-			r.x += r.width + 6;
 
 			bool prevVal = texture.dataUniform[0] == 1f;
 
-			bool newVal = GUI.Toggle(r,prevVal,string.Empty);
+			GUI.enabled = false;
+			r = r.PadTop(2);
+			GUI.Label(r,prevVal ? "1": "0", SF_Styles.LargeTextFieldNoFrame);
+			r = r.PadTop(-2);
+			GUI.enabled = true;
+
+			r.x += 18;
+
+			r.width = r.height + 2;
+			bool newVal = GUI.Button(r,string.Empty) ? !prevVal : prevVal;
+
+			if(newVal){
+				Rect chkRect = r;
+				chkRect.width = SF_GUI.Toggle_check_icon.width;
+				chkRect.height = SF_GUI.Toggle_check_icon.height;
+				chkRect.x += (r.width-chkRect.width)*0.5f;
+				chkRect.y += 2;
+				GUI.DrawTexture(chkRect,SF_GUI.Toggle_check_icon);
+			}
+
+
 
 			if(prevVal != newVal){
 				UndoRecord("set toggle of " + property.nameDisplay + " to " + newVal.ToString());
 				fVal = newVal ? 1f : 0f;
+				connectors[0].label = "";
 				//Debug.Log("Setting it to " + newVal.ToString());
 			}
 
-			r.x += 20 + 5;
+			r.x += r.width + 6;
 			r.width = r.height + 18;
 			Rect texCoords = new Rect( r );
 			texCoords.width /= 7;

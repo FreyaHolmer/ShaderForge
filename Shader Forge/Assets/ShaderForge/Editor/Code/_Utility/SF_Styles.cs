@@ -50,6 +50,20 @@ namespace ShaderForge {
 		}
 
 
+		private static GUIStyle largeTextFieldNoFrame;
+		public static GUIStyle LargeTextFieldNoFrame {
+			get {
+				if( largeTextFieldNoFrame == null ) {
+					largeTextFieldNoFrame = new GUIStyle( EditorStyles.label );
+					largeTextFieldNoFrame.fontSize = LargeTextField.fontSize;
+					largeTextFieldNoFrame.alignment = LargeTextField.alignment;
+					
+				}
+				return largeTextFieldNoFrame;
+			}
+		}
+
+
 		private static GUIStyle instructionCountRenderer;
 		public static GUIStyle InstructionCountRenderer {
 			get {

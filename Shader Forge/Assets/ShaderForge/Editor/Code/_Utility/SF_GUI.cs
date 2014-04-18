@@ -45,6 +45,15 @@ namespace ShaderForge {
 			}
 		}
 
+		private static Texture2D toggle_check_icon;
+		public static Texture2D Toggle_check_icon {
+			get {
+				if( toggle_check_icon == null )
+					toggle_check_icon = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "chk" ), typeof(Texture2D) );
+				return toggle_check_icon;
+			}
+		}
+
 		private static Texture2D screenshot_icon;
 		public static Texture2D Screenshot_icon {
 			get {

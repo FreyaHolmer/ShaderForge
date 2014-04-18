@@ -64,7 +64,8 @@ namespace ShaderForge {
 				type.Contains( "SFN_Tex2d" ) ||
 				type.Contains( "SFN_Tex2dAsset" ) ||
 				type.Contains( "SFN_Vector4Property" ) ||
-				type.Contains( "SFN_ValueProperty" )
+				type.Contains( "SFN_ValueProperty" ) ||
+			   	type.Contains( "SFN_ToggleProperty" )
 				)
 					isProperty = true;
 

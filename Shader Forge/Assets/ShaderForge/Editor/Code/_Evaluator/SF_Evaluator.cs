@@ -2305,6 +2305,10 @@ namespace ShaderForge {
 					SFN_ValueProperty valueNode = (SFN_ValueProperty)node;
 					m.SetFloat( valueNode.property.GetVariable(), valueNode.texture.dataUniform[0] );
 					break;
+				case ( "ShaderForge.SFN_ToggleProperty" ):
+					SFN_ToggleProperty toggleNode = (SFN_ToggleProperty)node;
+					m.SetFloat( toggleNode.property.GetVariable(), toggleNode.texture.dataUniform[0] );
+					break;
 				case ( "ShaderForge.SFN_Vector4Property" ):
 					SFN_Vector4Property vector4Node = (SFN_Vector4Property)node;
 					m.SetVector( vector4Node.property.GetVariable(), vector4Node.texture.dataUniform );

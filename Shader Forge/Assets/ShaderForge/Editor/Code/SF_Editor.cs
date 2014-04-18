@@ -189,7 +189,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Posterize ), 		catArithmetic + "Posterize" );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
-			AddTemplate( typeof( SFN_RemapRangeAdvanced ),catArithmetic + "Remap" );
+			AddTemplate( typeof( SFN_RemapRangeAdvanced),catArithmetic+ "Remap" );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
 			AddTemplate( typeof( SFN_Round ), 			catArithmetic + "Round" );
 			AddTemplate( typeof( SFN_Sign ), 			catArithmetic + "Sign" );
@@ -210,6 +210,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Slider ), 			catProps + "Slider" );
 			AddTemplate( typeof( SFN_Tex2d ), 			catProps + "Texture 2D", KeyCode.T );
 			AddTemplate( typeof( SFN_Tex2dAsset ), 		catProps + "Texture Asset" );
+			AddTemplate( typeof( SFN_ToggleProperty ), 	catProps + "Toggle" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_ValueProperty ), 	catProps + "Value" );
 			AddTemplate( typeof( SFN_Vector4Property ), catProps + "Vector 4" );
 

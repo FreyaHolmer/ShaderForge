@@ -208,6 +208,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Color ), 			catProps + "Color" );
 			AddTemplate( typeof( SFN_Cubemap ), 		catProps + "Cubemap" );
 			AddTemplate( typeof( SFN_Slider ), 			catProps + "Slider" );
+			AddTemplate( typeof( SFN_SwitchProperty ),	catProps + "Switch" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Tex2d ), 			catProps + "Texture 2D", KeyCode.T );
 			AddTemplate( typeof( SFN_Tex2dAsset ), 		catProps + "Texture Asset" );
 			AddTemplate( typeof( SFN_ToggleProperty ), 	catProps + "Toggle" ).MarkAsNewNode();
@@ -655,12 +656,14 @@ namespace ShaderForge {
 			
 			
 			
-
+			for (int i = nodes.Count - 1; i >= 0; i--) {
+				if(nodes[i] == null)
+					nodes.Remove(nodes[i]);
+				else
+					nodes[i].Update();
+			}
 			
 
-			foreach( SF_Node n in nodes ) {
-				n.Update();
-			}
 				
 
 			if( ShaderOutdated == UpToDateState.OutdatedHard && SF_Settings.AutoRecompile && nodeView.GetTimeSinceChanged() >= 1f) {

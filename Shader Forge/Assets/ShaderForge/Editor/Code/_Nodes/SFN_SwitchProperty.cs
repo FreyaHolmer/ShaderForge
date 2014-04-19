@@ -16,10 +16,16 @@ namespace ShaderForge {
 		public bool on = false;
 
 		public override void Initialize() {
+
 			base.Initialize( "Switch" );
+			base.node_height -= 20;
+			//base.lowerRect.height += 4;
 			base.showColor = true;
-			base.showColor = true;
+
+
 			base.UseLowerPropertyBox( true, true );
+
+
 
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTvPending,false),
@@ -32,39 +38,82 @@ namespace ShaderForge {
 			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2]);
 			
 		}
+
+		float smoothConnectorHeight = 23;
+		float targetConnectorHeight = 23;
+		Color conLineBg = Color.black;
+		Color conLineFg = Color.white;
+		Color conLineBgTrns = new Color(0f,0f,0f,0.3f);
+		Color conLineFgTrns = new Color(1f,1f,1f,0.3f);
 		
 		public override void DrawLowerPropertyBox() {
 			EditorGUI.BeginChangeCheck();
 			Rect r = lowerRect;
-			r = r.PadLeft(32).PadRight(32);
+			r.height = 24;
+			r.width = 26;
+			r.y -= 26;
+
+			if(Event.current.type == EventType.repaint){
+				smoothConnectorHeight = Mathf.Lerp(smoothConnectorHeight, targetConnectorHeight, 0.6f);
+			}
+
+			r = r.PadTop(1).PadBottom(1).PadLeft(2);
+
+			r.width = r.height + 2;
 			//r.xMin += 3;
 
+			//Handles.BeginGUI(rect);
+
+			bool hovering = rect.Contains(Event.current.mousePosition + rect.TopLeft());
 
 
-			bool prevVal = on;
 
-			GUI.color = SF_Node.colorExposed;
-			bool newVal = GUI.Button(r,string.Empty) ? !prevVal : prevVal;
+			if(hovering){
+				targetConnectorHeight = on ? 43 : 23;
+				Vector2 p0 = new Vector2(0,23);
+				Vector2 p1 = new Vector2(rect.width, smoothConnectorHeight);
+				GUILines.QuickBezier( p0, p1, conLineBg, 12, 5 );
+				GUILines.QuickBezier( p0, p1, conLineFg, 12, 3 );
+				GUILines.QuickBezier( p0, p1, conLineFg, 12, 3 );
+				bool prevVal = on;
+				GUI.color = new Color(SF_Node.colorExposed.r,SF_Node.colorExposed.g,SF_Node.colorExposed.b,GUI.color.a);
+				bool newVal = GUI.Button(r,string.Empty) ? !prevVal : prevVal;
 
-
-			if(newVal){
-				Rect chkRect = r;
-				chkRect.width = SF_GUI.Toggle_check_icon.width;
-				chkRect.height = SF_GUI.Toggle_check_icon.height;
-				chkRect.x += (r.width-chkRect.width)*0.5f;
-				chkRect.y += 2;
-				GUI.DrawTexture(chkRect,SF_GUI.Toggle_check_icon);
+				if(newVal){
+					Rect chkRect = r;
+					chkRect.width = SF_GUI.Toggle_check_icon.width;
+					chkRect.height = SF_GUI.Toggle_check_icon.height;
+					chkRect.x += (r.width-chkRect.width)*0.5f;
+					chkRect.y += 2;
+					GUI.DrawTexture(chkRect,SF_GUI.Toggle_check_icon);
+				}
+				
+				GUI.color = Color.white;
+				
+				if(prevVal != newVal){
+					string dir = on ? "on" : "off";
+					UndoRecord("switch " + dir + " " + property.nameDisplay);
+					on = newVal;
+					OnUpdateNode(NodeUpdateType.Soft, true);
+					editor.shaderEvaluator.ApplyProperty( this );
+				}
 			}
 			
-			GUI.color = Color.white;
-			
-			if(prevVal != newVal){
-				string dir = on ? "on" : "off";
-				UndoRecord("switch " + dir + " " + property.nameDisplay);
-				on = newVal;
-				OnUpdateNode(NodeUpdateType.Soft, true);
-				editor.shaderEvaluator.ApplyProperty( this );
-			}
+
+			//GUILines.DrawMultiBezierConnection(editor,,GetEvaluatedComponentCount(),Color.white);
+
+			//Handles.DrawLine(new Vector3(0,0),new Vector3(32,32));
+			//
+			//Handles.EndGUI();
+
+
+
+
+
+			//GUI.enabled = true;
+
+
+
 			
 		}
 		

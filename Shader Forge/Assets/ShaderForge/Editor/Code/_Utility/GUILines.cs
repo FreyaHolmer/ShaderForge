@@ -268,7 +268,24 @@ namespace ShaderForge {
 
 
 
+		public static void QuickBezier(Vector2 p0, Vector2 p1, Color color, int detail = 12, int width = 2){
 
+			Vector2 prevPoint = p0;
+			for(float i=1;i<detail-1;i++){
+				float t = i/(detail-2);
+
+				Vector2 nextPoint = new Vector2(
+					Mathf.Lerp( p0.x, p1.x, t),
+					Mathf.Lerp( p0.y, p1.y, SF_Tools.Smooth(t))
+				);
+
+				DrawLine(prevPoint, nextPoint, color, width, true);
+
+				prevPoint = nextPoint;
+
+			}
+
+		}
 
 
 

@@ -159,8 +159,19 @@ namespace ShaderForge {
 
 					bool ignoreMin = false;
 					i++;
+
+					// Shadow passes
 					if( css[i].Contains( "Name \"ShadowCaster\"" ) || css[i].Contains( "Name \"ShadowCollector\"" ) ||  css[i].Contains( "Name \"ForwardAdd\"" ) )
 						continue;
+
+					if( (css[i].Contains("Name \"PrePassBase\"") || css[i].Contains("Name \"PrePassFinal\"") ) && editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Forward )
+						return;
+
+					if( (css[i].Contains("Name \"ForwardBase\"") || css[i].Contains("Name \"ForwardAdd\"") ) && editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass )
+						return;
+
+			
+
 						//ignoreMin = true;
 
 					cPass = new SFIns_Pass();

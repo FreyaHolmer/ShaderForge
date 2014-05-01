@@ -9,6 +9,10 @@ namespace ShaderForge {
 
 	public static class SF_GUI {
 
+
+	
+
+
 		static Matrix4x4 prevMatrix;
 
 		public static Color[] outdatedStateColors = new Color[]{
@@ -17,21 +21,31 @@ namespace ShaderForge {
 			new Color(1f,0.7f,0.7f)
 		};
 
+		private static Texture2D LoadTexture(string path, string name){
+
+			//AssetDatabase.LoadAssetAtPath(
+
+
+			return (Texture2D)Resources.Load(path + name, typeof(Texture2D) ); // TODO: This has to change into something that's not using resources
+		}
+
 
 		private static Texture2D handle_drag;
 		public static Texture2D Handle_drag {
 			get {
 				if( handle_drag == null )
-					handle_drag = (Texture2D)Resources.Load( SF_Paths.pInterface + "handle_drag", typeof(Texture2D) );
+					handle_drag = LoadTexture( SF_Paths.pInterface, "handle_drag" );
 				return handle_drag;
 			}
 		}
+
+
 
 		private static Texture2D logo;
 		public static Texture2D Logo {
 			get {
 				if( logo == null )
-					logo = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix("logo"), typeof(Texture2D) );
+					logo = LoadTexture( SF_Paths.pInterface, SkinSuffix("logo") );
 				return logo;
 			}
 		}
@@ -40,7 +54,7 @@ namespace ShaderForge {
 		public static Texture2D Icon {
 			get {
 				if( icon == null )
-					icon = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "icon" ), typeof(Texture2D) );
+					icon = LoadTexture( SF_Paths.pInterface, SkinSuffix( "icon" ) );
 				return icon;
 			}
 		}
@@ -49,7 +63,7 @@ namespace ShaderForge {
 		public static Texture2D Toggle_check_icon {
 			get {
 				if( toggle_check_icon == null )
-					toggle_check_icon = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "chk" ), typeof(Texture2D) );
+					toggle_check_icon = LoadTexture( SF_Paths.pInterface, SkinSuffix( "chk" ) );
 				return toggle_check_icon;
 			}
 		}
@@ -58,7 +72,7 @@ namespace ShaderForge {
 		public static Texture2D Screenshot_icon {
 			get {
 				if( screenshot_icon == null )
-					screenshot_icon = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "screenshot_icon" ), typeof(Texture2D) );
+					screenshot_icon = LoadTexture( SF_Paths.pInterface, SkinSuffix( "screenshot_icon" ) );
 				return screenshot_icon;
 			}
 		}
@@ -67,7 +81,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_vert {
 			get {
 				if( inst_vert == null )
-					inst_vert = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "inst_vert" ), typeof(Texture2D) );
+					inst_vert = LoadTexture(SF_Paths.pInterface, SkinSuffix( "inst_vert" ) );
 				return inst_vert;
 			}
 		}
@@ -76,7 +90,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_vert_tex {
 			get {
 				if( inst_vert_tex == null )
-					inst_vert_tex = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "inst_vert_tex" ), typeof(Texture2D) );
+					inst_vert_tex = LoadTexture(SF_Paths.pInterface, SkinSuffix( "inst_vert_tex" ) );
 				return inst_vert_tex;
 			}
 		}
@@ -85,7 +99,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_frag {
 			get {
 				if( inst_frag == null )
-					inst_frag = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix("inst_frag" ), typeof(Texture2D) );
+					inst_frag = LoadTexture(SF_Paths.pInterface, SkinSuffix("inst_frag" ) );
 				return inst_frag;
 			}
 		}
@@ -94,7 +108,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_frag_tex {
 			get {
 				if( inst_frag_tex == null )
-					inst_frag_tex = (Texture2D)Resources.Load( SF_Paths.pInterface + SkinSuffix( "inst_frag_tex" ), typeof(Texture2D) );
+					inst_frag_tex = LoadTexture(SF_Paths.pInterface, SkinSuffix( "inst_frag_tex" ) );
 				return inst_frag_tex;
 			}
 		}

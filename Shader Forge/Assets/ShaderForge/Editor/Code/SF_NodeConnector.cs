@@ -96,6 +96,7 @@ namespace ShaderForge {
 		public List<SF_NodeConnector> outputCons;
 		public SF_Node node;
 		public bool outerLabel = false;
+		public bool displayLockIfDeferredPrePassIsOn = false;
 		public Rect rect;
 		public int typecastTarget = 0; // 0 = No typecasting
 
@@ -185,6 +186,10 @@ namespace ShaderForge {
 		}
 		public SF_NodeConnector ForceBlock(ShaderProgram block) {
 			forcedProgram = block;
+			return this;
+		}
+		public SF_NodeConnector DisplayLockIfDeferredPrePassIsOn(){
+			displayLockIfDeferredPrePassIsOn = true;
 			return this;
 		}
 
@@ -297,6 +302,9 @@ namespace ShaderForge {
 			return "0";
 		}
 
+		public bool DisplayLock(){
+			return displayLockIfDeferredPrePassIsOn && node.editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass;
+		}
 
 		public bool HasID() {
 			return !string.IsNullOrEmpty( strID );
@@ -999,6 +1007,8 @@ namespace ShaderForge {
 		}
 
 
+
+
 		public bool ShouldBeInvisible(){
 			bool hidden = enableState == EnableState.Hidden;
 			
@@ -1008,6 +1018,11 @@ namespace ShaderForge {
 			if( hidden ){
 				return true;
 			} else if(isHiddenExtraConnector){ // If it's flagged as enabled, but is an unconnected child, only draw it when it's either connected or has a pending valid connection
+				return true;
+			} else if( node.editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass && !node.availableInDeferredPrePass){
+				if(IsConnected()){
+					Disconnect(true);
+				}
 				return true;
 			}
 			return false;
@@ -1055,13 +1070,19 @@ namespace ShaderForge {
 			
 			//GUIStyle cStyle = conType == ConType.cInput ? EditorStyles.miniButtonRight : EditorStyles.miniButtonLeft;
 			//GUIStyle cStyle = (GUIStyle)"ShurikenModuleTitle";
+
+
+
+
 			
-			GUI.color = GetConnectorColor();
-			GUI.Box( rect, string.Empty );
-			if( SF_GUI.ProSkin ) {
+			if(!DisplayLock()){
+				GUI.color = GetConnectorColor();
 				GUI.Box( rect, string.Empty );
-				GUI.Box( rect, string.Empty );
-				GUI.Box( rect, string.Empty );
+				if( SF_GUI.ProSkin ) {
+					GUI.Box( rect, string.Empty );
+					GUI.Box( rect, string.Empty );
+					GUI.Box( rect, string.Empty );
+				}
 			}
 
 			if( SF_GUI.ProSkin ){
@@ -1099,12 +1120,32 @@ namespace ShaderForge {
 				GUI.skin.label.alignment = TextAnchor.MiddleLeft;
 			}
 
+
+
+
 			if( outerLabel ) {
 				labelRect.width = node.rect.width;
 				labelRect.x -= EditorStyles.miniLabel.CalcSize( new GUIContent( label ) ).x + 4;
 			}
 
+
+
 			GUI.Label( labelRect, isUnconnectedChild ? "+" : label,isUnconnectedChild ? EditorStyles.boldLabel : SF_Styles.MiniLabelOverflow );
+
+
+			if(DisplayLock()){
+				Rect lockRect = labelRect;
+				lockRect.xMin = node.rect.xMin-lockRect.height-3;
+				lockRect.xMax = node.rect.xMax;
+				lockRect.yMin -= 3;
+				lockRect.yMax += 4;
+				GUI.color = new Color(0.6f,0.6f,0.6f,0.5f);
+				GUI.Box(lockRect,string.Empty,GUI.skin.button);
+				//GUI.color = Color.white;
+				GUI.Label(lockRect,"//");
+				
+			}
+
 			
 			CheckIfDeleted();
 

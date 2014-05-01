@@ -256,11 +256,11 @@ namespace ShaderForge {
 
 			string catLighting = "Lighting/";
 			AddTemplate( typeof( SFN_AmbientLight ), 		catLighting + "Ambient Light" );
-			AddTemplate( typeof( SFN_HalfVector ), 			catLighting + "Half Direction" );
-			AddTemplate( typeof( SFN_LightAttenuation ), 	catLighting + "Light Attenuation" );
-			AddTemplate( typeof( SFN_LightColor ), 			catLighting + "Light Color" );
-			AddTemplate( typeof( SFN_LightVector ), 		catLighting + "Light Direction" );
-			AddTemplate( typeof( SFN_LightPosition ), 		catLighting + "Light Position" );
+			AddTemplate( typeof( SFN_HalfVector ), 			catLighting + "Half Direction" ).UavailableInDeferredPrePass();
+			AddTemplate( typeof( SFN_LightAttenuation ), 	catLighting + "Light Attenuation" ).UavailableInDeferredPrePass();
+			AddTemplate( typeof( SFN_LightColor ), 			catLighting + "Light Color" ).UavailableInDeferredPrePass();
+			AddTemplate( typeof( SFN_LightVector ), 		catLighting + "Light Direction" ).UavailableInDeferredPrePass();
+			AddTemplate( typeof( SFN_LightPosition ), 		catLighting + "Light Position" ).UavailableInDeferredPrePass();
 			
 			string catExtData = "External Data/";
 			AddTemplate( typeof( SFN_ProjectionParameters ), 	catExtData + "Projection Parameters" );
@@ -380,9 +380,6 @@ namespace ShaderForge {
 			this.nodeTemplates.Add( item );
 			return item;
 		}
-
-
-
 
 
 

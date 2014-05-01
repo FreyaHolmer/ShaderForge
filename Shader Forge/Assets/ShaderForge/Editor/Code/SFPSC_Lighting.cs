@@ -9,6 +9,7 @@ namespace ShaderForge {
 	public class SFPSC_Lighting : SFPS_Category {
 
 
+		public RenderPath renderPath = RenderPath.Forward;
 		public LightPrecision lightPrecision = LightPrecision.Fragment;
 		public NormalQuality normalQuality = NormalQuality.Normalized;
 		public LightMode lightMode = LightMode.BlinnPhong;
@@ -26,6 +27,10 @@ namespace ShaderForge {
 		// Optional PBL terms
 		public bool fresnelTerm = true;
 		public bool visibilityTerm = true;
+
+		public enum RenderPath { Forward, DeferredPrePass };
+		public string[] strRenderPath = new string[] { "Forward", "Deferred Pre-Pass" };
+
 
 		public enum LightPrecision { Vertex, Fragment };
 		public string[] strLightPrecision = new string[] { "Per-Vertex", "Per-Fragment" };
@@ -52,6 +57,7 @@ namespace ShaderForge {
 			s += Serialize( "vitr", visibilityTerm.ToString() );
 			s += Serialize( "dbil", doubleIncomingLight.ToString() );
 			s += Serialize( "rmgx", remapGlossExponentially.ToString());
+			s += Serialize( "rpth", ((int)renderPath).ToString() );
 			//s += Serialize( "shdc", shadowCast.ToString() );
 			//s += Serialize( "shdr", shadowReceive.ToString() );
 			return s;
@@ -108,6 +114,9 @@ namespace ShaderForge {
 			case "rmgx":
 				remapGlossExponentially = bool.Parse( value );
 				break;
+			case "rpth":
+				renderPath = (RenderPath)int.Parse( value );
+				break;
 			}
 
 		}
@@ -122,7 +131,26 @@ namespace ShaderForge {
 			
 			r.xMin += 20;
 			r.y += 20;
-			lightMode = (LightMode)UndoableContentScaledToolbar( r, "Light Mode", (int)lightMode, strLightMode, "light mode" );
+			renderPath = (RenderPath)UndoableContentScaledToolbar( r, "Render Path", (int)renderPath, strRenderPath, "render path" );
+			if(renderPath == RenderPath.DeferredPrePass){
+				if(lightMode != LightMode.BlinnPhong)
+					lightMode = LightMode.BlinnPhong;
+				if(ps.catBlending.autoSort == false){
+					ps.catBlending.autoSort = true;
+				}
+				if(ps.catBlending.blendModePreset != SFPSC_Blending.BlendModePreset.Off){
+					ps.catBlending.blendModePreset = SFPSC_Blending.BlendModePreset.Off;
+					ps.catBlending.ConformBlendsToPreset();
+				}
+			}
+			r.y += 20;
+			if(renderPath == RenderPath.DeferredPrePass){
+				GUI.enabled = false;
+				UndoableContentScaledToolbar( r, "Light Mode", (int)LightMode.BlinnPhong, strLightMode, "light mode" );
+				GUI.enabled = true;
+			} else {
+				lightMode = (LightMode)UndoableContentScaledToolbar( r, "Light Mode", (int)lightMode, strLightMode, "light mode" );
+			}
 			r.y += 20;
 
 
@@ -135,9 +163,9 @@ namespace ShaderForge {
 			r.y += 20;
 			
 			UndoableConditionalToggle(r, ref remapGlossExponentially,
-			                         usableIf: 				ps.HasGloss(),
-			                         disabledDisplayValue: 	false,
-			                         label: 				"Remap gloss from [0-1] to [1-2048]",
+			                         usableIf: 				ps.HasGloss() && renderPath != RenderPath.DeferredPrePass,
+			                         disabledDisplayValue: 	renderPath == RenderPath.DeferredPrePass ? true : false,
+			                         label: 				"Remap gloss from [0-1] to " + ((renderPath == RenderPath.DeferredPrePass) ? "[0-128]" : "[1-2048]"),
 			                         undoSuffix:			"gloss remap"
 			                         );
 			r.y += 20;
@@ -165,15 +193,17 @@ namespace ShaderForge {
 			}
 			
 			
-			
+			GUI.enabled = renderPath == RenderPath.Forward;
 			lightCount = (LightCount)UndoableContentScaledToolbar(r, "Light Count", (int)lightCount, strLightCount, "light count" );
+			GUI.enabled = true;
 			r.y += 20;
 			
 			
 			//lightPrecision = (LightPrecision)ContentScaledToolbar(r, "Light Quality", (int)lightPrecision, strLightPrecision ); // TODO: Too unstable for release
 			//r.y += 20;	
-			
+			GUI.enabled = renderPath == RenderPath.Forward;
 			normalQuality = (NormalQuality)UndoableContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality, "normal quality" );
+			GUI.enabled = true;
 			r.y += 20;
 			
 			UndoableConditionalToggle(r, ref lightmapped,
@@ -225,7 +255,7 @@ namespace ShaderForge {
 			
 			
 			//r.y += 20;
-			if(ps.catLighting.HasSpecular()){
+			if(ps.catLighting.HasSpecular() && renderPath == RenderPath.Forward){
 				maskedSpec = UndoableToggle( r, maskedSpec, "Mask directional light specular by shadows", "directional light specular shadow masking", null );
 			} else {
 				GUI.enabled = false;

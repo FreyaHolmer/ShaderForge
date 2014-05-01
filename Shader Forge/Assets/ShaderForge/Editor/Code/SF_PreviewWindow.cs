@@ -154,7 +154,7 @@ namespace ShaderForge {
 				return pruCam.clearFlags == CameraClearFlags.Skybox;
 			}
 			set{
-				pruCam.clearFlags = value ? CameraClearFlags.Skybox : CameraClearFlags.Nothing;
+				pruCam.clearFlags = value ? CameraClearFlags.Skybox : CameraClearFlags.Depth;
 			}
 		}
 
@@ -184,7 +184,7 @@ namespace ShaderForge {
 			r.x += r.width + 10;
 			r.width *= 0.5f;
 			EditorGUI.BeginChangeCheck();
-			GUI.enabled = pruCam.clearFlags == CameraClearFlags.Nothing;
+			GUI.enabled = pruCam.clearFlags == CameraClearFlags.Depth;
 			//GUI.color = GUI.enabled ? Color.white : new Color(1f,1f,1f,0.5f);
 			settings.colorBg = EditorGUI.ColorField( r, "", settings.colorBg );
 			GUI.enabled = true;
@@ -244,6 +244,17 @@ namespace ShaderForge {
 			//				GUILayout.Box(shaderEvaluator.shaderString,GUILayout.Width(340));
 
 			return (int)previewRect.yMax;
+		}
+
+		public void UpdateRenderPath(){
+			SFPSC_Lighting.RenderPath rPath = editor.ps.catLighting.renderPath;
+
+			if(rPath == SFPSC_Lighting.RenderPath.Forward){
+				pruCam.renderingPath = RenderingPath.Forward;
+			} else if(rPath == SFPSC_Lighting.RenderPath.DeferredPrePass){
+				pruCam.renderingPath = RenderingPath.DeferredLighting;
+				//pruCam.clearFlags == CameraClearFlags.Depth;
+			}
 		}
 
 		public void UpdateRot(){
@@ -307,6 +318,7 @@ namespace ShaderForge {
 			if( pruRef == null ) {
 				SetupPreview();
 			}
+			UpdateRenderPath();
 			pruBegin.Invoke( pruRef, new object[] { previewRect, previewStyle } );
 			PreparePreviewLight();
 
@@ -350,6 +362,7 @@ namespace ShaderForge {
 			ieuRemoveCustomLighting.Invoke( null, new object[0] );
 			render = (Texture)pruEnd.Invoke( pruRef, new object[0] );
 			GUI.DrawTexture( previewRect, render, ScaleMode.StretchToFill, false );
+			//GUI.Label(previewRect, pruCam.actualRenderingPath.ToString());
 		}
 
 		[SerializeField]

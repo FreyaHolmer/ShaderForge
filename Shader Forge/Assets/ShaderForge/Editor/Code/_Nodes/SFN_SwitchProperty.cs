@@ -43,8 +43,8 @@ namespace ShaderForge {
 		float targetConnectorHeight = 23;
 		Color conLineBg = Color.black;
 		Color conLineFg = Color.white;
-		Color conLineBgTrns = new Color(0f,0f,0f,0.3f);
-		Color conLineFgTrns = new Color(1f,1f,1f,0.3f);
+	//	Color conLineBgTrns = new Color(0f,0f,0f,0.3f);
+	//	Color conLineFgTrns = new Color(1f,1f,1f,0.3f);
 		
 		public override void DrawLowerPropertyBox() {
 			EditorGUI.BeginChangeCheck();

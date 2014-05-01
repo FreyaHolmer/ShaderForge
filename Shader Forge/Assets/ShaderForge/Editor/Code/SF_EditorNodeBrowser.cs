@@ -226,17 +226,28 @@ namespace ShaderForge {
 		public void DrawButton( SF_EditorNodeData entry, ref Rect btnRect ) {
 			GUI.color = entry.isProperty ? SF_Node.colorExposed : Color.white;
 
+			bool usable = !(!entry.availableInDeferredPrePass && editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass);
+
+			if(!usable){
+				GUI.color = Color.red;
+				GUI.enabled = false;
+			}
+
 			bool mouseOver = btnRect.Contains(Event.current.mousePosition);
 
 			
+			if(usable){
+				if( dragNode == entry )
+					GUI.color = SF_GUI.selectionColorBright;
+				else if( mouseOver && dragNode == null )
+					GUI.color = SF_GUI.selectionColorBrighter;
+			}
 
-			if( dragNode == entry )
-				GUI.color = SF_GUI.selectionColorBright;
-			else if( mouseOver && dragNode == null )
-				GUI.color = SF_GUI.selectionColorBrighter;
 
 			GUI.Label( btnRect, entry.nodeName, styleButton );
-			if( mouseOver && Event.current.type == EventType.mouseDown && Event.current.button == 0) {
+
+
+			if( mouseOver && Event.current.type == EventType.mouseDown && Event.current.button == 0 && usable) {
 				OnStartDrag( entry );
 			} else if( Event.current.type == EventType.ContextClick ) {
 				Vector2 mousePos = Event.current.mousePosition;
@@ -252,6 +263,7 @@ namespace ShaderForge {
 			}
 
 
+
 			GUI.color = Color.white;
 			if( entry.isNew || entry.isUnstable) {
 				GUIStyle miniStyle = new GUIStyle( EditorStyles.miniBoldLabel );
@@ -260,7 +272,9 @@ namespace ShaderForge {
 				GUI.Label( btnRect, entry.isNew ? "New" : "Unstable", miniStyle );
 			}
 
-			SF_GUI.AssignCursor( btnRect, MouseCursor.Pan );
+			if(usable)
+				SF_GUI.AssignCursor( btnRect, MouseCursor.Pan );
+			GUI.enabled = true;
 			btnRect.y += btnRect.height;
 		}
 

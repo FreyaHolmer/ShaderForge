@@ -17,6 +17,7 @@ namespace ShaderForge {
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 4;
+			base.availableInDeferredPrePass = false;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"RGB","RGB",ConType.cOutput,ValueType.VTv3,false).Outputting(OutChannel.RGB),
 				SF_NodeConnector.Create(this,"R","R",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R).WithColor(Color.red),

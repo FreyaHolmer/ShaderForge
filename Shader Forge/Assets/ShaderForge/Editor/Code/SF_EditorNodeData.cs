@@ -41,6 +41,8 @@ namespace ShaderForge {
 		public string category;
 		[SerializeField]
 		public bool isProperty = false;
+		[SerializeField]
+		public bool availableInDeferredPrePass = true;
 
 
 
@@ -114,6 +116,11 @@ namespace ShaderForge {
 
 		public SF_EditorNodeData MarkAsUnstableNode() {
 			isUnstable = true;
+			return this;
+		}
+
+		public SF_EditorNodeData UavailableInDeferredPrePass(){
+			availableInDeferredPrePass = false;
 			return this;
 		}
 

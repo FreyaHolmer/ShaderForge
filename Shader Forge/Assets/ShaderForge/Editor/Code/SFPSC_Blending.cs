@@ -284,7 +284,9 @@ namespace ShaderForge {
 			r.xMin += 20; // Indent
 			
 			BlendModePreset before = blendModePreset;
+			GUI.enabled = ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Forward;
 			blendModePreset = (BlendModePreset)UndoableLabeledEnumPopup( r, "Blend Mode", blendModePreset, "blend mode");
+			GUI.enabled = true;
 			if( blendModePreset != before ) {
 				ConformBlendsToPreset();
 			}
@@ -507,7 +509,9 @@ namespace ShaderForge {
 			
 			ps.StartIgnoreChangeCheck();
 			bool prevAutoSort = autoSort;
+			GUI.enabled = ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Forward;
 			autoSort = UndoableToggle(r, autoSort, autoSort ? "Auto Sort..." : "Auto Sort", "auto sort", null );
+			GUI.enabled = true;
 			if( autoSort != prevAutoSort && autoSort )
 				UpdateAutoSettings();
 			ps.EndIgnoreChangeCheck();

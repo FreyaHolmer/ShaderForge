@@ -16,6 +16,7 @@ namespace ShaderForge {
 			base.Initialize( "Half Dir." );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
+			base.availableInDeferredPrePass = false;
 			base.texture.CompCount = 3;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv3,false)

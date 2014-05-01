@@ -23,6 +23,9 @@ namespace ShaderForge {
 			public SF_Link( int sNode, string linkData ) {
 				this.sNode = sNode;
 				string[] split = linkData.Split( '-' );
+				if(split.Length != 3){
+					Debug.Log("Invalid link on node " + sNode + ". Expected 3 entries, found " + split.Length + ". Link Data = [" + linkData + "]");
+				}
 				sCon = split[0];
 				tNode = int.Parse( split[1] );
 				tCon = split[2];

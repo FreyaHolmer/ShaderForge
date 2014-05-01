@@ -37,7 +37,7 @@ namespace ShaderForge {
 
 		public void UpdateAvailability() {
 
-
+			bool deferredPp = ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass;
 			bool unlit = (ps.catLighting.lightMode == SFPSC_Lighting.LightMode.Unlit);
 			bool lit = !unlit;
 
@@ -46,23 +46,24 @@ namespace ShaderForge {
 			bool specConnected = editor.materialOutput.specular.IsConnectedAndEnabled();
 
 			editor.materialOutput.diffuse.SetAvailable( lit );
-			editor.materialOutput.diffusePower.SetAvailable( lit && diffConnected );
+			editor.materialOutput.diffusePower.SetAvailable( lit && diffConnected && !deferredPp );
 			editor.materialOutput.specular.SetAvailable( lit );
 			editor.materialOutput.gloss.SetAvailable( lit && specConnected );
 			editor.materialOutput.normal.SetAvailable( true );
-			editor.materialOutput.alpha.SetAvailable( true );
+			editor.materialOutput.alpha.SetAvailable( !deferredPp  );
 			editor.materialOutput.alphaClip.SetAvailable( true );
-			editor.materialOutput.refraction.SetAvailable( true );
+			editor.materialOutput.refraction.SetAvailable( !deferredPp  );
 			editor.materialOutput.emissive.SetAvailable( true );
-			editor.materialOutput.transmission.SetAvailable( lit && diffConnected );
+			editor.materialOutput.transmission.SetAvailable( lit && diffConnected && !deferredPp  );
 
 			editor.materialOutput.ambientDiffuse.SetAvailable( lit && diffConnected);
 			editor.materialOutput.ambientSpecular.SetAvailable( lit && specConnected );
-			editor.materialOutput.customLighting.SetAvailable( !lit );
+			editor.materialOutput.customLighting.SetAvailable( !lit && !deferredPp  );
 
-			editor.materialOutput.lightWrap.SetAvailable( lit && diffConnected );
+			editor.materialOutput.lightWrap.SetAvailable( lit && diffConnected && !deferredPp  );
 			editor.materialOutput.displacement.SetAvailable( editor.materialOutput.tessellation.IsConnectedAndEnabled() );
-			editor.materialOutput.outlineColor.SetAvailable( editor.materialOutput.outlineWidth.IsConnectedAndEnabled() );
+			editor.materialOutput.outlineColor.SetAvailable( editor.materialOutput.outlineWidth.IsConnectedAndEnabled() && !deferredPp  );
+			editor.materialOutput.outlineWidth.SetAvailable( !deferredPp  );
 
 
 

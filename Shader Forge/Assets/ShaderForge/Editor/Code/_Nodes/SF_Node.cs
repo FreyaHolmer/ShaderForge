@@ -33,6 +33,7 @@ namespace ShaderForge {
 		public bool alwaysDefineVariable = false;
 		public bool neverDefineVariable = false;
 		public bool onlyPreDefine = false;	// If it should only do the pre-define, and skip the regular variable or not (Used in branching)
+		public bool availableInDeferredPrePass = true;
 
 		public static Color colorExposed = new Color( 0.8f, 1f, 0.9f );
 		public static Color colorExposedDim = new Color( 0.8f, 1f, 0.9f )*0.8f;
@@ -865,6 +866,10 @@ namespace ShaderForge {
 			return !string.IsNullOrEmpty(comment);
 		}
 
+		public bool UnavailableInThisRenderPath(){
+			return editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass && !availableInDeferredPrePass;
+		}
+
 		float commentYposTarget;
 		float commentYposCurrent;
 
@@ -882,8 +887,10 @@ namespace ShaderForge {
 			}
 
 
-
+			if(UnavailableInThisRenderPath())
+				GUI.color = Color.red;
 			GUI.Box( rect, nodeName, discreteTitle ? SF_Styles.NodeStyleDiscrete : SF_Styles.NodeStyle );
+			GUI.color = Color.white;
 
 
 			 
@@ -1337,8 +1344,10 @@ namespace ShaderForge {
 
 
 			if( showColor ) {
-
+				if(UnavailableInThisRenderPath())
+					GUI.color = Color.red;
 				texture.Draw( rectInner );
+				GUI.color = Color.white;
 
 				if( SF_Debug.nodes ) {
 					Rect r = new Rect( 0, 16, 96, 20 );

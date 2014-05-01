@@ -154,7 +154,7 @@ namespace ShaderForge {
 				return pruCam.clearFlags == CameraClearFlags.Skybox;
 			}
 			set{
-				pruCam.clearFlags = value ? CameraClearFlags.Skybox : CameraClearFlags.Depth;
+				pruCam.clearFlags = value ? CameraClearFlags.Skybox : CameraClearFlags.SolidColor;
 			}
 		}
 
@@ -184,9 +184,11 @@ namespace ShaderForge {
 			r.x += r.width + 10;
 			r.width *= 0.5f;
 			EditorGUI.BeginChangeCheck();
-			GUI.enabled = pruCam.clearFlags == CameraClearFlags.Depth;
+			GUI.enabled = pruCam.clearFlags == CameraClearFlags.SolidColor;
 			//GUI.color = GUI.enabled ? Color.white : new Color(1f,1f,1f,0.5f);
 			settings.colorBg = EditorGUI.ColorField( r, "", settings.colorBg );
+			pruCam.backgroundColor = settings.colorBg;
+
 			GUI.enabled = true;
 			//GUI.color = Color.white;
 			if( EditorGUI.EndChangeCheck() )

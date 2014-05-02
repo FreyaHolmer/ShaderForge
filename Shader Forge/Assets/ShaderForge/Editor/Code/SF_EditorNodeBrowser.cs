@@ -229,7 +229,7 @@ namespace ShaderForge {
 			bool usable = !(!entry.availableInDeferredPrePass && editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass);
 
 			if(!usable){
-				GUI.color = Color.red;
+				//GUI.color = Color.red;
 				GUI.enabled = false;
 			}
 
@@ -244,7 +244,7 @@ namespace ShaderForge {
 			}
 
 
-			GUI.Label( btnRect, entry.nodeName, styleButton );
+			GUI.Label( btnRect, (usable ? string.Empty : "    ") + entry.nodeName, styleButton );
 
 
 			if( mouseOver && Event.current.type == EventType.mouseDown && Event.current.button == 0 && usable) {
@@ -272,8 +272,16 @@ namespace ShaderForge {
 				GUI.Label( btnRect, entry.isNew ? "New" : "Unstable", miniStyle );
 			}
 
-			if(usable)
+			if(usable){
 				SF_GUI.AssignCursor( btnRect, MouseCursor.Pan );
+			} else {
+				if(Event.current.type == EventType.repaint){
+					GUI.enabled = true;
+					SF_GUI.DrawLock(btnRect.PadTop(4),"Forward rendering only", TextAlignment.Right);
+					//Draw(btnRect.PadTop(4), false, true, true, false); // Draw lock
+					GUI.enabled = false;
+				}
+			}
 			GUI.enabled = true;
 			btnRect.y += btnRect.height;
 		}

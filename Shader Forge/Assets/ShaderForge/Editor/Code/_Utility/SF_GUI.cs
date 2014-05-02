@@ -21,6 +21,39 @@ namespace ShaderForge {
 			new Color(1f,0.7f,0.7f)
 		};
 
+
+		public static void DrawLock(Rect r, string tooltip = null, TextAlignment align = TextAlignment.Right){
+			if(Event.current.type != EventType.repaint)
+				return;
+
+			Color pCol = GUI.color;
+			GUI.color = Color.white;
+			SF_Styles.IconLock.Draw(r, false, true, true, false);
+
+			if(tooltip != null && r.Contains(Event.current.mousePosition) ){
+
+				GUIStyle style = EditorStyles.miniButton;
+
+				r.width = style.CalcSize(new GUIContent(tooltip)).x + 8;
+				r.height = style.CalcSize(new GUIContent(tooltip)).y + 4;
+
+				r = r.MovedUp();
+
+				if(align == TextAlignment.Left){
+					r.x = (r.MovedLeft().x + r.x)/2f;
+				}
+
+
+				GUI.color = new Color(1f,1f,1f,0.8f);
+				GUI.Box(r, tooltip, style);
+
+			}
+
+			GUI.color = pCol;
+
+
+		}
+
 		private static Texture2D LoadTexture(string path, string name){
 
 			//AssetDatabase.LoadAssetAtPath(

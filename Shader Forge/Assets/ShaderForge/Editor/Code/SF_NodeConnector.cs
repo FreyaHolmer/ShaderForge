@@ -1141,8 +1141,17 @@ namespace ShaderForge {
 				lockRect.yMax += 4;
 				GUI.color = new Color(0.6f,0.6f,0.6f,0.5f);
 				GUI.Box(lockRect,string.Empty,GUI.skin.button);
+				GUI.color = Color.white;
 				//GUI.color = Color.white;
-				GUI.Label(lockRect,"//");
+				//GUI.Label(lockRect,"//");
+				//GUI.drawe
+				//GUI.Box(lockRect, "", );
+				if(Event.current.type == EventType.repaint){
+//					SF_Styles.IconLock.Draw(lockRect.PadTop(4), false, true, true, false);
+					SF_GUI.DrawLock(lockRect.PadTop(4),"Unavailable when using deferred pre-pass lighting", TextAlignment.Right );
+					//GUI.Label(lockRect, new GUIContent(string.Empty, "Unavailable when using deferred pre-pass lighting"));
+
+				}
 				
 			}
 

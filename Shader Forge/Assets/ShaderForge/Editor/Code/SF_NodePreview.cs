@@ -327,7 +327,7 @@ namespace ShaderForge {
 		 
 
 
-		public void Draw( Rect r ) {
+		public void Draw( Rect r , bool dim = false) {
 
 			if( iconActive != null ) {
 
@@ -337,6 +337,8 @@ namespace ShaderForge {
 					GUI.DrawTexture( tmp, iconActive, ScaleMode.ScaleToFit, true );
 				} else {
 					GUI.color = iconColor;
+					if(dim)
+						GUI.color = new Color(GUI.color.r, GUI.color.g, GUI.color.b, 0.5f);
 					GUI.DrawTexture( r, iconActive );
 				}
 

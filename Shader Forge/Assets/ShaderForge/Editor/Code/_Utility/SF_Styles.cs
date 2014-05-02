@@ -20,6 +20,12 @@ namespace ShaderForge {
 			}
 		}
 
+		private static GUIStyle _iconLock;
+		public static GUIStyle IconLock{
+			get{
+				return ( _iconLock = _iconLock ?? new GUIStyle("IN LockButton") );
+			}
+		}
 
 		private static GUIStyle miniLabelRight;
 		public static GUIStyle MiniLabelRight {

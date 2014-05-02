@@ -888,9 +888,18 @@ namespace ShaderForge {
 
 
 			if(UnavailableInThisRenderPath())
-				GUI.color = Color.red;
+				GUI.color = new Color(1f,1f,1f,0.5f);
 			GUI.Box( rect, nodeName, discreteTitle ? SF_Styles.NodeStyleDiscrete : SF_Styles.NodeStyle );
-			GUI.color = Color.white;
+
+
+			// Draw lock
+			if(UnavailableInThisRenderPath()){
+				SF_GUI.DrawLock(rect.PadTop(3), "This node is only available in forward rendering");
+			}
+
+
+			if(!UnavailableInThisRenderPath())
+				GUI.color = Color.white;
 
 
 			 
@@ -1339,14 +1348,16 @@ namespace ShaderForge {
 
 		public virtual void NeatWindow( ) {
 			GUI.BeginGroup( rect );
-			GUI.color = Color.white;
+
+			if(UnavailableInThisRenderPath())
+				GUI.color = new Color(1f,1f,1f,0.5f);
+			else
+				GUI.color = Color.white;
 			GUI.skin.box.clipping = TextClipping.Overflow;
 
 
 			if( showColor ) {
-				if(UnavailableInThisRenderPath())
-					GUI.color = Color.red;
-				texture.Draw( rectInner );
+				texture.Draw( rectInner, UnavailableInThisRenderPath() );
 				GUI.color = Color.white;
 
 				if( SF_Debug.nodes ) {

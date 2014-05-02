@@ -152,6 +152,7 @@ namespace ShaderForge {
 				
 				bool imagePreview = (prop.property is SFP_Tex2d || prop.property is SFP_Cubemap);
 				bool colorInput = ( prop.property is SFP_Color );
+				bool checkboxInput = (prop.property is SFP_ToggleProperty || prop.property is SFP_SwitchProperty);
 				
 				
 				// GRABBER
@@ -192,7 +193,7 @@ namespace ShaderForge {
 				Rect propTypeNameRect = new Rect( gRect );
 				//propTypeNameRect.x += propTypeNameRect.width + 8;
 				propTypeNameRect.y -= 5;
-				if( imagePreview || colorInput )
+				if( imagePreview || colorInput || checkboxInput )
 					propTypeNameRect.width = r.width - r.height - 38;
 				else
 					propTypeNameRect.width = r.width - 48;
@@ -396,17 +397,57 @@ namespace ShaderForge {
 					prop.UndoableEnterableFloatField(sR, ref val.texture.dataUniform.r, "value", EditorStyles.textField);
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 					ps.EndIgnoreChangeCheck();
+				} else if (checkboxInput){
+
+					bool isToggle = (prop.property is SFP_ToggleProperty);
+
+					bool prevValue = isToggle ? (prop.property.node as SFN_ToggleProperty).on : (prop.property.node as SFN_SwitchProperty).on;
+
+
+					
+
+					ps.StartIgnoreChangeCheck();
+
+					texRect = SF_Tools.GetExpanded( new Rect( r ), -4 );
+					texRect.xMin += texRect.width - texRect.height;
+					//GUI.Box( SF_Tools.GetExpanded( texRect, 1f ), string.Empty, SF_Styles.NodeStyle );
+
+					texRect.yMax -= 21;
+					texRect.yMin += 15;
+					texRect.xMin += 2;
+					//texRect.xMax -= 2;
+
+					SF_GUI.AssignCursor( texRect, MouseCursor.Arrow );
+
+					bool newValue = prevValue;
+
+					if(isToggle){
+						prop.property.node.UndoableToggle(texRect, ref (prop.property.node as SFN_ToggleProperty).on, "", "property checkbox", EditorStyles.toggle);
+						newValue = (prop.property.node as SFN_ToggleProperty).on;
+					} else {
+						prop.property.node.UndoableToggle(texRect, ref (prop.property.node as SFN_SwitchProperty).on, "", "property checkbox", EditorStyles.toggle);
+						newValue = (prop.property.node as SFN_SwitchProperty).on;
+					}
+
+					if(newValue != prevValue){
+						//if(isToggle){
+						//	(prop.property.node as SFN_ToggleProperty).on = newValue;
+						//} else {
+						//	(prop.property.node as SFN_SwitchProperty).on = newValue;
+						////}
+						if(isToggle){
+							prop.property.node.texture.dataUniform = Color.white * (newValue ? 1f : 0f);
+						} else {
+							//prop.property.node.texture.UpdateColorPreview("",true);
+						}
+						prop.property.node.OnUpdateNode(NodeUpdateType.Soft);
+					}
+					ps.EndIgnoreChangeCheck();
+
 				}
 				
 				
-				
-				
-				
-				
-				
-				
-				
-				
+
 				
 				
 				if( r.Contains( Event.current.mousePosition ) && SF_GUI.PressedLMB() && !dragging && multiple) {

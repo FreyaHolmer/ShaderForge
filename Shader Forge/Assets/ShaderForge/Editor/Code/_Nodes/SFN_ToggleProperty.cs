@@ -12,6 +12,9 @@ namespace ShaderForge {
 
 		}
 
+		[SerializeField]
+		public bool on = false;
+
 		public override void Initialize() {
 			node_height = 24;
 			//node_width = (int)(NODE_WIDTH*1.25f);
@@ -61,7 +64,7 @@ namespace ShaderForge {
 
 
 
-			bool prevVal = texture.dataUniform[0] == 1f;
+			bool prevVal = on;
 
 			GUI.enabled = false;
 			r = r.PadTop(2);
@@ -99,7 +102,7 @@ namespace ShaderForge {
 			texCoords.height /= 3;
 			texCoords.x = texCoords.y = 0;
 			GUI.DrawTextureWithTexCoords( r, SF_GUI.Handle_drag, texCoords, alphaBlend:true );
-
+			on = newVal;
 			texture.dataUniform = new Color( fVal, fVal, fVal, fVal );
 			if( texture.dataUniform[0] != vecPrev ) {
 				OnUpdateNode( NodeUpdateType.Soft );
@@ -110,19 +113,24 @@ namespace ShaderForge {
 				
 		}
 
-		public override string SerializeSpecialData() {
-			string s = property.Serialize() + ",";
-			s += "v1:" + texture.dataUniform[0];
-			return s;
+		public override float NodeOperator( int x, int y, int c ) {
+			if(on){
+				return 1f;
+			} else {
+				return 0f;
+			}
 		}
 
+
+		public override string SerializeSpecialData() {
+			return "on:" + on;
+		}
+		
 		public override void DeserializeSpecialData( string key, string value ) {
-			property.Deserialize(key,value);
 			switch( key ) {
-				case "v1":
-					float fVal = float.Parse( value );
-					texture.dataUniform = new Color( fVal, fVal, fVal, fVal );
-					break;
+			case "on":
+				on = bool.Parse( value );
+				break;
 			}
 		}
 

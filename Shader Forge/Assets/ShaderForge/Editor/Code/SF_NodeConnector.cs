@@ -1139,7 +1139,7 @@ namespace ShaderForge {
 				lockRect.xMax = node.rect.xMax;
 				lockRect.yMin -= 3;
 				lockRect.yMax += 4;
-				GUI.color = new Color(0.6f,0.6f,0.6f,0.5f);
+				GUI.color = new Color(0.8f,0.8f,0.8f,0.3f);
 				GUI.Box(lockRect,string.Empty,GUI.skin.button);
 				GUI.color = Color.white;
 				//GUI.color = Color.white;

@@ -1,7 +1,7 @@
-// Shader created with Shader Forge Beta 0.32 
+// Shader created with Shader Forge Beta 0.33 
 // Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.32;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:3,uamb:True,mssp:True,lmpd:False,lprd:False,enco:False,frtr:True,vitr:True,dbil:True,rmgx:True,hqsc:True,hqlp:False,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:32343,y:32843|diff-138-R,spec-145-OUT,gloss-146-OUT,normal-123-RGB,amspl-162-OUT;n:type:ShaderForge.SFN_Tex2d,id:123,x:32850,y:33122,ptlb:Normal,ptin:_Normal,tex:bbab0a6f7bae9cf42bf057d8ee2755f6,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Tex2d,id:138,x:33229,y:32643,ptlb:Diffuse,ptin:_Diffuse,tex:b66bceaf0cc0ace4e9bdc92f14bba709,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Slider,id:144,x:33492,y:33104,ptlb:Gloss,ptin:_Gloss,min:0,cur:0.6165418,max:1;n:type:ShaderForge.SFN_Slider,id:145,x:32866,y:32820,ptlb:Specular,ptin:_Specular,min:0,cur:0.1855478,max:1;n:type:ShaderForge.SFN_Multiply,id:146,x:32850,y:32945|A-147-OUT,B-144-OUT;n:type:ShaderForge.SFN_Power,id:147,x:33022,y:32882|VAL-138-R,EXP-148-OUT;n:type:ShaderForge.SFN_Vector1,id:148,x:33207,y:32916,v1:2;n:type:ShaderForge.SFN_Cubemap,id:156,x:33040,y:33373,ptlb:Specular IBL,ptin:_SpecularIBL,cube:f466cf7415226e046b096197eb7341aa,pvfc:0|MIP-176-OUT;n:type:ShaderForge.SFN_Multiply,id:162,x:32850,y:33373,cmnt:RGBM Decode|A-156-RGB,B-156-A,C-163-OUT;n:type:ShaderForge.SFN_Vector1,id:163,x:33040,y:33527,v1:4;n:type:ShaderForge.SFN_RemapRange,id:176,x:33218,y:33373,frmn:0,frmx:1,tomn:6,tomx:0|IN-144-OUT;proporder:123-138-144-145-156;pass:END;sub:END;*/
+/*SF_DATA;ver:0.33;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:3,uamb:True,mssp:True,lmpd:False,lprd:False,enco:False,frtr:True,vitr:True,dbil:True,rmgx:True,rpth:0,hqsc:True,hqlp:False,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:32343,y:32843|diff-138-R,spec-145-OUT,gloss-146-OUT,normal-123-RGB,amspl-162-OUT;n:type:ShaderForge.SFN_Tex2d,id:123,x:32850,y:33122,ptlb:Normal,ptin:_Normal,tex:bbab0a6f7bae9cf42bf057d8ee2755f6,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Tex2d,id:138,x:33229,y:32643,ptlb:Diffuse,ptin:_Diffuse,tex:b66bceaf0cc0ace4e9bdc92f14bba709,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Slider,id:144,x:33492,y:33104,ptlb:Gloss,ptin:_Gloss,min:0,cur:0.6165418,max:1;n:type:ShaderForge.SFN_Slider,id:145,x:32866,y:32820,ptlb:Specular,ptin:_Specular,min:0,cur:0.1855478,max:1;n:type:ShaderForge.SFN_Multiply,id:146,x:32850,y:32945|A-147-OUT,B-144-OUT;n:type:ShaderForge.SFN_Power,id:147,x:33022,y:32882|VAL-138-R,EXP-148-OUT;n:type:ShaderForge.SFN_Vector1,id:148,x:33207,y:32916,v1:2;n:type:ShaderForge.SFN_Cubemap,id:156,x:33040,y:33373,ptlb:Specular IBL,ptin:_SpecularIBL,cube:f466cf7415226e046b096197eb7341aa,pvfc:0|MIP-176-OUT;n:type:ShaderForge.SFN_Multiply,id:162,x:32850,y:33373,cmnt:RGBM Decode|A-156-RGB,B-156-A,C-163-OUT;n:type:ShaderForge.SFN_Vector1,id:163,x:33040,y:33527,v1:4;n:type:ShaderForge.SFN_RemapRange,id:176,x:33218,y:33373,frmn:0,frmx:1,tomn:6,tomx:0|IN-144-OUT;proporder:123-138-144-145-156;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Tiles" {
     Properties {
@@ -42,11 +42,11 @@ Shader "Shader Forge/Examples/Tiles" {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 float3 tangentDir : TEXCOORD3;
@@ -69,8 +69,8 @@ Shader "Shader Forge/Examples/Tiles" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
-                float2 node_182 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_182.rg, _Normal))).rgb;
+                float2 node_1151 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_1151.rg, _Normal))).rgb;
                 float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
@@ -78,13 +78,13 @@ Shader "Shader Forge/Examples/Tiles" {
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i)*2;
                 float3 attenColor = attenuation * _LightColor0.xyz;
-/////// Diffuse:
                 float Pi = 3.141592654;
                 float InvPi = 0.31830988618;
+/////// Diffuse:
                 float NdotL = dot( normalDirection, lightDirection );
-                float3 diffuse = max( 0.0, NdotL)*InvPi * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz*2;
+                float3 diffuse = max( 0.0, NdotL)*InvPi * attenColor + UNITY_LIGHTMODEL_AMBIENT.rgb*2;
 ///////// Gloss:
-                float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_182.rg, _Diffuse));
+                float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_1151.rg, _Diffuse));
                 float gloss = (pow(node_138.r,2.0)*_Gloss);
                 float specPow = exp2( gloss * 10.0+1.0);
 ////// Specular:
@@ -140,11 +140,11 @@ Shader "Shader Forge/Examples/Tiles" {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 float3 tangentDir : TEXCOORD3;
@@ -167,21 +167,21 @@ Shader "Shader Forge/Examples/Tiles" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
-                float2 node_183 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_183.rg, _Normal))).rgb;
+                float2 node_1152 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normal,TRANSFORM_TEX(node_1152.rg, _Normal))).rgb;
                 float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i)*2;
                 float3 attenColor = attenuation * _LightColor0.xyz;
-/////// Diffuse:
                 float Pi = 3.141592654;
                 float InvPi = 0.31830988618;
+/////// Diffuse:
                 float NdotL = dot( normalDirection, lightDirection );
                 float3 diffuse = max( 0.0, NdotL)*InvPi * attenColor;
 ///////// Gloss:
-                float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_183.rg, _Diffuse));
+                float4 node_138 = tex2D(_Diffuse,TRANSFORM_TEX(node_1152.rg, _Diffuse));
                 float gloss = (pow(node_138.r,2.0)*_Gloss);
                 float specPow = exp2( gloss * 10.0+1.0);
 ////// Specular:

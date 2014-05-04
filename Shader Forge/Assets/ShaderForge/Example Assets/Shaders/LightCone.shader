@@ -1,7 +1,7 @@
-// Shader created with Shader Forge Beta 0.24 
+// Shader created with Shader Forge Beta 0.33 
 // Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.24;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:0,uamb:False,mssp:True,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,hqlp:False,blpr:2,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:False,ufog:False,aust:True,igpj:True,qofs:0,qpre:3,rntp:2,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.1280277,fgcg:0.1953466,fgcb:0.2352941,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0;n:type:ShaderForge.SFN_Final,id:142,x:32976,y:32396|emission-217-OUT;n:type:ShaderForge.SFN_Tex2d,id:144,x:33576,y:32516,ptlb:Cone Falloff,tex:857a8e9195b715848abbbbb790d378b1,ntxv:0,isnm:False|UVIN-180-OUT;n:type:ShaderForge.SFN_Append,id:180,x:33785,y:32452|A-229-OUT,B-181-V;n:type:ShaderForge.SFN_TexCoord,id:181,x:33970,y:32523,uv:0;n:type:ShaderForge.SFN_Color,id:215,x:33576,y:32338,ptlb:Cone Color,c1:1,c2:1,c3:1,c4:0;n:type:ShaderForge.SFN_Multiply,id:217,x:33244,y:32495|A-219-OUT,B-215-RGB,C-144-R,D-251-OUT;n:type:ShaderForge.SFN_Slider,id:219,x:33576,y:32230,ptlb:Cone Strength,min:0,cur:0.55,max:2;n:type:ShaderForge.SFN_Vector1,id:226,x:34149,y:32412,v1:0.5;n:type:ShaderForge.SFN_Fresnel,id:229,x:33970,y:32391|EXP-226-OUT;n:type:ShaderForge.SFN_Tex2d,id:230,x:33749,y:32713,ptlb:Smoke,tex:28c7aad1372ff114b90d330f8a2dd938,ntxv:0,isnm:False|UVIN-246-OUT;n:type:ShaderForge.SFN_FragmentPosition,id:244,x:34489,y:32719;n:type:ShaderForge.SFN_Append,id:245,x:34305,y:32719|A-244-X,B-244-Z;n:type:ShaderForge.SFN_Multiply,id:246,x:33922,y:32713|A-318-OUT,B-255-UVOUT;n:type:ShaderForge.SFN_ConstantLerp,id:251,x:33576,y:32713,a:0.4,b:1|IN-230-R;n:type:ShaderForge.SFN_Panner,id:255,x:34119,y:32774,spu:1,spv:1|UVIN-245-OUT,DIST-339-TSL;n:type:ShaderForge.SFN_ValueProperty,id:318,x:34119,y:32713,ptlb:Smoke Scale,v1:0.5;n:type:ShaderForge.SFN_Time,id:339,x:34305,y:32845;proporder:144-215-219-230-318;pass:END;sub:END;*/
+/*SF_DATA;ver:0.33;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:0,uamb:False,mssp:True,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:False,blpr:2,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:False,ufog:False,aust:True,igpj:True,qofs:0,qpre:3,rntp:2,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.1280277,fgcg:0.1953466,fgcb:0.2352941,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:142,x:32976,y:32396|emission-217-OUT;n:type:ShaderForge.SFN_Tex2d,id:144,x:33576,y:32516,ptlb:Cone Falloff,ptin:_ConeFalloff,tex:857a8e9195b715848abbbbb790d378b1,ntxv:0,isnm:False|UVIN-180-OUT;n:type:ShaderForge.SFN_Append,id:180,x:33785,y:32452|A-229-OUT,B-181-V;n:type:ShaderForge.SFN_TexCoord,id:181,x:33970,y:32523,uv:0;n:type:ShaderForge.SFN_Color,id:215,x:33576,y:32338,ptlb:Cone Color,ptin:_ConeColor,glob:False,c1:1,c2:1,c3:1,c4:0;n:type:ShaderForge.SFN_Multiply,id:217,x:33244,y:32495|A-219-OUT,B-215-RGB,C-144-R,D-251-OUT;n:type:ShaderForge.SFN_Slider,id:219,x:33576,y:32230,ptlb:Cone Strength,ptin:_ConeStrength,min:0,cur:0.55,max:2;n:type:ShaderForge.SFN_Vector1,id:226,x:34149,y:32412,v1:0.5;n:type:ShaderForge.SFN_Fresnel,id:229,x:33970,y:32391|EXP-226-OUT;n:type:ShaderForge.SFN_Tex2d,id:230,x:33749,y:32713,ptlb:Smoke,ptin:_Smoke,tex:28c7aad1372ff114b90d330f8a2dd938,ntxv:0,isnm:False|UVIN-246-OUT;n:type:ShaderForge.SFN_FragmentPosition,id:244,x:34489,y:32719;n:type:ShaderForge.SFN_Append,id:245,x:34305,y:32719|A-244-X,B-244-Z;n:type:ShaderForge.SFN_Multiply,id:246,x:33922,y:32713|A-318-OUT,B-255-UVOUT;n:type:ShaderForge.SFN_ConstantLerp,id:251,x:33576,y:32713,a:0.4,b:1|IN-230-R;n:type:ShaderForge.SFN_Panner,id:255,x:34119,y:32774,spu:1,spv:1|UVIN-245-OUT,DIST-339-TSL;n:type:ShaderForge.SFN_ValueProperty,id:318,x:34119,y:32713,ptlb:Smoke Scale,ptin:_SmokeScale,glob:False,v1:0.5;n:type:ShaderForge.SFN_Time,id:339,x:34305,y:32845;proporder:144-215-219-230-318;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/LightCone" {
     Properties {
@@ -43,11 +43,11 @@ Shader "Shader Forge/Examples/LightCone" {
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 float3 shLight : TEXCOORD3;
@@ -55,7 +55,7 @@ Shader "Shader Forge/Examples/LightCone" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.uv0;
-                o.shLight = ShadeSH9(float4(v.normal * unity_Scale.w,1)) * 0.5;
+                o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w,1)) * 0.5;
                 o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
                 o.posWorld = mul(_Object2World, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);

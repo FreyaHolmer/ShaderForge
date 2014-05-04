@@ -1,7 +1,7 @@
-// Shader created with Shader Forge Beta 0.24 
+// Shader created with Shader Forge Beta 0.33 
 // Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.24;sub:START;pass:START;ps:flbk:Transparent/Cutout/Diffuse,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:True,lprd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,hqsc:True,hqlp:False,blpr:0,bsrc:0,bdst:1,culm:2,dpts:2,wrdp:True,ufog:True,aust:True,igpj:False,qofs:0,qpre:2,rntp:3,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0;n:type:ShaderForge.SFN_Final,id:0,x:32768,y:32640|diff-322-OUT,spec-3-OUT,gloss-270-OUT,normal-2-RGB,transm-7-OUT,lwrap-6-OUT,clip-1-A,voffset-394-OUT;n:type:ShaderForge.SFN_Tex2d,id:1,x:33266,y:32631,ptlb:Diffuse,tex:66321cc856b03e245ac41ed8a53e0ecc,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:2,x:33266,y:32818,ptlb:Normal,tex:cb6c5165ed180c543be39ed70e72abc8,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Vector1,id:3,x:33061,y:32641,v1:0.2;n:type:ShaderForge.SFN_Vector3,id:6,x:33266,y:33075,v1:0.9,v2:0.9,v3:0.8;n:type:ShaderForge.SFN_Vector3,id:7,x:33266,y:32976,v1:0.9,v2:1,v3:0.5;n:type:ShaderForge.SFN_Vector1,id:270,x:33061,y:32701,v1:0.4;n:type:ShaderForge.SFN_VertexColor,id:321,x:33508,y:32501;n:type:ShaderForge.SFN_Multiply,id:322,x:33061,y:32508|A-330-OUT,B-1-RGB;n:type:ShaderForge.SFN_Lerp,id:330,x:33266,y:32478|A-331-OUT,B-337-OUT,T-321-B;n:type:ShaderForge.SFN_Vector1,id:331,x:33508,y:32356,v1:1;n:type:ShaderForge.SFN_Vector3,id:337,x:33508,y:32410,v1:0.9632353,v2:0.8224623,v3:0.03541304;n:type:ShaderForge.SFN_VertexColor,id:389,x:33952,y:33347;n:type:ShaderForge.SFN_NormalVector,id:391,x:33765,y:33231,pt:False;n:type:ShaderForge.SFN_Time,id:392,x:33765,y:33586;n:type:ShaderForge.SFN_Sin,id:393,x:33359,y:33548|IN-413-OUT;n:type:ShaderForge.SFN_Multiply,id:394,x:33109,y:33420,cmnt:Wind animation|A-562-OUT,B-389-R,C-393-OUT,D-403-OUT;n:type:ShaderForge.SFN_Vector1,id:403,x:33359,y:33699,v1:0.016;n:type:ShaderForge.SFN_Add,id:413,x:33540,y:33548|A-519-OUT,B-392-T;n:type:ShaderForge.SFN_Multiply,id:519,x:33765,y:33457|A-389-B,B-520-OUT;n:type:ShaderForge.SFN_Pi,id:520,x:33952,y:33494;n:type:ShaderForge.SFN_Add,id:561,x:33544,y:33171|A-563-OUT,B-391-OUT;n:type:ShaderForge.SFN_Normalize,id:562,x:33359,y:33280|IN-561-OUT;n:type:ShaderForge.SFN_Vector3,id:563,x:33765,y:33131,cmnt:Wind direction,v1:1,v2:0.5,v3:0.5;proporder:1-2;pass:END;sub:END;*/
+/*SF_DATA;ver:0.33;sub:START;pass:START;ps:flbk:Transparent/Cutout/Diffuse,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:True,lprd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:False,blpr:0,bsrc:0,bdst:1,culm:2,dpts:2,wrdp:True,ufog:True,aust:True,igpj:False,qofs:0,qpre:2,rntp:3,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:32768,y:32640|diff-322-OUT,spec-3-OUT,gloss-270-OUT,normal-2-RGB,transm-7-OUT,lwrap-6-OUT,clip-1-A,voffset-394-OUT;n:type:ShaderForge.SFN_Tex2d,id:1,x:33266,y:32631,ptlb:Diffuse,ptin:_Diffuse,tex:66321cc856b03e245ac41ed8a53e0ecc,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:2,x:33266,y:32818,ptlb:Normal,ptin:_Normal,tex:cb6c5165ed180c543be39ed70e72abc8,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Vector1,id:3,x:33061,y:32641,v1:0.2;n:type:ShaderForge.SFN_Vector3,id:6,x:33266,y:33075,v1:0.9,v2:0.9,v3:0.8;n:type:ShaderForge.SFN_Vector3,id:7,x:33266,y:32976,v1:0.9,v2:1,v3:0.5;n:type:ShaderForge.SFN_Vector1,id:270,x:33061,y:32701,v1:0.4;n:type:ShaderForge.SFN_VertexColor,id:321,x:33508,y:32501;n:type:ShaderForge.SFN_Multiply,id:322,x:33061,y:32508|A-330-OUT,B-1-RGB;n:type:ShaderForge.SFN_Lerp,id:330,x:33266,y:32478|A-331-OUT,B-337-OUT,T-321-B;n:type:ShaderForge.SFN_Vector1,id:331,x:33508,y:32356,v1:1;n:type:ShaderForge.SFN_Vector3,id:337,x:33508,y:32410,v1:0.9632353,v2:0.8224623,v3:0.03541304;n:type:ShaderForge.SFN_VertexColor,id:389,x:33952,y:33347;n:type:ShaderForge.SFN_NormalVector,id:391,x:33765,y:33231,pt:False;n:type:ShaderForge.SFN_Time,id:392,x:33765,y:33586;n:type:ShaderForge.SFN_Sin,id:393,x:33359,y:33548|IN-413-OUT;n:type:ShaderForge.SFN_Multiply,id:394,x:33109,y:33420,cmnt:Wind animation|A-562-OUT,B-389-R,C-393-OUT,D-403-OUT;n:type:ShaderForge.SFN_Vector1,id:403,x:33359,y:33699,v1:0.016;n:type:ShaderForge.SFN_Add,id:413,x:33540,y:33548|A-519-OUT,B-392-T;n:type:ShaderForge.SFN_Multiply,id:519,x:33765,y:33457|A-389-B,B-520-OUT;n:type:ShaderForge.SFN_Pi,id:520,x:33952,y:33494;n:type:ShaderForge.SFN_Add,id:561,x:33544,y:33171|A-563-OUT,B-391-OUT;n:type:ShaderForge.SFN_Normalize,id:562,x:33359,y:33280|IN-561-OUT;n:type:ShaderForge.SFN_Vector3,id:563,x:33765,y:33131,cmnt:Wind direction,v1:1,v2:0.5,v3:0.5;proporder:1-2;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Animated Vegetation" {
     Properties {
@@ -34,8 +34,8 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             #pragma target 3.0
             uniform float4 _TimeEditor;
             #ifndef LIGHTMAP_OFF
-                sampler2D unity_Lightmap;
                 float4 unity_LightmapST;
+                sampler2D unity_Lightmap;
                 #ifndef DIRLIGHTMAP_OFF
                     sampler2D unity_LightmapInd;
                 #endif
@@ -46,13 +46,13 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
-                float4 uv0 : TEXCOORD0;
-                float4 uv1 : TEXCOORD1;
+                float2 uv0 : TEXCOORD0;
+                float2 uv1 : TEXCOORD1;
                 float4 vertexColor : COLOR;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 float3 tangentDir : TEXCOORD3;
@@ -105,7 +105,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                         half3 normalInRnmBasis = saturate (mul (unity_DirBasis, normalLocal));
                         lightmap *= dot (normalInRnmBasis, scalePerBasisVector);
                     #else
-                        float3 lightmap = DecodeLightmap(tex2D(unity_Lightmap,i.uvLM));
+                        float3 lightmap = DecodeLightmap(lmtex);
                     #endif
                 #endif
                 #ifndef LIGHTMAP_OFF
@@ -129,17 +129,27 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
                 float3 backLight = max(float3(0.0,0.0,0.0), -NdotLWrap + w ) * float3(0.9,1,0.5);
                 #ifndef LIGHTMAP_OFF
-                    float3 diffuse = lightmap;
+                    float3 diffuse = lightmap.rgb;
                 #else
-                    float3 diffuse = (forwardLight+backLight) * attenColor + UNITY_LIGHTMODEL_AMBIENT.xyz;
+                    float3 diffuse = (forwardLight+backLight) * attenColor + UNITY_LIGHTMODEL_AMBIENT.rgb;
                 #endif
 ///////// Gloss:
-                float gloss = exp2(0.4*10.0+1.0);
+                float gloss = 0.4;
+                float specPow = exp2( gloss * 10.0+1.0);
 ////// Specular:
                 NdotL = max(0.0, NdotL);
                 float node_3 = 0.2;
                 float3 specularColor = float3(node_3,node_3,node_3);
-                float3 specular = (floor(attenuation) * _LightColor0.xyz) * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor;
+                float3 specular = 1 * pow(max(0,dot(halfDirection,normalDirection)),specPow) * specularColor;
+                #ifndef LIGHTMAP_OFF
+                    #ifndef DIRLIGHTMAP_OFF
+                        specular *= lightmap;
+                    #else
+                        specular *= (floor(attenuation) * _LightColor0.xyz);
+                    #endif
+                #else
+                    specular *= (floor(attenuation) * _LightColor0.xyz);
+                #endif
                 float3 finalColor = 0;
                 float3 diffuseLight = diffuse;
                 float node_331 = 1.0;
@@ -172,8 +182,8 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             #pragma target 3.0
             uniform float4 _TimeEditor;
             #ifndef LIGHTMAP_OFF
-                sampler2D unity_Lightmap;
                 float4 unity_LightmapST;
+                sampler2D unity_Lightmap;
                 #ifndef DIRLIGHTMAP_OFF
                     sampler2D unity_LightmapInd;
                 #endif
@@ -184,13 +194,13 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
-                float4 uv0 : TEXCOORD0;
-                float4 uv1 : TEXCOORD1;
+                float2 uv0 : TEXCOORD0;
+                float2 uv1 : TEXCOORD1;
                 float4 vertexColor : COLOR;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 float3 tangentDir : TEXCOORD3;
@@ -241,12 +251,13 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 backLight = max(float3(0.0,0.0,0.0), -NdotLWrap + w ) * float3(0.9,1,0.5);
                 float3 diffuse = (forwardLight+backLight) * attenColor;
 ///////// Gloss:
-                float gloss = exp2(0.4*10.0+1.0);
+                float gloss = 0.4;
+                float specPow = exp2( gloss * 10.0+1.0);
 ////// Specular:
                 NdotL = max(0.0, NdotL);
                 float node_3 = 0.2;
                 float3 specularColor = float3(node_3,node_3,node_3);
-                float3 specular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),gloss) * specularColor;
+                float3 specular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),specPow) * specularColor;
                 float3 finalColor = 0;
                 float3 diffuseLight = diffuse;
                 float node_331 = 1.0;
@@ -278,8 +289,8 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             #pragma target 3.0
             uniform float4 _TimeEditor;
             #ifndef LIGHTMAP_OFF
-                sampler2D unity_Lightmap;
                 float4 unity_LightmapST;
+                sampler2D unity_Lightmap;
                 #ifndef DIRLIGHTMAP_OFF
                     sampler2D unity_LightmapInd;
                 #endif
@@ -288,12 +299,12 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
                 float4 vertexColor : COLOR;
             };
             struct VertexOutput {
                 V2F_SHADOW_COLLECTOR;
-                float4 uv0 : TEXCOORD5;
+                float2 uv0 : TEXCOORD5;
                 float3 normalDir : TEXCOORD6;
                 float4 vertexColor : COLOR;
             };
@@ -339,8 +350,8 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             #pragma target 3.0
             uniform float4 _TimeEditor;
             #ifndef LIGHTMAP_OFF
-                sampler2D unity_Lightmap;
                 float4 unity_LightmapST;
+                sampler2D unity_Lightmap;
                 #ifndef DIRLIGHTMAP_OFF
                     sampler2D unity_LightmapInd;
                 #endif
@@ -349,12 +360,12 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
-                float4 uv0 : TEXCOORD0;
+                float2 uv0 : TEXCOORD0;
                 float4 vertexColor : COLOR;
             };
             struct VertexOutput {
                 V2F_SHADOW_CASTER;
-                float4 uv0 : TEXCOORD1;
+                float2 uv0 : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 float4 vertexColor : COLOR;
             };

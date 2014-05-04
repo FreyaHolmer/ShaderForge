@@ -165,12 +165,11 @@ namespace ShaderForge {
 						continue;
 
 					if( (css[i].Contains("Name \"PrePassBase\"") || css[i].Contains("Name \"PrePassFinal\"") ) && editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Forward )
-						return;
+						continue;
 
 					if( (css[i].Contains("Name \"ForwardBase\"") || css[i].Contains("Name \"ForwardAdd\"") ) && editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass )
-						return;
+						continue;
 
-			
 
 						//ignoreMin = true;
 

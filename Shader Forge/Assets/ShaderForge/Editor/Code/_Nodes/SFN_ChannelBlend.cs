@@ -103,7 +103,7 @@ namespace ShaderForge {
 			//currentUV = (UV)EditorGUI.EnumPopup( lowerRect, currentUV );
 			if(EditorGUI.EndChangeCheck()){
 				UpdateMaskCompCountInputs();
-				OnUpdateNode();
+				OnUpdateNode(NodeUpdateType.Hard);
 			}
 		}
 

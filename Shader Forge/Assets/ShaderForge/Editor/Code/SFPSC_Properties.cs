@@ -56,11 +56,13 @@ namespace ShaderForge {
 
 		public override float DrawInner(ref Rect r){
 
-			
+			Restart:
 			//int propCount = editor.nodeView.treeStatus.propertyList.Count;
 
 			List<SF_Node> propertyList = editor.nodeView.treeStatus.propertyList;
-			
+
+			//GUI.Label( r.MovedUp(), "propertyList.Count = " + propertyList.Count );
+
 			int propCount = propertyList.Count;
 
 			bool multiple = propCount > 1;
@@ -86,6 +88,7 @@ namespace ShaderForge {
 			
 			
 			r.height = propertyHeight;
+
 			
 
 			
@@ -115,8 +118,31 @@ namespace ShaderForge {
 			
 			int i = 0;
 
+			
+			for(int j=0;j<propertyList.Count;j++){
 
-			foreach(SF_Node prop in propertyList){
+
+				SF_Node prop = propertyList[j];
+				
+				
+				if( prop.property == null ) { // Due to a weird bug - remove these nodes
+
+					// Disconnect
+					foreach( SF_NodeConnector con in prop.connectors ) {
+						if( con.conType == ConType.cOutput ) {
+							con.Disconnect();
+						}
+					}
+					prop.Deselect( registerUndo: false );
+					propertyList.Remove( prop );
+					editor.nodeView.treeStatus.propertyList.Remove( prop );
+					editor.nodes.Remove( prop );
+					//Debug.Log("Removing broken property...");
+					DestroyImmediate( prop );
+					goto Restart;
+				}
+					
+
 				bool draggingThis = ( draggingProperty == prop );
 				bool dragging = (draggingProperty != null);
 
@@ -469,9 +495,13 @@ namespace ShaderForge {
 				
 				if( draggingThis )
 					r.x += 5;
+
+				//GUI.Label( r, "prop.property.nameType = " + prop.property.nameType );
+
 				r.y += propertyHeight;
 				i++;
 			}
+
 			
 			
 			r.y = yStart + propCount * propertyHeight;

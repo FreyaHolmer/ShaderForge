@@ -131,7 +131,17 @@ namespace ShaderForge {
 			
 			r.xMin += 20;
 			r.y += 20;
-			renderPath = (RenderPath)UndoableContentScaledToolbar( r, "Render Path", (int)renderPath, strRenderPath, "render path" );
+			if(SF_Tools.HasUnityPro()){
+				renderPath = (RenderPath)UndoableContentScaledToolbar( r, "Render Path", (int)renderPath, strRenderPath, "render path" );
+			} else {
+				GUI.enabled = false;
+				if(renderPath == RenderPath.DeferredPrePass){
+					renderPath = RenderPath.Forward;
+				}
+				UndoableContentScaledToolbar( r, "Render Path", (int)RenderPath.Forward, strRenderPath, "render path" );
+				GUI.enabled = true;
+			}
+
 			if(renderPath == RenderPath.DeferredPrePass){
 				if(lightMode != LightMode.BlinnPhong)
 					lightMode = LightMode.BlinnPhong;

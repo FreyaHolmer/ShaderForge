@@ -628,7 +628,7 @@ namespace ShaderForge {
 				App( "Fog {Mode Off}" );
 			} else if(currentPass == PassType.FwdAdd){
 				App ("Fog { Color (0,0,0,0) }");
-			} else if( !ps.catBlending.useFog || !(currentPass == PassType.FwdBase || currentPass == PassType.Outline)) {
+			} else if( !ps.catBlending.useFog || !(currentPass == PassType.FwdBase || currentPass == PassType.Outline || currentPass == PassType.PrePassFinal)) {
 				App( "Fog {Mode Off}" ); // Turn off fog is user doesn't want it
 			} else {
 				// Fog overrides!

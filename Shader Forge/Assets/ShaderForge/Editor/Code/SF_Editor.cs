@@ -137,6 +137,10 @@ namespace ShaderForge {
 		}
 
 		public static bool Init( Shader initShader = null ) {
+
+			// To make sure you get periods as decimal separators
+			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+
 			if(SF_Debug.evalFlow || SF_Debug.dynamicNodeLoad)
 				Debug.Log( "[SF_LOG] - SF_Editor Init(" + initShader + ")" );
 			SF_Editor materialEditor = (SF_Editor)EditorWindow.GetWindow( typeof( SF_Editor ) );

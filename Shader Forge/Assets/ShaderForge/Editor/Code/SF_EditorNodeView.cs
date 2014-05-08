@@ -228,15 +228,20 @@ namespace ShaderForge {
 
 
 			
-			if ( MouseInsideNodeView(false) && Event.current.type == EventType.ScrollWheel){
-				zoomTarget = ClampZoom(zoomTarget * (1f-Event.current.delta.y*0.02f));
-			}
-
-			SetZoom( Mathf.Lerp(zoom,zoomTarget, 0.2f ));
 
 
 
 
+
+
+
+
+
+			bool mouseOverNode = false;
+
+			
+			
+			
 			SF_ZoomArea.Begin(zoom,rect,cameraPos);
 			{
 				selection.OnGUI(); // To detect if you press things
@@ -259,7 +264,13 @@ namespace ShaderForge {
 						}
 					}*/
 
-
+					if(!mouseOverNode){
+						for(int i=0;i<editor.nodes.Count;i++){
+							if(editor.nodes[i].MouseOverNode(world:true)){
+								mouseOverNode = true;
+							}
+						}
+					}
 
 
 					for(int i=0;i<editor.nodes.Count;i++)
@@ -275,7 +286,32 @@ namespace ShaderForge {
 			SF_ZoomArea.End(zoom);
 
 
+			if(!SF_Node.isEditingAnyNodeTextField)
+				SF_Editor.instance.UpdateKeyHoldEvents(mouseOverNode);
 
+
+			if ( MouseInsideNodeView(false) && Event.current.type == EventType.ScrollWheel){
+				zoomTarget = ClampZoom(zoomTarget * (1f-Event.current.delta.y*0.02f));
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			SetZoom( Mathf.Lerp(zoom,zoomTarget, 0.2f ));
 
 
 

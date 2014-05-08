@@ -328,20 +328,18 @@ namespace ShaderForge {
 
 
 		public void Draw( Rect r , bool dim = false) {
-
 			if( iconActive != null ) {
-
 				if(node is SFN_Final){ // Large node image
 					Rect tmp = new Rect(r.x,r.y-1, iconActive.width, iconActive.height);
 					GUI.color = new Color(1f,1f,1f,node.selected ? 1f : 0.5f);
 					GUI.DrawTexture( tmp, iconActive, ScaleMode.ScaleToFit, true );
 				} else {
 					GUI.color = iconColor;
-					if(dim)
+					if(dim){
 						GUI.color = new Color(GUI.color.r, GUI.color.g, GUI.color.b, 0.5f);
+					}
 					GUI.DrawTexture( r, iconActive );
 				}
-
 				GUI.color = Color.white;
 			} else if( uniform ) {
 				GUI.color = ConvertToDisplayColor( dataUniform, true );

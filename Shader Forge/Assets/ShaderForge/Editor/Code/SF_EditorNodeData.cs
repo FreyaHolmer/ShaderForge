@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 namespace ShaderForge {
@@ -10,7 +11,7 @@ namespace ShaderForge {
 		[SerializeField]
 		KeyCode key;
 		[SerializeField]
-		bool holding = false; 
+		public bool holding = false; 
 		[SerializeField]
 		public string nodeName;
 		[SerializeField]
@@ -124,23 +125,202 @@ namespace ShaderForge {
 			return this;
 		}
 
-
-		public bool CheckHotkeyInput() {
-
-			if( key == KeyCode.None )
-				return false;
-
-			if( Event.current.keyCode == key ) {
-				if( Event.current.type == EventType.keyDown && !SF_GUI.HoldingControl() ){
-					Event.current.Use();
-					holding = true;
+		public float smoothHotkeySelectorIndex = 0f;
+		public int defaultHotkeySelectorIndex = 0;
+		public int hotkeySelectorIndex = 0;
+		[SerializeField]
+		private List<SF_EditorNodeData> hotkeyFriends;
+		public List<SF_EditorNodeData> HotkeyFriends{
+			get{
+				if(hotkeyFriends == null){
+					hotkeyFriends = new List<SF_EditorNodeData>();
 				}
-				if( Event.current.type == EventType.keyUp )
-					holding = false;
+
+				if(hotkeyFriends.Count == 0){
+					int i=0;
+					foreach( SF_EditorNodeData node in SF_Editor.instance.nodeTemplates){
+						if(node == this)
+							smoothHotkeySelectorIndex = hotkeySelectorIndex = defaultHotkeySelectorIndex = i;
+						if(node.key == key || KeyCodeToChar(key) == char.ToUpper(node.nodeName[0])){
+							hotkeyFriends.Add(node);
+							i++;
+						}
+
+					}
+				}
+				return hotkeyFriends;
+			}
+		}
+
+
+		public char KeyCodeToChar(KeyCode kc){
+			string s = kc.ToString();
+			if(s.StartsWith("Alpha"))	 // Numbers 0 to 9 are called "Alpha5" etc. Extract just the numeral as the returned character
+				return s[5];
+			return s[0];
+		}
+
+		[SerializeField]
+		private static GUIStyle popupButtonStyle;
+		public static GUIStyle PopupButtonStyle{
+			get{
+				if(popupButtonStyle == null){
+					popupButtonStyle = new GUIStyle(SF_Styles.NodeStyle);
+					popupButtonStyle.alignment = TextAnchor.UpperLeft;
+					RectOffset ro = popupButtonStyle.padding;
+					ro.left = 4;
+					popupButtonStyle.padding = ro;
+				}
+				return popupButtonStyle;
+			}
+		}
+
+		public SF_EditorNodeData CheckHotkeyInput(bool mouseOverSomeNode) {
+
+			bool mouseInNodeView = SF_Editor.instance.nodeView.MouseInsideNodeView(false);
+
+
+			if(Event.current.type == EventType.repaint){
+				smoothHotkeySelectorIndex = Mathf.Lerp(smoothHotkeySelectorIndex, hotkeySelectorIndex, 0.5f);
 			}
 
+
+			if(holding && Event.current.type == EventType.scrollWheel && HotkeyFriends.Count > 0 && mouseInNodeView){
+				hotkeySelectorIndex += (int)Mathf.Sign(Event.current.delta.y);
+
+				hotkeySelectorIndex = Mathf.Clamp(hotkeySelectorIndex, 0, HotkeyFriends.Count-1);
+
+				// hotkeySelectorIndex = ( hotkeySelectorIndex + HotkeyFriends.Count ) % HotkeyFriends.Count; // Wrap
+				Event.current.Use();
+			}
+
+			if( key == KeyCode.None )
+				return null;
+
+			if( Event.current.keyCode == key ) {
+				if( Event.current.type == EventType.keyDown && !SF_GUI.HoldingControl() && holding == false && mouseInNodeView ){
+
+					hotkeySelectorIndex = defaultHotkeySelectorIndex;
+					smoothHotkeySelectorIndex = defaultHotkeySelectorIndex;
+
+
+					holding = true;
+				}
+				if( Event.current.rawType == EventType.keyUp ){
+					holding = false;
+				}
+			}
+
+			if(holding && !mouseOverSomeNode){
+
+
+
+
+				float width = 146f; // nodeName.Length*8 + 10;
+				Rect dispPos = new Rect(0, 0, width, 36);
+				dispPos.center = Event.current.mousePosition;
+				dispPos.y -= dispPos.height*0.3333f;
+
+				//
+				//GUI.Box(dispPos, nodeName, GUI.skin.button);
+				//
+			
+
+
+				// Draw hotkey node picker
+				//if(Event.current.type == EventType.keyDown){
+				//Debug.Log(Event.current.keyCode);
+				Rect nRect = dispPos; //new Rect(0,0,128,32);
+				nRect.center = Event.current.mousePosition - Vector2.up*nRect.height*0.3333f;
+				//nRect = nRect.MovedRight();
+				nRect.y -= nRect.height * smoothHotkeySelectorIndex;
+				//if(Event.current.keyCode != KeyCode.None){
+
+				Color prevCol = GUI.color;
+
+				int i = 0;
+				foreach( SF_EditorNodeData node in HotkeyFriends){
+					//float dist = Mathf.Abs(smoothHotkeySelectorIndex - i);
+					//float alpha = Mathf.Clamp(1f-Mathf.Clamp01(dist*0.25f), 0.2f, 0.8f);
+
+
+					float offset = 0f;//(dist*dist)/3f;
+
+
+
+
+					//if(i == hotkeySelectorIndex){
+						//alpha = 1;
+						//offset -= 8f;
+						//GUI.Box(nRect, node.nodeName, PopupButtonStyle);
+					//}
+					Rect newNRect = nRect;
+					newNRect.x += offset;
+
+
+					bool selected = (i == hotkeySelectorIndex);
+
+					if( selected )
+						GUI.color = new Color(1f,1f,1f,1f);
+					else
+						GUI.color = new Color(0.6f,0.6f,0.6f,0.5f);
+					
+					if(node.isProperty){
+						GUI.color *= SF_Node.colorExposed;
+					}
+
+
+					Texture2D icon = SF_Paths.GetIcon( node.type.Split('.')[1].ToLower() );
+
+					if(icon != null){
+						newNRect.width -= newNRect.height;
+					}
+
+					GUI.Box(newNRect, node.nodeName, PopupButtonStyle);
+
+
+
+					
+					if(icon != null){
+						Rect iconRect = newNRect;
+						iconRect = iconRect.MovedRight();
+						iconRect.width = iconRect.height;
+						GUI.color = selected ? Color.white : new Color(1f,1f,1f,0.4f);
+						GUI.DrawTexture(iconRect, icon);
+						
+					}
+
+
+
+
+					nRect = nRect.MovedDown();
+
+					i++;
+				}
+				GUI.color = prevCol;
+
+
+
+				//}
+				if(Event.current.type == EventType.keyDown/* && Event.current.type == EventType.layout*/ /*&& GUI.GetNameOfFocusedControl() == "defocus"*/){
+					Event.current.Use();
+				}
+				//}
+				
+				//}
+
+				//GUI.Label(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 256,32),"currentindex = " + hotkeySelectorIndex);
+			}
+
+
+
+
 			bool clicked = Event.current.type == EventType.mouseDown;
-			return ( holding && clicked );
+			if(holding && clicked){
+				return HotkeyFriends[hotkeySelectorIndex];
+			} else {
+				return null;
+			}
 		}
 	}
 }

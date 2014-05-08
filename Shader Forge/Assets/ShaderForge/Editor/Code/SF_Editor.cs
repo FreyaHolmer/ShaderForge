@@ -256,11 +256,11 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_VertexColor ), 			catGeoData + "Vertex Color", KeyCode.V );
 			AddTemplate( typeof( SFN_ViewVector ), 				catGeoData + "View Dir." );
 			AddTemplate( typeof( SFN_ViewReflectionVector ), 	catGeoData + "View Refl. Dir.", KeyCode.None, "View Reflection"  );
-			AddTemplate( typeof( SFN_FragmentPosition ), 		catGeoData + "World Position" );
+			AddTemplate( typeof( SFN_FragmentPosition ), 		catGeoData + "World Position", KeyCode.W );
 
 			string catLighting = "Lighting/";
 			AddTemplate( typeof( SFN_AmbientLight ), 		catLighting + "Ambient Light" );
-			AddTemplate( typeof( SFN_HalfVector ), 			catLighting + "Half Direction" ).UavailableInDeferredPrePass();
+			AddTemplate( typeof( SFN_HalfVector ), 			catLighting + "Half Direction", KeyCode.H ).UavailableInDeferredPrePass();
 			AddTemplate( typeof( SFN_LightAttenuation ), 	catLighting + "Light Attenuation" ).UavailableInDeferredPrePass();
 			AddTemplate( typeof( SFN_LightColor ), 			catLighting + "Light Color" ).UavailableInDeferredPrePass();
 			AddTemplate( typeof( SFN_LightVector ), 		catLighting + "Light Direction" ).UavailableInDeferredPrePass();
@@ -535,7 +535,7 @@ namespace ShaderForge {
 
 
 
-		void UpdateKeyHoldEvents() {
+		public void UpdateKeyHoldEvents(bool mouseOverSomeNode) {
 			if( nodeTemplates == null || nodeTemplates.Count == 0 ) {
 				InitializeNodeTemplates();
 			}
@@ -548,9 +548,10 @@ namespace ShaderForge {
 					InitializeNodeTemplates();
 					return;
 				}
-					
-				if( nData.CheckHotkeyInput() ) {
-					AddNode( nData, true );
+				SF_EditorNodeData requestedNode = nData.CheckHotkeyInput(mouseOverSomeNode);
+				if( requestedNode != null ) {
+					AddNode( requestedNode, true );
+					return;
 				}
 			}
 			/*foreach(KeyValuePair<SF_EditorNodeData, Func<SF_Node>> entry in inputInstancers){
@@ -763,8 +764,7 @@ namespace ShaderForge {
 				return;
 			}
 
-			if(!SF_Node.isEditingAnyNodeTextField)
-				UpdateKeyHoldEvents();
+
 
 			//UpdateCameraZoomInput();
 
@@ -787,8 +787,9 @@ namespace ShaderForge {
 						// THIS MEANS YOU STARTED UNITY WITH SF OPEN
 						ForceClose();
 						return;
-					} else
+					} else{
 						n.DrawConnections();
+					}
 				}
 					
 			}
@@ -834,6 +835,11 @@ namespace ShaderForge {
 				}
 			}
 
+			if( Event.current.rawType == EventType.keyUp ){
+				foreach(SF_EditorNodeData nd in nodeTemplates){
+					nd.holding = false;
+				}
+			}
 
 
 			nodeView.OnLocalGUI( pRect.PadTop(TabOffset) ); // 22 when not docked, 19 if docked

@@ -760,7 +760,7 @@ namespace ShaderForge {
 
 		void InitLightDir() {
 
-			if(IsShadowOrOutlinePass())
+			if(IsShadowPass())
 				return;
 
 			if((currentProgram == ShaderProgram.Frag && !dependencies.frag_lightDirection) || (currentProgram == ShaderProgram.Vert && !dependencies.vert_lightDirection))

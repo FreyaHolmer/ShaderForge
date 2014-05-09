@@ -2052,7 +2052,7 @@ namespace ShaderForge {
 
 
 			if(currentPass == PassType.PrePassBase){
-				App ("return fixed4( normalDirection * 0.5 + 0.5, " + ps.n_gloss + " );"); // TODO
+				App ("return fixed4( normalDirection * 0.5 + 0.5, max(" + ps.n_gloss + ",0.0078125) );"); // TODO
 			} else if( currentPass == PassType.ShadColl ) {
 				App( "SHADOW_COLLECTOR_FRAGMENT(i)" );
 			} else if( currentPass == PassType.ShadCast ) {

@@ -1760,9 +1760,9 @@ namespace ShaderForge {
 			if( dependencies.vert_in_tangents )
 				App( "float4 tangent : TANGENT;" );
 			if( dependencies.uv0 )
-				App( "float2 uv0 : TEXCOORD0;" );
+				App( "float2 texcoord0 : TEXCOORD0;" );
 			if( dependencies.uv1 )
-				App( "float2 uv1 : TEXCOORD1;" );
+				App( "float2 texcoord1 : TEXCOORD1;" );
 			if( dependencies.vert_in_vertexColor )
 				App( "float4 vertexColor : COLOR;" );
 		}
@@ -1774,9 +1774,9 @@ namespace ShaderForge {
 			if( dependencies.vert_in_tangents )
 				App( "o.tangent = v.tangent;" );
 			if( dependencies.uv0 )
-				App( "o.uv0 = v.uv0;" );
+				App( "o.uv0 = v.texcoord0;" );
 			if( dependencies.uv1 )
-				App( "o.uv1 = v.uv1;" );
+				App( "o.uv1 = v.texcoord1;" );
 			if( dependencies.vert_in_vertexColor )
 				App( "o.vertexColor = v.vertexColor;" );
 		}
@@ -1902,9 +1902,9 @@ namespace ShaderForge {
 			
 
 			if( dependencies.uv0_frag )
-				App( "o.uv0 = v.uv0;" );
+				App( "o.uv0 = v.texcoord0;" );
 			if( dependencies.uv1_frag )
-				App( "o.uv1 = v.uv1;" );
+				App( "o.uv1 = v.texcoord1;" );
 			if( dependencies.vert_out_vertexColor )
 				App("o.vertexColor = v.vertexColor;");
 			if( DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes){
@@ -2177,9 +2177,9 @@ namespace ShaderForge {
 			if( dependencies.vert_in_tangents )
 				TransferBarycentric( "tangent" );
 			if( dependencies.uv0 )
-				TransferBarycentric( "uv0" );
+				TransferBarycentric( "texcoord0" );
 			if( dependencies.uv1 )
-				TransferBarycentric( "uv1" );
+				TransferBarycentric( "texcoord1" );
 			if( dependencies.vert_in_vertexColor )
 				TransferBarycentric( "vertexColor" );
 			if( dependencies.displacement )

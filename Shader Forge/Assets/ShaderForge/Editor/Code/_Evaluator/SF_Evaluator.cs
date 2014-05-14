@@ -961,8 +961,8 @@ namespace ShaderForge {
 
 		void InitNormalDirFrag() {
 
-			if(IsShadowOrOutlinePass())
-				return;
+			//if(IsShadowOrOutlinePass())
+			//	return;
 
 			if( (!dependencies.frag_normalDirection && currentProgram == ShaderProgram.Frag) )
 				return;

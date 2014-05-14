@@ -2014,7 +2014,7 @@ namespace ShaderForge {
 			scope++;
 
 			InitObjectPos();
-			CheckClip();
+
 
 			InitGrabPassSign();
 
@@ -2026,6 +2026,8 @@ namespace ShaderForge {
 			InitViewDirFrag();
 			InitNormalDirFrag();
 			InitReflectionDir();
+
+			CheckClip();
 
 			PrepareLightmapVars();
 
@@ -2042,6 +2044,8 @@ namespace ShaderForge {
 				InitLightDir();
 			}
 			InitHalfVector();
+
+
 
 
 			if( currentPass == PassType.PrePassBase){

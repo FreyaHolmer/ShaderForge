@@ -1520,7 +1520,11 @@ namespace ShaderForge {
 			
 			FlexHorizontal(()=>{
 				GUI.color = new Color( 0.7f, 0.7f, 0.7f );
-				GUILayout.Label( '\u00a9' + " Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel );
+				if( GUILayout.Button( '\u00a9' + " Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel ) ) {
+					Application.OpenURL("https://twitter.com/JoachimHolmer");
+				}
+				
+				SF_GUI.AssignCursorForPreviousRect( MouseCursor.Link );
 				GUI.color = Color.white;
 			});
 			
@@ -1561,6 +1565,9 @@ namespace ShaderForge {
 				}
 				if( GUILayout.Button( SF_Tools.documentationLabel ) ) {
 					Application.OpenURL( SF_Tools.documentationURL );
+				}
+				if( GUILayout.Button( "Wiki" ) ) {
+					Application.OpenURL( "http://acegikmo.com/shaderforge/wiki" );
 				}
 				if( GUILayout.Button("Credits") ){
 					menuState = MainMenuState.Credits;

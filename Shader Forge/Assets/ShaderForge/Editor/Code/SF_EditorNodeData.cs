@@ -217,7 +217,7 @@ namespace ShaderForge {
 
 
 				
-				float width = 156f; // nodeName.Length*8 + 10;
+				float width = 166f; // nodeName.Length*8 + 10;
 				Rect dispPos = new Rect(0, 0, width, 36);
 				dispPos.center = Event.current.mousePosition;
 				dispPos.y -= dispPos.height*0.3333f;

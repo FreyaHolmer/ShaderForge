@@ -1500,7 +1500,8 @@ namespace ShaderForge {
 							// half4 lmAdd = LightingBlinnPhong_DirLightmap(o, lmtex, lmIndTex, normalize(half3(IN.viewDir)), 1, specColor);
 							//App("UNITY_DIRBASIS");
 							App("half3 scalePerBasisVectorDiffuse;");
-							App("half3 lm = DirLightmapDiffuse (unity_DirBasis, lmtex, lmIndTex, normalLocal, 1, scalePerBasisVectorDiffuse);");
+							string normalStr = ps.HasNormalMap() ? "normalLocal" : "half3(0,0,1)";
+							App("half3 lm = DirLightmapDiffuse (unity_DirBasis, lmtex, lmIndTex, "+normalStr+", 1, scalePerBasisVectorDiffuse);");
 							App("half3 lightDir = normalize (scalePerBasisVectorDiffuse.x * unity_DirBasis[0] + scalePerBasisVectorDiffuse.y * unity_DirBasis[1] + scalePerBasisVectorDiffuse.z * unity_DirBasis[2]);");
 							App("lightDir = mul(lightDir, tangentTransform);");
 							App("half3 h = normalize (lightDir + viewDirection);");
@@ -1508,6 +1509,7 @@ namespace ShaderForge {
 							App("float lmspec = pow (nh, " + ps.n_gloss + " * 128.0);"); // TODO: Do SF encoding instead? Or, will beast not like it?
 							App("half3 specColor = lm * " + ps.n_specular + " * lmspec;");
 							App("lightmapAccumulation += half4(lm + specColor, lmspec);");
+
 						scope--;}
 						App("#endif");
 					scope--;}

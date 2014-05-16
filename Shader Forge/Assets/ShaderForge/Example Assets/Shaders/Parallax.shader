@@ -1,7 +1,7 @@
-// Shader created with Shader Forge Beta 0.33 
+// Shader created with Shader Forge Beta 0.34 
 // Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.33;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:True,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:True,aust:False,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:32640,y:32624|diff-123-RGB,spec-46-OUT,gloss-42-OUT,normal-47-RGB;n:type:ShaderForge.SFN_Multiply,id:35,x:33552,y:32736|A-37-UVOUT,B-36-OUT;n:type:ShaderForge.SFN_Vector1,id:36,x:33749,y:32828,v1:8;n:type:ShaderForge.SFN_TexCoord,id:37,x:33749,y:32682,uv:0;n:type:ShaderForge.SFN_Vector1,id:42,x:32891,y:32729,v1:0.7;n:type:ShaderForge.SFN_Vector1,id:46,x:32891,y:32673,v1:0.8;n:type:ShaderForge.SFN_Tex2d,id:47,x:32891,y:32821,ptlb:Normal,ptin:_Normal,tex:cf20bfced7e912046a9ce991a4d775ec,ntxv:3,isnm:True|UVIN-110-UVOUT;n:type:ShaderForge.SFN_Parallax,id:110,x:33151,y:32714|UVIN-35-OUT,HEI-111-A,DEP-112-OUT;n:type:ShaderForge.SFN_Tex2d,id:111,x:33355,y:32608,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-35-OUT,TEX-113-TEX;n:type:ShaderForge.SFN_Vector1,id:112,x:33355,y:32793,v1:0.15;n:type:ShaderForge.SFN_Tex2dAsset,id:113,x:33552,y:32571,ptlb:AO (RGB) Height (A),ptin:_AORGBHeightA,glob:False,tex:5fb7986dd6d0a8e4093ba82369dd6a4d;n:type:ShaderForge.SFN_Tex2d,id:123,x:32891,y:32544,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-110-UVOUT,TEX-113-TEX;proporder:113-47;pass:END;sub:END;*/
+/*SF_DATA;ver:0.34;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:True,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:True,aust:False,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:32640,y:32624|diff-123-RGB,spec-46-OUT,gloss-42-OUT,normal-47-RGB;n:type:ShaderForge.SFN_Multiply,id:35,x:33552,y:32736|A-37-UVOUT,B-36-OUT;n:type:ShaderForge.SFN_Vector1,id:36,x:33749,y:32828,v1:8;n:type:ShaderForge.SFN_TexCoord,id:37,x:33749,y:32682,uv:0;n:type:ShaderForge.SFN_Vector1,id:42,x:32891,y:32729,v1:0.7;n:type:ShaderForge.SFN_Vector1,id:46,x:32891,y:32673,v1:0.8;n:type:ShaderForge.SFN_Tex2d,id:47,x:32891,y:32821,ptlb:Normal,ptin:_Normal,tex:cf20bfced7e912046a9ce991a4d775ec,ntxv:3,isnm:True|UVIN-110-UVOUT;n:type:ShaderForge.SFN_Parallax,id:110,x:33151,y:32714|UVIN-35-OUT,HEI-111-A,DEP-112-OUT;n:type:ShaderForge.SFN_Tex2d,id:111,x:33355,y:32608,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-35-OUT,TEX-113-TEX;n:type:ShaderForge.SFN_Vector1,id:112,x:33355,y:32793,v1:0.15;n:type:ShaderForge.SFN_Tex2dAsset,id:113,x:33552,y:32571,ptlb:AO (RGB) Height (A),ptin:_AORGBHeightA,glob:False,tex:5fb7986dd6d0a8e4093ba82369dd6a4d;n:type:ShaderForge.SFN_Tex2d,id:123,x:32891,y:32544,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-110-UVOUT,TEX-113-TEX;proporder:113-47;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Parallax" {
     Properties {
@@ -36,7 +36,7 @@ Shader "Shader Forge/Examples/Parallax" {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
-                float2 uv0 : TEXCOORD0;
+                float2 texcoord0 : TEXCOORD0;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
@@ -49,7 +49,7 @@ Shader "Shader Forge/Examples/Parallax" {
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
-                o.uv0 = v.uv0;
+                o.uv0 = v.texcoord0;
                 o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
@@ -118,7 +118,7 @@ Shader "Shader Forge/Examples/Parallax" {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
-                float2 uv0 : TEXCOORD0;
+                float2 texcoord0 : TEXCOORD0;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
@@ -131,7 +131,7 @@ Shader "Shader Forge/Examples/Parallax" {
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
-                o.uv0 = v.uv0;
+                o.uv0 = v.texcoord0;
                 o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);

@@ -218,7 +218,10 @@ namespace ShaderForge {
 					//if( Application.unityVersion.StartsWith( "4" ) )
 					nodeStyle = new GUIStyle( (GUIStyle)"flow node 0" );
 					nodeStyle.alignment = TextAnchor.UpperCenter;
-					nodeStyle.fontSize = 11;
+					if(Application.platform == RuntimePlatform.WindowsEditor)
+						nodeStyle.fontSize = 9;
+					else
+						nodeStyle.fontSize = 11;
 					nodeStyle.font = EditorStyles.standardFont;
 					nodeStyle.fontStyle = FontStyle.Bold;
 					nodeStyle.padding.top = 23;

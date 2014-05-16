@@ -175,6 +175,7 @@ namespace ShaderForge {
 			}
 		}
 
+
 		public SF_EditorNodeData CheckHotkeyInput(bool mouseOverSomeNode) {
 
 			bool mouseInNodeView = SF_Editor.instance.nodeView.MouseInsideNodeView(false);
@@ -215,8 +216,8 @@ namespace ShaderForge {
 
 
 
-
-				float width = 146f; // nodeName.Length*8 + 10;
+				
+				float width = 156f; // nodeName.Length*8 + 10;
 				Rect dispPos = new Rect(0, 0, width, 36);
 				dispPos.center = Event.current.mousePosition;
 				dispPos.y -= dispPos.height*0.3333f;
@@ -237,6 +238,7 @@ namespace ShaderForge {
 				//if(Event.current.keyCode != KeyCode.None){
 
 				Color prevCol = GUI.color;
+
 
 				int i = 0;
 				foreach( SF_EditorNodeData node in HotkeyFriends){

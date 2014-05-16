@@ -961,8 +961,8 @@ namespace ShaderForge {
 
 		void InitNormalDirFrag() {
 
-			//if(IsShadowOrOutlinePass())
-			//	return;
+			if(IsShadowOrOutlinePass())
+				return;
 
 			if( (!dependencies.frag_normalDirection && currentProgram == ShaderProgram.Frag) )
 				return;
@@ -1048,15 +1048,15 @@ namespace ShaderForge {
 
 /*
  * float3 specular = pow(max(0.0,dot(halfDirection, normalDirection)),specPow) * specularColor;
-                #ifndef LIGHTMAP_OFF
-                    #ifndef DIRLIGHTMAP_OFF
-                    	specular *= lightmap;
-                    #else
-                    	specular *= floor(attenuation) * _LightColor0.xyz;
-                    #endif
-                #else
-                	specular = floor(attenuation) * _LightColor0.xyz;
-                #endif
+				#ifndef LIGHTMAP_OFF
+					#ifndef DIRLIGHTMAP_OFF
+						specular *= lightmap;
+					#else
+						specular *= floor(attenuation) * _LightColor0.xyz;
+					#endif
+				#else
+					specular = floor(attenuation) * _LightColor0.xyz;
+				#endif
  * */
 
 			if(currentPass == PassType.PrePassFinal){
@@ -1193,12 +1193,12 @@ namespace ShaderForge {
 
 			/*
 			 *float3 specular = lightAccumulation.a * specularColor; 
-                
-                #ifndef LIGHTMAP_OFF
-                	#ifndef DIRLIGHTMAP_OFF
-                		specular += specColor;
-                	#endif
-                #endif 
+				
+				#ifndef LIGHTMAP_OFF
+					#ifndef DIRLIGHTMAP_OFF
+						specular += specColor;
+					#endif
+				#endif 
 			 */
 
 			if(ps.catLighting.lightmapped){
@@ -1775,10 +1775,18 @@ namespace ShaderForge {
 				App( "o.normal = v.normal;" );
 			if( dependencies.vert_in_tangents )
 				App( "o.tangent = v.tangent;" );
-			if( dependencies.uv0 )
-				App( "o.uv0 = v.texcoord0;" );
-			if( dependencies.uv1 )
-				App( "o.uv1 = v.texcoord1;" );
+			if( inTess ) {
+				if( dependencies.uv0 )
+					App( "o.texcoord0 = v.texcoord0;" );
+				if( dependencies.uv1 )
+					App( "o.texcoord1 = v.texcoord1;" );
+			} else {
+				if( dependencies.uv0 )
+					App( "o.uv0 = v.texcoord0;" );
+				if( dependencies.uv1 )
+					App( "o.uv1 = v.texcoord1;" );
+			}
+			
 			if( dependencies.vert_in_vertexColor )
 				App( "o.vertexColor = v.vertexColor;" );
 		}
@@ -1975,7 +1983,7 @@ namespace ShaderForge {
 			if( LightmapThisPass() ) {
 				App( "#ifndef LIGHTMAP_OFF" );
 				scope++;
-				App( "o.uvLM = v.uv1.xy * unity_LightmapST.xy + unity_LightmapST.zw;" );
+				App( "o.uvLM = v.texcoord1 * unity_LightmapST.xy + unity_LightmapST.zw;" );
 
 				if(currentPass == PassType.PrePassFinal){
 					App( "#ifdef DIRLIGHTMAP_OFF");

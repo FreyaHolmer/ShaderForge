@@ -37,7 +37,10 @@ namespace ShaderForge {
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return SF_Evaluator.WithProgramPrefix(currentUV.ToString());
+
+			string s = SF_Evaluator.inTess ? "texcoord" + (int)currentUV : currentUV.ToString();
+			
+			return SF_Evaluator.WithProgramPrefix( s );
 		}
 
 		public override void DrawLowerPropertyBox() {

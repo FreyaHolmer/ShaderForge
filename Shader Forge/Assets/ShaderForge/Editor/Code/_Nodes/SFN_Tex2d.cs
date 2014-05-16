@@ -155,7 +155,7 @@ namespace ShaderForge {
 
 
 			bool useLOD = GetInputIsConnected( "MIP" ) || ( SF_Evaluator.inVert || SF_Evaluator.inTess );
-			string uvStr = GetInputIsConnected( "UVIN" ) ? GetInputCon( "UVIN" ).Evaluate() : SF_Evaluator.WithProgramPrefix( "uv0.xy" );
+			string uvStr = GetInputIsConnected( "UVIN" ) ? GetInputCon( "UVIN" ).Evaluate() : SF_Evaluator.WithProgramPrefix( SF_Evaluator.inFrag ? "uv0" : "texcoord0" );
 			string func = useLOD ? "tex2Dlod" : "tex2D";
 			string mip = GetInputIsConnected( "MIP" ) ? GetInputCon( "MIP" ).Evaluate() : "0";
 

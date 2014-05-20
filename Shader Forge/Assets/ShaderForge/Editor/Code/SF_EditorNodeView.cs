@@ -768,6 +768,21 @@ namespace ShaderForge {
 			bool draggingSeparators = editor.DraggingAnySeparator();
 
 
+			if(connecting){
+				// Pan camera when cursor nears edges while making a connection
+				Vector2 mousePosInNodeViewScreenSpace = ZoomSpaceToScreenSpace(Event.current.mousePosition) - Vector2.right*editor.separatorLeft.rect.xMax;
+				float areaWidth = editor.separatorRight.rect.xMin - editor.separatorLeft.rect.xMax;
+				float areaHeight = editor.nodeView.rect.height;
+				float dragPanMargin = 32f;
+				float panSpeed = 0.2f;
+				float leftMag = Mathf.Clamp(-mousePosInNodeViewScreenSpace.x + dragPanMargin, 0f, dragPanMargin);
+				float rightMag = Mathf.Clamp( mousePosInNodeViewScreenSpace.x - areaWidth + dragPanMargin, 0f, dragPanMargin);
+				float topMag = Mathf.Clamp( -mousePosInNodeViewScreenSpace.y + dragPanMargin , 0f, dragPanMargin);
+				float bottomMag = Mathf.Clamp( mousePosInNodeViewScreenSpace.y - areaHeight + dragPanMargin , 0f, dragPanMargin);
+				cameraPos += new Vector2(rightMag-leftMag, bottomMag-topMag)*panSpeed;
+			}
+
+
 			bool doingSomethingElse = connecting || rotatingPreview || placingNode || draggingSeparators;
 			bool dragInside = dragging && insideNodeView;
 

@@ -2032,6 +2032,13 @@ namespace ShaderForge {
 				App ("i.normalDir = normalize(i.normalDir);");
 			}
 
+			if( dependencies.vert_out_screenPos && ps.catQuality.highQualityScreenCoords ) {
+				App( "i.screenPos = float4( i.screenPos.xy / i.screenPos.w, 0, 0 );" );
+				App( "i.screenPos.y *= _ProjectionParams.x;" );
+			}
+			
+			InitSceneColorAndDepth();
+
 			InitTangentTransformFrag();
 			InitViewDirFrag();
 			InitNormalDirFrag();
@@ -2043,12 +2050,7 @@ namespace ShaderForge {
 
 
 
-			if( dependencies.vert_out_screenPos && ps.catQuality.highQualityScreenCoords ) {
-				App( "i.screenPos = float4( i.screenPos.xy / i.screenPos.w, 0, 0 );" );
-				App( "i.screenPos.y *= _ProjectionParams.x;" );
-			}
 
-			InitSceneColorAndDepth();
 
 			if( dependencies.frag_lightDirection ) {
 				InitLightDir();

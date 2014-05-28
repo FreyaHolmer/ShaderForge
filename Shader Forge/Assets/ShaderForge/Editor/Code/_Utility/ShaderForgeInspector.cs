@@ -136,8 +136,50 @@ namespace UnityEditor {
 			Type shaderUtil = Type.GetType( "UnityEditor.ShaderUtil,UnityEditor" );
 			BindingFlags bfs = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 			MethodInfo ocs = shaderUtil.GetMethod( "OpenCompiledShader", bfs );
-			ocs.Invoke( null, new object[] { s } );
+
+			string vStr = Application.unityVersion;
+
+			int vMajor = int.Parse(vStr[0]);
+			int vMinor = int.Parse(vStr[2]);
+
+			float vFloat = vMajor + vMinor/10f;
+
+			bool newMethod = vFloat >= 4.5f;
+
+			if(newMethod)
+				ocs.Invoke( null, new object[] { s, true } );
+			else
+				ocs.Invoke( null, new object[] { s } );
 		}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	}
+
+
 }

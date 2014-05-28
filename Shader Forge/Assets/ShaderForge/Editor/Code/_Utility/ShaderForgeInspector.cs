@@ -139,8 +139,8 @@ namespace UnityEditor {
 
 			string vStr = Application.unityVersion;
 
-			int vMajor = int.Parse(vStr[0]);
-			int vMinor = int.Parse(vStr[2]);
+			int vMajor = int.Parse(""+vStr[0]);
+			int vMinor = int.Parse(""+vStr[2]);
 
 			float vFloat = vMajor + vMinor/10f;
 

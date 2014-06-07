@@ -8,10 +8,11 @@ using System;
 namespace ShaderForge {
 
 	public enum SF_Setting{
-		CurveShape,			// int	Bezier/Linear/etc
-		AutoCompile, 		// bool	True/False
-		HierarchalNodeMove, // bool	True/False
-		DrawNodePreviews	// bool	True/False
+		CurveShape,				// int	Bezier/Linear/etc
+		AutoCompile, 			// bool	True/False
+		HierarchalNodeMove, 	// bool	True/False
+		DrawNodePreviews,		// bool	True/False
+		QuickPickScrollWheel	// bool	True/False
 	};
 
 	public class SF_Settings {
@@ -24,10 +25,11 @@ namespace ShaderForge {
 
 		public static void InitializeSettings() {
 			// Set up all defaults
-			SetDefaultInt ( SF_Setting.CurveShape, 			(int)ConnectionLineStyle.Bezier );
-			SetDefaultBool( SF_Setting.AutoCompile, 		true 							);
-			SetDefaultBool( SF_Setting.HierarchalNodeMove, 	false 							);
-			SetDefaultBool( SF_Setting.DrawNodePreviews, 	true 							);
+			SetDefaultInt ( SF_Setting.CurveShape, 			 (int)ConnectionLineStyle.Bezier 	);
+			SetDefaultBool( SF_Setting.AutoCompile, 		 true 								);
+			SetDefaultBool( SF_Setting.HierarchalNodeMove, 	 false 								);
+			SetDefaultBool( SF_Setting.DrawNodePreviews, 	 true 								);
+			SetDefaultBool( SF_Setting.QuickPickScrollWheel, true 								);
 
 		}
 
@@ -51,6 +53,11 @@ namespace ShaderForge {
 		public static ConnectionLineStyle ConnectionLineStyle {
 			get { return ConnectionLineStyle.Bezier;/*return (ConnectionLineStyle)SF_Settings.LoadInt(SF_Setting.CurveShape);*/ }
 			set { SF_Settings.SetInt(SF_Setting.CurveShape, (int)value); }
+		}
+
+		public static bool QuickPickWithWheel {
+			get { return LoadBool(SF_Setting.QuickPickScrollWheel); }
+			set { SetBool(SF_Setting.QuickPickScrollWheel, value); }
 		}
 
 

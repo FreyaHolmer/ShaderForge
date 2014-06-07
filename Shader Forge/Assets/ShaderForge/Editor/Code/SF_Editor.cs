@@ -1791,7 +1791,8 @@ namespace ShaderForge {
 				SF_Settings.HierarcyMove = GUI.Toggle( btnRect, SF_Settings.HierarcyMove, "Hierarchal Node Move" );
 				btnRect = btnRect.MovedDown();
 				SF_Settings.DrawNodePreviews = GUI.Toggle( btnRect, SF_Settings.DrawNodePreviews, "Auto-Update Node Previews" );
-
+				btnRect = btnRect.MovedDown();
+				SF_Settings.QuickPickWithWheel = GUI.Toggle( btnRect, SF_Settings.QuickPickWithWheel, "Use scroll in the quickpicker" );
 
 
 				btnRect.y += 4;

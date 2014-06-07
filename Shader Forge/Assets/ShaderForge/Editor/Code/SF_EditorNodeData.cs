@@ -175,6 +175,7 @@ namespace ShaderForge {
 			}
 		}
 
+		public Vector2 quickpickerStartPosition = Vector2.zero;
 
 		public SF_EditorNodeData CheckHotkeyInput(bool mouseOverSomeNode) {
 
@@ -185,11 +186,15 @@ namespace ShaderForge {
 				smoothHotkeySelectorIndex = Mathf.Lerp(smoothHotkeySelectorIndex, hotkeySelectorIndex, 0.5f);
 			}
 
+			bool useScroll = SF_Settings.QuickPickWithWheel;
 
 			if(holding && Event.current.type == EventType.scrollWheel && HotkeyFriends.Count > 0 && mouseInNodeView){
-				hotkeySelectorIndex += (int)Mathf.Sign(Event.current.delta.y);
 
-				hotkeySelectorIndex = Mathf.Clamp(hotkeySelectorIndex, 0, HotkeyFriends.Count-1);
+				if(useScroll){
+					hotkeySelectorIndex += (int)Mathf.Sign(Event.current.delta.y);
+					hotkeySelectorIndex = Mathf.Clamp(hotkeySelectorIndex, 0, HotkeyFriends.Count-1);
+				}
+
 
 				// hotkeySelectorIndex = ( hotkeySelectorIndex + HotkeyFriends.Count ) % HotkeyFriends.Count; // Wrap
 				Event.current.Use();
@@ -204,6 +209,7 @@ namespace ShaderForge {
 					hotkeySelectorIndex = defaultHotkeySelectorIndex;
 					smoothHotkeySelectorIndex = defaultHotkeySelectorIndex;
 
+					quickpickerStartPosition = Event.current.mousePosition;
 
 					holding = true;
 				}
@@ -212,6 +218,8 @@ namespace ShaderForge {
 				}
 			}
 
+
+
 			if(holding && !mouseOverSomeNode){
 
 
@@ -219,7 +227,10 @@ namespace ShaderForge {
 				
 				float width = 166f; // nodeName.Length*8 + 10;
 				Rect dispPos = new Rect(0, 0, width, 36);
-				dispPos.center = Event.current.mousePosition;
+
+				Vector2 centerPos = useScroll ? Event.current.mousePosition : quickpickerStartPosition;
+
+				dispPos.center = centerPos;
 				dispPos.y -= dispPos.height*0.3333f;
 
 				//
@@ -232,12 +243,16 @@ namespace ShaderForge {
 				//if(Event.current.type == EventType.keyDown){
 				//Debug.Log(Event.current.keyCode);
 				Rect nRect = dispPos; //new Rect(0,0,128,32);
-				nRect.center = Event.current.mousePosition - Vector2.up*nRect.height*0.3333f;
+				nRect.center = centerPos - Vector2.up*nRect.height*0.3333f;
 				//nRect = nRect.MovedRight();
-				nRect.y -= nRect.height * smoothHotkeySelectorIndex;
+				if(useScroll)
+					nRect.y -= nRect.height * smoothHotkeySelectorIndex;
+				else
+					nRect.y -= nRect.height * defaultHotkeySelectorIndex;
 				//if(Event.current.keyCode != KeyCode.None){
 
 				Color prevCol = GUI.color;
+
 
 
 				int i = 0;
@@ -260,6 +275,10 @@ namespace ShaderForge {
 					newNRect.x += offset;
 
 
+					if(!useScroll && newNRect.Contains(Event.current.mousePosition)){
+						hotkeySelectorIndex = i;
+					}
+
 					bool selected = (i == hotkeySelectorIndex);
 
 					if( selected )
@@ -278,7 +297,13 @@ namespace ShaderForge {
 						newNRect.width -= newNRect.height;
 					}
 
-					GUI.Box(newNRect, node.nodeName, PopupButtonStyle);
+					//if(useScroll){
+						GUI.Box(newNRect, node.nodeName, PopupButtonStyle);
+					//} else {
+						//if(GUI.Button(newNRect, node.nodeName, PopupButtonStyle)){
+							//hotkeySelectorIndex = i;
+						//}
+					//}
 
 
 

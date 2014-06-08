@@ -201,6 +201,8 @@ namespace ShaderForge {
 
 
 
+
+
 			editor.mousePosition = Event.current.mousePosition;
 			rect = r;
 
@@ -614,25 +616,30 @@ namespace ShaderForge {
 
 		public void HierarchalRefresh() {
 
-			AssignDepthValuesToNodes();
+//			AssignDepthValuesToNodes();
+//
+//			int maxDepth = 0; // Deepest level
+//			foreach( SF_Node n in editor.nodes ) {
+//				if( maxDepth < n.depth )
+//					maxDepth = n.depth;
+//			}
+//
+//			
+//			// Relink everything
+//			int depth = maxDepth;
+//			while( depth > 0 ) {
+//				for(int i=0; i<editor.nodes.Count; i++){
+//					SF_Node n = editor.nodes[i];
+//					if( n.depth == depth ) {
+//						n.OnUpdateNode(NodeUpdateType.Soft, cascade:true);
+//					}
+//				}
+//				depth--;
+//			}
 
-			int maxDepth = 0; // Deepest level
-			foreach( SF_Node n in editor.nodes ) {
-				if( maxDepth < n.depth )
-					maxDepth = n.depth;
-			}
 
-			
-			// Relink everything
-			int depth = maxDepth;
-			while( depth > 0 ) {
-				for(int i=0; i<editor.nodes.Count; i++){
-					SF_Node n = editor.nodes[i];
-					if( n.depth == depth ) {
-						n.OnUpdateNode(NodeUpdateType.Soft, cascade:true);
-					}
-				}
-				depth--;
+			foreach(SF_Node n in editor.GetDepthSortedDependencyTreeForConnectedNodes(reverse:true)){
+				n.OnUpdateNode(NodeUpdateType.Soft, cascade:false);
 			}
 			
 

@@ -734,11 +734,43 @@ namespace ShaderForge {
 			GUIUtility.ExitGUI();
 		}
 
+		void AddDependenciesHierarchally(SF_Node node, DependencyTree<SF_Node> tree){
+			node.ReadDependencies();
+			tree.Add(node);
+			foreach(SF_Node n in ((IDependable<SF_Node>)node).Dependencies){
+				AddDependenciesHierarchally(n, tree);
+			}
+		}
+
+		public List<SF_Node> GetDepthSortedDependencyTreeForConnectedNodes(bool reverse = false){
+			DependencyTree<SF_Node> tree = new DependencyTree<SF_Node>();
+			
+			AddDependenciesHierarchally(materialOutput, tree);
+			Debug.Log(tree.tree.Count);
+			tree.Sort();
+
+			List<SF_Node> list = tree.tree.Select(x=>(SF_Node)x).ToList();
+			if(reverse)
+				list.Reverse();
+			return list;
+		}
+
 		string fullscreenMessage = "";
 		public Rect previousPosition;
 		public bool closeMe = false;
 		void OnGUI() {
 			//Debug.Log("SF_Editor OnGUI()");
+
+			//SF_AllDependencies.DrawDependencyTree(new Rect(0, 0, Screen.width, Screen.height));
+			//return;
+
+//			if(Event.current.keyCode == KeyCode.Space && Event.current.type == EventType.keyDown){
+//				Debug.Log("Beep");
+//				Event.current.Use();
+//
+//
+//
+//			}
 
 			if(SF_Parser.quickLoad) // Don't draw while loading
 				return;
@@ -1413,8 +1445,8 @@ namespace ShaderForge {
 		public void DrawMainMenu() {
 
 
-			
-			
+			//SF_AllDependencies.DrawDependencyTree(new Rect(0f,0f,Screen.width,Screen.height));
+			//return;
 			
 			if(string.IsNullOrEmpty(updateCheck)){
 				CheckForUpdates();

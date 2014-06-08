@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System;
 
@@ -11,7 +12,7 @@ namespace ShaderForge {
 	public enum NodeUpdateType { Soft, Hard };
 
 	[System.Serializable]
-	public class SF_Node : ScriptableObject {
+	public class SF_Node : ScriptableObject, IDependable<SF_Node> {
 
 		public const int NODE_SIZE = 96;
 		public const int NODE_WIDTH = NODE_SIZE + 3;	// This fits a NODE_SIZE texture inside
@@ -141,6 +142,52 @@ namespace ShaderForge {
 		public void OnEnable() {
 			base.hideFlags = HideFlags.HideAndDontSave;
 		}
+
+		#region IDependable implementation
+
+		private List<SF_Node> dependencies;
+		public int iDepth = 0;
+		void IDependable<SF_Node>.AddDependency (SF_Node dp){
+			(this as IDependable<SF_Node>).Dependencies.Add(dp);
+		}
+
+		int IDependable<SF_Node>.Depth {
+			get {
+				return iDepth;
+			}
+			set {
+				iDepth = value;
+			}
+		}
+
+		List<SF_Node> IDependable<SF_Node>.Dependencies {
+			get {
+				if(dependencies == null){
+					dependencies = new List<SF_Node>();
+				}
+				return dependencies;
+			}
+			set {
+				dependencies = this.dependencies;
+			}
+		}
+
+
+		public void ReadDependencies(){
+			(this as IDependable<SF_Node>).Dependencies.Clear();
+			foreach(SF_NodeConnector c in connectors){
+				if(c.conType == ConType.cOutput)
+					continue;
+				if(!c.IsConnectedAndEnabled())
+					continue;
+				if(c.inputCon == null)
+					continue;
+				(this as IDependable<SF_Node>).AddDependency(c.inputCon.node);
+			}
+		}
+
+
+		#endregion
 
 		public bool IsProperty() {
 			if( property == null )

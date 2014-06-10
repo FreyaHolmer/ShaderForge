@@ -62,8 +62,17 @@ namespace ShaderForge {
 			// Upper:
 			//float normSlider = Mathf.InverseLerp( min, max, current );
 			//r.x = normSlider * sliderWidth + 0.5f * labelWidth;
+
+			bool inverse = min > max;
+
 			float prevValue = current;
-			current = Mathf.Clamp( EditorGUI.FloatField( r, current, centerFloatField ), min, max );
+
+
+			if(inverse){
+				current = Mathf.Clamp( EditorGUI.FloatField( r, current, centerFloatField ), max, min );
+			} else {
+				current = Mathf.Clamp( EditorGUI.FloatField( r, current, centerFloatField ), min, max );
+			}
 
 			// Lower:
 			r.y += r.height + 4;
@@ -81,7 +90,14 @@ namespace ShaderForge {
 			string sliderName = "slider" + this.id;
 			GUI.SetNextControlName( sliderName );
 			//current = GUI.HorizontalSlider( r, current, min, max );
-			current = UndoableHorizontalSlider(r, current, min, max, "value" );
+
+			if(inverse){
+				current = (min+max) - UndoableHorizontalSlider(r, (min+max) - current, max, min, "value" );
+			} else {
+				current = UndoableHorizontalSlider(r, current, min, max, "value" );
+			}
+
+
 			if( beforeSlider != current )
 				GUI.FocusControl( sliderName );
 			r.x += r.width;
@@ -94,8 +110,9 @@ namespace ShaderForge {
 			// sliderRect.x += labelWidth;
 			// sliderRect.width -= labelWidth * 2;
 
-			if( prevValue != current )
+			if( prevValue != current ){
 				OnValueChanged();
+			}
 			GUI.EndGroup();
 			ResetWindowColor();
 			//GUI.DragWindow();

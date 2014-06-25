@@ -4,8 +4,8 @@ using System.Collections;
 namespace ShaderForge {
 	[System.Serializable]
 	public class SF_PreviewSettings {
-
-		public SF_PreviewWindow preview;
+		
+		//public SF_PreviewWindow preview;
 
 		// TODO: Load/Save default settings
 
@@ -14,7 +14,7 @@ namespace ShaderForge {
 
 
 		public SF_PreviewSettings( SF_PreviewWindow preview ) {
-			this.preview = preview;
+			//this.preview = preview;
 		}
 
 

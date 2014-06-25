@@ -67,11 +67,14 @@ namespace ShaderForge {
 
 			float prevValue = current;
 
-
+			Rect valRect = r;
+			//float t = (current/max);
+			valRect.xMin += 80;//+134*t;
+			valRect.xMax -= 80;//+134*(1-t);
 			if(inverse){
-				current = Mathf.Clamp( EditorGUI.FloatField( r, current, centerFloatField ), max, min );
+				current = Mathf.Clamp( EditorGUI.FloatField( valRect, current, centerFloatField ), max, min );
 			} else {
-				current = Mathf.Clamp( EditorGUI.FloatField( r, current, centerFloatField ), min, max );
+				current = Mathf.Clamp( EditorGUI.FloatField( valRect, current, centerFloatField ), min, max );
 			}
 
 			// Lower:
@@ -91,10 +94,15 @@ namespace ShaderForge {
 			GUI.SetNextControlName( sliderName );
 			//current = GUI.HorizontalSlider( r, current, min, max );
 
+			Rect sliderRect = r;
+
+			sliderRect.xMax -= 8;
+			sliderRect.xMin += 8;
+
 			if(inverse){
-				current = (min+max) - UndoableHorizontalSlider(r, (min+max) - current, max, min, "value" );
+				current = (min+max) - UndoableHorizontalSlider(sliderRect, (min+max) - current, max, min, "value" );
 			} else {
-				current = UndoableHorizontalSlider(r, current, min, max, "value" );
+				current = UndoableHorizontalSlider(sliderRect, current, min, max, "value" );
 			}
 
 

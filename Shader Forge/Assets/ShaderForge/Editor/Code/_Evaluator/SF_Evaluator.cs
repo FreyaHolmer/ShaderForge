@@ -499,6 +499,9 @@ namespace ShaderForge {
 				App( "#include \"AutoLight.cginc\"" );
 			if( IncludeLightingCginc() )
 				App( "#include \"Lighting.cginc\"" );
+			if( dependencies.tessellation )
+				App ("#include \"Tessellation.cginc\"");
+
 
 			if(currentPass == PassType.PrePassFinal){
 				App( "#pragma multi_compile_prepassfinal" );
@@ -2211,7 +2214,24 @@ namespace ShaderForge {
 		void FuncTessellation() {
 			App( "float Tessellation(TessVertex v){" );
 			scope++;
-			App( "return " + ps.n_tessellation + ";" );
+
+
+			switch (ps.catQuality.tessellationMode) {
+
+				case SFPSC_Quality.TessellationMode.Regular:
+					App( "return " + ps.n_tessellation + ";" );
+					break;
+
+				case SFPSC_Quality.TessellationMode.EdgeLength:
+					App("return UnityEdgeLengthBasedTess(v[0], v[1], v[2], " + ps.n_tessellation + ");");
+					break;
+
+				case SFPSC_Quality.TessellationMode.EdgeLengthCulled:
+					App("return UnityEdgeLengthBasedTessCull(v[0], v[1], v[2], " + ps.n_tessellation + ");");
+					break;
+
+			}
+
 			scope--;
 			App( "}" );
 		}

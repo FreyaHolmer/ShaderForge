@@ -13,8 +13,8 @@ namespace ShaderForge {
 		public bool highQualityLightProbes = false;
 		//public bool edgeLengthTessellation = false;
 
-		public enum TessellationMode{Regular, EdgeLength, EdgeLengthCulled};
-		public string[] tessModeStr = new string[]{"Regular", "Edge length based", "Edge length based with frustrum culling"};
+		public enum TessellationMode{Regular, EdgeLength/*, EdgeLengthCulled*/};
+		public string[] tessModeStr = new string[]{"Regular", "Edge length based"/*, "Edge length based with frustrum culling"*/};
 
 		public TessellationMode tessellationMode = TessellationMode.Regular;
 
@@ -23,7 +23,7 @@ namespace ShaderForge {
 			string s = "";
 			s += Serialize( "hqsc", highQualityScreenCoords.ToString());
 			s += Serialize( "hqlp", highQualityLightProbes.ToString());
-			s += Serialize( "tesm", tessellationMode.ToString());
+			s += Serialize( "tesm", ((int)tessellationMode).ToString());
 			return s;
 		}
 

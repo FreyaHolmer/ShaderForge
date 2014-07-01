@@ -87,7 +87,7 @@ namespace ShaderForge {
 			get {
 				if( codeTextArea == null ) {
 					codeTextArea = new GUIStyle( GUI.skin.textArea );
-					codeTextArea.font = (Font)Resources.Load( SF_Paths.pFonts + "VeraMono", typeof(Font) );
+					codeTextArea.font = SF_Resources.Load<Font>( SF_Resources.pFonts + "VeraMono.ttf" );
 					codeTextArea.padding = new RectOffset(3,3,3,0);
 					codeTextArea.wordWrap = false;
 				}

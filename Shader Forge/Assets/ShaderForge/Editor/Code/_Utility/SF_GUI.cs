@@ -58,8 +58,9 @@ namespace ShaderForge {
 
 			//AssetDatabase.LoadAssetAtPath(
 
+			return SF_Resources.Load<Texture2D>(path+name);
 
-			return (Texture2D)Resources.Load(path + name, typeof(Texture2D) ); // TODO: This has to change into something that's not using resources
+			//return (Texture2D)Resources.Load(path + name, typeof(Texture2D) ); // TODO: This has to change into something that's not using resources
 		}
 
 
@@ -67,7 +68,7 @@ namespace ShaderForge {
 		public static Texture2D Handle_drag {
 			get {
 				if( handle_drag == null )
-					handle_drag = LoadTexture( SF_Paths.pInterface, "handle_drag" );
+					handle_drag = SF_Resources.LoadInterfaceIcon("handle_drag");
 				return handle_drag;
 			}
 		}
@@ -78,7 +79,7 @@ namespace ShaderForge {
 		public static Texture2D Logo {
 			get {
 				if( logo == null )
-					logo = LoadTexture( SF_Paths.pInterface, SkinSuffix("logo") );
+					logo = SF_Resources.LoadInterfaceIcon( SkinSuffix("logo") );
 				return logo;
 			}
 		}
@@ -87,7 +88,7 @@ namespace ShaderForge {
 		public static Texture2D Icon {
 			get {
 				if( icon == null )
-					icon = LoadTexture( SF_Paths.pInterface, SkinSuffix( "icon" ) );
+					icon = SF_Resources.LoadInterfaceIcon( SkinSuffix( "icon" ) );
 				return icon;
 			}
 		}
@@ -96,7 +97,7 @@ namespace ShaderForge {
 		public static Texture2D Toggle_check_icon {
 			get {
 				if( toggle_check_icon == null )
-					toggle_check_icon = LoadTexture( SF_Paths.pInterface, SkinSuffix( "chk" ) );
+					toggle_check_icon = SF_Resources.LoadInterfaceIcon( SkinSuffix( "chk" ) );
 				return toggle_check_icon;
 			}
 		}
@@ -105,7 +106,7 @@ namespace ShaderForge {
 		public static Texture2D Screenshot_icon {
 			get {
 				if( screenshot_icon == null )
-					screenshot_icon = LoadTexture( SF_Paths.pInterface, SkinSuffix( "screenshot_icon" ) );
+					screenshot_icon = SF_Resources.LoadInterfaceIcon( SkinSuffix( "screenshot_icon" ) );
 				return screenshot_icon;
 			}
 		}
@@ -114,7 +115,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_vert {
 			get {
 				if( inst_vert == null )
-					inst_vert = LoadTexture(SF_Paths.pInterface, SkinSuffix( "inst_vert" ) );
+					inst_vert = SF_Resources.LoadInterfaceIcon( SkinSuffix( "inst_vert" ) );
 				return inst_vert;
 			}
 		}
@@ -123,7 +124,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_vert_tex {
 			get {
 				if( inst_vert_tex == null )
-					inst_vert_tex = LoadTexture(SF_Paths.pInterface, SkinSuffix( "inst_vert_tex" ) );
+					inst_vert_tex = SF_Resources.LoadInterfaceIcon( SkinSuffix( "inst_vert_tex" ) );
 				return inst_vert_tex;
 			}
 		}
@@ -132,7 +133,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_frag {
 			get {
 				if( inst_frag == null )
-					inst_frag = LoadTexture(SF_Paths.pInterface, SkinSuffix("inst_frag" ) );
+					inst_frag = SF_Resources.LoadInterfaceIcon( SkinSuffix("inst_frag" ) );
 				return inst_frag;
 			}
 		}
@@ -141,7 +142,7 @@ namespace ShaderForge {
 		public static Texture2D Inst_frag_tex {
 			get {
 				if( inst_frag_tex == null )
-					inst_frag_tex = LoadTexture(SF_Paths.pInterface, SkinSuffix( "inst_frag_tex" ) );
+					inst_frag_tex = SF_Resources.LoadInterfaceIcon( SkinSuffix( "inst_frag_tex" ) );
 				return inst_frag_tex;
 			}
 		}

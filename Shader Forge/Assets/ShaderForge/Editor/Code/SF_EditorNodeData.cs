@@ -291,7 +291,7 @@ namespace ShaderForge {
 					}
 
 
-					Texture2D icon = SF_Paths.GetIcon( node.type.Split('.')[1].ToLower() );
+					Texture2D icon = SF_Resources.LoadNodeIcon( node.type.Split('.')[1].ToLower() );
 
 					if(icon != null){
 						newNRect.width -= newNRect.height;

@@ -25,7 +25,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 0;
-		public static int versionNumSecondary = 35;
+		public static int versionNumSecondary = 36;
 		public static string versionStage = "Beta";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge " + versionStage + " " + version;
@@ -81,6 +81,8 @@ namespace ShaderForge {
 			return UnityEditorInternal.InternalEditorUtility.HasPro();
 		}
 
+
+
 		
 		public static void UnityOutOfDateGUI(){
 			GUIStyle st = new GUIStyle(EditorStyles.boldLabel);
@@ -88,7 +90,7 @@ namespace ShaderForge {
 			st.alignment = TextAnchor.MiddleCenter;
 			
 			GUILayout.Label(string.Empty);
-			GUILayout.Label("You need to install Unity " + SF_Tools.minimumUnityVersion + " or later in order to use Shader Forge",st);
+			GUILayout.Label("You need to install Unity " + SF_Tools.minimumUnityVersion + " or later in order to use Shader Forge", st);
 			GUILayout.Label("You are currently running Unity version " + Application.unityVersion, st);
 			if(GUILayout.Button("Update Unity")){
 				Application.OpenURL("http://unity3d.com/unity/download");

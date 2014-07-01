@@ -21,12 +21,12 @@ namespace ShaderForge {
 		public Material InternalMaterial {
 			get {
 				if(internalMaterial == null){
-					internalMaterial = (Material)Resources.Load("ShaderForgeInternal",typeof(Material));
+					internalMaterial = SF_Resources.Load<Material>("ShaderForgeInternal.mat");
 
 					if(internalMaterial == null){ 
 
-						string meshesPath = AssetDatabase.GetAssetPath( Resources.Load("Meshes/sf_meshes",typeof(Mesh)) );
-						string sf_resourcePath = meshesPath.Substring(0,meshesPath.Length - 20);
+						//string meshesPath = AssetDatabase.GetAssetPath( Resources.Load("Meshes/sf_meshes",typeof(Mesh)) );
+						string sf_resourcePath = SF_Resources.InternalResourcesPath;
 						string matPath = sf_resourcePath + "ShaderForgeInternal.mat";
 						//Debug.Log(matPath);
 						AssetDatabase.CreateAsset(internalMaterial = new Material(editor.currentShaderAsset), matPath );
@@ -101,7 +101,7 @@ namespace ShaderForge {
 
 
 		public Mesh GetSFMesh(string find_name) {
-			UnityEngine.Object[] objs = Resources.LoadAll( SF_Paths.pMeshes+"sf_meshes" );
+			UnityEngine.Object[] objs = SF_Resources.LoadAll( SF_Resources.pMeshes+"sf_meshes.fbx" );
 			if( objs == null ) {
 				Debug.LogError( "sf_meshes.fbx missing" );
 				return null;

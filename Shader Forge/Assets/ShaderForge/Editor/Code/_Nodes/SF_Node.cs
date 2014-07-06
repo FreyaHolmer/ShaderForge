@@ -236,7 +236,35 @@ namespace ShaderForge {
 			// Override
 		}
 
-		public void Initialize( string name ) {
+
+		public SF_NodeConnector[] ConnectedInputs{
+			get{
+				return connectors.Where(con=>con.IsConnectedAndEnabled() && con.conType == ConType.cInput).Select(con=>con).ToArray();
+			}
+		}
+
+
+		// Used for 3D data like normal/view vector, etc.
+		public bool vectorDataNode = false;
+		public bool DisplayVectorDataMask{
+			get{
+				if(vectorDataNode){
+					return true;
+				} else {
+					bool disp = false;
+					foreach(SF_NodeConnector con in ConnectedInputs){
+						if(con.inputCon.node.DisplayVectorDataMask){
+							disp = true;
+							break;
+						}
+					}
+					return disp;
+				}
+			}
+		}
+
+
+		public void Initialize( string name, bool vectorDataTexture = false) {
 			editor = SF_Editor.instance; // TODO, pass in a better way
 			status = ScriptableObject.CreateInstance<SF_NodeStatus>().Initialize(this);
 			Vector2 pos = editor.mousePosition; // TODO: check where to spawn first

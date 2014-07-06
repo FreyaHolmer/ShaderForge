@@ -2155,7 +2155,7 @@ namespace ShaderForge {
 			App( "OutputPatchConstant hullconst (InputPatch<TessVertex,3> v) {" );
 			scope++;
 			App( "OutputPatchConstant o;" );
-			App( "float ts = Tessellation( v[0] );" );
+			App( "float ts = Tessellation( v[0], v[1], v[2] );" );
 			App( "o.edge[0] = ts;" );
 			App( "o.edge[1] = ts;" );
 			App( "o.edge[2] = ts;" );
@@ -2212,7 +2212,7 @@ namespace ShaderForge {
 
 
 		void FuncTessellation() {
-			App( "float Tessellation(TessVertex v){" );
+			App( "float Tessellation(TessVertex v, TessVertex v1, TessVertex v2){" );
 			scope++;
 
 
@@ -2223,12 +2223,12 @@ namespace ShaderForge {
 					break;
 
 				case SFPSC_Quality.TessellationMode.EdgeLength:
-					App("return UnityEdgeLengthBasedTess(v[0], v[1], v[2], " + ps.n_tessellation + ");");
+					App( "return UnityEdgeLengthBasedTess(v.vertex, v1.vertex, v2.vertex, " + ps.n_tessellation + ");" );
 					break;
 
-				case SFPSC_Quality.TessellationMode.EdgeLengthCulled:
+/*				case SFPSC_Quality.TessellationMode.EdgeLengthCulled:
 					App("return UnityEdgeLengthBasedTessCull(v[0], v[1], v[2], " + ps.n_tessellation + ");");
-					break;
+					break;*/
 
 			}
 

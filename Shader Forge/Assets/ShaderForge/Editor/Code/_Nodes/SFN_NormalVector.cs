@@ -16,7 +16,7 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			perturbed = false;
-			base.Initialize( "Normal Dir." );
+			base.Initialize( "Normal Dir.", vectorDataTexture:true );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
 			UpdateIcon();
@@ -48,6 +48,13 @@ namespace ShaderForge {
 			r.xMin += 17;
 			GUI.Label(r,"Perturbed");
 			if( EditorGUI.EndChangeCheck() ) {
+
+				if(perturbed){
+					texture.LoadDataTexture(this.GetType(), "2");
+				} else {
+					texture.LoadDataTexture(this.GetType());
+				}
+
 				UpdateIcon();
 				OnUpdateNode();
 			}

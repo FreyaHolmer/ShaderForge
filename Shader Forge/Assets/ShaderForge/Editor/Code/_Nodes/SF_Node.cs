@@ -252,6 +252,11 @@ namespace ShaderForge {
 
 			texture.LoadAndInitializeIcons(this.GetType()); 
 
+			if(vectorDataTexture){
+				vectorDataNode = true;
+				texture.LoadDataTexture(this.GetType());
+			}
+
 
 			pos = editor.nodeView.ScreenSpaceToZoomSpace( pos );
 			InitializeDefaultRect( pos );

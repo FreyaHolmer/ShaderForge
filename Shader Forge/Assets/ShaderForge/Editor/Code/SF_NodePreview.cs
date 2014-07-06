@@ -176,7 +176,33 @@ namespace ShaderForge {
 			}
 		}
 
+		public void LoadDataTexture(Type type){
+			LoadDataTexture("Data/" + type.Name.ToLower());
+		}
 
+		public void LoadDataTexture(Type type, string suffix){
+			LoadDataTexture("Data/" + type.Name.ToLower() + "_" + suffix);
+		}
+
+		public void LoadDataTexture(string path){
+
+			Texture2D nodeIcon = SF_Resources.LoadNodeIcon(path);
+			
+			Color[] pixels = nodeIcon.GetPixels();
+			Vector4 subCol = new Vector4(1f,1f,1f,0f);
+			Vector4 mulCol = new Vector4(2f,2f,2f,1f);
+			
+			for( int y = 0; y < SF_NodeData.RES; y++ ) {
+				for( int x = 0; x < SF_NodeData.RES; x++ ) {
+					Color c = pixels[y*SF_NodeData.RES + x];
+					Vector4 vec = Vector4.Scale(new Vector4(c.r, c.g, c.b, c.a), mulCol) - subCol;
+					data[x, y] = (Color)vec;
+				}
+			}
+			
+			UpdateColorPreview("", force:true);
+
+		}
 
 		public void GenerateTexcoord() {
 			//		Color[] colors = new Color[16384];
@@ -347,6 +373,9 @@ namespace ShaderForge {
 				GUI.color = Color.white;
 			} else {
 				GUI.DrawTexture( r, Texture, ScaleMode.ScaleAndCrop, false );
+				if(node.DisplayVectorDataMask){
+					GUI.DrawTexture( r, SF_GUI.VectorIconOverlay, ScaleMode.ScaleAndCrop, true);
+				}
 			}
 
 		}

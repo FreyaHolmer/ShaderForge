@@ -2227,7 +2227,7 @@ namespace ShaderForge {
 					break;
 
 /*				case SFPSC_Quality.TessellationMode.EdgeLengthCulled:
-					App("return UnityEdgeLengthBasedTessCull(v[0], v[1], v[2], " + ps.n_tessellation + ");");
+					App( "return UnityEdgeLengthBasedTessCull(v.vertex, v1.vertex, v2.vertex, " + ps.n_tessellation + ", 1.0 );" );
 					break;*/
 
 			}

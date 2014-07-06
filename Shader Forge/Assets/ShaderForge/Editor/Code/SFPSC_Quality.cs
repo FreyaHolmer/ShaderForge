@@ -16,7 +16,6 @@ namespace ShaderForge {
 		public enum TessellationMode{Regular, EdgeLength/*, EdgeLengthCulled*/};
 		public string[] tessModeStr = new string[]{"Regular", "Edge length based"/*, "Edge length based with frustrum culling"*/};
 
-
 		public TessellationMode tessellationMode = TessellationMode.Regular;
 
 

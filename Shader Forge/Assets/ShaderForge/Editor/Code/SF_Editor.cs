@@ -746,7 +746,7 @@ namespace ShaderForge {
 			DependencyTree<SF_Node> tree = new DependencyTree<SF_Node>();
 			
 			AddDependenciesHierarchally(materialOutput, tree);
-			Debug.Log(tree.tree.Count);
+			//Debug.Log(tree.tree.Count);
 			tree.Sort();
 
 			List<SF_Node> list = tree.tree.Select(x=>(SF_Node)x).ToList();

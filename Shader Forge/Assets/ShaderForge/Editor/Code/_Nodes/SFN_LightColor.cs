@@ -13,7 +13,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Light Color" );
+			base.Initialize( "Light Color", true );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 4;

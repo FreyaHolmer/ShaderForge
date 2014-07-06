@@ -350,6 +350,9 @@ namespace ShaderForge {
 			if( TextureAsset ) {
 				GUI.color = Color.white;
 				GUI.DrawTexture( rectInner, texture.Texture, ScaleMode.StretchToFill, texture.Texture.alphaIsTransparency ); // TODO: Doesn't seem to work
+				if(DisplayVectorDataMask){
+					GUI.DrawTexture( rectInner, SF_GUI.VectorIconOverlay, ScaleMode.ScaleAndCrop, true);
+				}
 			}
 
 			if( showLowerPropertyBox && !TexAssetConnected()) {

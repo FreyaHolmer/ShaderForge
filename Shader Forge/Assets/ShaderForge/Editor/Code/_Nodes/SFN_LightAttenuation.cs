@@ -13,7 +13,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Light Atten." );
+			base.Initialize( "Light Atten.", true );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 1;
@@ -24,7 +24,7 @@ namespace ShaderForge {
 		}
 
 		public override Color NodeOperator( int x, int y ) {
-			return new Color( 0.5f, 0f, 0f, 0f );
+			return new Color( 1f, 1f, 1f, 1f );
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {

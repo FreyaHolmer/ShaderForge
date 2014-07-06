@@ -64,6 +64,16 @@ namespace ShaderForge {
 		}
 
 
+		private static Texture2D vectorIconOverlay;
+		public static Texture2D VectorIconOverlay{
+			get{
+				if( vectorIconOverlay == null )
+					vectorIconOverlay = SF_Resources.LoadNodeIcon("Data/node_3d_data_mask");
+				return vectorIconOverlay;
+			}
+		}
+
+
 		private static Texture2D handle_drag;
 		public static Texture2D Handle_drag {
 			get {

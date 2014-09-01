@@ -37,6 +37,11 @@ namespace ShaderForge {
 		}
 
 		public void UpdateIcon() {
+			if(perturbed){
+				texture.LoadDataTexture(this.GetType(), "2");
+			} else {
+				texture.LoadDataTexture(this.GetType());
+			}
 			base.texture.SetIconId( perturbed ? 1 : 0 );
 		}
 
@@ -48,13 +53,6 @@ namespace ShaderForge {
 			r.xMin += 17;
 			GUI.Label(r,"Perturbed");
 			if( EditorGUI.EndChangeCheck() ) {
-
-				if(perturbed){
-					texture.LoadDataTexture(this.GetType(), "2");
-				} else {
-					texture.LoadDataTexture(this.GetType());
-				}
-
 				UpdateIcon();
 				OnUpdateNode();
 			}

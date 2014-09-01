@@ -130,6 +130,8 @@ namespace ShaderForge {
 			switch( key ) {
 			case "on":
 				on = bool.Parse( value );
+				float fVal = on ? 1f : 0f;
+				texture.dataUniform = new Color( fVal, fVal, fVal, fVal );
 				break;
 			}
 		}

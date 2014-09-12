@@ -233,7 +233,10 @@ namespace ShaderForge {
 
 
 
+			if(Event.current.type == EventType.repaint){
+				nodeSpaceMousePos = ScreenSpaceToZoomSpace( Event.current.mousePosition );
 
+			}
 
 
 
@@ -250,6 +253,9 @@ namespace ShaderForge {
 				if(editor.nodeView != null)
 					editor.nodeView.selection.DrawBoxSelection();
 
+				if(Event.current.type == EventType.repaint){
+					viewSpaceMousePos = ZoomSpaceToScreenSpace( Event.current.mousePosition );
+				}
 				// NODES
 				if( editor.nodes != null ) {
 
@@ -816,15 +822,18 @@ namespace ShaderForge {
 
 		}
 
+		public Vector2 nodeSpaceMousePos;
+		public Vector2 viewSpaceMousePos;
+
 		public Vector2 GetNodeSpaceMousePos() {
-			return ScreenSpaceToZoomSpace( Event.current.mousePosition );
+			return nodeSpaceMousePos;
 		}
 
 
 		public bool MouseInsideNodeView( bool offset = false ) {
 
 			if( offset ) {
-				return rect.Contains( ZoomSpaceToScreenSpace( Event.current.mousePosition ) );
+				return rect.Contains( viewSpaceMousePos/*ZoomSpaceToScreenSpace( Event.current.mousePosition )*/ );
 			} else {
 				return rect.Contains( Event.current.mousePosition );
 			}

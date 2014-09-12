@@ -246,20 +246,24 @@ namespace ShaderForge {
 
 		// Used for 3D data like normal/view vector, etc.
 		public bool vectorDataNode = false;
-		public bool DisplayVectorDataMask{
-			get{
-				if(vectorDataNode){
-					return true;
-				} else {
-					bool disp = false;
-					foreach(SF_NodeConnector con in ConnectedInputs){
-						if(con.inputCon.node.DisplayVectorDataMask){
-							disp = true;
-							break;
-						}
+		public bool displayVectorDataMask = false;
+
+		public void UpdateDisplayVectorDataMask(){
+			displayVectorDataMask = CheckIfShouldDisplayVectorDataMask();
+		}
+
+		public bool CheckIfShouldDisplayVectorDataMask(){
+			if(vectorDataNode){
+				return true;
+			} else {
+				bool disp = false;
+				foreach(SF_NodeConnector con in ConnectedInputs){
+					if(con.inputCon.node.displayVectorDataMask){
+						disp = true;
+						break;
 					}
-					return disp;
 				}
+				return disp;
 			}
 		}
 
@@ -282,6 +286,7 @@ namespace ShaderForge {
 
 			if(vectorDataTexture){
 				vectorDataNode = true;
+				displayVectorDataMask = true;
 				texture.LoadDataTexture(this.GetType());
 			}
 
@@ -540,6 +545,7 @@ namespace ShaderForge {
 						}
 					}
 
+			UpdateDisplayVectorDataMask();
 
 			editor.OnShaderModified( NodeUpdateType.Soft );
 			if(!SF_Parser.quickLoad && !isGhost)

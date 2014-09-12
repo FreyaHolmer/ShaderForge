@@ -373,7 +373,7 @@ namespace ShaderForge {
 				GUI.color = Color.white;
 			} else {
 				GUI.DrawTexture( r, Texture, ScaleMode.ScaleAndCrop, false );
-				if(node.DisplayVectorDataMask){
+				if(node.displayVectorDataMask){
 					GUI.DrawTexture( r, SF_GUI.VectorIconOverlay, ScaleMode.ScaleAndCrop, true);
 				}
 			}

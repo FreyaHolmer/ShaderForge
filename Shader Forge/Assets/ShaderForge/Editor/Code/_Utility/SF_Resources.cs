@@ -31,7 +31,7 @@ namespace ShaderForge{
 		public static Texture2D LoadNodeIcon(string name){
 			return (Texture2D)AssetDatabase.LoadAssetAtPath(InternalResourcesPath + "Interface/Nodes/" + name + ".png", typeof(Texture2D) );
 		}
-
+	
 
 		private static string internalResourcesPath = "";
 		public static string InternalResourcesPath{

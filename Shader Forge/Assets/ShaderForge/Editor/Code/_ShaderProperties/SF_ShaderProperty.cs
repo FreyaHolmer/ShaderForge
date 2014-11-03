@@ -15,7 +15,7 @@ namespace ShaderForge {
 		public SF_Node node;
 
 		public bool global = false;
-
+		public bool overrideInternalName = false;
 
 		public void OnEnable() {
 			base.hideFlags = HideFlags.HideAndDontSave;
@@ -34,6 +34,11 @@ namespace ShaderForge {
 
 		public virtual void UpdateInternalName() {
 
+			if(overrideInternalName){
+				nameInternal = node.variableName;
+				return;
+			}
+
 			string s = nameDisplay;
 
 
@@ -49,7 +54,8 @@ namespace ShaderForge {
 
 		public void SetName(string s) {
 			nameDisplay = s;
-			UpdateInternalName();
+			if(!overrideInternalName)
+				UpdateInternalName();
 		}
 
 		public void SetBothNameAndInternal(string s){
@@ -212,7 +218,9 @@ namespace ShaderForge {
 		}
 
 		public string Serialize(){
-			return "glob:" + global.ToString();
+			string s = "";
+			s += "glob:" + global.ToString();
+			return s;
 		}
 
 		public void Deserialize( string key, string value ){

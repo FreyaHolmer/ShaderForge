@@ -213,7 +213,7 @@ namespace ShaderForge {
 				return dependencies;
 			}
 			set {
-				dependencies = this.dependencies;
+				dependencies = value;
 			}
 		}
 

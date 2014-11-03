@@ -1372,10 +1372,10 @@ namespace ShaderForge {
 
 		public void Defocus(bool deselectNodes = false) {
 			//Debug.Log("DEFOCUS");
-			string currentFocus = GUI.GetNameOfFocusedControl();
-			if( currentFocus != "defocus"){
-				GUI.FocusControl("defocus");
-			}
+//			string currentFocus = GUI.GetNameOfFocusedControl();
+//			if( currentFocus != "defocus"){
+				GUI.FocusControl("null");
+//			}
 
 			if( deselectNodes )
 				nodeView.selection.DeselectAll(registerUndo:true);

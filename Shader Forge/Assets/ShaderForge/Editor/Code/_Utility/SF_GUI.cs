@@ -487,7 +487,7 @@ namespace ShaderForge {
 			val = EditorGUI.FloatField( r, val, style );
 
 
-			bool pressedEnter = Event.current.keyCode == KeyCode.Return;
+			bool pressedEnter = Event.current.keyCode == KeyCode.Return && Event.current.type == EventType.KeyDown;
 
 			if( pressedEnter ) {
 				EditorGUI.EndChangeCheck();

@@ -368,8 +368,8 @@ namespace ShaderForge {
 		}
 
 		public static void DrawDashedLine(SF_Editor editor, Vector2 p0, Vector2 p1, Color col, float dashLength ){
-			p0 = editor.nodeView.ZoomSpaceToScreenSpace( p0 );
-			p1 = editor.nodeView.ZoomSpaceToScreenSpace( p1 );
+//			p0 = editor.nodeView.ZoomSpaceToScreenSpace( p0 );
+//			p1 = editor.nodeView.ZoomSpaceToScreenSpace( p1 );
 
 			float frac = dashLength/(p0-p1).magnitude;
 

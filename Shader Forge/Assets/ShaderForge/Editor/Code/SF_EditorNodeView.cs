@@ -492,16 +492,18 @@ namespace ShaderForge {
 		public void UpdateCutLine(){
 
 			if(SF_GUI.HoldingAlt() && Event.current.type == EventType.mouseDown && Event.current.button == 1){ // Alt + RMB drag
+				Debug.Log("Starting cut");
 				StartCutting();
 			} else if(SF_GUI.ReleasedRawRMB()){
 				StopCutting();
 			}
 			
 			if(isCutting){
-				
+				Debug.Log("Drawing cut lines");
 				Vector2 cutEnd = GetNodeSpaceMousePos();
-				
-				GUILines.DrawDashedLine(editor, cutStart, GetNodeSpaceMousePos(), Color.white, 5f);
+
+//				GUILines.DrawLine(cutStart, cutEnd, Color.red, 4f, true);
+				GUILines.DrawDashedLine(editor, cutStart, cutEnd, Color.white, 5f);
 				
 				
 				foreach(SF_Node n in editor.nodes){

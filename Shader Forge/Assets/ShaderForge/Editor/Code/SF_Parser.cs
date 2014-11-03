@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace ShaderForge {
@@ -98,13 +99,14 @@ namespace ShaderForge {
 			SF_Parser.editor = editor;
 			SF_Parser.links = new List<SF_Link>();
 			// Search for Shader Forge data
-			string data = ExtractShaderForgeData( s );
+			float version;
+			string data = ExtractShaderForgeData( s, out version );
 			if( string.IsNullOrEmpty( data ) ) {
 				editor.CreateOutputNode();
 				return true; // Empty shader
 			}
 			string missingNode;
-			bool didLoadFlawlessly = LoadFromNodeData( data, out missingNode );
+			bool didLoadFlawlessly = LoadFromNodeData( data, version, out missingNode );
 			 
 			if( !didLoadFlawlessly ) {
 				EditorUtility.DisplayDialog( "Failed to load shader", "Failed to open shader due to missing the node [" + missingNode + "]", "Close" );
@@ -124,7 +126,7 @@ namespace ShaderForge {
 
 
 
-		private static bool LoadFromNodeData( string data, out string missingNode ) {
+		private static bool LoadFromNodeData( string data, float version, out string missingNode ) {
 			// First, split by rows (;)
 			missingNode = "";
 			string[] rows = data.Split( ';' ); // TODO: Escape ; and | characters in user created comments!
@@ -157,6 +159,23 @@ namespace ShaderForge {
 			// Create all node links
 			for( int i = 0; i < links.Count; i++ ) {
 				links[i].Establish( editor );
+			}
+
+
+			// If this was created in a version older than 0.37, reverse the node tree around its center point
+			if( version <= 0.36f){
+
+				Debug.Log("Reversing node tree due to shader being created before the reversal in 0.37");
+				
+				// Average node position
+				float avgX = editor.nodes.Select(x => x.rect.center.x).Average();
+			
+				// Reverse all nodes
+				foreach(SF_Node node in editor.nodes){
+					Vector2 old = node.rect.center;
+					node.rect.center = new Vector2(2 * avgX - old.x, old.y);
+				}
+
 			}
 
 			
@@ -294,12 +313,14 @@ namespace ShaderForge {
 		}
 
 
-		public static string ExtractShaderForgeData( Shader s, bool setPath = true, bool findRenderers = true, bool findLOD = true) {
+		public static string ExtractShaderForgeData( Shader s, out float version, bool setPath = true, bool findRenderers = true, bool findLOD = true) {
 
 			string path = AssetDatabase.GetAssetPath( s );
 			string[] shaderData = File.ReadAllLines( path );
 
 			string returnString = "";
+
+			version = 0f;
 
 			if( shaderData.Length == 0 || shaderData == null ) {
 				//Debug.LogWarning( "Shader file empty" );
@@ -311,7 +332,13 @@ namespace ShaderForge {
 			bool found_path = !setPath;
 			bool found_LOD = !findLOD;
 
+
 			for( int i = 0; i < shaderData.Length; i++ ) {
+				if(shaderData[i].Contains("Shader created with Shader Forge")){
+					string[] split = shaderData[i].Trim().Split(' ');
+					string verStr = split[split.Length-1];
+					version = float.Parse(verStr);
+				}
 				if( shaderData[i].StartsWith( "/*SF_DATA;" ) ) {
 					returnString = shaderData[i].Substring( 10, shaderData[i].Length - 12 ); // Exclude comment markup
 					found_data = true;
@@ -356,7 +383,8 @@ namespace ShaderForge {
 
 
 		public static bool ContainsShaderForgeData(Shader s){
-			string sfData = SF_Parser.ExtractShaderForgeData( s, false, false, false );
+			float version;
+			string sfData = SF_Parser.ExtractShaderForgeData( s, out version, false, false, false );
 			return !string.IsNullOrEmpty( sfData );
 		}
 		

@@ -733,7 +733,7 @@ namespace ShaderForge {
 		}
 
 		public Vector2 GetConnectionPoint() {
-			if( conType == ConType.cInput )
+			if( conType == ConType.cOutput )
 				return new Vector2( rect.xMax, rect.center.y );
 			else
 				return new Vector2( rect.xMin+1, rect.center.y );
@@ -1042,7 +1042,7 @@ namespace ShaderForge {
 
 			rect = new Rect( pos.x, pos.y, defaultConnectorWidth, 14 );
 
-			if( conType == ConType.cOutput ) {
+			if( conType == ConType.cInput ) {
 				rect.xMin -= node.extraWidthOutput;
 			} else {
 				rect.width += node.extraWidthInput;
@@ -1058,7 +1058,7 @@ namespace ShaderForge {
 				
 
 
-			if( conType == ConType.cOutput ) {
+			if( conType == ConType.cInput ) {
 				rect.x -= node.rect.width + rect.width - node.extraWidthOutput;
 			}
 
@@ -1093,7 +1093,7 @@ namespace ShaderForge {
 
 			if( HasErrors() && !(Hovering(true) && CanValidlyConnectTo(SF_NodeConnector.pendingConnectionSource)) ) {
 				Rect iconRect = new Rect( rect );
-				iconRect.x += iconRect.width;
+				iconRect.x -= SF_Styles.IconErrorSmall.width ;
 				iconRect.height = iconRect.width = 16;
 				iconRect.y -= 1;
 				GUI.DrawTexture( iconRect, SF_Styles.IconErrorSmall );
@@ -1125,7 +1125,8 @@ namespace ShaderForge {
 
 			if( outerLabel ) {
 				labelRect.width = node.rect.width;
-				labelRect.x -= EditorStyles.miniLabel.CalcSize( new GUIContent( label ) ).x + 4;
+				//labelRect.x -= EditorStyles.miniLabel.CalcSize( new GUIContent( label ) ).x + 4;
+				labelRect.x += rect.width + 4;
 			}
 
 

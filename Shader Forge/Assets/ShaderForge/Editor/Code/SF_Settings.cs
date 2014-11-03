@@ -12,8 +12,13 @@ namespace ShaderForge {
 		AutoCompile, 			// bool	True/False
 		HierarchalNodeMove, 	// bool	True/False
 		DrawNodePreviews,		// bool	True/False
-		QuickPickScrollWheel	// bool	True/False
+		QuickPickScrollWheel,	// bool	True/False
+		ControlMode,			// int	Shader Forge / Unity / Unreal
+		ShowVariableSettings,	// bool True/False
+		ShowNodeSidebar			// bool True/False
 	};
+
+	public enum ControlMode{ShaderForge, UnityMaya, Unreal};
 
 	public class SF_Settings {
 
@@ -21,6 +26,7 @@ namespace ShaderForge {
 		public const string suffixDefault = "_default";
 
 		public SF_Settings() {
+
 		}
 
 		public static void InitializeSettings() {
@@ -30,7 +36,9 @@ namespace ShaderForge {
 			SetDefaultBool( SF_Setting.HierarchalNodeMove, 	 false 								);
 			SetDefaultBool( SF_Setting.DrawNodePreviews, 	 true 								);
 			SetDefaultBool( SF_Setting.QuickPickScrollWheel, true 								);
-
+			SetDefaultInt ( SF_Setting.ControlMode, 		 (int)ControlMode.ShaderForge 		);
+			SetDefaultBool( SF_Setting.ShowVariableSettings, false								);
+			SetDefaultBool( SF_Setting.ShowNodeSidebar, 	 true								);
 		}
 
 
@@ -55,14 +63,25 @@ namespace ShaderForge {
 			set { SF_Settings.SetInt(SF_Setting.CurveShape, (int)value); }
 		}
 
+		public static ControlMode ControlMode {
+			get { return (ControlMode)SF_Settings.LoadInt(SF_Setting.ControlMode);}
+			set { SF_Settings.SetInt(SF_Setting.ControlMode, (int)value); }
+		}
+
 		public static bool QuickPickWithWheel {
 			get { return LoadBool(SF_Setting.QuickPickScrollWheel); }
 			set { SetBool(SF_Setting.QuickPickScrollWheel, value); }
 		}
 
+		public static bool ShowVariableSettings {
+			get { return LoadBool(SF_Setting.ShowVariableSettings); }
+			set { SetBool(SF_Setting.ShowVariableSettings, value); }
+		}
 
-
-
+		public static bool ShowNodeSidebar {
+			get { return LoadBool(SF_Setting.ShowNodeSidebar); }
+			set { SetBool(SF_Setting.ShowNodeSidebar, value); }
+		}
 
 
 

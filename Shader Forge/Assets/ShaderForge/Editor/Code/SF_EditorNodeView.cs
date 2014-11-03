@@ -784,7 +784,12 @@ namespace ShaderForge {
 			if(connecting){
 				// Pan camera when cursor nears edges while making a connection
 				Vector2 mousePosInNodeViewScreenSpace = ZoomSpaceToScreenSpace(Event.current.mousePosition) - Vector2.right*editor.separatorLeft.rect.xMax;
-				float areaWidth = editor.separatorRight.rect.xMin - editor.separatorLeft.rect.xMax;
+
+				float areaWidth;
+				if(SF_Settings.ShowNodeSidebar)
+					areaWidth = editor.separatorRight.rect.xMin - editor.separatorLeft.rect.xMax;
+				else
+					areaWidth = Screen.width - editor.separatorLeft.rect.xMax;
 				float areaHeight = editor.nodeView.rect.height;
 				float dragPanMargin = 32f;
 				float panSpeed = 0.2f;

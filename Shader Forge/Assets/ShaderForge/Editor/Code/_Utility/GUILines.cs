@@ -140,7 +140,7 @@ namespace ShaderForge {
 			Vector2 start = startCon.GetConnectionPoint();
 			Vector2 end = endCon.GetConnectionPoint();
 
-			bool reversed = (start.x > end.x);
+			bool reversed = (start.x < end.x);
 
 			Vector2[] points;
 
@@ -183,8 +183,8 @@ namespace ShaderForge {
 				Vector2 tangentVec = new Vector2(tangentMag, 0f);
 
 
-				Vector2 bAp1 = bAp0 + tangentVec; 			// Start Tangent
-				Vector2 bAp2 = bAp3 + tangentVec; 			// End Tangent
+				Vector2 bAp1 = bAp0 - tangentVec; 			// Start Tangent
+				Vector2 bAp2 = bAp3 - tangentVec; 			// End Tangent
 
 
 				for(int i=0;i<pCount;i++){
@@ -200,8 +200,8 @@ namespace ShaderForge {
 				tangentMag = Mathf.Abs(bBp0.y-bBp3.y)*mul; // TODO: Scale based on length if smaler than something
 				tangentVec = new Vector2(tangentMag, 0f);
 
-				Vector2 bBp1 = bBp0 - tangentVec; 			// Start Tangent
-				Vector2 bBp2 = bBp3 - tangentVec; 			// End Tangent
+				Vector2 bBp1 = bBp0 + tangentVec; 			// Start Tangent
+				Vector2 bBp2 = bBp3 + tangentVec; 			// End Tangent
 
 				for(int i=0;i<pCount;i++){
 					float t = (float)i/(float)segments;
@@ -230,12 +230,12 @@ namespace ShaderForge {
 		public static Vector2 ConnectionBezierOffset( float offset, Vector2 start, Vector2 end, float t){
 
 
-			float mult = (start.x < end.x) ? 1f : 4f;
+			float mult = (start.x > end.x) ? 1f : 4f;
 
 			float xHalfway = Mathf.Abs(end.x-start.x)*0.5f * mult;
 
-			Vector2 p1 = new Vector2(start.x+xHalfway, start.y);
-			Vector2 p2 = new Vector2(end.x-xHalfway, end.y);
+			Vector2 p1 = new Vector2(start.x-xHalfway, start.y);
+			Vector2 p2 = new Vector2(end.x+xHalfway, end.y);
 			return CubicBezierOffset(offset, start, p1, p2, end, t);
 		}
 
@@ -393,12 +393,12 @@ namespace ShaderForge {
 			Vector2 p0t = p0;
 			Vector2 p1t = p1;
 
-			bool reversed = p0.x > p1.x;
+			bool reversed = p0.x < p1.x;
 
 			float hDist = Mathf.Max( 20f, Mathf.Abs( p0.x - p1.x ) * 0.5f );
 
-			p0t.x = p0.x + hDist;
-			p1t.x = p1.x - hDist;
+			p0t.x = p0.x - hDist;
+			p1t.x = p1.x + hDist;
 
 			int segments = 25;
 

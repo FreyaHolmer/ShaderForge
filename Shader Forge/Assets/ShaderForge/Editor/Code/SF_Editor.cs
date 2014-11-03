@@ -855,8 +855,10 @@ namespace ShaderForge {
 			pRect.x = separatorLeft.rect.x + separatorLeft.rect.width;
 
 
-
-			pRect.width = separatorRight.rect.x - separatorLeft.rect.x - separatorLeft.rect.width;
+			if(SF_Settings.ShowNodeSidebar)
+				pRect.width = separatorRight.rect.x - separatorLeft.rect.x - separatorLeft.rect.width;
+			else
+				pRect.width = Screen.width - separatorLeft.rect.x - separatorLeft.rect.width;
 			//GUI.Box( new Rect( 300, 0, 512, 32 ), pRect.ToString() );
 
 			if( SF_Debug.nodes ) {
@@ -886,16 +888,19 @@ namespace ShaderForge {
 			//pRect.x += pRect.width;
 			//pRect.width = wSeparator;
 			//VerticalSeparatorDraggable(ref rightWidth, pRect );
+			if(SF_Settings.ShowNodeSidebar){
+				separatorRight.MinX = (int)fullRect.width - 150;
+				separatorRight.MaxX = (int)fullRect.width - 32;
+				separatorRight.Draw( (int)pRect.y, (int)pRect.height );
 
-			separatorRight.MinX = (int)fullRect.width - 150;
-			separatorRight.MaxX = (int)fullRect.width - 32;
-			separatorRight.Draw( (int)pRect.y, (int)pRect.height );
 
+				pRect.x += pRect.width + separatorRight.rect.width;
+				pRect.width = fullRect.width - separatorRight.rect.x - separatorRight.rect.width;
 
-			pRect.x += pRect.width + separatorRight.rect.width;
-			pRect.width = fullRect.width - separatorRight.rect.x - separatorRight.rect.width;
-			SF_GUI.FillBackground( pRect );
-			nodeBrowser.OnLocalGUI( pRect );
+				SF_GUI.FillBackground( pRect );
+				nodeBrowser.OnLocalGUI( pRect );
+			}
+
 
 
 
@@ -1825,8 +1830,10 @@ namespace ShaderForge {
 				SF_Settings.DrawNodePreviews = GUI.Toggle( btnRect, SF_Settings.DrawNodePreviews, "Auto-Update Node Previews" );
 				btnRect = btnRect.MovedDown();
 				SF_Settings.QuickPickWithWheel = GUI.Toggle( btnRect, SF_Settings.QuickPickWithWheel, "Use scroll in the quickpicker" );
-
-
+				btnRect = btnRect.MovedDown();
+				SF_Settings.ShowVariableSettings = GUI.Toggle( btnRect, SF_Settings.ShowVariableSettings, "Show variable name & precision" );
+				btnRect = btnRect.MovedDown();
+				SF_Settings.ShowNodeSidebar = GUI.Toggle( btnRect, SF_Settings.ShowNodeSidebar, "Show node browser panel" );
 				btnRect.y += 4;
 			}
 

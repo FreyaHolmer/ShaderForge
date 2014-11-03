@@ -230,16 +230,16 @@ namespace ShaderForge {
 
 
 			// TEMP:
-			Rect btn = rectInner;
-			btn.width = 64;
-			btn.height = 24;
-			if(SF_Debug.renderDataNodes){
-				if(selection.Selection.Count > 0){
-					if(GUI.Button(btn,"NSS")){
-						editor.TakeNodePreviewScreenshot();
-					}
-				}
-			}
+//			Rect btn = rectInner;
+//			btn.width = 64;
+//			btn.height = 24;
+//			if(SF_Debug.renderDataNodes){
+//				if(selection.Selection.Count > 0){
+//					if(GUI.Button(btn,"NSS")){
+//						editor.TakeNodePreviewScreenshot();
+//					}
+//				}
+//			}
 
 
 

@@ -746,7 +746,7 @@ namespace ShaderForge {
 		public List<SF_Node> GetDepthSortedDependencyTreeForConnectedNodes(bool reverse = false){
 			DependencyTree<SF_Node> tree = new DependencyTree<SF_Node>();
 			
-			AddDependenciesHierarchally(materialOutput, tree);
+			AddDependenciesHierarchally(mainNode, tree);
 			//Debug.Log(tree.tree.Count);
 			tree.Sort();
 

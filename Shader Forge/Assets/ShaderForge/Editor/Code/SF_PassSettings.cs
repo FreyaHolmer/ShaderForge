@@ -91,6 +91,12 @@ namespace ShaderForge {
 		public string n_ambientSpecular {
 			get { return mOut.ambientSpecular.TryEvaluate(); }
 		}
+		public string n_diffuseOcclusion {
+			get { return mOut.diffuseOcclusion.TryEvaluate(); }
+		}
+		public string n_specularOcclusion {
+			get { return mOut.specularOcclusion.TryEvaluate(); }
+		}
 		public string n_customLighting {
 			get { return mOut.customLighting.TryEvaluate(); }
 		}
@@ -309,6 +315,14 @@ namespace ShaderForge {
 
 		public bool HasAmbientSpecular() {
 			return mOut.ambientSpecular.IsConnectedAndEnabled();
+		}
+
+		public bool HasAmbientOcclusionDiffuse() {
+			return mOut.diffuseOcclusion.IsConnectedAndEnabled();
+		}
+		
+		public bool HasAmbientOcclusionSpecular() {
+			return mOut.specularOcclusion.IsConnectedAndEnabled();
 		}
 
 		public bool HasTransmission() {

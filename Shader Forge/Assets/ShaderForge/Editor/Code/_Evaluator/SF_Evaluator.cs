@@ -918,9 +918,7 @@ namespace ShaderForge {
 			else
 				lmbStr = "float3 diffuse = " + lmbStr + " * attenColor";
 			
-			if(ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ) && !ps.catLighting.lightprobed){ // Ambient is already in light probe data
-				lmbStr += " + " + GetAmbientStr();
-			}
+
 			
 			lmbStr += ";";
 
@@ -1564,15 +1562,22 @@ namespace ShaderForge {
 
 					bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailableInThisPass(currentPass);
 					bool shLight = DoPassSphericalHarmonics();
+					bool diffAO = ps.mOut.diffuseOcclusion.IsConnectedEnabledAndAvailableInThisPass(currentPass);
+					bool ambLight = ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ) && !ps.catLighting.lightprobed; // Ambient is already in light probe data
 
-					//bool parenthesize = (ambDiff || shLight);
 
-					//string diffuseLight = parenthesize ?  "( diffuse" : "diffuse";
+					if(diffAO)
+						App ("float3 diffuseLight = float3(0,0,0);");
+					else
+						App ("float3 diffuseLight = diffuse;");
 
-					App ("float3 diffuseLight = diffuse;");
+
+
+					if(ambLight){
+						App ("diffuseLight += "+GetAmbientStr()+";");
+					}
 				
 					if(ambDiff){
-						//diffuseLight += " + " + ps.n_ambientDiffuse;
 						App("diffuseLight += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light");
 					}
 
@@ -1595,6 +1600,22 @@ namespace ShaderForge {
 							App ("#endif");
 						}
 					}
+
+
+
+
+
+
+
+					// Diffuse AO
+					if(diffAO){
+
+						App ("diffuseLight *= "+ps.n_diffuseOcclusion+"; // Diffuse AO");
+
+						App ("diffuseLight += diffuse;");
+					}
+
+
 
 
 					// To make diffuse/spec tradeoff better

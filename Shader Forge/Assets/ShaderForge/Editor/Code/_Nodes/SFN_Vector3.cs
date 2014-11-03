@@ -18,6 +18,7 @@ namespace ShaderForge {
 			base.showColor = true;
 			base.UseLowerPropertyBox( true );
 			base.texture.uniform = true;
+			base.canAlwaysSetPrecision = true;
 			base.texture.CompCount = 3;
 			lowerRect.width /= 3;
 			connectors = new SF_NodeConnector[]{
@@ -30,7 +31,7 @@ namespace ShaderForge {
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return "float3(" + texture.dataUniform[0] + "," + texture.dataUniform[1] + "," + texture.dataUniform[2] + ")";
+			return precision.ToCode() + "3(" + texture.dataUniform[0] + "," + texture.dataUniform[1] + "," + texture.dataUniform[2] + ")";
 		}
 
 		public override void DrawLowerPropertyBox() {

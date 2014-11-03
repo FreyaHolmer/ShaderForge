@@ -114,7 +114,7 @@ namespace ShaderForge {
 			get { return mOut.tessellation.TryEvaluate(); }
 		}
 		public SFN_Final mOut {
-			get { return editor.materialOutput; }
+			get { return editor.mainNode; }
 		}
 
 
@@ -295,8 +295,20 @@ namespace ShaderForge {
 			return mOut.diffuse.IsConnectedAndEnabled();
 		}
 
+		public bool HasSpecular(){
+			return mOut.specular.IsConnectedAndEnabled();
+		}
+
 		public bool HasDiffusePower(){
 			return mOut.diffusePower.IsConnectedAndEnabled();
+		}
+
+		public bool HasAmbientDiffuse() {
+			return mOut.ambientDiffuse.IsConnectedAndEnabled();
+		}
+
+		public bool HasAmbientSpecular() {
+			return mOut.ambientSpecular.IsConnectedAndEnabled();
 		}
 
 		public bool HasTransmission() {

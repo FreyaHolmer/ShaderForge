@@ -33,10 +33,10 @@ namespace ShaderForge {
 		[SerializeField]
 		public SF_PassSettings ps; // TODO: Move
 
-		[NonSerialized]
+		[System.NonSerialized]
 		public static SF_Editor instance;
 		[SerializeField]
-		public SFN_Final materialOutput;
+		public SFN_Final mainNode;
 		[SerializeField]
 		public SF_StatusBox statusBox;
 
@@ -313,6 +313,7 @@ namespace ShaderForge {
 
 		}
 
+
 		public static bool NodeExistsAndIs(SF_Node node, string nodeName){
 			if(NodeExists(nodeName))
 				if(node.GetType() == GetNodeType(nodeName))
@@ -518,9 +519,9 @@ namespace ShaderForge {
 
 		public SF_Node CreateOutputNode() {
 			//Debug.Log ("Creating output node");
-			this.materialOutput = ScriptableObject.CreateInstance<SFN_Final>().Initialize( this );//new SFN_Final();
-			this.nodes.Add( materialOutput );
-			return materialOutput;
+			this.mainNode = ScriptableObject.CreateInstance<SFN_Final>().Initialize( this );//new SFN_Final();
+			this.nodes.Add( mainNode );
+			return mainNode;
 		}
 
 		public SF_Node GetNodeByID( int id ) {

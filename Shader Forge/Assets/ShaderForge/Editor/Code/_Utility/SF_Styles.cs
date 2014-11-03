@@ -123,6 +123,22 @@ namespace ShaderForge {
 			}
 		}
 
+		private static GUIStyle boldEnumField;
+		public static GUIStyle BoldEnumField{
+			get{
+				if(boldEnumField == null){
+					boldEnumField = new GUIStyle((GUIStyle)"MiniPopup");
+					boldEnumField.fontStyle = FontStyle.Bold;
+					Color c = new Color32(161,225,87,255);
+					boldEnumField.normal.textColor = c;
+					boldEnumField.active.textColor = c;
+					boldEnumField.focused.textColor = c;
+
+				}
+				return boldEnumField;
+			}
+		}
+
 
 		private static GUIStyle nodeNameLabelText;
 		public static GUIStyle GetNodeNameLabelText() {

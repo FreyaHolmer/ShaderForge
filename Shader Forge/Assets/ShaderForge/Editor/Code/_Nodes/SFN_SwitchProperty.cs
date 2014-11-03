@@ -70,8 +70,8 @@ namespace ShaderForge {
 
 			if(hovering){
 				targetConnectorHeight = on ? 43 : 23;
-				Vector2 p0 = new Vector2(0,23);
-				Vector2 p1 = new Vector2(rect.width, smoothConnectorHeight);
+				Vector2 p0 = new Vector2(rect.width,23);
+				Vector2 p1 = new Vector2(0, smoothConnectorHeight);
 				GUILines.QuickBezier( p0, p1, conLineBg, 12, 5 );
 				GUILines.QuickBezier( p0, p1, conLineFg, 12, 3 );
 				GUILines.QuickBezier( p0, p1, conLineFg, 12, 3 );

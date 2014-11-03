@@ -23,6 +23,51 @@ namespace ShaderForge {
 
 		public int depth = 0; // Used when deserializing and updating
 
+		public string _variableName;
+		public string variableName{
+			get{
+				if(string.IsNullOrEmpty(_variableName) && GUI.GetNameOfFocusedControl() != VarNameControl() ){
+					_variableName = "node_" + id;
+				}
+				return _variableName;
+			}
+			set{
+				_variableName = value;
+				if(IsProperty() && property.overrideInternalName){
+					property.UpdateInternalName();
+				}
+				SF_Tools.FormatSerializableVarName(ref _variableName);
+			}
+		}
+
+		public bool canAlwaysSetPrecision = false;
+		public bool isFloatPrecisionBasedVariable = true;
+		public bool lockedVariableName = false;
+		public FloatPrecision precision = FloatPrecision.Float;
+
+		string[] _precisionLabels;
+		public string[] precisionLabels{
+			get{
+				if(_precisionLabels == null){
+					_precisionLabels = FloatPrecision.Float.DisplayStrings();
+				}
+				return _precisionLabels;
+			}
+		}
+
+//		string[] _precisionLabelsSimple;
+//		public string[] precisionLabelsSimple{
+//			get{
+//				if(_precisionLabelsSimple == null){
+//					_precisionLabelsSimple = new string[3];
+//					for(int i=0;i<3;i++){
+//						_precisionLabelsSimple[i] = ((FloatPrecision)i).ToString().ToLower();
+//					}
+//				}
+//				return _precisionLabelsSimple;
+//			}
+//		}
+
 		public bool isGhost = false;
 
 		public bool selected = false;
@@ -213,23 +258,28 @@ namespace ShaderForge {
 				cc = texture.CompCount;
 
 
+			string precisionStr = precision.ToCode();
+
+
 			if(cc == 1)
-				return "float";
-			return "float" + cc;
+				return precisionStr;
+			return precisionStr + cc;
 
 			//if( texture.CompCount == 1 )
 			//	return "float";
 			//return "float" + texture.CompCount;
 		}
 
-		public string GetVariableName() {
+		public string GetVariableName(bool createIfNull = true) {
 			if(IsProperty()){
-				if(!ShouldDefineVariable() && !neverDefineVariable)
+				if(ShouldDefineVariable() && !neverDefineVariable)
 					return property.nameInternal + "_var";
 				else if( neverDefineVariable)
 					return property.nameInternal;
 			}
-			return "node_" + id;
+			if(createIfNull && string.IsNullOrEmpty(variableName))
+				variableName = "node_" + id;
+			return variableName;
 		}
 
 		public virtual void Initialize() {
@@ -432,7 +482,6 @@ namespace ShaderForge {
 				} else {
 					UndoRecord("set " + undoInfix + " of " + nodeName + " node");
 				}
-				
 				return newValue;
 			}
 			return value;
@@ -1115,10 +1164,10 @@ namespace ShaderForge {
 			}
 
 
-
+			Rect cr = rect;
 			if(HasComment() || isEditingNodeTextField){
 				GUI.color = Color.white;
-				Rect cr = rect;
+
 				cr.height = SF_Styles.GetNodeCommentLabelTextField().fontSize + 4;
 				cr.width = 2048;
 				cr.y -= cr.height + 2;
@@ -1175,15 +1224,111 @@ namespace ShaderForge {
 
 
 
+			Rect ur = rect;
+
+			ur = ur.MovedDown();
 
 
+			// See how tall/which ones we should use on this node
+			bool showPrecision = ((ShouldDefineVariable() || IsProperty()) && isFloatPrecisionBasedVariable) || canAlwaysSetPrecision;
+			bool showVarname = !IsGlobalProperty() && (ShouldDefineVariable() || IsProperty()) && !lockedVariableName ;
+			bool optionalVarname = IsProperty();
+			bool showPanel = SF_Settings.ShowVariableSettings && (showPrecision || showVarname);
+
+
+
+
+			ur.height = (showPrecision && showVarname) ? 46 : 26;
+			ur.y += 1;
+			if(ur.width != NODE_WIDTH){
+				ur.x += (rect.width - NODE_WIDTH)/2f;
+				ur.width = NODE_WIDTH;
+			}
 
 
 			
+
+			// #precision #variablename
+
+			if( showPanel ){
+
+				// Background
+				PrepareWindowColor();
+				GUI.Label(ur, string.Empty, SF_Styles.NodeStyle);
+				GUI.color = Color.white;
+			
+
+				Rect varNameRect = ur.Pad(4);
+				Rect precisionRect = ur.Pad(4);
+
+				if(showPrecision){
+
+					if(showVarname){
+						Rect[] split = ur.SplitVertical(0.5f, padding:4);
+						precisionRect = split[0];
+						varNameRect = split[1];
+					}
+
+					precision = (FloatPrecision)UndoablePopup(precisionRect,(int)precision,precisionLabels,"variable precision",SF_Styles.BoldEnumField);
+
+					//GUI.SetNextControlName(VarPrecisionControl());
+					//string[] labels = split[0].Contains(Event.current.mousePosition) ? precisionLabels : precisionLabelsSimple;
+
+				}
+
+
+
+
+				if( showVarname ){
+
+					if( optionalVarname ){
+						Rect[] split = varNameRect.SplitFromLeft((int)varNameRect.height);
+						varNameRect = split[1];
+						UndoableToggle(split[0],ref property.overrideInternalName,string.Empty,"override internal name", EditorStyles.toggle);
+						GUI.enabled = property.overrideInternalName;
+					}
+
+					GUI.SetNextControlName(VarNameControl());
+					variableName = UndoableTextField(varNameRect, (IsProperty() && !property.overrideInternalName) ? property.nameInternal : variableName, (IsProperty() ? "variable" : "internal") + " name", EditorStyles.textField, false);
+					GUI.enabled = true;
+
+				}
+
+
+			
+				
+			}
+
+
 			//GUI.Label( nameRect, "Test", EditorStyles.toolbarTextField );
 
 		}
 
+
+//		public bool ShowPrecisionEditField(){
+//
+//		}
+//
+//		public bool ShowVarnameEditField(){
+//			
+//		}
+//
+//
+//		public int GetHeightOfLowerPanel(){
+//
+//		}
+
+
+		public bool CanCustomizeVariable(){
+			return ( ShouldDefineVariable() || IsProperty() ) && !lockedVariableName;
+		}
+
+		public string VarNameControl(){
+			return "ctrl_" + id + "_varname";
+		}
+		public string VarPrecisionControl(){
+			return "ctrl_" + id + "_precision";
+		}
 
 
 		public void UpdateNeighboringConnectorLines(){
@@ -1829,6 +1974,7 @@ namespace ShaderForge {
 
 
 		// n:type:SFN_Multiply,id:8,x:33794,y:32535|1-9-0,2-7-0;
+		// Deserialize is in SF_Parser
 		public string Serialize(bool skipExternalLinks = false, bool useSuffixPrefix = false) {
 			
 			string s = "";
@@ -1841,11 +1987,17 @@ namespace ShaderForge {
 			s += "x:" + (int)rect.x + ",";
 			s += "y:" + (int)rect.y;
 			if(IsProperty()){
+				s += ",ptovrint:" + property.overrideInternalName;
 				s += ",ptlb:" + property.nameDisplay;
 				s += ",ptin:" + property.nameInternal;
 			}
 			if(HasComment())
 				s += ",cmnt:" + comment;
+			if(!string.IsNullOrEmpty(variableName) && !lockedVariableName){
+				s += ",varname:" + variableName;
+			}
+			if(isFloatPrecisionBasedVariable)
+				s += ",prsc:" + (int)precision;
 			
 			
 			//
@@ -1883,6 +2035,112 @@ namespace ShaderForge {
 
 			return s;
 		}
+
+		// This is the data per-node
+		// n:type:SFN_Final,id:6,x:33383,y:32591|0-8-0;
+		public static SF_Node Deserialize( string row, ref List<SF_Link> linkList) {
+			
+			
+			bool isLinked = row.Contains( "|" );
+			
+			string linkData = "";
+			
+			// Grab connections, if any, and remove them from the main row
+			if( isLinked ) {
+				string[] split = row.Split( '|' );
+				row = split[0];
+				linkData = split[1];
+			}
+			
+			
+			string[] nData = row.Split( ',' ); // Split the node data
+			SF_Node node = null;
+			
+			// This is the data in a single node, without link information
+			// type:SFN_Final,id:6,x:33383,y:32591
+			foreach( string s in nData ) {
+				if(SF_Debug.deserialization)
+					Debug.Log("Deserializing node: " + s);
+				string[] split = s.Split( ':' );
+				string dKey = split[0];
+				string dValue = split[1];
+				
+				switch( dKey ) {
+				case "type":
+					//Debug.Log( "Deserializing " + dValue );
+					node = TryCreateNodeOfType( dValue );
+					if( node == null ) {
+						if(SF_Debug.dynamicNodeLoad)
+							Debug.LogError( "Node not found, returning..." );
+						return null;
+					}
+					break;
+				case "id":
+					node.id = int.Parse( dValue );
+					SF_Editor.instance.idIncrement = Mathf.Max( SF_Editor.instance.idIncrement, node.id + 1 );
+					break;
+				case "x":
+					node.rect.x = int.Parse( dValue );
+					break;
+				case "y":
+					node.rect.y = int.Parse( dValue );
+					break;
+				case "ptovrint":
+					node.property.overrideInternalName = bool.Parse(dValue);
+					break;
+				case "ptlb":
+					node.property.SetName( dValue );
+					break;
+				case "ptin":
+					node.property.nameInternal = dValue;
+					break;
+				case "cmnt":
+					node.comment = dValue;
+					break;
+				case "varname":
+					node.variableName = dValue;
+					break;
+				case "prsc":
+					node.precision = (FloatPrecision)int.Parse(dValue);
+					break;
+				default:
+					//Debug.Log("Deserializing KeyValue: " +dKey + " v: " + dValue);
+					node.DeserializeSpecialData( dKey, dValue );
+					break;
+				}
+			}
+			
+			// Add links to link data, if it's connected
+			if( isLinked ) {
+				string[] parsedLinks = linkData.Split( ',' );
+				foreach( string s in parsedLinks )
+					linkList.Add( new SF_Link( node.id, s ) );
+			}
+			
+			
+			return node;
+			
+		}
+
+
+		private static SF_Node TryCreateNodeOfType( string nodeType ) {
+			SF_Node node = null;
+			if( nodeType == "ShaderForge.SFN_Final" ) {
+				node = SF_Editor.instance.CreateOutputNode();
+			} else {
+				foreach( SF_EditorNodeData tmp in SF_Editor.instance.nodeTemplates ) {
+					if( tmp.type == nodeType ) {		// 1 is the type
+						node = SF_Editor.instance.AddNode( tmp );	// Create the node
+						break;
+					}
+				}
+			}
+			if( node == null && SF_Debug.dynamicNodeLoad ) {
+				Debug.LogError( "Type [" + nodeType + "] not found!" );
+			}
+			return node;
+		}
+
 
 		public void TrySerialize( XmlWriter xml, string key, object val ) {
 			if( val == null )

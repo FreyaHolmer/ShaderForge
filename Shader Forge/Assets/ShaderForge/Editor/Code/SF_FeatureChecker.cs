@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace ShaderForge {
@@ -42,28 +42,41 @@ namespace ShaderForge {
 			bool lit = !unlit;
 
 			// Diffuse makes these available: Transmission, Light Wrapping, Ambient lighting, Diffuse Power
-			bool diffConnected = editor.materialOutput.diffuse.IsConnectedAndEnabled();
-			bool specConnected = editor.materialOutput.specular.IsConnectedAndEnabled();
+			bool diffConnected = editor.mainNode.diffuse.IsConnectedAndEnabled();
+			bool specConnected = editor.mainNode.specular.IsConnectedAndEnabled();
 
-			editor.materialOutput.diffuse.SetAvailable( lit );
-			editor.materialOutput.diffusePower.SetAvailable( lit && diffConnected && !deferredPp );
-			editor.materialOutput.specular.SetAvailable( lit );
-			editor.materialOutput.gloss.SetAvailable( lit && specConnected );
-			editor.materialOutput.normal.SetAvailable( true );
-			editor.materialOutput.alpha.SetAvailable( !deferredPp  );
-			editor.materialOutput.alphaClip.SetAvailable( true );
-			editor.materialOutput.refraction.SetAvailable( !deferredPp  );
-			editor.materialOutput.emissive.SetAvailable( true );
-			editor.materialOutput.transmission.SetAvailable( lit && diffConnected && !deferredPp  );
+			bool probed = ps.catLighting.lightprobed;
+			bool lightmapped = ps.catLighting.lightmapped;
+			bool usesAmbient = ps.catLighting.useAmbient;
+			bool ambDiffConnected = ps.HasAmbientDiffuse();
+			bool ambSpecConnected = ps.HasAmbientSpecular();
 
-			editor.materialOutput.ambientDiffuse.SetAvailable( lit && diffConnected);
-			editor.materialOutput.ambientSpecular.SetAvailable( lit && specConnected );
-			editor.materialOutput.customLighting.SetAvailable( !lit && !deferredPp  );
+			editor.mainNode.diffuse.SetAvailable( lit );
+			editor.mainNode.diffusePower.SetAvailable( lit && diffConnected && !deferredPp );
+			editor.mainNode.specular.SetAvailable( lit );
+			editor.mainNode.gloss.SetAvailable( lit && specConnected );
+			editor.mainNode.normal.SetAvailable( true );
+			editor.mainNode.alpha.SetAvailable( !deferredPp  );
+			editor.mainNode.alphaClip.SetAvailable( true );
+			editor.mainNode.refraction.SetAvailable( !deferredPp  );
+			editor.mainNode.emissive.SetAvailable( true );
+			editor.mainNode.transmission.SetAvailable( lit && diffConnected && !deferredPp  );
 
-			editor.materialOutput.lightWrap.SetAvailable( lit && diffConnected && !deferredPp  );
-			editor.materialOutput.displacement.SetAvailable( editor.materialOutput.tessellation.IsConnectedAndEnabled() );
-			editor.materialOutput.outlineColor.SetAvailable( editor.materialOutput.outlineWidth.IsConnectedAndEnabled() && !deferredPp  );
-			editor.materialOutput.outlineWidth.SetAvailable( !deferredPp  );
+
+
+
+
+			editor.mainNode.diffuseOcclusion.SetAvailable( lit && diffConnected && (probed || lightmapped || usesAmbient || ambDiffConnected) );
+			editor.mainNode.specularOcclusion.SetAvailable( lit && specConnected && (lightmapped || ambSpecConnected) ); // Masks ambient spec & directional lightmaps
+
+			editor.mainNode.ambientDiffuse.SetAvailable( lit && diffConnected);
+			editor.mainNode.ambientSpecular.SetAvailable( lit && specConnected );
+			editor.mainNode.customLighting.SetAvailable( !lit && !deferredPp  );
+
+			editor.mainNode.lightWrap.SetAvailable( lit && diffConnected && !deferredPp  );
+			editor.mainNode.displacement.SetAvailable( editor.mainNode.tessellation.IsConnectedAndEnabled() );
+			editor.mainNode.outlineColor.SetAvailable( editor.mainNode.outlineWidth.IsConnectedAndEnabled() && !deferredPp  );
+			editor.mainNode.outlineWidth.SetAvailable( !deferredPp  );
 
 
 

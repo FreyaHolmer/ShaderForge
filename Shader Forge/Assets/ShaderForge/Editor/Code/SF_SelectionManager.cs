@@ -114,7 +114,7 @@ namespace ShaderForge {
 					Event.current.Use();
 			}
 
-			if( SF_GUI.PressedDelete() ) {
+			if( SF_GUI.PressedDelete() && !SF_Node.isEditingAnyNodeTextField ) {
 				DeleteSelected();
 				Event.current.Use();
 			}
@@ -138,8 +138,8 @@ namespace ShaderForge {
 		public void DeleteSelected() {
 
 
-			if(Selection.Contains(editor.materialOutput)){
-				editor.materialOutput.Deselect(registerUndo:false); // Deselect main node if you press delete
+			if(Selection.Contains(editor.mainNode)){
+				editor.mainNode.Deselect(registerUndo:false); // Deselect main node if you press delete
 			}
 
 			int selCount = Selection.Count;
@@ -299,13 +299,13 @@ namespace ShaderForge {
 			SF_Parser.editor = editor;
 			
 			List<SF_Node> newNodes = new List<SF_Node>();					// List of all new nodes
-			List<SF_Parser.SF_Link> links = new List<SF_Parser.SF_Link>(); 	// Used for multi-clone
+			List<SF_Link> links = new List<SF_Link>(); 	// Used for multi-clone
 			
 			int[] idOld = new int[serializedNodes.Length];
 			int[] idNew = new int[serializedNodes.Length];
 			
 			for(int i=0;i<serializedNodes.Length;i++){
-				SF_Node node = SF_Parser.DeserializeNode(serializedNodes[i], ref links);
+				SF_Node node = SF_Node.Deserialize(serializedNodes[i], ref links);
 				if( node.IsProperty())
 					if(editor.PropertyNameTaken(node.property))
 						node.property.SetName(node.property.GetClonedName()); // Rename if needed
@@ -318,7 +318,7 @@ namespace ShaderForge {
 			}
 			
 			// Establish all links
-			foreach(SF_Parser.SF_Link link in links){
+			foreach(SF_Link link in links){
 				link.Remap(idOld, idNew);
 				link.Establish(editor,LinkingMethod.Default);
 			}
@@ -370,8 +370,8 @@ namespace ShaderForge {
 			
 		}
 				
-		public List<SF_Parser.SF_Link> CloneNodeAndGetLinks(){
-			List<SF_Parser.SF_Link> links = new List<SF_Parser.SF_Link>();	
+		public List<SF_Link> CloneNodeAndGetLinks(){
+			List<SF_Link> links = new List<SF_Link>();	
 				
 				
 				

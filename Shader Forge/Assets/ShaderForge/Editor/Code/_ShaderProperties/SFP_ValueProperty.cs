@@ -18,12 +18,12 @@ namespace ShaderForge {
 		}
 
 		public override string GetVariableLine() {
-			return "uniform float " + GetVariable() + ";";
+			return "uniform "+node.precision.ToCode()+" " + GetVariable() + ";";
 		}
 
 		// TODO: Unity UV offsets
 		public override string GetFragmentPrepare() {
-			return "fixed4 " + GetVariable() + " = " + node.Evaluate() + ";";
+			return node.precision.ToCode() + "4 " + GetVariable() + " = " + node.Evaluate() + ";";
 		}
 
 

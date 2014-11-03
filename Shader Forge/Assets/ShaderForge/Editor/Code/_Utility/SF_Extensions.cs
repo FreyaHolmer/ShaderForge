@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace ShaderForge{
 
@@ -12,9 +13,50 @@ namespace ShaderForge{
 
 	public static class SF_Extensions {
 
+		public static float Average(this float[] floats){
 
+			if(floats == null)
+				return 0f;
+			if(floats.Length == 0)
+				return 0f;
+			if(floats.Length == 1)
+				return floats[0];
 
+			float avg = 0f;
+			for(int i=0;i<floats.Length;i++){
+				avg += floats[i];
+			}
+			avg /= floats.Length;
 
+			return avg;
+		}
+
+		public static string[] DisplayStrings(this FloatPrecision fp){
+			return new string[]{
+				"fixed (11 bit)",
+				"half (16 bit)",
+				"float (32 bit)"
+			};
+		}
+
+		public static string ToCode(this FloatPrecision fp){
+			if(fp == FloatPrecision.Fixed){
+				return "fixed";
+			} else if( fp == FloatPrecision.Half){
+				return "half";
+			} else {
+				return "float";
+			}
+		}
+
+		// LIST
+		public static bool AddIfUnique<T>(this List<T> list, T obj){
+			if(!list.Contains(obj)){
+				list.Add(obj);
+				return true;
+			}
+			return false;
+		}
 
 
 
@@ -73,6 +115,25 @@ namespace ShaderForge{
 
 		public static Rect PadVertical(this Rect r, int pixels ){
 			return r.PadTop(pixels).PadBottom(pixels);
+		}
+
+		public static Rect[] SplitHorizontal(this Rect r, float t, int padding = 0){
+			return new Rect[2]{
+				r.PadRight(Mathf.RoundToInt(r.width*(1f-t))).Pad(padding).PadRight(-Mathf.CeilToInt(padding/2f)),
+				r.PadLeft(Mathf.RoundToInt(r.width*t)).Pad(padding).PadLeft(-Mathf.FloorToInt(padding/2f))
+			};
+		}
+		public static Rect[] SplitVertical(this Rect r, float t, int padding = 0){
+			return new Rect[2]{
+				r.PadBottom(Mathf.RoundToInt(r.height*(1f-t))).Pad(padding).PadBottom(-Mathf.CeilToInt(padding/2f)),
+				r.PadTop(Mathf.RoundToInt(r.height*t)).Pad(padding).PadTop(-Mathf.FloorToInt(padding/2f))
+			};
+		}
+		public static Rect[] SplitFromLeft(this Rect r, int width, int padding = 0){
+			return new Rect[2]{
+				r.PadRight((int)(r.width-width)).Pad(padding).PadRight(-Mathf.CeilToInt(padding/2f)),
+				r.PadLeft(width).Pad(padding).PadLeft(-Mathf.FloorToInt(padding/2f))
+			};
 		}
 
 
@@ -139,6 +200,10 @@ namespace ShaderForge{
 			r.yMax += pixels;
 			r.yMin -= pixels;
 			return r;
+		}
+
+		public static Rect Pad(this Rect r, int pixels){
+			return r.Margin(-pixels);
 		}
 
 		public static Rect Lerp(this Rect r, Rect a, Rect b, float t ){

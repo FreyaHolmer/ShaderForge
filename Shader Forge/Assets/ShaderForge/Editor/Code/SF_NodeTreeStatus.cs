@@ -163,7 +163,7 @@ namespace ShaderForge {
 
 
 			// Check if there are any textures in the vertex input
-			texturesInVertShader = HasTextureInput(editor.materialOutput.vertexOffset) || HasTextureInput(editor.materialOutput.outlineWidth);
+			texturesInVertShader = HasTextureInput(editor.mainNode.vertexOffset) || HasTextureInput(editor.mainNode.outlineWidth);
 
 
 
@@ -226,7 +226,7 @@ namespace ShaderForge {
 		public List<SF_Node> GetListOfConnectedNodesWithGhosts(out List<SF_Node> ghosts, bool passDependent = false) {
 			//Debug.Log ("GetListOfConnectedNodesWithGhosts()");
 			ResetAllNodeStatuses();
-			editor.materialOutput.status.SetLeadsToFinalRecursively( all:false, passDependent:passDependent );
+			editor.mainNode.status.SetLeadsToFinalRecursively( all:false, passDependent:passDependent );
 			List<SF_Node> filtered = new List<SF_Node>();
 			foreach( SF_Node n in editor.nodes ) {
 				if( n.status.leadsToFinal )

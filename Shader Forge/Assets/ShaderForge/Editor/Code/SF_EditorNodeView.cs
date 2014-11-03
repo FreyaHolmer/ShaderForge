@@ -229,7 +229,17 @@ namespace ShaderForge {
 			rectInner.height = float.MaxValue / 2f;
 
 
-			
+			// TEMP:
+			Rect btn = rectInner;
+			btn.width = 64;
+			btn.height = 24;
+			if(SF_Debug.renderDataNodes){
+				if(selection.Selection.Count > 0){
+					if(GUI.Button(btn,"NSS")){
+						editor.TakeNodePreviewScreenshot();
+					}
+				}
+			}
 
 
 
@@ -437,8 +447,8 @@ namespace ShaderForge {
 			//Texture emission = TryGetProceduralTexture(procMat, "_Illum");
 			//TryGetProceduralTexture("_MainTex");
 
-			SF_Node prevNode = TryLinkIfExistsAndOpenSlotAvailable(diffuse, "MainTex", editor.materialOutput.diffuse, "RGB");
-			TryLinkIfExistsAndOpenSlotAvailable(normal, "BumpMap", editor.materialOutput.normal, "RGB", prevNode);
+			SF_Node prevNode = TryLinkIfExistsAndOpenSlotAvailable(diffuse, "MainTex", editor.mainNode.diffuse, "RGB");
+			TryLinkIfExistsAndOpenSlotAvailable(normal, "BumpMap", editor.mainNode.normal, "RGB", prevNode);
 
 
 		}
@@ -605,7 +615,7 @@ namespace ShaderForge {
 			// Recurse some depth!
 			// TODO: Run this for disconnected islands of nodes too
 			//Debug.Log("SFN_FINAL exists = " + (editor.materialOutput != null));
-			AddDepthToChildrenOf( editor.materialOutput, 0 );
+			AddDepthToChildrenOf( editor.mainNode, 0 );
 		}
 
 		void AddDepthToChildrenOf( SF_Node n, int carry ) {
@@ -766,7 +776,6 @@ namespace ShaderForge {
 		}
 
 		void UpdateCameraPanning() {
-
 
 
 			if( SF_GUI.ReleasedCameraMove() ) {

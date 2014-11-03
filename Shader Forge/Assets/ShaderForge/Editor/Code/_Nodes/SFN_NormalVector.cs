@@ -24,6 +24,7 @@ namespace ShaderForge {
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv3,false)
 			};
+			base.lockedVariableName = true;
 		}
 
 		public override Color NodeOperator( int x, int y ) {

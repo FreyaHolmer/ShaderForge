@@ -14,58 +14,7 @@ namespace ShaderForge {
 		public static bool settingUp = false;
 
 
-		// [Source][Con] <---- [Con][Target]
-		public struct SF_Link {
-			public int sNode; // Source
-			string sCon;
-			public int tNode; // Target
-			string tCon;
 
-			public SF_Link( int sNode, string linkData ) {
-				this.sNode = sNode;
-				string[] split = linkData.Split( '-' );
-				if(split.Length != 3){
-					Debug.Log("Invalid link on node " + sNode + ". Expected 3 entries, found " + split.Length + ". Link Data = [" + linkData + "]");
-				}
-				sCon = split[0];
-				tNode = int.Parse( split[1] );
-				tCon = split[2];
-			}
-
-			public void Establish( SF_Editor editor, LinkingMethod linkMethod = LinkingMethod.NoUpdate ) {
-				SF_Node source = editor.GetNodeByID( sNode );
-				SF_Node target = editor.GetNodeByID( tNode );
-				// Debug.Log( "Linking " + target.nodeName + " <- " + source.nodeName );
-				
-				target.GetConnectorByID(tCon).LinkTo( source.GetConnectorByID(sCon), linkMethod );
-			}
-			
-			
-			
-			public void Remap(int[] oldIDs, int[] newIDs){
-				// Source id switching
-				for(int i=0; i<oldIDs.Length; i++){
-					if(sNode == oldIDs[i]){
-						sNode = newIDs[i];
-						break;
-					}
-				}
-				
-				// Target id switching
-				for(int i=0; i<newIDs.Length; i++){
-					if(tNode == oldIDs[i]){
-						tNode = newIDs[i];
-						break;
-					}
-				}
-				
-			}
-			
-			
-			
-			
-
-		}
 
 
 		/*
@@ -137,7 +86,7 @@ namespace ShaderForge {
 			foreach( string row in rows ) {
 				if( row.StartsWith( "n:" ) ) {
 					//Debug.Log("Deserializing node:" + row);
-					SF_Node node = DeserializeNode( row.Substring( 2 ), ref links );
+					SF_Node node = SF_Node.Deserialize( row.Substring( 2 ), ref links );
 					if( node == null ) {
 						missingNode = row.Substring( 2 ).Split(',')[0].Split(':')[1];
 						SF_Parser.settingUp = false;
@@ -168,7 +117,7 @@ namespace ShaderForge {
 				Debug.Log("Reversing node tree due to shader being created before the reversal in 0.37");
 				
 				// Average node position
-				float avgX = editor.nodes.Select(x => x.rect.center.x).Average();
+				float avgX = editor.nodes.Average(x => x.rect.center.x);
 			
 				// Reverse all nodes
 				foreach(SF_Node node in editor.nodes){
@@ -212,105 +161,14 @@ namespace ShaderForge {
 			editor.nodeView.HierarchalRefresh();
 
 			//Debug.Log( "Centered camera, recompiling shader..." );
-			editor.materialOutput.OnUpdateNode( NodeUpdateType.Hard, true );
+			editor.mainNode.OnUpdateNode( NodeUpdateType.Hard, true );
 
 			return true;
 		}
 
-		// This is the data per-node
-		// n:type:SFN_Final,id:6,x:33383,y:32591|0-8-0;
-		public static SF_Node DeserializeNode( string row, ref List<SF_Link> linkList) {
-			
-			
-			bool isLinked = row.Contains( "|" );
-
-			string linkData = "";
-
-			// Grab connections, if any, and remove them from the main row
-			if( isLinked ) {
-				string[] split = row.Split( '|' );
-				row = split[0];
-				linkData = split[1];
-			}
 
 
-			string[] nData = row.Split( ',' ); // Split the node data
-			SF_Node node = null;
 
-			// This is the data in a single node, without link information
-			// type:SFN_Final,id:6,x:33383,y:32591
-			foreach( string s in nData ) {
-				if(SF_Debug.deserialization)
-					Debug.Log("Deserializing node: " + s);
-				string[] split = s.Split( ':' );
-				string dKey = split[0];
-				string dValue = split[1];
-
-				switch( dKey ) {
-					case "type":
-						//Debug.Log( "Deserializing " + dValue );
-						node = TryCreateNodeOfType( dValue );
-						if( node == null ) {
-							if(SF_Debug.dynamicNodeLoad)
-								Debug.LogError( "Node not found, returning..." );
-							return null;
-						}
-						break;
-					case "id":
-						node.id = int.Parse( dValue );
-						editor.idIncrement = Mathf.Max( editor.idIncrement, node.id + 1 );
-						break;
-					case "x":
-						node.rect.x = int.Parse( dValue );
-						break;
-					case "y":
-						node.rect.y = int.Parse( dValue );
-						break;
-					case "ptlb":
-						node.property.SetName( dValue );
-						break;
-					case "ptin":
-						node.property.nameInternal = dValue;
-						break;
-					case "cmnt":
-						node.comment = dValue;
-						break;
-					default:
-						//Debug.Log("Deserializing KeyValue: " +dKey + " v: " + dValue);
-						node.DeserializeSpecialData( dKey, dValue );
-						break;
-				}
-			}
-
-			// Add links to link data, if it's connected
-			if( isLinked ) {
-				string[] parsedLinks = linkData.Split( ',' );
-				foreach( string s in parsedLinks )
-					linkList.Add( new SF_Link( node.id, s ) );
-			}
-			
-			
-			return node;
-
-		}
-
-		private static SF_Node TryCreateNodeOfType( string nodeType ) {
-			SF_Node node = null;
-			if( nodeType == "ShaderForge.SFN_Final" ) {
-				node = editor.CreateOutputNode();
-			} else {
-				foreach( SF_EditorNodeData tmp in editor.nodeTemplates ) {
-					if( tmp.type == nodeType ) {		// 1 is the type
-						node = editor.AddNode( tmp );	// Create the node
-						break;
-					}
-				}
-			}
-			if( node == null && SF_Debug.dynamicNodeLoad ) {
-				Debug.LogError( "Type [" + nodeType + "] not found!" );
-			}
-			return node;
-		}
 
 
 		public static string ExtractShaderForgeData( Shader s, out float version, bool setPath = true, bool findRenderers = true, bool findLOD = true) {

@@ -33,23 +33,6 @@ namespace ShaderForge{
 		}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		private static string internalResourcesPath = "";
 		public static string InternalResourcesPath{
 			get{
@@ -85,27 +68,6 @@ namespace ShaderForge{
 			path = split[0] + partialPath;
 			return true;
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

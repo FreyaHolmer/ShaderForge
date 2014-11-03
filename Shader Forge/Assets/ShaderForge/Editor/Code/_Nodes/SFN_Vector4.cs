@@ -18,6 +18,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true );
 			base.texture.uniform = true;
 			base.texture.CompCount = 4;
+			base.canAlwaysSetPrecision = true;
 			lowerRect.width /= 4;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv4,false)
@@ -29,7 +30,7 @@ namespace ShaderForge {
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return "float4(" + texture.dataUniform[0] + "," + texture.dataUniform[1] + "," + texture.dataUniform[2] + "," + texture.dataUniform[3] + ")";
+			return precision.ToCode() + "4(" + texture.dataUniform[0] + "," + texture.dataUniform[1] + "," + texture.dataUniform[2] + "," + texture.dataUniform[3] + ")";
 		}
 
 

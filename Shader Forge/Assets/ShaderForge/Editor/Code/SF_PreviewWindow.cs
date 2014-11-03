@@ -43,7 +43,7 @@ namespace ShaderForge {
 		}
 
 		[SerializeField]
-		Texture render;
+		public Texture render;
 		[SerializeField]
 		GUIStyle previewStyle;
 		[SerializeField]
@@ -72,7 +72,7 @@ namespace ShaderForge {
 		[SerializeField]
 		object pruRef;
 		[SerializeField]
-		Camera pruCam;
+		public Camera pruCam;
 		[SerializeField]
 		Transform pruCamPivot;
 		[SerializeField]
@@ -81,6 +81,8 @@ namespace ShaderForge {
 		MethodInfo ieuRemoveCustomLighting;
 		[SerializeField]
 		MethodInfo ieuSetCustomLighting;
+
+		//public bool drawBgColor = true;
 
 
 
@@ -154,8 +156,28 @@ namespace ShaderForge {
 				return pruCam.clearFlags == CameraClearFlags.Skybox;
 			}
 			set{
-				pruCam.clearFlags = value ? CameraClearFlags.Skybox : CameraClearFlags.SolidColor;
+				if(SF_Debug.renderDataNodes)
+					pruCam.clearFlags = CameraClearFlags.Depth;
+				else
+					pruCam.clearFlags = value ? CameraClearFlags.Skybox : CameraClearFlags.SolidColor;
 			}
+		}
+
+
+		public void PrepareForDataScreenshot(){
+
+			// Reset rotation
+			// Reset zoom
+			// Stop auto-rotate
+
+
+			rotMesh.x = rotMeshSmooth.x = 22;
+			rotMesh.y = rotMeshSmooth.y = -18;
+			pruCam.fieldOfView = targetFOV = smoothFOV = 24f;
+
+
+
+
 		}
 
 
@@ -184,7 +206,7 @@ namespace ShaderForge {
 			r.x += r.width + 10;
 			r.width *= 0.5f;
 			EditorGUI.BeginChangeCheck();
-			GUI.enabled = pruCam.clearFlags == CameraClearFlags.SolidColor;
+			GUI.enabled = pruCam.clearFlags != CameraClearFlags.Skybox;
 			//GUI.color = GUI.enabled ? Color.white : new Color(1f,1f,1f,0.5f);
 			settings.colorBg = EditorGUI.ColorField( r, "", settings.colorBg );
 			pruCam.backgroundColor = settings.colorBg;
@@ -242,6 +264,8 @@ namespace ShaderForge {
 			//				GUI.color = Color.white;
 			UpdateCameraZoom();
 			DrawMesh( previewRect );
+			if(SF_Debug.renderDataNodes)
+				GUI.Label(previewRect, "rotMesh.x = " + rotMesh.x + "  rotMesh.y = " + rotMesh.y);
 			//GUI.Box( previewRect, string.Empty/*, EditorStyles.textField*/ );
 			//				GUILayout.Box(shaderEvaluator.shaderString,GUILayout.Width(340));
 
@@ -347,6 +371,13 @@ namespace ShaderForge {
 
 			int smCount = mesh.subMeshCount;
 
+			if(SF_Debug.renderDataNodes){
+				pruCam.clearFlags = CameraClearFlags.Depth;
+
+				pruCam.backgroundColor = new Color(0f,0f,0f,0f);
+			}
+
+
 			for(int i=0;i<smCount;i++){
 				Graphics.DrawMesh( mesh, Quaternion.identity*pos, Quaternion.identity, InternalMaterial, 0, pruCam, i );
 			}
@@ -363,6 +394,8 @@ namespace ShaderForge {
 			
 			ieuRemoveCustomLighting.Invoke( null, new object[0] );
 			render = (Texture)pruEnd.Invoke( pruRef, new object[0] );
+			//Debug.Log(((RenderTexture)render).format);
+			//((RenderTexture)render).format = RenderTextureFormat.ARGB32;
 			GUI.DrawTexture( previewRect, render, ScaleMode.StretchToFill, false );
 			//GUI.Label(previewRect, pruCam.actualRenderingPath.ToString());
 		}

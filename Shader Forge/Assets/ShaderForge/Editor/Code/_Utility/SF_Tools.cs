@@ -294,6 +294,28 @@ namespace ShaderForge {
 				 .Replace("\"", "");
 		}
 
+		public static void FormatSerializableVarName( ref string s ){
+			FormatShaderPath(ref s);
+
+			s = s.Replace(" ", string.Empty);
+
+			if(s.Length > 0){
+
+				int tmp;
+				while(s.Length > 0 && int.TryParse(s[0].ToString(), out tmp)){
+					s = s.Substring(1, s.Length-1); // Remove first character if first is a parsable integer
+				}
+
+//				if(s.Length == 1){
+//					s = s.ToLower(); // Lowercase the one character
+//				} else {
+//					char first = s[0]; // Lowercase the first character
+//					string rest = s.Substring(
+//				}
+			}
+
+		}
+
 
 		public static Rect GetExpanded( Rect r, float px ) {
 			r.y -= px;

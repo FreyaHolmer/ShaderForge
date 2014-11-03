@@ -87,7 +87,7 @@ namespace ShaderForge {
 		public void PrepareEvaluation() {
 			ps.UpdateAutoSettings();
 
-			mOut = editor.materialOutput;
+			mOut = editor.mainNode;
 		}
 
 		public void RemoveGhostNodes() {
@@ -577,8 +577,8 @@ namespace ShaderForge {
 		void SubShaderTags() {
 
 			bool ip = ps.catBlending.ignoreProjector;
-			bool doesOffset = ps.catBlending.queuePreset != SFPSC_Blending.Queue.Geometry || ps.catBlending.queueOffset != 0;
-			bool hasRenderType = ps.catBlending.renderType != SFPSC_Blending.RenderType.None;
+			bool doesOffset = ps.catBlending.queuePreset != Queue.Geometry || ps.catBlending.queueOffset != 0;
+			bool hasRenderType = ps.catBlending.renderType != RenderType.None;
 
 			if( !ip && !doesOffset && !hasRenderType )
 				return; // No tags!
@@ -595,6 +595,8 @@ namespace ShaderForge {
 			}
 			if( hasRenderType )
 				AppTag("RenderType",ps.catBlending.renderType.ToString());
+				
+
 				
 			End();
 		}
@@ -630,7 +632,7 @@ namespace ShaderForge {
 			if(currentPass == PassType.PrePassBase){
 				App( "Fog {Mode Off}" );
 			} else if(currentPass == PassType.FwdAdd){
-				App ("Fog { Color (0,0,0,0) }");
+				App ("Fog { Color (0,0,0,0) }"); // Shadow cast, Shadow collect, PrePassBase
 			} else if( !ps.catBlending.useFog || !(currentPass == PassType.FwdBase || currentPass == PassType.Outline || currentPass == PassType.PrePassFinal)) {
 				App( "Fog {Mode Off}" ); // Turn off fog is user doesn't want it
 			} else {
@@ -731,11 +733,10 @@ namespace ShaderForge {
 
 
 		string LightmapNormalDir() {
-			if( editor.materialOutput.normal.IsConnectedAndEnabled() ) {
+			if( editor.mainNode.normal.IsConnectedAndEnabled() ) {
 				return "normalLocal";		
 			}
 			return "float3(0,0,1)";	
-			
 		}
 
 		void PrepareLightmapVars() {
@@ -1944,7 +1945,7 @@ namespace ShaderForge {
 
 			InitObjectPos();
 
-			if( editor.materialOutput.vertexOffset.IsConnectedAndEnabled() ) {
+			if( editor.mainNode.vertexOffset.IsConnectedAndEnabled() ) {
 				App( "v.vertex.xyz += " + ps.n_vertexOffset + ";" );
 			}
 
@@ -2593,6 +2594,7 @@ namespace ShaderForge {
 			SaveShaderAsset();
 			ApplyPropertiesToMaterial();
 			editor.ShaderOutdated = UpToDateState.UpToDate;
+
 		}
 
 
@@ -2610,7 +2612,6 @@ namespace ShaderForge {
 		public void SaveShaderAsset() {
 
 			//Debug.Log("SaveShaderAsset()");
-
 			string fileContent = editor.nodeView.GetNodeDataSerialized() + "\n\n" + shaderString;
 
 

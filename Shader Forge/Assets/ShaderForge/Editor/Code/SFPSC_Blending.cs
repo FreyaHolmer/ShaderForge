@@ -1,54 +1,45 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
 namespace ShaderForge {
-	
-	
+
+
+	public enum DepthTestStencil { Less, Greater, LEqual, GEqual, Equal, NotEqual, Always, Never };
+	public enum StencilOp { Keep, Zero, Replace, Invert, IncrSat, DecrSat, IncrWrap, DecrWrap };
+	public enum CullMode { BackfaceCulling, FrontfaceCulling, DoubleSided };
+	public enum DepthTest { Less, Greater, LEqual, GEqual, Equal, NotEqual, Always };
+	public enum RenderType { None, Opaque, Transparent, TransparentCutout, Background, Overlay, TreeOpaque, TreeTransparentCutout, TreeBillboard, Grass, GrassBillboard };
+	public enum BlendModePreset {
+		Off,
+		AlphaBlended,
+		Additive,
+		Screen,
+		Multiplicative,
+		Custom
+	};
+	public enum ShaderFogMode{ Global, Linear, Exp, Exp2 };
+	public enum BlendMode { One, Zero, SrcColor, SrcAlpha, DstColor, DstAlpha, OneMinusSrcColor, OneMinusSrcAlpha, OneMinusDstColor, OneMinusDstAlpha };
+	public enum Queue { Background, Geometry, AlphaTest, Transparent, Overlay };
+
+
 	[System.Serializable]
 	public class SFPSC_Blending : SFPS_Category {
 
-
-
-
-		public enum DepthTestStencil { Less, Greater, LEqual, GEqual, Equal, NotEqual, Always, Never };
-		public string[] strDepthTestStencil = new string[] { "<", ">", "\u2264", "\u2265", "=", "\u2260", "Always (Default)", "Never" };
-		public enum StencilOp { Keep, Zero, Replace, Invert, IncrSat, DecrSat, IncrWrap, DecrWrap };
-		public string[] strStencilOp = new string[] { "Keep (Default)", "Zero", "Replace", "Invert", "Increase (Clamped)", "Decrease (Clamped)", "Increase (Wrapped)", "Decrease (Wrapped)" };
-
-
-		public enum CullMode { BackfaceCulling, FrontfaceCulling, DoubleSided };
-		public string[] strCullMode = new string[] { "Back", "Front", "Off" };
-		public enum DepthTest { Less, Greater, LEqual, GEqual, Equal, NotEqual, Always };
-		public string[] strDepthTest = new string[] { "<", ">", "\u2264 (Default)", "\u2265", "=", "\u2260", "Always" };
-		
-		public enum Queue { Background, Geometry, AlphaTest, Transparent, Overlay };
+		public static string[] strDepthTestStencil = new string[] { "<", ">", "\u2264", "\u2265", "=", "\u2260", "Always (Default)", "Never" };
+		public static string[] strStencilOp = new string[] { "Keep (Default)", "Zero", "Replace", "Invert", "Increase (Clamped)", "Decrease (Clamped)", "Increase (Wrapped)", "Decrease (Wrapped)" };
+		public static string[] strCullMode = new string[] { "Back", "Front", "Off" };
+		public static string[] strDepthTest = new string[] { "<", ">", "\u2264 (Default)", "\u2265", "=", "\u2260", "Always" };
 		public static int[] queueNumbers = new int[] { 1000, 2000, 2450, 3000, 4000 };
-		public string[] strQueue = new string[] { "Background (1000)", "Opaque Geometry (2000)", "Alpha Clip (2450)", "Transparent (3000)", "Overlay (4000)" };
+		public static string[] strQueue = new string[] { "Background (1000)", "Opaque Geometry (2000)", "Alpha Clip (2450)", "Transparent (3000)", "Overlay (4000)" };
 		
-		
-		// 
-		public enum RenderType { None, Opaque, Transparent, TransparentCutout, Background, Overlay, TreeOpaque, TreeTransparentCutout, TreeBillboard, Grass, GrassBillboard };
-		public enum BlendModePreset {
-			Off,
-			AlphaBlended,
-			Additive,
-			Screen,
-			Multiplicative,
-			Custom
-		};
-		
-		public enum ShaderFogMode{ Global, Linear, Exp, Exp2 };
-		
-		public enum BlendMode { One, Zero, SrcColor, SrcAlpha, DstColor, DstAlpha, OneMinusSrcColor, OneMinusSrcAlpha, OneMinusDstColor, OneMinusDstAlpha };
-		
+
 		
 		// Vars
 		
 		public BlendModePreset blendModePreset = BlendModePreset.Off;
-		
 		public BlendMode blendSrc = BlendMode.One;
-		public BlendMode blendDst = BlendMode.One;
+		public BlendMode blendDst = BlendMode.Zero;
 		public CullMode cullMode = CullMode.BackfaceCulling;
 		public DepthTest depthTest = DepthTest.LEqual;
 
@@ -609,7 +600,7 @@ namespace ShaderForge {
 
 
 		public void UpdateAutoSettings() {
-			if( blendModePreset == BlendModePreset.Off && editor.materialOutput.alpha.IsConnectedAndEnabled() ) {
+			if( blendModePreset == BlendModePreset.Off && editor.mainNode.alpha.IsConnectedAndEnabled() ) {
 				blendModePreset = BlendModePreset.AlphaBlended;
 				ConformBlendsToPreset();
 			}
@@ -623,7 +614,7 @@ namespace ShaderForge {
 			if( !autoSort )
 				return;
 			
-			if( editor.materialOutput.alpha.IsConnectedAndEnabled() || editor.materialOutput.refraction.IsConnectedAndEnabled() || editor.nodeView.treeStatus.usesSceneData ) {
+			if( editor.mainNode.alpha.IsConnectedAndEnabled() || editor.mainNode.refraction.IsConnectedAndEnabled() || editor.nodeView.treeStatus.usesSceneData ) {
 				SetQueuePreset(Queue.Transparent);
 				renderType = RenderType.Transparent;
 				ignoreProjector = true;
@@ -664,9 +655,9 @@ namespace ShaderForge {
 
 		// TODO: Double sided support
 		public string GetNormalSign() {
-			if( cullMode == SFPSC_Blending.CullMode.BackfaceCulling )
+			if( cullMode == CullMode.BackfaceCulling )
 				return "";
-			if( cullMode == SFPSC_Blending.CullMode.FrontfaceCulling )
+			if( cullMode == CullMode.FrontfaceCulling )
 				return "-";
 			//if( cullMode == CullMode.DoubleSided )
 			return "";
@@ -674,7 +665,7 @@ namespace ShaderForge {
 
 
 		public bool UseBlending() {
-			if( blendModePreset == SFPSC_Blending.BlendModePreset.Off )
+			if( blendModePreset == BlendModePreset.Off )
 				return false;
 			return true;
 		}
@@ -699,20 +690,20 @@ namespace ShaderForge {
 		}
 		
 		public bool UseDepthTest() {
-			return ( depthTest != SFPSC_Blending.DepthTest.LEqual );
+			return ( depthTest != DepthTest.LEqual );
 		}
 		public string GetDepthTestString() {
 			return "ZTest " + depthTest.ToString();
 		}
 		
 		public bool UseCulling() {
-			return ( cullMode != SFPSC_Blending.CullMode.BackfaceCulling );
+			return ( cullMode != CullMode.BackfaceCulling );
 		}
 		public string GetCullString() {
 			return "Cull " + strCullMode[(int)cullMode];
 		}
 		public bool IsDoubleSided() {
-			return ( cullMode == SFPSC_Blending.CullMode.DoubleSided );
+			return ( cullMode == CullMode.DoubleSided );
 		}
 		
 		public string GetShadowPragmaIfUsed(){

@@ -22,6 +22,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true, true );
 			base.texture.CompCount = 4;
 			neverDefineVariable = true;
+			isFloatPrecisionBasedVariable = false;
 			//alwaysDefineVariable = true;
 			property = ScriptableObject.CreateInstance<SFP_Tex2d>().Initialize( this );
 

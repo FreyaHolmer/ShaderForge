@@ -440,7 +440,7 @@ namespace ShaderForge {
 
 		// code = GUI.TextArea(txtRect,code,SF_Styles.CodeTextArea);
 		public string UndoableTextArea(Rect r, string value, string undoInfix, GUIStyle style){
-			string newValue = GUI.TextArea( r, value, style );
+			string newValue = EditorGUI.TextArea( r, value, style );
 			if(newValue != value){
 				if(this is SFN_Code){
 					UndoRecord("edit " + undoInfix + " of " + (this as SFN_Code).functionName);

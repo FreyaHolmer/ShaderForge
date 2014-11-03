@@ -1083,6 +1083,10 @@ namespace ShaderForge {
 			string sAmb = "";
 			if(DoAmbientSpecThisPass()){
 				sAmb = "float3 specularAmb = " + ps.n_ambientSpecular; // TODO: Vis and fresnel
+				bool specAO = ps.mOut.specularOcclusion.IsConnectedEnabledAndAvailableInThisPass(currentPass);
+				if( specAO ){
+					sAmb += " * " + ps.n_specularOcclusion;
+				}
 			}
 
 

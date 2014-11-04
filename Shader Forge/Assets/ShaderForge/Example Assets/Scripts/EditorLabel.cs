@@ -29,7 +29,7 @@
 
 			RaycastHit hit;
 			Ray r = new Ray(transform.position + Camera.current.transform.up * 8f, -Camera.current.transform.up );
-			if( collider.Raycast( r, out hit, Mathf.Infinity) ){
+			if( GetComponent<Collider>().Raycast( r, out hit, Mathf.Infinity) ){
 
 				float dist = (Camera.current.transform.position - hit.point).magnitude;
 

@@ -1043,28 +1043,14 @@ namespace ShaderForge {
 			rect = new Rect( pos.x, pos.y, defaultConnectorWidth, 14 );
 
 			if( conType == ConType.cInput ) {
-				rect.xMin -= node.extraWidthOutput;
-			} else {
-				rect.width += node.extraWidthInput;
+				rect.x -= node.rect.width + rect.width;
 			}
-
-
-			/*if( IsConnected() && conType == ConType.cOutput ) {
-				Rect tRect = new Rect(rect);
-				tRect.width = 100;
-				tRect.x -= 200;
-				GUI.Label( tRect, outputCons[0].node.nodeName );
-			}*/
-				
-
 
 			if( conType == ConType.cInput ) {
-				rect.x -= node.rect.width + rect.width - node.extraWidthOutput;
+				rect.xMin -= node.extraWidthInput;
+			} else {
+				rect.width += node.extraWidthOutput;
 			}
-
-
-
-
 
 
 			

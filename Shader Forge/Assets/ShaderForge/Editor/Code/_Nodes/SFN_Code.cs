@@ -157,23 +157,23 @@ namespace ShaderForge {
 
 
 
-			txtRect = txtRect.PadLeft(/*(int)sideButtonWidth +*/ buttonTextMargin);
-			txtRect = txtRect.PadRight((int)sideButtonWidth*2 + buttonTextMargin);
+			txtRect = txtRect.PadRight(/*(int)sideButtonWidth +*/ buttonTextMargin);
+			txtRect = txtRect.PadLeft((int)sideButtonWidth*2 + buttonTextMargin);
 			txtRect = txtRect.PadBottom(buttonTextMargin);
 
 
 			// BUTTONS
 			if(sideButtonWidth > 12f){
 				
-				Rect btnL = txtRect;
-				Rect btnR = txtRect;
-				btnL.width = sideButtonWidth;
-				btnR.width = sideButtonWidth*2;
-				btnL.height = btnR.height = sideButtonHeight;
-				btnL.x -= buttonTextMargin/2;
-				btnR.x += txtRect.width + buttonTextMargin/2;
+				Rect btnOutput = txtRect;
+				Rect btnInput = txtRect;
+				btnOutput.width = sideButtonWidth;
+				btnInput.width = sideButtonWidth*2;
+				btnOutput.height = btnInput.height = sideButtonHeight;
+				btnOutput.x += txtRect.width - sideButtonWidth;
+				btnInput.x += - buttonTextMargin / 2 - sideButtonWidth*2;
 				
-				DrawTypecastButtons( btnL, btnR );
+				DrawTypecastButtons( btnOutput, btnInput );
 				
 			}
 
@@ -200,47 +200,25 @@ namespace ShaderForge {
 			//Debug.Log("GUI THREAD B: " + Event.current.type + " - " + GUI.GetNameOfFocusedControl());
 
 			if(isEditing){
-				//Debug.Log("GUI THREAD B_A_0: " + Event.current.type + " - " + GUI.GetNameOfFocusedControl());
-				//string focusBefore = GUI.GetNameOfFocusedControl();
-			//	if(string.IsNullOrEmpty( controlName )){
-					controlName = base.id + "_codeArea";
-			//	}
+
+				controlName = base.id + "_codeArea";
+
 
 
 				bool heldAndPressed = SF_GUI.HoldingControl() && Event.current.rawType == EventType.keyDown;
-				bool copied = heldAndPressed && Event.current.keyCode == KeyCode.C;
-				bool pasted = heldAndPressed && Event.current.keyCode == KeyCode.V;
 
-				int copyLength = 0;
+				GUI.SetNextControlName(controlName);
 
-				if(copied){
-					//Debug.Log("COPIED - " + Event.current.type + " - " + code);
-					//Debug.Log(txtEditor.SelectedText);
-					copyLength = txtEditor.SelectedText.Length;
-					//Event.current.Use();
-				}
-
-				if(pasted){
-					//Debug.Log("PASTED - " + Event.current.type + " - " + code);
-					//Debug.Log(txtEditor.SelectedText);
-					// = txtEditor.SelectedText.Length;
-					//Event.current.Use();
-				}
-
-				//if(Event.current.type == EventType.repaint){
-					GUI.SetNextControlName(controlName);
-					//Debug.Log("Setting control name to " + controlName + " my id is " + id);
-				//}
 				string codeBefore = code;
 				//code = GUI.TextArea(txtRect,code,SF_Styles.CodeTextArea);
 				code = UndoableTextArea(txtRect, code, "code", SF_Styles.CodeTextArea);
 
 				SF_GUI.AssignCursor( txtRect , MouseCursor.Text );
 
-				if(copied){
-					code = codeBefore;
-					txtEditor.pos += copyLength-1;
-				}
+				//if(copied){
+				//	code = codeBefore;
+				//	txtEditor.pos += copyLength-1;
+				//}
 
 
 				txtEditor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);

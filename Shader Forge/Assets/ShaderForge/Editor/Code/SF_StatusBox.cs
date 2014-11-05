@@ -284,11 +284,9 @@ namespace ShaderForge {
 				return RenderPlatform.ps3;
 			if(active == BuildTarget.XBOX360 && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.xbox360])
 				return RenderPlatform.xbox360;
-			if(active == BuildTarget.FlashPlayer && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.flash])
-				return RenderPlatform.flash;
 
 			// Mobile platforms
-			bool mobile = ( active == BuildTarget.Android || active == BuildTarget.iPhone || active == BuildTarget.BB10 || active == BuildTarget.FlashPlayer );
+			bool mobile = ( active == BuildTarget.Android || active == BuildTarget.iOS || active == BuildTarget.BlackBerry );
 			if(mobile && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.gles])
 				return RenderPlatform.gles;
 

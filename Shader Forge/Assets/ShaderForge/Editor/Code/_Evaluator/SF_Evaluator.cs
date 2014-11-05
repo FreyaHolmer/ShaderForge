@@ -1953,8 +1953,11 @@ namespace ShaderForge {
 					App ("#ifdef LIGHTMAP_OFF");
 					scope++;
 				}
+
+				string scaleStr = SF_Tools.CurrentUnityVersion < 5 ? " * unity_Scale.w" : ""; // Unity 5+ doesn't have unity_Scale
+
 				//o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w,1));
-				App ("o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w,1))" + (ps.catLighting.doubleIncomingLight ? "" : " * 0.5") + ";");
+				App ("o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz"+scaleStr+",1))" + (ps.catLighting.doubleIncomingLight ? "" : " * 0.5") + ";");
 
 				if( LightmapThisPass() ){
 					scope--;
@@ -2585,7 +2588,7 @@ namespace ShaderForge {
 			shaderString = "";
 			scope = 0;
 
-			EditorUtility.UnloadUnusedAssets();
+			//EditorUtility.UnloadUnusedAssets();
 			GC.Collect();
 
 

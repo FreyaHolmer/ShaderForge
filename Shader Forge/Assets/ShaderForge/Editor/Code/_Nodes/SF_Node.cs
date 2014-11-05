@@ -1389,6 +1389,9 @@ namespace ShaderForge {
 					if( Mathf.Abs( n.rect.xMax - rect.xMax ) < snapThreshold ) { // RIGHT SIDE SNAP
 						delta.x -= rect.xMax - n.rect.xMax;
 						rect.x = n.rect.xMax - rect.width;
+					} else if( Mathf.Abs( n.rect.x - rect.x ) < snapThreshold ) { // LEFT SIDE SNAP
+						delta.x -= rect.x - n.rect.x;
+						rect.x = n.rect.x;
 					} else if( Mathf.Abs( n.rect.y - rect.y ) < snapThreshold ) { // TOP SIDE SNAP
 						delta.y -= rect.y - n.rect.y;
 						rect.y = n.rect.y;

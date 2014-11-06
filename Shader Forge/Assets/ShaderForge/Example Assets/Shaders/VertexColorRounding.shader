@@ -1,7 +1,7 @@
-// Shader created with Shader Forge Beta 0.34 
+// Shader created with Shader Forge Beta 0.37 
 // Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.34;sub:START;pass:START;ps:flbk:,lico:0,lgpr:1,nrmq:1,limd:0,uamb:False,mssp:True,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:False,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:False,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:33043,y:32815|emission-585-OUT;n:type:ShaderForge.SFN_VertexColor,id:4,x:33529,y:32845;n:type:ShaderForge.SFN_Slider,id:38,x:33904,y:32967,ptlb:Divisions,ptin:_Divisions,min:0,cur:0.5639098,max:1;n:type:ShaderForge.SFN_Power,id:42,x:33713,y:32990|VAL-38-OUT,EXP-44-OUT;n:type:ShaderForge.SFN_Vector1,id:44,x:33904,y:33034,v1:2;n:type:ShaderForge.SFN_ConstantLerp,id:137,x:33529,y:32990,a:0.5,b:12|IN-42-OUT;n:type:ShaderForge.SFN_Posterize,id:585,x:33311,y:32915|IN-4-RGB,STPS-137-OUT;proporder:38;pass:END;sub:END;*/
+/*SF_DATA;ver:0.37;sub:START;pass:START;ps:flbk:,lico:0,lgpr:1,nrmq:1,limd:0,uamb:False,mssp:True,lmpd:False,lprd:True,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:False,tesm:0,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:False,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:34043,y:32815,varname:node_0,prsc:2|emission-585-OUT;n:type:ShaderForge.SFN_VertexColor,id:4,x:33627,y:32845,varname:node_4,prsc:2;n:type:ShaderForge.SFN_Slider,id:38,x:33095,y:32967,ptovrint:False,ptlb:Divisions,ptin:_Divisions,varname:node_79,prsc:2,min:0,cur:0.5639098,max:1;n:type:ShaderForge.SFN_Power,id:42,x:33443,y:32990,varname:node_42,prsc:2|VAL-38-OUT,EXP-44-OUT;n:type:ShaderForge.SFN_Vector1,id:44,x:33252,y:33034,varname:node_44,prsc:2,v1:2;n:type:ShaderForge.SFN_ConstantLerp,id:137,x:33627,y:32990,varname:node_137,prsc:2,a:0.5,b:12|IN-42-OUT;n:type:ShaderForge.SFN_Posterize,id:585,x:33845,y:32915,varname:node_585,prsc:2|IN-4-RGB,STPS-137-OUT;proporder:38;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Vertex Color Rounding" {
     Properties {
@@ -41,16 +41,15 @@ Shader "Shader Forge/Examples/Vertex Color Rounding" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.vertexColor = v.vertexColor;
-                o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w,1)) * 0.5;
+                o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz,1)) * 0.5;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 return o;
             }
             fixed4 frag(VertexOutput i) : COLOR {
 ////// Lighting:
 ////// Emissive:
-                float4 node_4 = i.vertexColor;
                 float node_137 = lerp(0.5,12,pow(_Divisions,2.0));
-                float3 emissive = floor(node_4.rgb * node_137) / (node_137 - 1);
+                float3 emissive = floor(i.vertexColor.rgb * node_137) / (node_137 - 1);
                 float3 finalColor = emissive;
 /// Final Color:
                 return fixed4(finalColor,1);

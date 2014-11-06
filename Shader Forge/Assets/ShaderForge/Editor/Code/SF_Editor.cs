@@ -1822,7 +1822,7 @@ namespace ShaderForge {
 			// SETTINGS EXPANSION
 			if(displaySettings){
 				btnRect.y += btnRect.height;
-				btnRect.x = r.x + 2;
+				btnRect.x = r.x - 4;
 				btnRect.width = r.width / 4f;
 				btnRect.x += btnRect.width;
 				btnRect.width *= 2.5f;

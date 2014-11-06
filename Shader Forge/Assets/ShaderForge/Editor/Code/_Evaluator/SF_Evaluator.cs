@@ -964,10 +964,8 @@ namespace ShaderForge {
 
 						if( ps.catQuality.highQualityLightProbes )
 							App( "indirectDiffuse += ShadeSH9(float4(normalDirection,1))" + ( ps.catLighting.doubleIncomingLight ? ";" : " * 0.5; // Per-Pixel Light Probes / Spherical harmonics" ) );
-						//diffuseLight += " + ShadeSH9(float4(normalDirection,1))" + (ps.doubleIncomingLight ? "" : " * 0.5");
 						else
 							App( "indirectDiffuse += i.shLight; // Per-Vertex Light Probes / Spherical harmonics" );
-						//diffuseLight += " + i.shLight";
 
 						if( LightmapThisPass() ) {
 							scope--;
@@ -978,13 +976,12 @@ namespace ShaderForge {
 					// Diffuse AO
 					if( diffAO ) {
 						App( "indirectDiffuse *= " + ps.n_diffuseOcclusion + "; // Diffuse AO" );
-						//App( "diffuseLight += diffuse;" );
 					}
 
 
-					App( "float3 diffuse = directDiffuse + indirectDiffuse;" );
+					App( "float3 diffuse = (directDiffuse + indirectDiffuse) * " + ps.n_diffuse + ";" );
 				} else {
-					App( "float3 diffuse = directDiffuse;" );
+					App( "float3 diffuse = directDiffuse * " + ps.n_diffuse + ";" );
 				}
 				
 
@@ -1919,10 +1916,13 @@ namespace ShaderForge {
 					scope++;
 				}
 
-				string scaleStr = SF_Tools.CurrentUnityVersion < 5 ? " * unity_Scale.w" : ""; // Unity 5+ doesn't have unity_Scale
+				//string scaleStr = SF_Tools.CurrentUnityVersion < 5 ? " * unity_Scale.w" : ""; // Unity 5+ doesn't have unity_Scale
 
 				//o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w,1));
-				App ("o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz"+scaleStr+",1))" + (ps.catLighting.doubleIncomingLight ? "" : " * 0.5") + ";");
+
+				string nrmStr = SF_Tools.CurrentUnityVersion >= 5 ? "UnityObjectToWorldNorm(v.normal)" : "mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w";
+
+				App( "o.shLight = ShadeSH9(float4(" + nrmStr + ",1))" + ( ps.catLighting.doubleIncomingLight ? "" : " * 0.5" ) + ";" );
 
 				if( LightmapThisPass() ){
 					scope--;

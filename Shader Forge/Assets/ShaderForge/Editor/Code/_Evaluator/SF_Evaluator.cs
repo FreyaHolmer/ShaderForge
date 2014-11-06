@@ -845,8 +845,14 @@ namespace ShaderForge {
 
 			string lmbStr;
 
-			if(currentPass != PassType.PrePassFinal){
-				App( "float NdotL = dot( "+VarNormalDir()+", lightDirection );" );
+			
+
+			if( !InDeferredPass() ) {
+				if( !ps.HasSpecular() ) {
+					App( "float NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
+				} else {
+					App( "NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
+				}
 			}
 
 
@@ -914,20 +920,88 @@ namespace ShaderForge {
 
 
 			if(currentPass == PassType.PrePassFinal)
-				lmbStr = "float3 diffuse = lightAccumulation.rgb" + (ps.catLighting.doubleIncomingLight ? "" : " * 0.5");
+				lmbStr = "float3 directDiffuse = lightAccumulation.rgb" + ( ps.catLighting.doubleIncomingLight ? "" : " * 0.5" );
 			else
-				lmbStr = "float3 diffuse = " + lmbStr + " * attenColor";
-			
+				lmbStr = "float3 directDiffuse = " + lmbStr + " * attenColor";
 
-			
+
 			lmbStr += ";";
-
 			App( lmbStr );
 
-			
-			
+
+			// Direct light done, now let's do indirect light
 
 
+
+
+			if( ps.HasDiffuse() ) { // Redundant, but keep for now, just for scoping
+
+				bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailableInThisPass( currentPass );
+				bool shLight = DoPassSphericalHarmonics();
+				bool diffAO = ps.mOut.diffuseOcclusion.IsConnectedEnabledAndAvailableInThisPass( currentPass );
+				bool ambLight = ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ) && !ps.catLighting.lightprobed; // Ambient is already in light probe data
+
+				bool hasIndirectLight = ambDiff || shLight || ambLight; // TODO: Missing lightmaps
+
+
+				if( hasIndirectLight ) {
+					App( "float3 indirectDiffuse = float3(0,0,0);" );
+
+					if( ambLight ) {
+						App( "indirectDiffuse += " + GetAmbientStr() + "; // Ambient Light" );
+					}
+
+					if( ambDiff ) {
+						App( "indirectDiffuse += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light" );
+					}
+
+					if( shLight ) {
+
+						if( LightmapThisPass() ) {
+							App( "#ifdef LIGHTMAP_OFF" );
+							scope++;
+						}
+
+						if( ps.catQuality.highQualityLightProbes )
+							App( "indirectDiffuse += ShadeSH9(float4(normalDirection,1))" + ( ps.catLighting.doubleIncomingLight ? ";" : " * 0.5; // Per-Pixel Light Probes / Spherical harmonics" ) );
+						//diffuseLight += " + ShadeSH9(float4(normalDirection,1))" + (ps.doubleIncomingLight ? "" : " * 0.5");
+						else
+							App( "indirectDiffuse += i.shLight; // Per-Vertex Light Probes / Spherical harmonics" );
+						//diffuseLight += " + i.shLight";
+
+						if( LightmapThisPass() ) {
+							scope--;
+							App( "#endif" );
+						}
+					}
+
+					// Diffuse AO
+					if( diffAO ) {
+						App( "indirectDiffuse *= " + ps.n_diffuseOcclusion + "; // Diffuse AO" );
+						//App( "diffuseLight += diffuse;" );
+					}
+
+
+					App( "float3 diffuse = directDiffuse + indirectDiffuse;" );
+				} else {
+					App( "float3 diffuse = directDiffuse;" );
+				}
+				
+
+
+
+				// To make diffuse/spec tradeoff better
+				if( DoPassDiffuse() && DoPassSpecular() ) {
+					if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
+						App( "diffuse *= 1-specularMonochrome;" );
+					} else if( ps.catLighting.energyConserving ) {
+						App( "diffuse *= 1-specularMonochrome;" );
+					}
+				}
+
+				// App( "finalColor += diffuseLight * " + ps.n_diffuse + ";" );
+
+			}
 
 
 			if( LightmapThisPass() ) {
@@ -968,8 +1042,8 @@ namespace ShaderForge {
 
 			if( (!dependencies.frag_normalDirection && currentProgram == ShaderProgram.Frag) )
 				return;
-
-			AppDebug("Normals");
+			
+			
 
 
 			//if(ps.normalQuality == SF_PassSettings.NormalQuality.Normalized){
@@ -1020,12 +1094,8 @@ namespace ShaderForge {
 
 			AppDebug("Specular");
 
-			if(!InDeferredPass()){
-				if(!ps.HasDiffuse()){
-					App( "float NdotL = max(0.0, dot( "+VarNormalDir()+", lightDirection ));" );
-				} else {
-					App ("NdotL = max(0.0, NdotL);");
-				}
+			if( currentPass != PassType.PrePassFinal ) {
+				App( "float NdotL = max(0, dot( " + VarNormalDir() + ", lightDirection ));" );
 			}
 
 
@@ -1340,7 +1410,7 @@ namespace ShaderForge {
 
 
 		void AppFinalOutput(string color, string alpha) {
-			AppDebug("Final Color");
+			
 			if( ps.HasRefraction() && currentPass == PassType.FwdBase ) {
 				//App( "return fixed4(lerp(tex2D(_GrabTexture, float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ").rgb, " + color + "," + alpha + "),1);" );
 				//tex2D(_GrabTexture, float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ")
@@ -1537,11 +1607,9 @@ namespace ShaderForge {
 				}
 			}
 
-			if( DoPassDiffuse() ) // Diffuse + texture (If not vertex lit)
-				CalcDiffuse();
+			
 
-			if( DoPassEmissive() ) // Emissive
-				CalcEmissive();
+			
 
 			if( DoPassSpecular() ) { // Specular
 				if(!InDeferredPass())
@@ -1549,6 +1617,12 @@ namespace ShaderForge {
 				CalcSpecular();
 				//AppDebug("Spec done"); 
 			}
+
+			if( DoPassDiffuse() ) // Diffuse + texture (If not vertex lit)
+				CalcDiffuse();
+
+			if( DoPassEmissive() ) // Emissive
+				CalcEmissive();
 			
 			/*if(!ps.IsLit() && ps.mOut.customLighting.IsConnectedEnabledAndAvailable() ){
 
@@ -1557,150 +1631,41 @@ namespace ShaderForge {
 			}*/
 			if( /*!ps.IsVertexLit() &&*/ currentProgram == ShaderProgram.Frag ) {
 
-				//string lgFinal = "float3 finalColor = ";
-				App ("float3 finalColor = 0;");
+				AppDebug( "Final Color" );
 
-				//bool addedSomething = false;
+				string s = SumString(
+					new bool[] { DoPassDiffuse(), DoPassSpecular(), DoPassEmissive() },
+					new string[] { "diffuse", "specular", "emissive" },
+					"0"
+				);
 
-				if( ps.HasDiffuse() ){
-
-					bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailableInThisPass(currentPass);
-					bool shLight = DoPassSphericalHarmonics();
-					bool diffAO = ps.mOut.diffuseOcclusion.IsConnectedEnabledAndAvailableInThisPass(currentPass);
-					bool ambLight = ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ) && !ps.catLighting.lightprobed; // Ambient is already in light probe data
-
-
-					if(diffAO)
-						App ("float3 diffuseLight = float3(0,0,0);");
-					else
-						App ("float3 diffuseLight = diffuse;");
-
-
-
-					if(ambLight){
-						App ("diffuseLight += "+GetAmbientStr()+";");
-					}
-				
-					if(ambDiff){
-						App("diffuseLight += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light");
-					}
-
-					if(shLight){
-
-						if(LightmapThisPass()){
-							App ("#ifdef LIGHTMAP_OFF");
-							scope++;
-						}
-
-						if(ps.catQuality.highQualityLightProbes)
-							App ("diffuseLight += ShadeSH9(float4(normalDirection,1))" + (ps.catLighting.doubleIncomingLight ? ";" : " * 0.5; // Per-Pixel Light Probes / Spherical harmonics"));
-							//diffuseLight += " + ShadeSH9(float4(normalDirection,1))" + (ps.doubleIncomingLight ? "" : " * 0.5");
-						else
-							App ("diffuseLight += i.shLight; // Per-Vertex Light Probes / Spherical harmonics");
-							//diffuseLight += " + i.shLight";
-
-						if(LightmapThisPass()){
-							scope--;
-							App ("#endif");
-						}
-					}
-
-
-
-
-
-
-
-					// Diffuse AO
-					if(diffAO){
-
-						App ("diffuseLight *= "+ps.n_diffuseOcclusion+"; // Diffuse AO");
-
-						App ("diffuseLight += diffuse;");
-					}
-
-
-
-
-					// To make diffuse/spec tradeoff better
-					if(DoPassDiffuse() && DoPassSpecular()){
-						if(ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL){
-							App ("diffuseLight *= 1-specularMonochrome;");
-						} else if(ps.catLighting.energyConserving){
-							App ("diffuseLight *= 1-specularMonochrome;");
-						}
-					}
-
-
-					//if(parenthesize)
-					//	diffuseLight += " )";
-
-					//lgFinal += diffuseLight;
-					App ("finalColor += diffuseLight * " + ps.n_diffuse + ";");
-
-					//lgFinal += " * " + ps.n_diffuse;
-					//addedSomething = true;
-				}
-
-				if(DoPassSpecular()){
-					App("finalColor += specular;");
-					//lgFinal += addedSomething ? " + ":"";
-					//lgFinal += "specular";
-					//addedSomething = true;
-				}
-				if(DoPassEmissive()){
-					App("finalColor += emissive;");
-					//lgFinal += addedSomething ? " + ":"";
-					//lgFinal += "emissive";
-					//addedSomething = true;
-				}
-
-				//if(!addedSomething)
-					//lgFinal += "0"; // TODO: Don't do lighting at all if this is the case
-
-
-				//lgFinal += ";";
-				//App( lgFinal );
-			}	
-			/*if(currentProgram == ShaderProgram.Frag){*/
-
-				/*
-				string finalRGB = "lightFinal * " + ps.n_diffuse;
-
-				if(DoPassSpecular())
-					finalRGB += " + specular";
-				if(DoPassEmissive())
-					finalRGB += " + emissive";
-
-				AppFinalOutput( finalRGB, ps.n_alpha);
-				*/
-
-				/*
-				if( ps.HasSpecular() || ( ps.HasEmissive() && currentPass == PassType.FwdBase ))
-					AppFinalOutput( "lightFinal * " + ps.n_diffuse + " + addLight", ps.n_alpha);
-				else
-					AppFinalOutput( "lightFinal * " + ps.n_diffuse, ps.n_alpha );
-				*/
-
-			/*} else if ( currentProgram == ShaderProgram.Vert){
-
-				string vtxLightOut = "o.vtxLight = diffuse"; // Diffuse light
-
-				//App("o.vtxLight = " + ps.n_diffuse + " + addLight;");
-
-				if(DoPassSpecular())
-					vtxLightOut += " + specular";
-				if(DoPassEmissive())
-					vtxLightOut += " + emissive";
-
-
-				vtxLightOut += ";";
-
-				App(vtxLightOut);
-
-
+				App( "float3 finalColor = " + s + ";" );
 			}
-			*/
+
+		}
+
+		string SumString(bool[] bools, string[] strings, string defStr ) {
+
+			int validCount = 0;
+			for(int i=0;i<bools.Length;i++){
+				if( bools[i] )
+					validCount++;
+			}
+
+			if( validCount == 0 )
+				return defStr;
+
+			string s = "";
+			int added = 0;
+			for( int i = 0; i < strings.Length; i++ ) {
+				if( bools[i] ) {
+					s += strings[i];
+					added++;
+					if( added < validCount )
+						s += " + ";
+				}
+			}
+			return s;
 		}
 
 		void InitReflectionDir() {
@@ -2072,6 +2037,9 @@ namespace ShaderForge {
 			InitSceneColorAndDepth();
 
 			InitTangentTransformFrag();
+
+			AppDebug( "Vectors" );
+
 			InitViewDirFrag();
 			InitNormalDirFrag();
 			InitReflectionDir();
@@ -2079,9 +2047,6 @@ namespace ShaderForge {
 			CheckClip();
 
 			PrepareLightmapVars();
-
-
-
 
 
 			if( dependencies.frag_lightDirection ) {

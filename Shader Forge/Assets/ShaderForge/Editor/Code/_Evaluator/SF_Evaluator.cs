@@ -517,6 +517,10 @@ namespace ShaderForge {
 					App( "#pragma multi_compile_shadowcaster" );
 			}
 
+			if( UseUnity5Fog() )
+				App( "#pragma multi_compile_fog" );
+			
+
 			List<int> groups = new List<int>();
 			foreach(SF_Node n in cNodes){
 				int group;
@@ -548,6 +552,14 @@ namespace ShaderForge {
 		}
 		void EndCG() {
 			App( "ENDCG" );
+		}
+
+		bool UseUnity5Fog() {
+			return ps.catBlending.useFog && SF_Tools.CurrentUnityVersion >= 5.0;
+		}
+
+		bool UseUnity5FogInThisPass() {
+			return ps.catBlending.useFog && SF_Tools.CurrentUnityVersion >= 5.0 && (currentPass == PassType.FwdBase || currentPass == PassType.Outline || currentPass == PassType.PrePassFinal) ;
 		}
 
 
@@ -629,23 +641,29 @@ namespace ShaderForge {
 
 			App (ps.catBlending.GetOffsetString());
 
-			if(currentPass == PassType.PrePassBase){
-				App( "Fog {Mode Off}" );
-			} else if(currentPass == PassType.FwdAdd){
-				App ("Fog { Color (0,0,0,0) }"); // Shadow cast, Shadow collect, PrePassBase
-			} else if( !ps.catBlending.useFog || !(currentPass == PassType.FwdBase || currentPass == PassType.Outline || currentPass == PassType.PrePassFinal)) {
-				App( "Fog {Mode Off}" ); // Turn off fog is user doesn't want it
-			} else {
-				// Fog overrides!
-				if(ps.catBlending.fogOverrideMode)
-					App( "Fog {Mode "+ps.catBlending.fogMode.ToString()+"}" ); 
-				if(ps.catBlending.fogOverrideColor)
-					App ("Fog { Color ("+ps.catBlending.fogColor.r+","+ps.catBlending.fogColor.g+","+ps.catBlending.fogColor.b+","+ps.catBlending.fogColor.a+") }");
-				if(ps.catBlending.fogOverrideDensity)
-					App( "Fog {Density "+ps.catBlending.fogDensity+"}" ); 
-				if(ps.catBlending.fogOverrideRange)
-					App( "Fog {Range "+ps.catBlending.fogRange.x+","+ps.catBlending.fogRange.y+"}" ); 
+
+			// Fog was changed in Unity 5
+			if( SF_Tools.CurrentUnityVersion < 5 ) {
+				if( currentPass == PassType.PrePassBase ) {
+					App( "Fog {Mode Off}" );
+				} else if( currentPass == PassType.FwdAdd ) {
+					App( "Fog { Color (0,0,0,0) }" ); // Shadow cast, Shadow collect, PrePassBase
+				} else if( !ps.catBlending.useFog || !( currentPass == PassType.FwdBase || currentPass == PassType.Outline || currentPass == PassType.PrePassFinal ) ) {
+					App( "Fog {Mode Off}" ); // Turn off fog is user doesn't want it
+				} else {
+					// Fog overrides!
+					if( ps.catBlending.fogOverrideMode )
+						App( "Fog {Mode " + ps.catBlending.fogMode.ToString() + "}" );
+					if( ps.catBlending.fogOverrideColor )
+						App( "Fog { Color (" + ps.catBlending.fogColor.r + "," + ps.catBlending.fogColor.g + "," + ps.catBlending.fogColor.b + "," + ps.catBlending.fogColor.a + ") }" );
+					if( ps.catBlending.fogOverrideDensity )
+						App( "Fog {Density " + ps.catBlending.fogDensity + "}" );
+					if( ps.catBlending.fogOverrideRange )
+						App( "Fog {Range " + ps.catBlending.fogRange.x + "," + ps.catBlending.fogRange.y + "}" );
+				}
 			}
+			
+
 
 			/*
 			if( ps.catBlending.useStencilBuffer ){
@@ -1407,15 +1425,31 @@ namespace ShaderForge {
 
 
 		void AppFinalOutput(string color, string alpha) {
-			
+
+			string rgbaValue;
 			if( ps.HasRefraction() && currentPass == PassType.FwdBase ) {
-				//App( "return fixed4(lerp(tex2D(_GrabTexture, float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ").rgb, " + color + "," + alpha + "),1);" );
-				//tex2D(_GrabTexture, float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ")
-				App( "return fixed4(lerp(sceneColor.rgb, " + color + "," + alpha + "),1);" );
+				rgbaValue = "fixed4(lerp(sceneColor.rgb, " + color + "," + alpha + "),1)";
 			} else {
-				App( "return fixed4(" + color + "," + alpha + ");" );
+				rgbaValue = "fixed4(" + color + "," + alpha + ")";
+			}
+
+			if( UseUnity5FogInThisPass() ) {
+				App( "fixed4 finalRGBA = " + rgbaValue + ";" );
+				if( ps.catBlending.fogOverrideColor ) {
+					App( "UNITY_APPLY_FOG_COLOR(i.fogCoord, finalRGBA, " + GetFogColorAsFixed3Value() + ");" );
+				} else {
+					App( "UNITY_APPLY_FOG(i.fogCoord, finalRGBA);" );
+				}
+				App( "return finalRGBA;" );
+			} else {
+				App( "return " + rgbaValue + ";");
 			}
 			
+		}
+
+		string GetFogColorAsFixed3Value() {
+			Color c = ps.catBlending.fogColor;
+			return "fixed4(" + c.r + "," + c.g + "," + c.b + "," + c.a + ")";
 		}
 
 
@@ -1827,6 +1861,8 @@ namespace ShaderForge {
 					App ("float4 projPos" + GetVertOutTexcoord() );
 				if( ShouldUseLightMacros() )
 					App( "LIGHTING_COORDS(" + GetVertOutTexcoord( true ) + "," + GetVertOutTexcoord( true ) + ")" );
+				if( UseUnity5FogInThisPass() )
+					App( "UNITY_FOG_COORDS(" + GetVertOutTexcoord( true ) + ")" ); // New in Unity 5
 
 				bool sh = DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes;
 				bool lm = LightmapThisPass();
@@ -1945,6 +1981,7 @@ namespace ShaderForge {
 			if(dependencies.vert_out_worldPos)
 				App ("o.posWorld = mul(_Object2World, v.vertex);");
 
+			
 
 
 			InitTangentTransformFrag();
@@ -1959,6 +1996,11 @@ namespace ShaderForge {
 				App( "o.pos = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz + v.normal*"+ps.n_outlineWidth+",1));" );
 			} else {
 				App( "o.pos = mul(UNITY_MATRIX_MVP, v.vertex);" );
+			}
+
+			// New in Unity 5
+			if( UseUnity5FogInThisPass() ) {
+				App( "UNITY_TRANSFER_FOG(o,o.pos);" );
 			}
 
 

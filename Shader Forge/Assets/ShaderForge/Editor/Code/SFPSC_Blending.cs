@@ -567,29 +567,32 @@ namespace ShaderForge {
 			bool prevGUI = GUI.enabled;
 			GUI.enabled = useFog;
 			{
-				
-				CheckboxEnableLine(ref fogOverrideMode, ref r);
-				fogMode = (ShaderFogMode)SF_GUI.LabeledEnumField(r,"Override Fog Mode",fogMode,EditorStyles.label);
-				CheckboxEnableLineEnd(ref r);
+
+				if( SF_Tools.CurrentUnityVersion < 5 ) {
+					CheckboxEnableLine( ref fogOverrideMode, ref r );
+					fogMode = (ShaderFogMode)SF_GUI.LabeledEnumField( r, "Override Fog Mode", fogMode, EditorStyles.label );
+					CheckboxEnableLineEnd( ref r );
+				}
 				
 				CheckboxEnableLine(ref fogOverrideColor, ref r);
 				r.height = 17;
 				fogColor = EditorGUI.ColorField(r,"Override Fog Color",fogColor);//SF_GUI.LabeledColorField(r,"Override Fog Color",fogDensity,EditorStyles.miniLabel);
 				r.height = 20;
 				CheckboxEnableLineEnd(ref r);
+
+				if( SF_Tools.CurrentUnityVersion < 5 ) {
+					CheckboxEnableLine( ref fogOverrideDensity, ref r );
+					fogDensity = EditorGUI.FloatField( r, "Override Fog Density", fogDensity );//SF_GUI.LabeledFloatField(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
+					CheckboxEnableLineEnd( ref r );
+
+					CheckboxEnableLine( ref fogOverrideRange, ref r );
+					fogRange.x = EditorGUI.FloatField( r, "Override Fog Range Near", fogRange.x ); //SF_GUI.LabeledVector2Field(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
+					r.y += 20;
+					fogRange.y = EditorGUI.FloatField( r, "Override Fog Range Far", fogRange.y ); //SF_GUI.LabeledVector2Field(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
+					CheckboxEnableLineEnd( ref r );
+				}
 				
 				
-				CheckboxEnableLine(ref fogOverrideDensity, ref r);
-				fogDensity = EditorGUI.FloatField(r,"Override Fog Density",fogDensity);//SF_GUI.LabeledFloatField(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
-				CheckboxEnableLineEnd(ref r);
-				
-				
-				
-				CheckboxEnableLine(ref fogOverrideRange, ref r);
-				fogRange.x = EditorGUI.FloatField(r,"Override Fog Range Near",fogRange.x); //SF_GUI.LabeledVector2Field(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
-				r.y += 20;
-				fogRange.y = EditorGUI.FloatField(r,"Override Fog Range Far",fogRange.y); //SF_GUI.LabeledVector2Field(r,"Override Fog Density",fogDensity,EditorStyles.miniLabel);
-				CheckboxEnableLineEnd(ref r);
 				
 				
 			}

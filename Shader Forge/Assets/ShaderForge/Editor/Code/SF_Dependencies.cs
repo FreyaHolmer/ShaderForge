@@ -24,6 +24,7 @@ namespace ShaderForge {
 		public bool scene_uvs = false;
 		public bool tessellation = false;
 		public bool displacement = false;
+		
 
 		public bool vert_out_worldPos = false;
 		public bool vert_out_screenPos = false;
@@ -56,6 +57,9 @@ namespace ShaderForge {
 
 		public bool frag_objectPos = false;
 		public bool vert_objectPos = false;
+
+		public bool objectScale = false;
+		public bool objectScaleReciprocal = false;
 
 		public bool frag_sceneDepth = false;
 		//public bool frag_pixelDepth = false;

@@ -246,6 +246,13 @@ namespace ShaderForge {
 					dependencies.NeedFragPixelDepth();
 				}
 
+				if( n is SFN_ObjectScale ) {
+					if( ( n as SFN_ObjectScale ).reciprocal )
+						dependencies.objectScaleReciprocal = true;
+					else
+						dependencies.objectScale = true;
+				}
+
 				/*
 				if( n is SFN_Rotator ) {
 					if(!n.GetInputIsConnected("ANG"))
@@ -1048,6 +1055,12 @@ namespace ShaderForge {
 		void InitObjectPos() {
 			if(dependencies.frag_objectPos || dependencies.vert_objectPos)
 				App( "float4 objPos = mul ( _Object2World, float4(0,0,0,1) );" );
+		}
+		void InitObjectScale() {
+			if( dependencies.objectScaleReciprocal || dependencies.objectScale)
+				App( "float3 recipObjScale = float3( length(_World2Object[0].xyz), length(_World2Object[1].xyz), length(_World2Object[2].xyz) );" );
+			if( dependencies.objectScale )
+				App( "float3 objScale = 1.0/recipObjScale;" );
 		}
 
 		void InitNormalDirFrag() {
@@ -1973,6 +1986,7 @@ namespace ShaderForge {
 				InitBinormalDirVert();
 
 			InitObjectPos();
+			InitObjectScale();
 
 			if( editor.mainNode.vertexOffset.IsConnectedAndEnabled() ) {
 				App( "v.vertex.xyz += " + ps.n_vertexOffset + ";" );
@@ -2063,7 +2077,7 @@ namespace ShaderForge {
 			scope++;
 
 			InitObjectPos();
-
+			InitObjectScale();
 
 			InitGrabPassSign();
 

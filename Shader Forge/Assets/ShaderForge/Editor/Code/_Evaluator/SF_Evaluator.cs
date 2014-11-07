@@ -499,6 +499,8 @@ namespace ShaderForge {
 					break;
 			}
 
+			
+
 
 			App( "#include \"UnityCG.cginc\"" );
 
@@ -509,6 +511,9 @@ namespace ShaderForge {
 			if( dependencies.tessellation )
 				App ("#include \"Tessellation.cginc\"");
 
+			if( ps.catLighting.lightprobed ) {
+				App( "#define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )" ); // TODO: Might not work properly in 4.x
+			}
 
 			if(currentPass == PassType.PrePassFinal){
 				App( "#pragma multi_compile_prepassfinal" );
@@ -914,26 +919,9 @@ namespace ShaderForge {
 				lmbStr = "";
 			} else {
 				lmbStr = GetWithDiffPow("max( 0.0, NdotL)");
-				//if( ps.n_diffusePower != "1" ) {
-				//	lmbStr = "pow(" + lmbStr + "," + ps.n_diffusePower + ")";
-				//}
 			}
 
-			if( LightmapThisPass() ) {
-				App( "#ifndef LIGHTMAP_OFF" );
-				scope++;
-				if(InDeferredPass()){
-					App( "float3 diffuse = lightAccumulation.rgb + lightmapAccumulation.rgb;" );
-				} else {
-					App( "float3 diffuse = lightmap.rgb;" ); // TODO: Auto-light too!
-				}
-				scope--;
-				App( "#else" );
-				scope++;
-			}
-
-
-			if( ps.catLighting.IsEnergyConserving() && currentPass != PassType.PrePassFinal) {
+			if( ps.catLighting.IsEnergyConserving() && currentPass != PassType.PrePassFinal ) {
 				if( ps.HasLightWrapping() ) {
 					lmbStr += "/(Pi*(dot(w,float3(0.3,0.59,0.11))+1))";
 				} else {
@@ -941,94 +929,108 @@ namespace ShaderForge {
 				}
 			}
 
-
-
-
-			if(currentPass == PassType.PrePassFinal)
+			if( currentPass == PassType.PrePassFinal )
 				lmbStr = "float3 directDiffuse = lightAccumulation.rgb" + ( ps.catLighting.doubleIncomingLight ? "" : " * 0.5" );
 			else
 				lmbStr = "float3 directDiffuse = " + lmbStr + " * attenColor";
 
 
+
+			bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailableInThisPass( currentPass );
+			bool shLight = DoPassSphericalHarmonics();
+			bool diffAO = ps.mOut.diffuseOcclusion.IsConnectedEnabledAndAvailableInThisPass( currentPass );
+			bool ambLight = ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ) && !ps.catLighting.lightprobed; // Ambient is already in light probe data
+
+			bool hasIndirectLight = ambDiff || shLight || ambLight; // TODO: Missing lightmaps
+
+
+
+
+			if( hasIndirectLight ) {
+				App( "float3 indirectDiffuse = float3(0,0,0);" );
+			}
+
 			lmbStr += ";";
 			App( lmbStr );
+
+
+
+
+			if( LightmapThisPass() ) {
+				App( "#ifndef LIGHTMAP_OFF" );
+				scope++;
+				if(InDeferredPass()){
+					App( "directDiffuse += lightAccumulation.rgb + lightmapAccumulation.rgb;" );
+				} else {
+					App( "directDiffuse += lightmap.rgb;" ); // TODO: Auto-light too!
+				}
+				scope--;
+				App( "#endif" );
+				//scope++;
+			}
+
+
+			
+
+
+
+
+			
 
 
 			// Direct light done, now let's do indirect light
 
 
+			if( hasIndirectLight ) {
+				//App( " indirectDiffuse = float3(0,0,0);" );
+
+				if( ambLight )
+					App( "indirectDiffuse += " + GetAmbientStr() + "; // Ambient Light" );
+				if( ambDiff )
+					App( "indirectDiffuse += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light" );
+
+				if( shLight ) {
 
 
-			if( ps.HasDiffuse() ) { // Redundant, but keep for now, just for scoping
+					App( "#ifdef SHOULD_SAMPLE_SH_PROBE" );
+					scope++;
+					if( ps.catQuality.highQualityLightProbes )
+						App( "indirectDiffuse += ShadeSH9(float4(normalDirection,1))" + ( ps.catLighting.doubleIncomingLight ? ";" : " * 0.5; // Per-Pixel Light Probes / Spherical harmonics" ) );
+					else
+						App( "indirectDiffuse += i.shLight; // Per-Vertex Light Probes / Spherical harmonics" );
+					scope--;
+					App( "#endif" );
 
-				bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailableInThisPass( currentPass );
-				bool shLight = DoPassSphericalHarmonics();
-				bool diffAO = ps.mOut.diffuseOcclusion.IsConnectedEnabledAndAvailableInThisPass( currentPass );
-				bool ambLight = ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ) && !ps.catLighting.lightprobed; // Ambient is already in light probe data
-
-				bool hasIndirectLight = ambDiff || shLight || ambLight; // TODO: Missing lightmaps
-
-
-				if( hasIndirectLight ) {
-					App( "float3 indirectDiffuse = float3(0,0,0);" );
-
-					if( ambLight ) {
-						App( "indirectDiffuse += " + GetAmbientStr() + "; // Ambient Light" );
-					}
-
-					if( ambDiff ) {
-						App( "indirectDiffuse += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light" );
-					}
-
-					if( shLight ) {
-
-						if( LightmapThisPass() ) {
-							App( "#ifdef LIGHTMAP_OFF" );
-							scope++;
-						}
-
-						if( ps.catQuality.highQualityLightProbes )
-							App( "indirectDiffuse += ShadeSH9(float4(normalDirection,1))" + ( ps.catLighting.doubleIncomingLight ? ";" : " * 0.5; // Per-Pixel Light Probes / Spherical harmonics" ) );
-						else
-							App( "indirectDiffuse += i.shLight; // Per-Vertex Light Probes / Spherical harmonics" );
-
-						if( LightmapThisPass() ) {
-							scope--;
-							App( "#endif" );
-						}
-					}
-
-					// Diffuse AO
-					if( diffAO ) {
-						App( "indirectDiffuse *= " + ps.n_diffuseOcclusion + "; // Diffuse AO" );
-					}
-
-
-					App( "float3 diffuse = (directDiffuse + indirectDiffuse) * " + ps.n_diffuse + ";" );
-				} else {
-					App( "float3 diffuse = directDiffuse * " + ps.n_diffuse + ";" );
-				}
-				
-
-
-
-				// To make diffuse/spec tradeoff better
-				if( DoPassDiffuse() && DoPassSpecular() ) {
-					if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
-						App( "diffuse *= 1-specularMonochrome;" );
-					} else if( ps.catLighting.energyConserving ) {
-						App( "diffuse *= 1-specularMonochrome;" );
-					}
 				}
 
-				// App( "finalColor += diffuseLight * " + ps.n_diffuse + ";" );
+				// Diffuse AO
+				if( diffAO ) {
+					App( "indirectDiffuse *= " + ps.n_diffuseOcclusion + "; // Diffuse AO" );
+				}
+
 
 			}
 
 
-			if( LightmapThisPass() ) {
-				scope--;
-				App( "#endif" );
+			//if( LightmapThisPass() ) {
+			//	scope--;
+				//App( "#endif" );
+		//	}
+
+			if( hasIndirectLight ) {
+				App( "float3 diffuse = (directDiffuse + indirectDiffuse) * " + ps.n_diffuse + ";" );
+			} else {
+				App( "float3 diffuse = directDiffuse * " + ps.n_diffuse + ";" );
+			}
+
+
+			// To make diffuse/spec tradeoff better
+			if( DoPassDiffuse() && DoPassSpecular() ) {
+				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
+					App( "diffuse *= 1-specularMonochrome;" );
+				} else if( ps.catLighting.energyConserving ) {
+					App( "diffuse *= 1-specularMonochrome;" );
+				}
 			}
 
 
@@ -1880,6 +1882,7 @@ namespace ShaderForge {
 				bool sh = DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes;
 				bool lm = LightmapThisPass();
 				string shlmTexCoord = GetVertOutTexcoord();
+				string shlmTexCoord2 = GetVertOutTexcoord();
 
 				if( lm && sh) {
 					App( "#ifndef LIGHTMAP_OFF" );
@@ -1895,13 +1898,17 @@ namespace ShaderForge {
 						App("#endif");
 					}
 
-
 					scope--;
-					App( "#else" );
+					App( "#endif" );
+
+
+				
+					App( "#ifdef SHOULD_SAMPLE_SH_PROBE" );
 					scope++;
 						App ("float3 shLight" + shlmTexCoord );
 					scope--;
 					App ("#endif");
+
 				} else if(lm){
 					App( "#ifndef LIGHTMAP_OFF" );
 					scope++;
@@ -1960,23 +1967,14 @@ namespace ShaderForge {
 			if( DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes){
 
 
-				if( LightmapThisPass() ){
-					App ("#ifdef LIGHTMAP_OFF");
-					scope++;
-				}
-
-				//string scaleStr = SF_Tools.CurrentUnityVersion < 5 ? " * unity_Scale.w" : ""; // Unity 5+ doesn't have unity_Scale
-
-				//o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w,1));
-
+				
+				App( "#ifdef SHOULD_SAMPLE_SH_PROBE" );
+				scope++;
 				string nrmStr = SF_Tools.CurrentUnityVersion >= 5 ? "UnityObjectToWorldNorm(v.normal)" : "mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w";
-
 				App( "o.shLight = ShadeSH9(float4(" + nrmStr + ",1))" + ( ps.catLighting.doubleIncomingLight ? "" : " * 0.5" ) + ";" );
-
-				if( LightmapThisPass() ){
-					scope--;
-					App("#endif");
-				}
+				scope--;
+				App("#endif");
+				
 			}
 			if( dependencies.vert_out_normals )
 				InitNormalDirVert();
@@ -1986,9 +1984,10 @@ namespace ShaderForge {
 				InitBinormalDirVert();
 
 			InitObjectPos();
-			InitObjectScale();
+			
 
 			if( editor.mainNode.vertexOffset.IsConnectedAndEnabled() ) {
+				InitObjectScale(); // Vertex shader only needs this here if it's used in this input
 				App( "v.vertex.xyz += " + ps.n_vertexOffset + ";" );
 			}
 

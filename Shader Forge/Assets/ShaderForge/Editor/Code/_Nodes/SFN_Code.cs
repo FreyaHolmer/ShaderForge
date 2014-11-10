@@ -203,10 +203,6 @@ namespace ShaderForge {
 
 				controlName = base.id + "_codeArea";
 
-
-
-				bool heldAndPressed = SF_GUI.HoldingControl() && Event.current.rawType == EventType.keyDown;
-
 				GUI.SetNextControlName(controlName);
 
 				string codeBefore = code;

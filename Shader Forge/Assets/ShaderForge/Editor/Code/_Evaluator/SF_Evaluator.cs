@@ -1281,7 +1281,6 @@ namespace ShaderForge {
 
 
 
-
 			if( ps.catLighting.IsPBL() ) {
 				s += "*NdotL"; // TODO: Really? Is this the cosine part?
 
@@ -1974,7 +1973,7 @@ namespace ShaderForge {
 				bool sh = DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes;
 				bool lm = LightmapThisPass();
 				string shlmTexCoord = GetVertOutTexcoord();
-				string shlmTexCoord2 = GetVertOutTexcoord();
+				//string shlmTexCoord2 = GetVertOutTexcoord();
 
 				if( lm && sh) {
 					App( "#ifndef LIGHTMAP_OFF" );

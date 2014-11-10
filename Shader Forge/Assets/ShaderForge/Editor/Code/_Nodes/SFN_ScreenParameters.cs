@@ -18,6 +18,7 @@ namespace ShaderForge {
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 4;
+			base.neverDefineVariable = true;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"PXW","pxW",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R),
 				SF_NodeConnector.Create(this,"PXH","pxH",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.G),

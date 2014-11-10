@@ -21,6 +21,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true, true );
 			UpdateIcon();
 			base.texture.CompCount = 2;
+			base.neverDefineVariable = true;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2,false).Outputting(OutChannel.RG),
 				SF_NodeConnector.Create(this,"U","U",ConType.cOutput,ValueType.VTv1).WithColor(Color.red).Outputting(OutChannel.R),

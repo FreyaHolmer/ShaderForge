@@ -18,6 +18,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( false );
 			base.availableInDeferredPrePass = false;
 			base.texture.CompCount = 3;
+			base.neverDefineVariable = true;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv3,false)
 			};

@@ -1095,7 +1095,7 @@ namespace ShaderForge {
 
 		void InitNormalDirVert() {
 			if( dependencies.vert_out_normals ) {
-				App( "o.normalDir = mul(float4(" + ps.catBlending.GetNormalSign() + "v.normal,0), _World2Object).xyz;");
+				App( "o.normalDir = mul(_Object2World, float4(" + ps.catBlending.GetNormalSign() + "v.normal,0)).xyz;" );
 			}
 		}
 
@@ -1138,9 +1138,9 @@ namespace ShaderForge {
 
 			if( ps.HasNormalMap() ) {
 				App( "float3 normalLocal = " + ps.n_normals + ";" );
-				App( "float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals" );
+				App( "float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals" );
 			} else {
-				App( "float3 normalDirection =  i.normalDir;" );
+				App( "float3 normalDirection = i.normalDir;" );
 			}
 
 			if( ps.catBlending.IsDoubleSided() ) {
@@ -1254,7 +1254,7 @@ namespace ShaderForge {
 					App("float3 reflectionProbes = float3(0,0,0);");
 					App("#ifdef _GLOSSYENV");
 					scope++;
-						App("half3 cubeDir = reflect(-viewDirection, normalDirection);");
+						App( "half3 cubeDir = viewReflectDirection;" );
 						App("#ifdef _GLOSSYENV_BOX_PROJECTION");
 						scope++;
 							App("BoxProject(cubeDir, i.posWorld, unity_SpecCube_ProbePosition, unity_SpecCube_BoxMin, unity_SpecCube_BoxMax );");

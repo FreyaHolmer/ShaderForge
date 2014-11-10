@@ -22,11 +22,12 @@ namespace ShaderForge {
 			base.showColor = true;
 			base.texture.uniform = false;
 			base.texture.CompCount = 2;
+			base.neverDefineVariable = true;
 
 			texture.GenerateTexcoord();
 
 			connectors = new SF_NodeConnector[]{
-				SF_NodeConnector.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2).Outputting(OutChannel.RG),
+				SF_NodeConnector.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2),
 				SF_NodeConnector.Create(this,"U","U",ConType.cOutput,ValueType.VTv1).WithColor(Color.red).Outputting(OutChannel.R),
 				SF_NodeConnector.Create(this,"V","V",ConType.cOutput,ValueType.VTv1).WithColor(Color.green).Outputting(OutChannel.G)
 			};

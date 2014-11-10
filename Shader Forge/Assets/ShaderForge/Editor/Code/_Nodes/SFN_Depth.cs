@@ -13,7 +13,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Depth" );
+			base.Initialize( "Depth", vectorDataTexture:true );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 1;

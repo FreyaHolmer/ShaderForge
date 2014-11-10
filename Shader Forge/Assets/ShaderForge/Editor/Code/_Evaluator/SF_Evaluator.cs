@@ -6,6 +6,7 @@ using System;
 using System.Reflection;
 using System.IO;
 using UnityEditor.VersionControl;
+using System.Linq;
 
 namespace ShaderForge {
 
@@ -726,6 +727,10 @@ namespace ShaderForge {
 			if( dependencies.time ) {
 				//App( "uniform float4 _Time;" ); // TODO: _Time too. Maybe replace at the end?
 				App( "uniform float4 _TimeEditor;" );
+			}
+
+			if( dependencies.fog_color ) {
+				App( "uniform half4 unity_FogColor;" );
 			}
 				
 
@@ -1585,7 +1590,7 @@ namespace ShaderForge {
 
 
 		bool DoPassSphericalHarmonics(){
-			return ps.catLighting.lightprobed && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal);
+			return DoPassDiffuse() && ps.catLighting.lightprobed && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal);
 		}
 
 		bool InDeferredPass(){
@@ -2037,7 +2042,7 @@ namespace ShaderForge {
 		}
 
 		public bool IncludeLightingCginc(){
-			return ps.catLighting.lightmapped || IsShadowPass();
+			return ps.catLighting.lightmapped || IsShadowPass() || (cNodes.Where(x=>x is SFN_LightAttenuation).Count() > 0);
 		}
 
 

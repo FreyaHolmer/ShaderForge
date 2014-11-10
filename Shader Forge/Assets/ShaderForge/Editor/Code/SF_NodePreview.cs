@@ -41,6 +41,7 @@ namespace ShaderForge {
 		// Vectors (Uniform = Same color regardless of position)
 		// Textures (Non-Uniform = Different color based on position))
 		public bool uniform = false;
+		public bool coloredAlphaOverlay = false; // Used to render two images on top of eachother, as in the fog node
 		//public float[] dataUniform;
 		public Color dataUniform;
 
@@ -359,10 +360,14 @@ namespace ShaderForge {
 					Rect tmp = new Rect(r.x,r.y-1, iconActive.width, iconActive.height);
 					GUI.color = new Color(1f,1f,1f,node.selected ? 1f : 0.5f);
 					GUI.DrawTexture( tmp, iconActive, ScaleMode.ScaleToFit, true );
+				} else if( coloredAlphaOverlay ) {
+					GUI.DrawTexture( r, icons[0] );
+					GUI.color = ConvertToDisplayColor( dataUniform, true );
+					GUI.DrawTexture( r, icons[1], ScaleMode.ScaleToFit, true );
 				} else {
 					GUI.color = iconColor;
-					if(dim){
-						GUI.color = new Color(GUI.color.r, GUI.color.g, GUI.color.b, 0.5f);
+					if( dim ) {
+						GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b, 0.5f );
 					}
 					GUI.DrawTexture( r, iconActive );
 				}

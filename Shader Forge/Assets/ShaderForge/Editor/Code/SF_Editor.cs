@@ -278,6 +278,7 @@ namespace ShaderForge {
 
 			string catSceneData = "Scene Data/";
 			AddTemplate( typeof(SFN_DepthBlend), catSceneData + "Depth Blend" );
+			AddTemplate( typeof(SFN_FogColor),	 catSceneData + "Fog Color"	  );
 			AddTemplate( typeof(SFN_SceneColor), catSceneData + "Scene Color" );
 			AddTemplate( typeof(SFN_SceneDepth), catSceneData + "Scene Depth" );
 

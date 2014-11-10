@@ -22,6 +22,7 @@ namespace ShaderForge {
 		//public bool shadowReceive = true;
 		public bool lightmapped = false;
 		public bool lightprobed = false;
+		public bool reflectprobed = false;
 		public bool energyConserving = false;
 		public bool remapGlossExponentially = true;
 		// Optional PBL terms
@@ -52,6 +53,7 @@ namespace ShaderForge {
 			s += Serialize( "mssp", maskedSpec.ToString() );
 			s += Serialize( "lmpd", lightmapped.ToString() );
 			s += Serialize( "lprd", lightprobed.ToString() );
+			s += Serialize( "rprd", reflectprobed.ToString() );
 			s += Serialize( "enco", energyConserving.ToString());
 			s += Serialize( "frtr", fresnelTerm.ToString() );
 			s += Serialize( "vitr", visibilityTerm.ToString() );
@@ -105,6 +107,9 @@ namespace ShaderForge {
 				break;
 			case "lprd":
 				lightprobed = bool.Parse( value );
+				break;
+			case "rprd":
+				reflectprobed = bool.Parse( value );
 				break;
 			case "enco":
 				energyConserving = bool.Parse( value );
@@ -232,6 +237,17 @@ namespace ShaderForge {
 			                         undoSuffix:			"light probe support"
 			                         );
 			r.y += 20;
+
+			if( SF_Tools.CurrentUnityVersion >= 5 ) {
+				UndoableConditionalToggle( r, ref reflectprobed,
+									 usableIf: ps.HasSpecular() && lightMode != LightMode.Unlit,
+									 disabledDisplayValue: false,
+									 label: "Reflection probe support",
+									 undoSuffix: "reflection probe support"
+									 );
+				r.y += 20;
+			}
+			
 			
 			
 			/*shadowCast = GUI.Toggle( r, shadowCast, "Cast shadows" );

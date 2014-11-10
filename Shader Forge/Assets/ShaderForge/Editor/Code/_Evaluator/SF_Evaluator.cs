@@ -140,6 +140,11 @@ namespace ShaderForge {
 				dependencies.frag_projPos = true;
 			}
 
+			if( ps.catLighting.reflectprobed && ps.HasSpecular() && ( currentPass == PassType.PrePassFinal || currentPass == PassType.FwdBase ) ) {
+				dependencies.NeedFragViewReflection();
+				dependencies.reflection_probes = true;
+			}
+
 
 
 			if(ps.catLighting.lightprobed  && !IsShadowOrOutlinePass()){
@@ -452,7 +457,6 @@ namespace ShaderForge {
 					if(!(IncludeLightingCginc() && propName == "_SpecColor")) // SpecColor already defined in Lighting.cginc
 						App( cNodes[i].property.GetFilteredVariableLine() );
 				}
-
 			}
 		}
 		void BeginSubShader() {
@@ -513,6 +517,10 @@ namespace ShaderForge {
 
 			if( ps.catLighting.lightprobed ) {
 				App( "#define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )" ); // TODO: Might not work properly in 4.x
+			}
+
+			if( ps.catLighting.reflectprobed ) {
+				App( "#include \"UnityUniversalBRDF.cginc\"" );
 			}
 
 			if(currentPass == PassType.PrePassFinal){
@@ -741,6 +749,51 @@ namespace ShaderForge {
 				scope--;}
 				App( "#endif" );
 			}
+
+
+
+			if( dependencies.reflection_probes ) {
+
+				App("#define _GLOSSYENV");
+				App( "#if !defined(SHADER_API_MOBILE) && !defined(SHADER_API_SM2) && !defined(SHADER_API_D3D11_9X)" );
+				scope++;
+				App("#define _GLOSSYENV_BOX_PROJECTION 1");
+				scope--;
+				App("#endif");
+
+				App( "" );
+				App( "#ifdef _GLOSSYENV" );
+				scope++;
+				App( "#ifdef _GLOSSYENV_BOX_PROJECTION" );
+				scope++;
+				App( "float4 unity_SpecCube_BoxMax;" );
+				App( "float4 unity_SpecCube_BoxMin;" );
+				App( "float4 unity_SpecCube_ProbePosition;" );
+				App( "inline void BoxProject(inout float3 cubeDir, float3 worldPos, float4 probePos, float4 boxMin, float4 boxMax ){" );
+				scope++;
+				App( "if (probePos.w > 0.0){" );
+				scope++;
+				App( "half3 nrdir = normalize(cubeDir);" );
+				App( "half3 rbmax = (boxMax.xyz - worldPos) / nrdir;" );
+				App( "half3 rbmin = (boxMin.xyz - worldPos) / nrdir;" );
+				App( "half3 rbminmax = (nrdir > 0.0f) ? rbmax : rbmin;" );
+				App( "half fa = min(min(rbminmax.x, rbminmax.y), rbminmax.z);" );
+				App( "float3 aabbCenter = (boxMax.xyz + boxMin.xyz) * 0.5;" );
+				App( "float3 offset = aabbCenter - probePos.xyz;" );
+				App( "float3 posonbox = offset + worldPos + nrdir * fa;" );
+				App( "cubeDir = posonbox - aabbCenter;" );
+				scope--;
+				App( "}" );
+				scope--;
+				App( "}" );
+				scope--;
+				App( "#endif" );
+				scope--;
+				App( "#endif" );
+			}
+
+
+
 
 			PropertiesCG();
 
@@ -1180,14 +1233,53 @@ namespace ShaderForge {
 			//} else {
 			//	s += "attenColor";
 			//}
+
+
+
+			bool occluded = ps.mOut.specularOcclusion.IsConnectedEnabledAndAvailableInThisPass( currentPass );
+			bool ambSpec = DoAmbientSpecThisPass();
+			bool reflProbed = dependencies.reflection_probes;
+			bool hasIndirectSpecular = ambSpec || reflProbed;
 			string sAmb = "";
-			if(DoAmbientSpecThisPass()){
-				sAmb = "float3 specularAmb = " + ps.n_ambientSpecular; // TODO: Vis and fresnel
-				bool specAO = ps.mOut.specularOcclusion.IsConnectedEnabledAndAvailableInThisPass(currentPass);
-				if( specAO ){
-					sAmb += " * " + ps.n_specularOcclusion;
+
+			if( hasIndirectSpecular ) {
+
+				if(occluded){
+					App("float3 specularAO = " + ps.n_specularOcclusion + ";");
 				}
+
+				sAmb = "float3 indirectSpecular = ";
+
+				if( reflProbed ) {
+					App("float3 reflectionProbes = float3(0,0,0);");
+					App("#ifdef _GLOSSYENV");
+					scope++;
+						App("half3 cubeDir = reflect(-viewDirection, normalDirection);");
+						App("#ifdef _GLOSSYENV_BOX_PROJECTION");
+						scope++;
+							App("BoxProject(cubeDir, i.posWorld, unity_SpecCube_ProbePosition, unity_SpecCube_BoxMin, unity_SpecCube_BoxMax );");
+						scope--;
+						App("#endif");
+						App( "reflectionProbes = Unity_GlossyEnvironment (cubeDir, 1-gloss);" );
+					scope--;
+					App("#endif");
+				}
+
+				sAmb += "(reflectionProbes";
+
+				if( ambSpec ) {
+					sAmb += " + " + ps.n_ambientSpecular + ")";
+				} else {
+					sAmb += ")";
+				}
+
+				if( occluded ) {
+					sAmb += " * specularAO";
+				}
+
 			}
+
+
 
 
 			if( ps.catLighting.IsPBL() ) {
@@ -1225,7 +1317,7 @@ namespace ShaderForge {
 					s += "*fresnelTerm";
 
 
-					if(DoAmbientSpecThisPass()){
+					if( hasIndirectSpecular ) {
 						App( "float NdotV = max(0.0,dot( "+VarNormalDir()+", viewDirection ));" );
 						initialized_NdotV = true;
 						//App (fTermDef.Replace("HdotL","NdotV").Replace("fresnelTerm","fresnelTermAmb"));
@@ -1287,9 +1379,9 @@ namespace ShaderForge {
 
 			}
 
-			if( DoAmbientSpecThisPass() ){
+			if( hasIndirectSpecular ) {
 				App (sAmb + ";");
-				s += " + specularAmb";
+				s += " + indirectSpecular";
 			}
 
 			s += ";";

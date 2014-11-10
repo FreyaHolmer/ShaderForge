@@ -46,6 +46,7 @@ namespace ShaderForge {
 		public bool frag_pixelDepth = false;
 		public bool vert_screenPos = false;
 
+		public bool reflection_probes = false;
 
 
 		public bool vert_viewReflection = false;

@@ -1563,7 +1563,7 @@ namespace ShaderForge {
 			
 			FlexHorizontal(()=>{
 				GUI.color = new Color( 0.7f, 0.7f, 0.7f );
-				if( GUILayout.Button( '\u00a9' + " Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel ) ) {
+				if( GUILayout.Button( '\u00a9' + " Neat Corporation / Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel ) ) {
 					Application.OpenURL("https://twitter.com/JoachimHolmer");
 				}
 				

@@ -35,9 +35,8 @@ LightmapSettings:
   m_LightProbes: {fileID: 19700000, guid: bc0674a7d460f934c98c6021fbd70017, type: 2}
   m_Lightmaps:
   - m_Lightmap: {fileID: 2800000, guid: 15cbe2d5999d55940b162f0155d27f54, type: 3}
-    m_IndirectLightmap: {fileID: 2800000, guid: e83981d22a756124cb71be2fa8250731,
-      type: 3}
-  m_LightmapsMode: 1
+    m_IndirectLightmap: {fileID: 0}
+  m_LightmapsMode: 0
   m_BakedColorSpace: 1
   m_UseDualLightmapsInForward: 0
   m_LightmapEditorSettings:
@@ -331,6 +330,14 @@ Prefab:
       propertyPath: m_ActuallyLightmapped
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2300008, guid: 5ddef37e00a48fa458063f718142ca83, type: 2}
+      propertyPath: m_UseLightProbes
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2000000, guid: 5ddef37e00a48fa458063f718142ca83, type: 2}
+      propertyPath: m_RenderingPath
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5ddef37e00a48fa458063f718142ca83, type: 2}
   m_RootGameObject: {fileID: 1010212071}
@@ -390,7 +397,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 2
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_HDR: 0
@@ -421,7 +428,7 @@ Transform:
   m_PrefabInternal: {fileID: 579228129}
   m_GameObject: {fileID: 300831098}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .707797289, y: .326764941, z: .332749367}
+  m_LocalPosition: {x: .66787529, y: .326764941, z: .332749367}
   m_LocalScale: {x: .5, y: .5, z: .5}
   m_Children: []
   m_Father: {fileID: 1544226515}
@@ -614,13 +621,17 @@ Prefab:
       propertyPath: m_ActuallyLightmapped
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 400004, guid: 5ddef37e00a48fa458063f718142ca83, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: .707797289
-      objectReference: {fileID: 0}
     - target: {fileID: 2300008, guid: 5ddef37e00a48fa458063f718142ca83, type: 2}
       propertyPath: m_UseLightProbes
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300006, guid: 5ddef37e00a48fa458063f718142ca83, type: 2}
+      propertyPath: m_UseLightProbes
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2000000, guid: 5ddef37e00a48fa458063f718142ca83, type: 2}
+      propertyPath: m_RenderingPath
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
@@ -1098,7 +1109,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 2
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_HDR: 0
@@ -1310,7 +1321,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 3
   m_Type: 1
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: .845588207, g: .845588207, b: .845588207, a: 1}
   m_Intensity: .5
   m_Range: 10
   m_SpotAngle: 30
@@ -1318,7 +1329,7 @@ Light:
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
-    m_Strength: 1
+    m_Strength: .920000017
     m_Bias: .0299999993
     m_Softness: 3
     m_SoftnessFade: .939999998

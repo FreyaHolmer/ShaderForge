@@ -517,7 +517,10 @@ namespace ShaderForge {
 				App ("#include \"Tessellation.cginc\"");
 
 			if( ps.catLighting.lightprobed ) {
-				App( "#define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )" ); // TODO: Might not work properly in 4.x
+				if( SF_Tools.CurrentUnityVersion >= 5.0 )
+					App( "#define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )" );
+				else
+					App( "#define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )" );
 			}
 
 			if( ps.catLighting.reflectprobed || Unity5PBL() ) {
@@ -734,7 +737,7 @@ namespace ShaderForge {
 			}
 				
 
-			if( ps.catLighting.lightmapped ) {
+			if( LightmapThisPass() ) {
 				App("#ifndef LIGHTMAP_OFF");
 				scope++;{
 					App( "float4 unity_LightmapST;" );
@@ -1021,14 +1024,29 @@ namespace ShaderForge {
 			bool hasIndirectLight = ambDiff || shLight || ambLight; // TODO: Missing lightmaps
 
 
-
+			lmbStr += ";";
 
 			if( hasIndirectLight ) {
 				App( "float3 indirectDiffuse = float3(0,0,0);" );
 			}
+			
 
-			lmbStr += ";";
-			App( lmbStr );
+
+			if( LightmapThisPass() ) {
+				App( "#ifndef LIGHTMAP_OFF" );
+				scope++;
+				App("float3 directDiffuse = float3(0,0,0);");
+				scope--;
+				App( "#else" );
+				scope++;
+				App( lmbStr );
+				scope--;
+				App( "#endif" );
+			} else {
+				App( lmbStr );
+			}
+
+			
 
 
 
@@ -1039,7 +1057,30 @@ namespace ShaderForge {
 				if(InDeferredPass()){
 					App( "directDiffuse += lightAccumulation.rgb + lightmapAccumulation.rgb;" );
 				} else {
-					App( "directDiffuse += lightmap.rgb;" ); // TODO: Auto-light too!
+					//App( "directDiffuse += min(lightmap.rgb, attenuation);" ); // TODO: Auto-light too!
+
+
+					
+					App( "#ifdef SHADOWS_SCREEN" );
+					scope++;
+						App( "#if (defined(SHADER_API_GLES) || defined(SHADER_API_GLES3)) && defined(SHADER_API_MOBILE)" );
+						scope++;
+						App( "directDiffuse += min(lightmap.rgb, attenuation);" );
+						scope--;
+						App( "#else" );
+						scope++;
+						App( "directDiffuse += max(min(lightmap.rgb,attenuation*lmtex.rgb), lightmap.rgb*attenuation*0.5);" );
+						scope--;
+						App( "#endif" );
+					scope--;
+					App( "#else" );
+					scope++;
+					App( "directDiffuse += lightmap.rgb;" );
+					scope--;
+					App( "#endif" );
+					
+
+
 				}
 				scope--;
 				App( "#endif" );
@@ -1069,7 +1110,7 @@ namespace ShaderForge {
 				if( shLight ) {
 
 
-					App( "#ifdef SHOULD_SAMPLE_SH_PROBE" );
+					App( "#if SHOULD_SAMPLE_SH_PROBE" );
 					scope++;
 					if( ps.catQuality.highQualityLightProbes )
 						App( "indirectDiffuse += ShadeSH9(float4(normalDirection,1))" + ( ps.catLighting.doubleIncomingLight ? ";" : " * 0.5; // Per-Pixel Light Probes / Spherical harmonics" ) );
@@ -1485,7 +1526,26 @@ namespace ShaderForge {
 			}
 
 			directSpecular += ";";
-			App( directSpecular );
+
+
+
+			if( LightmapThisPass() ) {
+				App( "#ifndef LIGHTMAP_OFF" );
+				scope++;
+				App( "float3 directSpecular = float3(0,0,0);" );
+				scope--;
+				App( "#else" );
+				scope++;
+				App( directSpecular );
+				scope--;
+				App( "#endif" );
+			} else {
+				App( directSpecular );
+			}
+
+
+
+			
 
 			string specular = "";
 
@@ -2117,11 +2177,7 @@ namespace ShaderForge {
 					}
 
 					scope--;
-					App( "#endif" );
-
-
-				
-					App( "#ifdef SHOULD_SAMPLE_SH_PROBE" );
+					App( "#elif SHOULD_SAMPLE_SH_PROBE" );
 					scope++;
 						App ("float3 shLight" + shlmTexCoord );
 					scope--;
@@ -2186,7 +2242,7 @@ namespace ShaderForge {
 
 
 				
-				App( "#ifdef SHOULD_SAMPLE_SH_PROBE" );
+				App( "#if SHOULD_SAMPLE_SH_PROBE" );
 				scope++;
 				string nrmStr = SF_Tools.CurrentUnityVersion >= 5 ? "UnityObjectToWorldNorm(v.normal)" : "mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w";
 				App( "o.shLight = ShadeSH9(float4(" + nrmStr + ",1))" + ( ps.catLighting.doubleIncomingLight ? "" : " * 0.5" ) + ";" );

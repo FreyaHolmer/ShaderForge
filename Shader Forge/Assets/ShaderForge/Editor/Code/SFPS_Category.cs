@@ -275,7 +275,7 @@ namespace ShaderForge {
 		public string UndoableTextField(Rect r, string value, string undoInfix, GUIStyle style = null){
 			if(style == null)
 				style = EditorStyles.textField;
-			string newValue = GUI.TextField( r, value, style );
+			string newValue = EditorGUI.TextField( r, value, style );
 			if(newValue != value){
 				string undoName = "change " + undoInfix + " to " + newValue;
 				Undo.RecordObject(this,undoName);
@@ -288,7 +288,7 @@ namespace ShaderForge {
 		public string UndoableTextField(Rect r, string value, string undoInfix, GUIStyle style = null, UnityEngine.Object extra = null, bool showContent = true){
 			if(style == null)
 				style = EditorStyles.textField;
-			string newValue = GUI.TextField( r, value, style );
+			string newValue = EditorGUI.TextField( r, value, style );
 			if(newValue != value){
 				string undoName = "change " + undoInfix;
 				if(showContent)

@@ -507,7 +507,7 @@ namespace ShaderForge {
 		public string UndoableTextField(Rect r, string value, string undoInfix, GUIStyle style, bool readPropertyName = true){
 			if(style == null)
 				style = EditorStyles.textField;
-			string newValue = GUI.TextField( r, value, style );
+			string newValue = EditorGUI.TextField( r, value, style );
 			if(newValue != value){
 				if(this is SFN_Code && readPropertyName){
 					UndoRecord("edit " + undoInfix + " of " + (this as SFN_Code).functionName);

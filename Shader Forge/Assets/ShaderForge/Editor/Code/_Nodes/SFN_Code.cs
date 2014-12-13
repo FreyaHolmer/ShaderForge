@@ -576,7 +576,7 @@ namespace ShaderForge {
 					con.Disconnect();
 				}
 				string before = con.label;
-				con.label = GUI.TextField(r,con.label);
+				con.label = EditorGUI.TextField(r,con.label);
 				if(con.label != before && con.label.Length > 0){
 					con.label = SF_ShaderProperty.FormatInternalName(con.label);
 					UpdateExtraInputWidth();

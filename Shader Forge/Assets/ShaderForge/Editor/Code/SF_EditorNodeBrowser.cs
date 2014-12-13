@@ -152,7 +152,7 @@ namespace ShaderForge {
 
 			prevString = searchString.Trim();
 			GUI.SetNextControlName( searchBoxName );
-			searchString = GUI.TextField( searchRect, searchString, styleSearchField );
+			searchString = EditorGUI.TextField( searchRect, searchString, styleSearchField );
 			if( GUI.Button(searchCancelRect, "", styleSearchCancel ) ) {
 				searchString = "";
 				GUI.FocusControl( null );

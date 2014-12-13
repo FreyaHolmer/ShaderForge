@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 
 
@@ -121,7 +122,6 @@ namespace ShaderForge {
 							propertyList.Remove( n );
 						}
 					}
-
 				}
 
 				if( n is SFN_SceneColor ){
@@ -152,13 +152,46 @@ namespace ShaderForge {
 					if( con.conType == ConType.cOutput )
 						continue;
 					if(con.required && !con.IsConnected()){
-						string err = "Missing required ";
-						err += string.IsNullOrEmpty(con.label) ? "" : "[" + con.label + "]";
-						err += " input on " + con.node.nodeName;
-						errors.Add( new SF_ErrorEntry( err, con ) );
+						string err = "Missing required";
+						err += string.IsNullOrEmpty(con.label) ? " " : " [" + con.label + "] ";
+						err += "input on " + con.node.nodeName;
+						errors.Add( new SF_ErrorEntry( err, con, false ) );
 					}
 				}
 			}
+
+
+
+			// WARNINGS
+
+			bool alphaConnected = editor.mainNode.alpha.IsConnectedEnabledAndAvailable();
+			bool notUsingAlphaBlend = editor.ps.catBlending.autoSort && editor.ps.catBlending.blendModePreset != BlendModePreset.AlphaBlended;
+
+			if( alphaConnected && notUsingAlphaBlend ) {
+				SF_ErrorEntry error = new SF_ErrorEntry( "Alpha is connected, but your shader isn't alpha blended. Click the icon to fix!", true );
+				error.action = () => {
+					UnityEditor.Undo.RecordObject( editor.ps.catBlending, "error correction" );
+					editor.ps.catBlending.blendModePreset = BlendModePreset.AlphaBlended;
+					editor.ps.catBlending.ConformBlendsToPreset();
+				};
+				errors.Add(error);
+			}
+
+	
+
+
+			// LIGHTMAP WARNINGS
+			if( editor.ps.catLighting.IsLit() && editor.ps.catLighting.lightmapped ) {
+
+				// This is primarily for Unity 4, Unity 5 has attributes for this instead
+				LightmapCondition( cNodes, "_MainTex", editor.mainNode.diffuse, "Texture" );
+				LightmapCondition( cNodes, "_Color", editor.mainNode.diffuse, "Color" );
+				LightmapCondition( cNodes, "_SpecColor", editor.mainNode.specular, "Color", "Specular/" );
+				LightmapCondition( cNodes, "_BumpMap", editor.mainNode.normal, "Texture" );
+				LightmapCondition( cNodes, "_Illum", editor.mainNode.emissive, "Texture", "Self-Illumin/" );
+			}
+
+			
 
 
 
@@ -172,8 +205,8 @@ namespace ShaderForge {
 
 
 			if( foundMipUsed ) {
-				if( !mipInputUsed )
-					errors.Add( new SF_ErrorEntry( "MIP input is only supported in Direct X", mipNode ) );
+				//if( !mipInputUsed ) // This should be fixed with #pragma glsl
+				//	errors.Add( new SF_ErrorEntry( "MIP input is only supported in Direct X", mipNode ) );
 				mipInputUsed = true;
 			} else {
 				mipInputUsed = false;
@@ -184,7 +217,36 @@ namespace ShaderForge {
 
 			if(errors.Count == 0)
 				return true;
-			DisplayErrors();
+			//DisplayErrors();
+			return false;
+		}
+
+		private void LightmapCondition( List<SF_Node> cNodes, string internalName, SF_NodeConnector reqConnection, string propertyType, string pathReq = "" ) {
+
+			bool connected = reqConnection.IsConnectedEnabledAndAvailable();
+			bool foundNamedNode = ConnectedNodeWithInternalNameExists( cNodes, internalName );
+			bool pathValid = editor.currentShaderPath.Contains( pathReq );
+
+			if( connected && !foundNamedNode ) {
+				SF_ErrorEntry error = new SF_ErrorEntry( "Lightmapping wants a " + propertyType + " property, with an internal name of " + internalName, true );
+				errors.Add( error );
+			}
+
+			if( connected && !pathValid) {
+				SF_ErrorEntry errorPath = new SF_ErrorEntry( "Lightmapping expects the shader path to contain " + pathReq + " when " + reqConnection.label + " is connected", true );
+				errors.Add( errorPath );
+			}
+
+
+
+		}
+
+		private bool ConnectedNodeWithInternalNameExists( List<SF_Node> cNodes, string s ) {
+			foreach( SF_Node n in cNodes.Where(x=>x.IsProperty())) {
+				if( n.property.nameInternal == s ) {
+					return true;
+				}
+			}
 			return false;
 		}
 
@@ -215,11 +277,6 @@ namespace ShaderForge {
 
 
 
-		public void DisplayErrors(){
-			//foreach(SF_ErrorEntry err in errors){
-				// Debug.Log(err.error);
-			//}
-		}
 
 
 		// Returns all nodes connected to the final node

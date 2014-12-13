@@ -134,6 +134,7 @@ namespace ShaderForge {
 		public SFPSC_Quality catQuality;
 		public SFPSC_Blending catBlending;
 		public SFPSC_Experimental catExperimental;
+		public SFPSC_Console catConsole;
 
 		// Add more here
 		
@@ -159,6 +160,7 @@ namespace ShaderForge {
 			cats.Add( catQuality 		= NewCat<SFPSC_Quality>			(	"Quality"			));
 			cats.Add( catBlending 		= NewCat<SFPSC_Blending>		(	"Blending"			));
 			cats.Add( catExperimental 	= NewCat<SFPSC_Experimental>	(	"Experimental"		));
+			cats.Add( catConsole        = NewCat<SFPSC_Console>			(	"Console"			));
 
 			return this;
 		}
@@ -195,7 +197,7 @@ namespace ShaderForge {
 
 			guiChanged = false;
 
-			int offset;
+			int offset = 0;
 			
 			if(innerScrollRect.height < scrollRectPos.height)
 				innerScrollRect.height = scrollRectPos.height;
@@ -210,7 +212,14 @@ namespace ShaderForge {
 			scrollPos = GUI.BeginScrollView(scrollWrapper.PadRight(scrollPad),scrollPos,innerScrollRect,false,true);
 			{
 				//offset = SettingsMeta( 0 );
-				offset = catMeta.Draw(0);
+				bool showErrors = editor.nodeView.treeStatus.errors.Count > 0;
+				if( !showErrors )
+					catConsole.expanded = false;
+				EditorGUI.BeginDisabledGroup( !showErrors );
+				offset = catConsole.Draw( offset );
+				offset = GUISeparator( offset ); // ----------------------------------------------
+				EditorGUI.EndDisabledGroup();
+				offset = catMeta.Draw( offset );
 				offset = GUISeparator( offset ); // ----------------------------------------------
 				offset = catProperties.Draw(offset);
 				offset = GUISeparator( offset ); // ----------------------------------------------
@@ -222,6 +231,7 @@ namespace ShaderForge {
 				offset = GUISeparator( offset ); // ----------------------------------------------
 				offset = catExperimental.Draw(offset);
 				offset = GUISeparator( offset ); // ----------------------------------------------
+				
 			}
 			GUI.EndScrollView();
 			GUI.EndGroup();
@@ -330,7 +340,7 @@ namespace ShaderForge {
 		}
 
 		public bool HasAddedLight() {
-			return HasEmissive() || catLighting.HasSpecular() ;
+			return HasEmissive() || catLighting.HasSpecular();
 		}
 
 		public bool HasLightWrapping() {

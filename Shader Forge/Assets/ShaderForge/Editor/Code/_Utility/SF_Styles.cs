@@ -33,7 +33,6 @@ namespace ShaderForge {
 				if( miniLabelRight == null ) {
 					miniLabelRight = new GUIStyle( EditorStyles.miniLabel );
 					miniLabelRight.alignment = TextAnchor.MiddleRight;
-					
 				}
 				return miniLabelRight;
 			}
@@ -46,12 +45,23 @@ namespace ShaderForge {
 			get {
 				if( largeTextField == null ) {
 					largeTextField = new GUIStyle( EditorStyles.textField );
-					//largeTextField.fontStyle = FontStyle.Bold;
 					largeTextField.fontSize = 20;
 					largeTextField.alignment = TextAnchor.MiddleLeft;
-
 				}
 				return largeTextField;
+			}
+		}
+
+		private static GUIStyle smallTextArea;
+		public static GUIStyle SmallTextArea {
+			get {
+				if( smallTextArea == null ) {
+					smallTextArea = new GUIStyle( EditorStyles.miniLabel );
+					smallTextArea.wordWrap = true;
+					smallTextArea.padding = new RectOffset( 5, 5, 3, 3 );
+					smallTextArea.fontSize = EditorStyles.miniLabel.fontSize;
+				}
+				return smallTextArea;
 			}
 		}
 

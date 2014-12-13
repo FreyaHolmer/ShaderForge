@@ -486,6 +486,7 @@ namespace ShaderForge {
 
 			// Create main output node and add to list
 			this.nodeView = ScriptableObject.CreateInstance<SF_EditorNodeView>().Initialize( this );
+			this.ps.catConsole.treeStatus = this.nodeView.treeStatus;
 			this.nodeBrowser = ScriptableObject.CreateInstance<SF_EditorNodeBrowser>().Initialize( this );
 			this.separatorLeft = ScriptableObject.CreateInstance<SF_DraggableSeparator>();
 			this.separatorRight = ScriptableObject.CreateInstance<SF_DraggableSeparator>();
@@ -765,6 +766,7 @@ namespace ShaderForge {
 		public Rect previousPosition;
 		public bool closeMe = false;
 		void OnGUI() {
+
 			//Debug.Log("SF_Editor OnGUI()");
 
 			//SF_AllDependencies.DrawDependencyTree(new Rect(0, 0, Screen.width, Screen.height));

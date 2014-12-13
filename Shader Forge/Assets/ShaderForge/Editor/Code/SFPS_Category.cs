@@ -97,6 +97,14 @@ namespace ShaderForge {
 			return 0f;
 		}
 
+		public string GetLabelString() {
+			return expanded ? labelExpanded : labelContracted;
+		}
+
+		public virtual void DrawExtraTitleContent( Rect r ) {
+			// Override. Currently only used by Console
+		}
+
 
 
 		public bool StartExpanderChangeCheck(Rect r, ref bool foldVar, string labelContracted, string labelExpanded ) {
@@ -111,7 +119,8 @@ namespace ShaderForge {
 			}
 			GUI.color = prev;
 			//EditorGUI.Foldout( r, foldVar, foldVar ? smoothHeight + " " + labelExpanded : smoothHeight + " " + labelContracted );
-			EditorGUI.Foldout( r, foldVar, foldVar ? labelExpanded : labelContracted );
+			EditorGUI.Foldout( r, foldVar, GetLabelString() );
+			DrawExtraTitleContent( r );
 			
 			EditorGUI.BeginChangeCheck();
 			if( !foldVar )

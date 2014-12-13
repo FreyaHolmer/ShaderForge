@@ -1077,7 +1077,10 @@ namespace ShaderForge {
 				GUI.color = DisplayAsValid() ? Color.white : new Color(1f,1f,1f,0.25f);
 			}
 
-			if( HasErrors() && !(Hovering(true) && CanValidlyConnectTo(SF_NodeConnector.pendingConnectionSource)) ) {
+			bool showConditionA = !(Hovering(true) && CanValidlyConnectTo(SF_NodeConnector.pendingConnectionSource));
+			bool showConditionB = !(SF_NodeConnector.pendingConnectionSource == this);
+
+			if( HasErrors() && (showConditionA && showConditionB) ) {
 				Rect iconRect = new Rect( rect );
 				iconRect.x -= SF_Styles.IconErrorSmall.width ;
 				iconRect.height = iconRect.width = 16;

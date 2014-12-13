@@ -51,17 +51,17 @@
 			half _Shininess;
 
 			struct Input {
-			float2 uv_MainTex;
-			float2 uv_BumpMap;
+				float2 uv_MainTex;
+				float2 uv_BumpMap;
 			};
 
 			void surf (Input IN, inout SurfaceOutput o) {
-			fixed4 tex = tex2D(_MainTex, IN.uv_MainTex);
-			o.Albedo = tex.rgb * _Color.rgb;
-			o.Gloss = tex.a;
-			o.Alpha = tex.a * _Color.a;
-			o.Specular = _Shininess;
-			o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+				fixed4 tex = tex2D(_MainTex, IN.uv_MainTex);
+				o.Albedo = tex.rgb * _Color.rgb;
+				o.Gloss = tex.a;
+				o.Alpha = tex.a * _Color.a;
+				o.Specular = _Shininess;
+				o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
 			}
 
 
@@ -398,9 +398,9 @@
 		o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
 		o.pack0.xy = TRANSFORM_TEX(v.texcoord, _BumpMap);
 		TANGENT_SPACE_ROTATION;
-		o.TtoW0 = mul(rotation, ((float3x3)_Object2World)[0].xyz)*unity_Scale.w;
-		o.TtoW1 = mul(rotation, ((float3x3)_Object2World)[1].xyz)*unity_Scale.w;
-		o.TtoW2 = mul(rotation, ((float3x3)_Object2World)[2].xyz)*unity_Scale.w;
+		o.TtoW0 = mul(rotation, ((float3x3)_Object2World)[0].xyz)*1.0;
+		o.TtoW1 = mul(rotation, ((float3x3)_Object2World)[1].xyz)*1.0;
+		o.TtoW2 = mul(rotation, ((float3x3)_Object2World)[2].xyz)*1.0;
 		return o;
 		}
 

@@ -1,14 +1,15 @@
 // Shader created with Shader Forge Beta 0.37 
 // Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.37;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:True,lprd:True,rprd:False,enco:False,frtr:True,vitr:True,dbil:True,rmgx:True,rpth:1,hqsc:True,hqlp:False,tesm:0,blpr:0,bsrc:0,bdst:1,culm:0,dpts:2,wrdp:True,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:1,x:32719,y:32712,varname:node_1,prsc:2|diff-17-OUT,spec-10-RGB,normal-2-RGB;n:type:ShaderForge.SFN_Tex2d,id:2,x:32336,y:32938,ptovrint:False,ptlb:BumpMap,ptin:_BumpMap,varname:node_2,prsc:2,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Color,id:8,x:32336,y:32589,ptovrint:False,ptlb:Color,ptin:_Color,varname:node_8,prsc:2,glob:False,c1:0.5,c2:0.5,c3:0.5,c4:1;n:type:ShaderForge.SFN_Color,id:10,x:32336,y:32763,ptovrint:False,ptlb:SpecColor,ptin:_SpecColor,varname:node_8,prsc:2,glob:False,c1:0.5,c2:0.5,c3:0.5,c4:1;n:type:ShaderForge.SFN_Tex2d,id:16,x:32336,y:32380,ptovrint:False,ptlb:MainTex,ptin:_MainTex,varname:node_16,prsc:2,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Multiply,id:17,x:32530,y:32485,varname:node_17,prsc:2|A-16-RGB,B-8-RGB;proporder:2-8-10-16;pass:END;sub:END;*/
+/*SF_DATA;ver:0.37;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:True,lprd:True,rprd:False,enco:False,frtr:True,vitr:True,dbil:True,rmgx:True,rpth:1,hqsc:True,hqlp:False,tesm:0,blpr:0,bsrc:0,bdst:1,culm:0,dpts:2,wrdp:True,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:1,x:32719,y:32712,varname:node_1,prsc:2|diff-17-OUT,spec-10-RGB,gloss-40-OUT,normal-2-RGB;n:type:ShaderForge.SFN_Tex2d,id:2,x:32336,y:32938,ptovrint:False,ptlb:BumpMap,ptin:_BumpMap,varname:node_2,prsc:2,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Color,id:8,x:32336,y:32589,ptovrint:False,ptlb:Color,ptin:_Color,varname:node_8,prsc:2,glob:False,c1:0.5,c2:0.5,c3:0.5,c4:1;n:type:ShaderForge.SFN_Color,id:10,x:32336,y:32763,ptovrint:False,ptlb:SpecColor,ptin:_SpecColor,varname:node_8,prsc:2,glob:False,c1:0.5,c2:0.5,c3:0.5,c4:1;n:type:ShaderForge.SFN_Tex2d,id:16,x:32336,y:32380,ptovrint:False,ptlb:MainTex,ptin:_MainTex,varname:node_16,prsc:2,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Multiply,id:17,x:32530,y:32485,varname:node_17,prsc:2|A-16-RGB,B-8-RGB;n:type:ShaderForge.SFN_Slider,id:40,x:31964,y:32817,ptovrint:False,ptlb:Shininess,ptin:_Shininess,varname:node_40,prsc:2,min:1,cur:123.6581,max:128;proporder:2-8-10-16-40;pass:END;sub:END;*/
 
-Shader "Shader Forge/SF_lightmapped" {
+Shader "Specular/Shader Forge/SF_lightmapped" {
     Properties {
         _BumpMap ("BumpMap", 2D) = "bump" {}
         _Color ("Color", Color) = (0.5,0.5,0.5,1)
         _SpecColor ("SpecColor", Color) = (0.5,0.5,0.5,1)
         _MainTex ("MainTex", 2D) = "white" {}
+        _Shininess ("Shininess", Range(1, 128)) = 123.6581
     }
     SubShader {
         Tags {
@@ -33,6 +34,7 @@ Shader "Shader Forge/SF_lightmapped" {
             #pragma target 3.0
             uniform fixed4 unity_Ambient;
             uniform sampler2D _BumpMap; uniform float4 _BumpMap_ST;
+            uniform float _Shininess;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -65,7 +67,7 @@ Shader "Shader Forge/SF_lightmapped" {
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float3 normalLocal = UnpackNormal(tex2D(_BumpMap,TRANSFORM_TEX(i.uv0, _BumpMap))).rgb;
                 float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
-                return fixed4( normalDirection * 0.5 + 0.5, max(0.5,0.0078125) );
+                return fixed4( normalDirection * 0.5 + 0.5, max(_Shininess,0.0078125) );
             }
             ENDCG
         }
@@ -100,6 +102,7 @@ Shader "Shader Forge/SF_lightmapped" {
             uniform sampler2D _BumpMap; uniform float4 _BumpMap_ST;
             uniform float4 _Color;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
+            uniform float _Shininess;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -192,7 +195,7 @@ Shader "Shader Forge/SF_lightmapped" {
                         lightDir = mul(lightDir, tangentTransform);
                         half3 h = normalize (lightDir + viewDirection);
                         float nh = max (0, dot (normalDirection, h));
-                        float lmspec = pow (nh, 0.5 * 128.0);
+                        float lmspec = pow (nh, _Shininess * 128.0);
                         half3 specColor = lm * _SpecColor.rgb * lmspec;
                         lightmapAccumulation += half4(lm + specColor, lmspec);
                     #endif
@@ -258,6 +261,7 @@ Shader "Shader Forge/SF_lightmapped" {
             uniform sampler2D _BumpMap; uniform float4 _BumpMap_ST;
             uniform float4 _Color;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
+            uniform float _Shininess;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -330,7 +334,7 @@ Shader "Shader Forge/SF_lightmapped" {
                 float attenuation = LIGHT_ATTENUATION(i)*2;
                 float3 attenColor = attenuation * _LightColor0.xyz;
 ///////// Gloss:
-                float gloss = 0.5;
+                float gloss = _Shininess;
                 float specPow = exp2( gloss * 10.0+1.0);
 ////// Specular:
                 float NdotL = max(0, dot( normalDirection, lightDirection ));
@@ -401,6 +405,7 @@ Shader "Shader Forge/SF_lightmapped" {
             uniform sampler2D _BumpMap; uniform float4 _BumpMap_ST;
             uniform float4 _Color;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
+            uniform float _Shininess;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -441,7 +446,7 @@ Shader "Shader Forge/SF_lightmapped" {
                 float attenuation = LIGHT_ATTENUATION(i)*2;
                 float3 attenColor = attenuation * _LightColor0.xyz;
 ///////// Gloss:
-                float gloss = 0.5;
+                float gloss = _Shininess;
                 float specPow = exp2( gloss * 10.0+1.0);
 ////// Specular:
                 float NdotL = max(0, dot( normalDirection, lightDirection ));

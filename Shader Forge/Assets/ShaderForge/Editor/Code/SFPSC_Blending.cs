@@ -603,10 +603,10 @@ namespace ShaderForge {
 
 
 		public void UpdateAutoSettings() {
-			if( blendModePreset == BlendModePreset.Off && editor.mainNode.alpha.IsConnectedAndEnabled() ) {
-				blendModePreset = BlendModePreset.AlphaBlended;
-				ConformBlendsToPreset();
-			}
+			//if( blendModePreset == BlendModePreset.Off && editor.mainNode.alpha.IsConnectedAndEnabled() ) {
+			//	blendModePreset = BlendModePreset.AlphaBlended;
+			//	ConformBlendsToPreset();
+			//} // This will now throw a warning
 			UpdateAutoSort();
 		}
 

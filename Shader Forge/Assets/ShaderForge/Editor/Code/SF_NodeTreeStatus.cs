@@ -240,6 +240,7 @@ namespace ShaderForge {
 				LightmapCondition( cNodes, "_MainTex", editor.mainNode.diffuse, "Texture" );
 				LightmapCondition( cNodes, "_Color", editor.mainNode.diffuse, "Color" );
 				LightmapCondition( cNodes, "_SpecColor", editor.mainNode.specular, "Color", "Specular/" );
+				LightmapCondition( cNodes, "_Shininess", editor.mainNode.specular, "Value or Slider");
 				LightmapCondition( cNodes, "_BumpMap", editor.mainNode.normal, "Texture" );
 				LightmapCondition( cNodes, "_Illum", editor.mainNode.emissive, "Texture", "Self-Illumin/" );
 			}

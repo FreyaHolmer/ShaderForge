@@ -180,6 +180,7 @@ namespace ShaderForge {
 		public bool guiChanged = false;
 		public int OnLocalGUI( int yOffset, int in_maxWidth ) {
 
+
 			if(Event.current.type == EventType.Repaint)
 				currentScrollWidth = Mathf.Lerp(currentScrollWidth, targetScrollWidth, 0.3f);
 

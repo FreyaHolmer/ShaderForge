@@ -11,7 +11,7 @@ namespace ShaderForge {
 	public enum DepthTest { Less, Greater, LEqual, GEqual, Equal, NotEqual, Always };
 	public enum RenderType { None, Opaque, Transparent, TransparentCutout, Background, Overlay, TreeOpaque, TreeTransparentCutout, TreeBillboard, Grass, GrassBillboard };
 	public enum BlendModePreset {
-		Off,
+		Opaque,
 		AlphaBlended,
 		Additive,
 		Screen,
@@ -37,7 +37,7 @@ namespace ShaderForge {
 		
 		// Vars
 		
-		public BlendModePreset blendModePreset = BlendModePreset.Off;
+		public BlendModePreset blendModePreset = BlendModePreset.Opaque;
 		public BlendMode blendSrc = BlendMode.One;
 		public BlendMode blendDst = BlendMode.Zero;
 		public CullMode cullMode = CullMode.BackfaceCulling;
@@ -284,7 +284,7 @@ namespace ShaderForge {
 			
 			r.y += 20;
 			
-			if( blendModePreset != BlendModePreset.Off ) {
+			if( blendModePreset != BlendModePreset.Opaque ) {
 				if( blendModePreset != BlendModePreset.Custom )
 					GUI.enabled = false;
 				//EditorGUILayout.BeginHorizontal( GUILayout.Width( maxWidth ) );
@@ -339,7 +339,7 @@ namespace ShaderForge {
 
 		public void ConformBlendsToPreset() {
 			switch( blendModePreset ) {
-			case BlendModePreset.Off:
+			case BlendModePreset.Opaque:
 				blendSrc = BlendMode.One;
 				blendDst = BlendMode.Zero;
 				break;
@@ -631,7 +631,7 @@ namespace ShaderForge {
 				writeDepth = true;
 				return;
 			}
-			if( blendModePreset == BlendModePreset.Off ){
+			if( blendModePreset == BlendModePreset.Opaque ){
 				SetQueuePreset(Queue.Geometry);
 				renderType = RenderType.Opaque;
 				ignoreProjector = false;
@@ -668,7 +668,7 @@ namespace ShaderForge {
 
 
 		public bool UseBlending() {
-			if( blendModePreset == BlendModePreset.Off )
+			if( blendModePreset == BlendModePreset.Opaque )
 				return false;
 			return true;
 		}

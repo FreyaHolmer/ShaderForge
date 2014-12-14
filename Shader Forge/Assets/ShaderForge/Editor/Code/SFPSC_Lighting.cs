@@ -153,8 +153,8 @@ namespace ShaderForge {
 				if(ps.catBlending.autoSort == false){
 					ps.catBlending.autoSort = true;
 				}
-				if(ps.catBlending.blendModePreset != BlendModePreset.Off){
-					ps.catBlending.blendModePreset = BlendModePreset.Off;
+				if(ps.catBlending.blendModePreset != BlendModePreset.Opaque){
+					ps.catBlending.blendModePreset = BlendModePreset.Opaque;
 					ps.catBlending.ConformBlendsToPreset();
 				}
 			}

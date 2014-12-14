@@ -19,7 +19,6 @@ namespace ShaderForge {
 				return ( _iconWarningSmall = _iconWarningSmall ?? EditorGUIUtility.FindTexture( "console.warnicon.sml" ) );
 			}
 		}
-
 		private static GUIStyle _iconLock;
 		public static GUIStyle IconLock{
 			get{

@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace ShaderForge {
 	[System.Serializable]
-	public class SF_ErrorEntry {
+	public class SF_ErrorEntry : ScriptableObject {
 
 		public SF_Node node;
 		public SF_NodeConnector con;
@@ -13,32 +13,40 @@ namespace ShaderForge {
 		public int rows = 1;
 		public System.Action action;
 
-		public SF_ErrorEntry( string error, bool isWarning ) {
-			this.isWarning = isWarning;
-			node = null;
-			con = null;
-			this.error = error;
-			InitializeRows();
+		void OnEnable() {
+			hideFlags = HideFlags.HideAndDontSave;
 		}
 
-		public SF_ErrorEntry( string error, SF_Node target, bool isWarning ) {
-			this.isWarning = isWarning;
-			node = target;
-			con = null;
-			this.error = error;
-			InitializeRows();
+		
+		public static SF_ErrorEntry Create( string error, bool isWarning ) {
+			SF_ErrorEntry entry = ScriptableObject.CreateInstance<SF_ErrorEntry>();
+			entry.isWarning = isWarning;
+			entry.error = error;
+			entry.InitializeRows();
+			return entry;
 		}
 
-		public SF_ErrorEntry( string error, SF_NodeConnector target, bool isWarning ) {
-			this.isWarning = isWarning;
-			con = target;
-			node = target.node;
-			this.error = error;
-			InitializeRows();
+		public static SF_ErrorEntry Create( string error, SF_Node target, bool isWarning ) {
+			SF_ErrorEntry entry = ScriptableObject.CreateInstance<SF_ErrorEntry>();
+			entry.isWarning = isWarning;
+			entry.node = target;
+			entry.error = error;
+			entry.InitializeRows();
+			return entry;
+		}
+
+		public static SF_ErrorEntry Create( string error, SF_NodeConnector target, bool isWarning ) {
+			SF_ErrorEntry entry = ScriptableObject.CreateInstance<SF_ErrorEntry>();
+			entry.isWarning = isWarning;
+			entry.con = target;
+			entry.node = target.node;
+			entry.error = error;
+			entry.InitializeRows();
+			return entry;
 		}
 
 		void InitializeRows() {
-			rows = Mathf.CeilToInt( error.Length / 40f);
+			rows = Mathf.CeilToInt( error.Length / 50f );
 		}
 
 		public void OnPress() {

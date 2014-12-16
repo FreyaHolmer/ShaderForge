@@ -377,18 +377,29 @@ namespace ShaderForge {
 
 
 		public override string SerializeSpecialData() {
-			string s = property.Serialize();
-			if( textureAsset == null )
-				return s;
-			return s + "," + "tex:" + SF_Tools.AssetToGUID( textureAsset );
+
+			string s = "";
+
+			if( textureAsset != null )
+				s += "tex:" + SF_Tools.AssetToGUID( textureAsset ) + ",";
+			s += "ntxv:" + ( (int)noTexValue ).ToString() + ",";
+			s += "isnm:" + markedAsNormalMap.ToString();
+
+			return s;
+
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
-			property.Deserialize(key,value);
 			switch( key ) {
 				case "tex":
 					textureAsset = (Texture)SF_Tools.GUIDToAsset( value, typeof( Texture ) );
 					OnAssignedTexture();
+					break;
+				case "ntxv":
+					noTexValue = (NoTexValue)int.Parse( value );
+					break;
+				case "isnm":
+					markedAsNormalMap = bool.Parse( value );
 					break;
 			}
 		}

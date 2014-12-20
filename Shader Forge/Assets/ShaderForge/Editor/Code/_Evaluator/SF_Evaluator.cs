@@ -1537,16 +1537,23 @@ namespace ShaderForge {
 
 
 
+			
 			if( LightmapThisPass() ) {
-				App( "#ifndef LIGHTMAP_OFF" );
-				scope++;
-				App( "float3 directSpecular = float3(0,0,0);" );
-				scope--;
-				App( "#else" );
-				scope++;
-				App( directSpecular );
-				scope--;
-				App( "#endif" );
+				if( !InDeferredPass() ) {
+					App( "#if !defined(LIGHTMAP_OFF) && defined(DIRLIGHTMAP_OFF)" );
+					scope++;
+					App( "float3 directSpecular = float3(0,0,0);" );
+					scope--;
+					App( "#else" );
+					scope++;
+				}
+				
+				App( directSpecular ); // Always in deferred, but not in forward non-dir lightmap
+
+				if( !InDeferredPass() ) {
+					scope--;
+					App( "#endif" );
+				}
 			} else {
 				App( directSpecular );
 			}

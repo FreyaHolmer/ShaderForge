@@ -207,27 +207,38 @@ namespace ShaderForge {
 				false	// - Direct3D 11 for Windows RT
 			*/
 			bool osx = Application.platform == RuntimePlatform.OSXEditor;
+			bool windows = !osx;
 			bool ogl = editor.ps.catMeta.usedRenderers[2];
 			bool dx9 = editor.ps.catMeta.usedRenderers[0];
 			bool dx11 = editor.ps.catMeta.usedRenderers[1];
-			bool anyDx = dx9 || dx11;
+			bool inDx11Mode = UnityEditor.PlayerSettings.useDirect3D11;
 
 			if( osx && !ogl ) {
-				SF_ErrorEntry error = SF_ErrorEntry.Create( "Your shader will not render on your workstation - you need to have OpenGL enabled when working in OSX. Click the icon to enable OpenGL!", true );
+				SF_ErrorEntry error = SF_ErrorEntry.Create( "Your shader will not render properly on your workstation - you need to have OpenGL enabled when working in OSX. Click the icon to enable OpenGL!", true );
 				error.action = () => {
 					UnityEditor.Undo.RecordObject( editor.ps.catMeta, "error correction - enable OpenGL" );
 					editor.ps.catMeta.usedRenderers[2] = true;
 					editor.OnShaderModified( NodeUpdateType.Hard );
 				};
 				errors.Add( error );
-			} else if( !osx && !anyDx ) {
-				SF_ErrorEntry error = SF_ErrorEntry.Create( "Your shader might not render on your workstation - you need to have Direct3D 9 and/or Direct3D 11 enabled when working in Windows. Click the icon to enable DirectX 9!", true );
-				error.action = () => {
-					UnityEditor.Undo.RecordObject( editor.ps.catMeta, "error correction - enable Direct3D 9" );
-					editor.ps.catMeta.usedRenderers[0] = true;
-					editor.OnShaderModified( NodeUpdateType.Hard );
-				};
-				errors.Add( error );
+			} else if( windows ) {
+				if( inDx11Mode && !dx11 ) {
+					SF_ErrorEntry error = SF_ErrorEntry.Create( "Your shader might not render properly on your workstation - you need to have Direct3D 11 enabled when working in DX11 mode on Windows. Click the icon to enable Direct3D 11!", true );
+					error.action = () => {
+						UnityEditor.Undo.RecordObject( editor.ps.catMeta, "error correction - enable Direct3D 11" );
+						editor.ps.catMeta.usedRenderers[1] = true;
+						editor.OnShaderModified( NodeUpdateType.Soft );
+					};
+					errors.Add( error );
+				} else if( !inDx11Mode && !dx9 ) {
+					SF_ErrorEntry error = SF_ErrorEntry.Create( "Your shader might not render properly on your workstation - you need to have Direct3D 9 enabled when working on Windows. Click the icon to enable Direct3D 9!", true );
+					error.action = () => {
+						UnityEditor.Undo.RecordObject( editor.ps.catMeta, "error correction - enable Direct3D 9" );
+						editor.ps.catMeta.usedRenderers[0] = true;
+						editor.OnShaderModified( NodeUpdateType.Soft );
+					};
+					errors.Add( error );
+				}
 			}
 
 

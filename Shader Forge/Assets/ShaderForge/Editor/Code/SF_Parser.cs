@@ -195,6 +195,10 @@ namespace ShaderForge {
 				if(shaderData[i].Contains("Shader created with Shader Forge")){
 					string[] split = shaderData[i].Trim().Split(' ');
 					string verStr = split[split.Length-1];
+
+					if( verStr.StartsWith( "v" ) )
+						verStr = verStr.Substring( 1 );
+
 					version = float.Parse(verStr);
 				}
 				if( shaderData[i].StartsWith( "/*SF_DATA;" ) ) {

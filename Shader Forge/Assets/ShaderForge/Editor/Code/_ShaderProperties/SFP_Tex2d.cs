@@ -36,7 +36,7 @@ namespace ShaderForge {
 
 
 		public override string GetFragmentPrepare() {
-			return "fixed4 " + GetVariable() + " = " + node.Evaluate() + ";";
+			return "fixed4 " + GetVariable() + " = " + node.Evaluate() + "; // Bleeps";
 		}
 
 

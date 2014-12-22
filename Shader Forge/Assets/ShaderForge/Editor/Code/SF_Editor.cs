@@ -1121,7 +1121,7 @@ namespace ShaderForge {
 					TextClipping prevClip = GUI.skin.label.clipping;
 					//GUI.skin.label.alignment = TextAnchor.MiddleLeft;
 					GUI.skin.label.clipping = TextClipping.Overflow;
-					GUI.Label(crBottom, SF_Tools.versionStage + " " + SF_Tools.version + " - http://u3d.as/6cc");
+					GUI.Label(crBottom, SF_Tools.versionStage + " v" + SF_Tools.version + " - http://u3d.as/6cc");
 					GUI.skin.label.clipping = prevClip;
 
 					if(SF_Debug.screenshot){
@@ -1474,7 +1474,7 @@ namespace ShaderForge {
 					GUILayout.Label( SF_GUI.Logo );
 					if(outOfDate)
 						GUI.color = Color.red;
-					GUILayout.Label( SF_Tools.versionStage + " " + SF_Tools.version, EditorStyles.boldLabel );
+					GUILayout.Label( SF_Tools.versionStage + " v" + SF_Tools.version, EditorStyles.boldLabel );
 					if(outOfDate)
 						GUI.color = Color.white;
 				});

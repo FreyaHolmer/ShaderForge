@@ -429,7 +429,7 @@ namespace ShaderForge {
 				logoRect.y += logoRect.height;
 				logoRect.height = 16;
 				
-				GUI.Label(logoRect, SF_Tools.versionStage+" "+SF_Tools.version, EditorStyles.boldLabel);
+				GUI.Label(logoRect, "v"+SF_Tools.version, EditorStyles.boldLabel);
 				GUI.color = Color.white;
 
 
@@ -716,7 +716,7 @@ namespace ShaderForge {
 
 			string header = "";
 			header += "// Shader created with " + SF_Tools.versionString + " \n";
-			header += "// Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/\n";
+			header += "// Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/\n";
 			header += "// Note: Manually altering this data may prevent you from opening it in Shader Forge\n";
 			header += "/" + "*"; // Hurgh!
 

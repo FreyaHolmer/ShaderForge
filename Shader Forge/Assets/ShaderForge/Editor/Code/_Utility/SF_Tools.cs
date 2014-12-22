@@ -24,11 +24,11 @@ namespace ShaderForge {
 	public static class SF_Tools {
 
 		// Versioning
-		public static int versionNumPrimary = 0;
-		public static int versionNumSecondary = 37;
-		public static string versionStage = "Beta";
+		public static int versionNumPrimary = 1;
+		public static int versionNumSecondary = 0;
+		public static string versionStage = "";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
-		public static string versionString = "Shader Forge " + versionStage + " " + version;
+		public static string versionString = "Shader Forge v" + version;
 
 
 		// Misc strings
@@ -44,7 +44,7 @@ namespace ShaderForge {
 			"Xbox 360",
 			"PlayStation 3",
 			"Flash",
-			"Direct3D 11 for Windows RT",
+			"Direct3D 11 for Windows RT"
 		};
 
 		public const string alphabetLower = "abcdefghijklmnopqrstuvwxyz";
@@ -69,6 +69,22 @@ namespace ShaderForge {
 					currentUnityVersion = float.Parse(Application.unityVersion.Substring(0,3));
 				}
 				return currentUnityVersion;
+			}
+		}
+
+		public static bool UsingUnity5 {
+			get {
+				return CurrentUnityVersion >= 5.0f && CurrentUnityVersion < 6.0f;
+			}
+		}
+		public static bool UsingUnity5plus {
+			get {
+				return CurrentUnityVersion >= 5.0f;
+			}
+		}
+		public static bool UsingUnity4 {
+			get {
+				return CurrentUnityVersion >= 4.0f && CurrentUnityVersion < 5.0f;
 			}
 		}
 		

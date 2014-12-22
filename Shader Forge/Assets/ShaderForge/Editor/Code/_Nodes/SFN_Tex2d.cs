@@ -59,6 +59,8 @@ namespace ShaderForge {
 				SF_NodeConnector.Create(this,"B","B",ConType.cOutput,ValueType.VTv1)	.WithColor(Color.blue)	.Outputting(OutChannel.B),
 				SF_NodeConnector.Create(this,"A","A",ConType.cOutput,ValueType.VTv1)							.Outputting(OutChannel.A)
 			};
+			base.alwaysDefineVariable = true;
+			base.neverDefineVariable = false;
 			base.texture.CompCount = 4;
 			connectors[0].usageCount = 2; // To define a variable of UVs to use with TRANSFORM_TEX
 

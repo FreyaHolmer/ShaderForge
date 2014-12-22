@@ -286,9 +286,12 @@ namespace ShaderForge {
 				return RenderPlatform.xbox360;
 
 			// Mobile platforms
-			// 9 = BuildTarget.iPhone		// Unity 4.x
-			// 9 = BuildTarget.iOSiPhone	// Unity 5.x
-			bool mobile = ( active == BuildTarget.Android || (int)active == 9 || active == BuildTarget.BlackBerry );
+			// 9 =  BuildTarget.iPhone		// Unity 4.x
+			// 9 =  BuildTarget.iOS			// Unity 5.x
+			// 28 = BuildTarget.BB10		// Unity 4.x
+			// 28 = BuildTarget.BlackBerry	// Unity 5.x
+
+			bool mobile = ( active == BuildTarget.Android || (int)active == 9 || (int)active == 28 );
 			if(mobile && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.gles])
 				return RenderPlatform.gles;
 

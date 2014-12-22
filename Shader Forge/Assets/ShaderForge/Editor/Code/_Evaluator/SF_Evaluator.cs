@@ -15,8 +15,6 @@ namespace ShaderForge {
 		FwdBase, FwdAdd, ShadColl, ShadCast,
 		Outline,
 		PrePassBase, PrePassFinal
-
-
 	};
 	public enum ShaderProgram { Any, Vert, Frag, Tess };
 
@@ -141,7 +139,7 @@ namespace ShaderForge {
 				dependencies.frag_projPos = true;
 			}
 
-			if( ps.catLighting.reflectprobed && ps.HasSpecular() && ( currentPass == PassType.PrePassFinal || currentPass == PassType.FwdBase ) ) {
+			if( SF_Tools.UsingUnity5plus && ps.catLighting.reflectprobed && ps.HasSpecular() && ( currentPass == PassType.PrePassFinal || currentPass == PassType.FwdBase ) ) {
 				dependencies.NeedFragViewReflection();
 				dependencies.reflection_probes = true;
 			}
@@ -279,14 +277,14 @@ namespace ShaderForge {
 					}
 				}
 
-				if( n.GetType() == typeof( SFN_Tex2d ) ) {
+				if( n is SFN_Tex2d ) {
 					if( n.GetInputIsConnected( "MIP" ) ) { // MIP connection
 						//dependencies.ExcludeRenderPlatform( RenderPlatform.opengl ); // TODO: Find workaround!
 						dependencies.SetMinimumShaderTarget( 3 );
 					}
 				}
 
-				if( n.GetType() == typeof( SFN_Cubemap ) ) {
+				if( n is SFN_Cubemap ) {
 					if( n.GetInputIsConnected( "MIP" ) ) { // MIP connection
 						//dependencies.ExcludeRenderPlatform( RenderPlatform.opengl ); // TODO: Find workaround!
 						dependencies.SetMinimumShaderTarget( 3 );
@@ -301,11 +299,15 @@ namespace ShaderForge {
 					}
 				}*/
 
-				if( n.GetType() == typeof( SFN_VertexColor ) ) {
+				if( n is SFN_VertexColor ) {
 					dependencies.NeedFragVertexColor(); // TODO: Check if it really needs to be frag
 				}
 
-				if( n.GetType() == typeof( SFN_TexCoord ) ) {
+				if( n is SFN_FogColor && SF_Tools.UsingUnity4 ) { // Only needed if we're on Unity 4.x
+					dependencies.fog_color = true;
+				}
+
+				if( n is SFN_TexCoord ) {
 					switch( ( (SFN_TexCoord)n ).currentUV ) {
 						case SFN_TexCoord.UV.uv0:
 							dependencies.uv0 = true;
@@ -317,26 +319,26 @@ namespace ShaderForge {
 							break;
 					}
 				}
-				if( n.GetType() == typeof( SFN_Pi ) ) {
+				if( n is SFN_Pi ) {
 					dependencies.const_pi = true;
 				}
-				if( n.GetType() == typeof( SFN_Phi ) ) {
+				if( n is SFN_Phi ) {
 					dependencies.const_phi = true;
 				}
-				if( n.GetType() == typeof( SFN_E ) ) {
+				if( n is SFN_E ) {
 					dependencies.const_e = true;
 				}
-				if( n.GetType() == typeof( SFN_Root2 ) ) {
+				if( n is SFN_Root2 ) {
 					dependencies.const_root2 = true;
 				}
-				if( n.GetType() == typeof( SFN_Tau ) ) {
+				if( n is SFN_Tau ) {
 					dependencies.const_tau = true;
 				}
 
-				if( n.GetType() == typeof( SFN_HalfVector ) ) {
+				if( n is SFN_HalfVector ) {
 					dependencies.NeedFragHalfDir();
 				}
-				if( n.GetType() == typeof( SFN_LightColor ) ) {
+				if( n is SFN_LightColor ) {
 					dependencies.NeedLightColor();
 				}
 
@@ -349,7 +351,7 @@ namespace ShaderForge {
 					}
 				}
 
-				if( n.GetType() == typeof( SFN_Cubemap ) ) {
+				if( n is SFN_Cubemap ) {
 					if( !n.GetInputIsConnected( "DIR" ) ) { // DIR connection, if not connected, we need default reflection vector
 						dependencies.NeedFragViewReflection();
 					}
@@ -363,19 +365,19 @@ namespace ShaderForge {
 					}
 				}
 
-				if( n.GetType() == typeof( SFN_LightAttenuation ) ) {
+				if( n is SFN_LightAttenuation ) {
 					dependencies.NeedFragAttenuation();
 				}
 
-				if( n.GetType() == typeof( SFN_ViewReflectionVector ) ) {
+				if( n is SFN_ViewReflectionVector ) {
 					dependencies.NeedFragViewReflection();
 				}
 
-				if( n.GetType() == typeof( SFN_LightVector ) ) {
+				if( n is SFN_LightVector ) {
 					dependencies.NeedFragLightDir();
 				}
 
-				if( n.GetType() == typeof( SFN_ViewVector ) ) {
+				if( n is SFN_ViewVector ) {
 					dependencies.NeedFragViewDirection();
 				}
 
@@ -391,7 +393,7 @@ namespace ShaderForge {
 
 
 
-				if( n.GetType() == typeof( SFN_Transform ) ) {
+				if( n is SFN_Transform ) {
 					if( ( n as SFN_Transform ).spaceSelFrom == SFN_Transform.Space.Tangent || ( n as SFN_Transform ).spaceSelTo == SFN_Transform.Space.Tangent ) {
 						dependencies.NeedFragTangentTransform();
 					}
@@ -524,7 +526,7 @@ namespace ShaderForge {
 			}
 
 			if( ps.catLighting.reflectprobed || Unity5PBL() ) {
-				App( "#include \"UnityUniversalBRDF.cginc\"" );
+				App( "#include \"UnityStandardBRDF.cginc\"" );
 			}
 
 			if( currentPass == PassType.PrePassFinal ) {
@@ -705,7 +707,7 @@ namespace ShaderForge {
 
 		void CGvars() {
 
-			if( dependencies.lightColor && !ps.catLighting.lightmapped && !IsShadowPass() ) // Lightmap and shadows include Lighting.cginc, which already has this
+			if( dependencies.lightColor && !IncludeLightingCginc()) // Lightmap and shadows include Lighting.cginc, which already has this
 				App( "uniform float4 _LightColor0;" );
 
 			if( currentPass == PassType.PrePassFinal ) {
@@ -733,7 +735,7 @@ namespace ShaderForge {
 			}
 
 			if( dependencies.fog_color ) {
-				App( "uniform half4 unity_FogColor;" );
+				App( "uniform float4 unity_FogColor;" );
 			}
 
 
@@ -1338,7 +1340,12 @@ namespace ShaderForge {
 					App( "#endif" );
 				}
 
-				indirectSpecular += "(reflectionProbes";
+				if( reflProbed ) {
+					indirectSpecular += "(reflectionProbes";
+				} else {
+					indirectSpecular += "(0";
+				}
+				
 
 				if( ambSpec ) {
 					indirectSpecular += " + " + ps.n_ambientSpecular + ")";
@@ -1398,7 +1405,7 @@ namespace ShaderForge {
 						}
 
 						App( "float fresnelTerm = FresnelTerm(specularMonochrome, VdotH);" );
-
+						
 						specularPBL += "*fresnelTerm";
 
 					} else {
@@ -1448,7 +1455,7 @@ namespace ShaderForge {
 							initialized_VdotH = true;
 						}
 
-						App( "float visTerm = GeometricTerm( NdotL, NdotH, NdotV, VdotH );" );
+						App( "float visTerm = SmithGGXVisibilityTerm( NdotL, NdotV, 1.0-gloss );" );
 
 						specularPBL += "*visTerm";
 
@@ -1523,13 +1530,13 @@ namespace ShaderForge {
 				specularPBL = specularPBL.Substring( 1 ); // Remove first * symbol
 				specularPBL = "float specularPBL = max(0, (" + specularPBL + ") / (4 * NdotV + 1e-5f) );";
 
-
 				App( specularPBL );
+				
 			}
 
 
 
-			if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
+			if( Unity5PBL() ) {
 				directSpecular += "*specularPBL";
 			}
 

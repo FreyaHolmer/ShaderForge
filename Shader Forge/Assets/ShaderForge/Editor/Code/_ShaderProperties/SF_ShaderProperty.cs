@@ -199,7 +199,7 @@ namespace ShaderForge {
 		}
 
 
-		public string GetVariable() {
+		public virtual string GetVariable() {
 			return nameInternal;
 			//return "_" + node.GetVariableName();
 		}

@@ -1,7 +1,7 @@
-// Shader created with Shader Forge Beta 0.36 
-// Shader Forge (c) Joachim Holmer - http://www.acegikmo.com/shaderforge/
+// Shader created with Shader Forge v1.00 
+// Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:0.36;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:False,lprd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,arlg:0,hqsc:True,hqlp:False,tesm:0,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:1,x:32330,y:32994|diff-162-OUT,spec-165-OUT,gloss-66-OUT,normal-160-OUT,lwrap-237-OUT,disp-13-OUT,tess-8-OUT;n:type:ShaderForge.SFN_Tex2d,id:3,x:33164,y:33194,ptlb:Normals,ptin:_Normals,tex:cf20bfced7e912046a9ce991a4d775ec,ntxv:3,isnm:True|UVIN-6-OUT;n:type:ShaderForge.SFN_Tex2d,id:4,x:33775,y:33006,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-6-OUT,TEX-254-TEX;n:type:ShaderForge.SFN_TexCoord,id:5,x:34683,y:33020,uv:0;n:type:ShaderForge.SFN_Multiply,id:6,x:34456,y:33115|A-5-UVOUT,B-7-OUT;n:type:ShaderForge.SFN_Vector1,id:7,x:34683,y:33232,v1:2;n:type:ShaderForge.SFN_Vector1,id:8,x:32710,y:33620,v1:3;n:type:ShaderForge.SFN_Tex2d,id:12,x:34002,y:33284,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-6-OUT,MIP-15-OUT,TEX-254-TEX;n:type:ShaderForge.SFN_Multiply,id:13,x:32710,y:33418|A-14-OUT,B-17-OUT;n:type:ShaderForge.SFN_NormalVector,id:14,x:32937,y:33442,pt:False;n:type:ShaderForge.SFN_Vector1,id:15,x:34229,y:33364,v1:1;n:type:ShaderForge.SFN_Slider,id:16,x:33391,y:33639,ptlb:Depth,ptin:_Depth,min:0,cur:0.25,max:0.25;n:type:ShaderForge.SFN_Multiply,id:17,x:32937,y:33620|A-23-OUT,B-26-OUT;n:type:ShaderForge.SFN_OneMinus,id:23,x:33164,y:33379|IN-153-OUT;n:type:ShaderForge.SFN_Multiply,id:26,x:33164,y:33537|A-27-OUT,B-16-OUT;n:type:ShaderForge.SFN_Vector1,id:27,x:33391,y:33478,v1:-1;n:type:ShaderForge.SFN_Vector1,id:66,x:32710,y:32948,v1:10;n:type:ShaderForge.SFN_Tex2d,id:152,x:34002,y:33099,ptlb:Displacement (R),ptin:_DisplacementR,tex:28c7aad1372ff114b90d330f8a2dd938,ntxv:0,isnm:False|UVIN-161-UVOUT,MIP-15-OUT;n:type:ShaderForge.SFN_Max,id:153,x:33391,y:33276|A-152-R,B-12-A;n:type:ShaderForge.SFN_Subtract,id:154,x:33775,y:33174|A-12-A,B-152-R;n:type:ShaderForge.SFN_Clamp01,id:156,x:33391,y:33108|IN-154-OUT;n:type:ShaderForge.SFN_Lerp,id:157,x:32937,y:32948|A-159-OUT,B-3-RGB,T-156-OUT;n:type:ShaderForge.SFN_Vector3,id:159,x:33164,y:33061,v1:0,v2:0,v3:1;n:type:ShaderForge.SFN_Normalize,id:160,x:32710,y:33082|IN-157-OUT;n:type:ShaderForge.SFN_Panner,id:161,x:34229,y:32984,spu:1,spv:0|UVIN-6-OUT;n:type:ShaderForge.SFN_Lerp,id:162,x:33164,y:32875|A-163-OUT,B-170-OUT,T-156-OUT;n:type:ShaderForge.SFN_Vector3,id:163,x:33391,y:32790,v1:0.4117647,v2:0.3826572,v3:0.3602941;n:type:ShaderForge.SFN_Multiply,id:165,x:32710,y:32746|A-156-OUT,B-172-OUT;n:type:ShaderForge.SFN_Multiply,id:170,x:33391,y:32940|A-321-RGB,B-4-RGB;n:type:ShaderForge.SFN_ComponentMask,id:172,x:32937,y:32770,cc1:0,cc2:-1,cc3:-1,cc4:-1|IN-162-OUT;n:type:ShaderForge.SFN_OneMinus,id:174,x:32937,y:33284|IN-156-OUT;n:type:ShaderForge.SFN_Multiply,id:237,x:32710,y:33250|A-238-OUT,B-174-OUT;n:type:ShaderForge.SFN_Vector1,id:238,x:32937,y:33150,v1:0.5;n:type:ShaderForge.SFN_Tex2dAsset,id:254,x:34229,y:33145,ptlb:AO (RGB) Height (A),ptin:_AORGBHeightA,glob:False,tex:5fb7986dd6d0a8e4093ba82369dd6a4d;n:type:ShaderForge.SFN_Tex2d,id:321,x:33775,y:32821,ptlb:Diffuse,ptin:_Diffuse,tex:b66bceaf0cc0ace4e9bdc92f14bba709,ntxv:0,isnm:False;proporder:321-3-254-152-16;pass:END;sub:END;*/
+/*SF_DATA;ver:1.00;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:False,lprd:False,rprd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:False,tesm:0,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:1,x:34362,y:32994,varname:node_1,prsc:2|diff-162-OUT,spec-165-OUT,gloss-66-OUT,normal-160-OUT,lwrap-237-OUT,disp-13-OUT,tess-8-OUT;n:type:ShaderForge.SFN_Tex2d,id:3,x:33597,y:33194,ptovrint:False,ptlb:Normals,ptin:_Normals,varname:node_797,prsc:2,tex:cf20bfced7e912046a9ce991a4d775ec,ntxv:3,isnm:True|UVIN-6-OUT;n:type:ShaderForge.SFN_Tex2d,id:4,x:32986,y:33006,varname:node_798,prsc:2,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-6-OUT,TEX-254-TEX;n:type:ShaderForge.SFN_TexCoord,id:5,x:32078,y:33020,varname:node_5,prsc:2,uv:0;n:type:ShaderForge.SFN_Multiply,id:6,x:32305,y:33115,varname:node_6,prsc:2|A-5-UVOUT,B-7-OUT;n:type:ShaderForge.SFN_Vector1,id:7,x:32078,y:33232,varname:node_7,prsc:2,v1:2;n:type:ShaderForge.SFN_Vector1,id:8,x:34051,y:33620,varname:node_8,prsc:2,v1:3;n:type:ShaderForge.SFN_Tex2d,id:12,x:32759,y:33284,varname:node_803,prsc:2,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-6-OUT,MIP-15-OUT,TEX-254-TEX;n:type:ShaderForge.SFN_Multiply,id:13,x:34051,y:33418,varname:node_13,prsc:2|A-14-OUT,B-17-OUT;n:type:ShaderForge.SFN_NormalVector,id:14,x:33824,y:33442,prsc:2,pt:False;n:type:ShaderForge.SFN_Vector1,id:15,x:32532,y:33364,varname:node_15,prsc:2,v1:1;n:type:ShaderForge.SFN_Slider,id:16,x:33213,y:33639,ptovrint:False,ptlb:Depth,ptin:_Depth,varname:node_807,prsc:2,min:0,cur:0.25,max:0.25;n:type:ShaderForge.SFN_Multiply,id:17,x:33824,y:33620,varname:node_17,prsc:2|A-23-OUT,B-26-OUT;n:type:ShaderForge.SFN_OneMinus,id:23,x:33597,y:33379,varname:node_23,prsc:2|IN-153-OUT;n:type:ShaderForge.SFN_Multiply,id:26,x:33597,y:33537,varname:node_26,prsc:2|A-27-OUT,B-16-OUT;n:type:ShaderForge.SFN_Vector1,id:27,x:33370,y:33478,varname:node_27,prsc:2,v1:-1;n:type:ShaderForge.SFN_Vector1,id:66,x:34051,y:32948,varname:node_66,prsc:2,v1:10;n:type:ShaderForge.SFN_Tex2d,id:152,x:32759,y:33099,ptovrint:False,ptlb:Displacement (R),ptin:_DisplacementR,varname:node_813,prsc:2,tex:28c7aad1372ff114b90d330f8a2dd938,ntxv:0,isnm:False|UVIN-161-UVOUT,MIP-15-OUT;n:type:ShaderForge.SFN_Max,id:153,x:33370,y:33276,varname:node_153,prsc:2|A-152-R,B-12-A;n:type:ShaderForge.SFN_Subtract,id:154,x:32986,y:33174,varname:node_154,prsc:2|A-12-A,B-152-R;n:type:ShaderForge.SFN_Clamp01,id:156,x:33370,y:33108,varname:node_156,prsc:2|IN-154-OUT;n:type:ShaderForge.SFN_Lerp,id:157,x:33824,y:32948,varname:node_157,prsc:2|A-159-OUT,B-3-RGB,T-156-OUT;n:type:ShaderForge.SFN_Vector3,id:159,x:33597,y:33061,varname:node_159,prsc:2,v1:0,v2:0,v3:1;n:type:ShaderForge.SFN_Normalize,id:160,x:34051,y:33082,varname:node_160,prsc:2|IN-157-OUT;n:type:ShaderForge.SFN_Panner,id:161,x:32532,y:32984,varname:node_161,prsc:2,spu:1,spv:0|UVIN-6-OUT;n:type:ShaderForge.SFN_Lerp,id:162,x:33597,y:32875,varname:node_162,prsc:2|A-163-OUT,B-170-OUT,T-156-OUT;n:type:ShaderForge.SFN_Vector3,id:163,x:33370,y:32790,varname:node_163,prsc:2,v1:0.4117647,v2:0.3826572,v3:0.3602941;n:type:ShaderForge.SFN_Multiply,id:165,x:34051,y:32746,varname:node_165,prsc:2|A-156-OUT,B-172-OUT;n:type:ShaderForge.SFN_Multiply,id:170,x:33370,y:32940,varname:node_170,prsc:2|A-321-RGB,B-4-RGB;n:type:ShaderForge.SFN_ComponentMask,id:172,x:33824,y:32770,varname:node_172,prsc:2,cc1:0,cc2:-1,cc3:-1,cc4:-1|IN-162-OUT;n:type:ShaderForge.SFN_OneMinus,id:174,x:33824,y:33284,varname:node_174,prsc:2|IN-156-OUT;n:type:ShaderForge.SFN_Multiply,id:237,x:34051,y:33250,varname:node_237,prsc:2|A-238-OUT,B-174-OUT;n:type:ShaderForge.SFN_Vector1,id:238,x:33824,y:33150,varname:node_238,prsc:2,v1:0.5;n:type:ShaderForge.SFN_Tex2dAsset,id:254,x:32532,y:33145,ptovrint:False,ptlb:AO (RGB) Height (A),ptin:_AORGBHeightA,varname:node_829,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:321,x:32986,y:32821,ptovrint:False,ptlb:Diffuse,ptin:_Diffuse,varname:node_830,prsc:2,tex:b66bceaf0cc0ace4e9bdc92f14bba709,ntxv:0,isnm:False;proporder:321-3-254-152-16;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/TessellationDisplacement" {
     Properties {
@@ -60,7 +60,7 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
+                o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(_Object2World, v.vertex);
@@ -93,13 +93,13 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
                     return o;
                 }
                 void displacement (inout VertexInput v){
-                    float4 node_348 = _Time + _TimeEditor;
-                    float2 node_6 = (v.texcoord0.rg*2.0);
-                    float2 node_161 = (node_6+node_348.g*float2(1,0));
+                    float4 node_857 = _Time + _TimeEditor;
+                    float2 node_6 = (v.texcoord0*2.0);
+                    float2 node_161 = (node_6+node_857.g*float2(1,0));
                     float node_15 = 1.0;
-                    float4 node_152 = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
-                    float4 node_12 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
-                    v.vertex.xyz +=  (v.normal*((1.0 - max(node_152.r,node_12.a))*((-1.0)*_Depth)));
+                    float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
+                    float4 node_803 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
+                    v.vertex.xyz +=  (v.normal*((1.0 - max(_DisplacementR_var.r,node_803.a))*((-1.0)*_Depth)));
                 }
                 float Tessellation(TessVertex v, TessVertex v1, TessVertex v2){
                     return 3.0;
@@ -136,44 +136,47 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             fixed4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
+/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-/////// Normals:
-                float2 node_6 = (i.uv0.rg*2.0);
+                float2 node_6 = (i.uv0*2.0);
+                float3 _Normals_var = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_6, _Normals)));
                 float node_15 = 1.0;
-                float4 node_12 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
-                float4 node_348 = _Time + _TimeEditor;
-                float2 node_161 = (node_6+node_348.g*float2(1,0));
-                float4 node_152 = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
-                float node_156 = saturate((node_12.a-node_152.r));
-                float3 normalLocal = normalize(lerp(float3(0,0,1),UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_6, _Normals))).rgb,node_156));
-                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
+                float4 node_803 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
+                float4 node_857 = _Time + _TimeEditor;
+                float2 node_161 = (node_6+node_857.g*float2(1,0));
+                float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
+                float node_156 = saturate((node_803.a-_DisplacementR_var.r));
+                float3 normalLocal = normalize(lerp(float3(0,0,1),_Normals_var.rgb,node_156));
+                float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
-/////// Diffuse:
-                float NdotL = dot( normalDirection, lightDirection );
-                float node_237 = (0.5*(1.0 - node_156));
-                float3 w = float3(node_237,node_237,node_237)*0.5; // Light wrapping
-                float3 NdotLWrap = NdotL * ( 1.0 - w );
-                float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
-                float3 diffuse = forwardLight * attenColor + UNITY_LIGHTMODEL_AMBIENT.rgb;
 ///////// Gloss:
                 float gloss = 10.0;
                 float specPow = exp2( gloss * 10.0+1.0);
 ////// Specular:
-                NdotL = max(0.0, NdotL);
-                float2 node_349 = i.uv0;
-                float3 node_162 = lerp(float3(0.4117647,0.3826572,0.3602941),(tex2D(_Diffuse,TRANSFORM_TEX(node_349.rg, _Diffuse)).rgb*tex2D(_AORGBHeightA,TRANSFORM_TEX(node_6, _AORGBHeightA)).rgb),node_156);
+                float NdotL = max(0, dot( normalDirection, lightDirection ));
+                float4 _Diffuse_var = tex2D(_Diffuse,TRANSFORM_TEX(i.uv0, _Diffuse));
+                float4 node_798 = tex2D(_AORGBHeightA,TRANSFORM_TEX(node_6, _AORGBHeightA));
+                float3 node_162 = lerp(float3(0.4117647,0.3826572,0.3602941),(_Diffuse_var.rgb*node_798.rgb),node_156);
                 float node_165 = (node_156*node_162.r);
                 float3 specularColor = float3(node_165,node_165,node_165);
-                float3 specular = (floor(attenuation) * _LightColor0.xyz) * pow(max(0,dot(halfDirection,normalDirection)),specPow) * specularColor;
-                float3 finalColor = 0;
-                float3 diffuseLight = diffuse;
-                finalColor += diffuseLight * node_162;
-                finalColor += specular;
+                float3 directSpecular = (floor(attenuation) * _LightColor0.xyz) * pow(max(0,dot(halfDirection,normalDirection)),specPow);
+                float3 specular = directSpecular * specularColor;
+/////// Diffuse:
+                NdotL = dot( normalDirection, lightDirection );
+                float node_237 = (0.5*(1.0 - node_156));
+                float3 w = float3(node_237,node_237,node_237)*0.5; // Light wrapping
+                float3 NdotLWrap = NdotL * ( 1.0 - w );
+                float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
+                float3 indirectDiffuse = float3(0,0,0);
+                float3 directDiffuse = forwardLight * attenColor;
+                indirectDiffuse += UNITY_LIGHTMODEL_AMBIENT.rgb; // Ambient Light
+                float3 diffuse = (directDiffuse + indirectDiffuse) * node_162;
 /// Final Color:
+                float3 finalColor = diffuse + specular;
                 return fixed4(finalColor,1);
             }
             ENDCG
@@ -225,7 +228,7 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
+                o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(_Object2World, v.vertex);
@@ -258,13 +261,13 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
                     return o;
                 }
                 void displacement (inout VertexInput v){
-                    float4 node_350 = _Time + _TimeEditor;
-                    float2 node_6 = (v.texcoord0.rg*2.0);
-                    float2 node_161 = (node_6+node_350.g*float2(1,0));
+                    float4 node_859 = _Time + _TimeEditor;
+                    float2 node_6 = (v.texcoord0*2.0);
+                    float2 node_161 = (node_6+node_859.g*float2(1,0));
                     float node_15 = 1.0;
-                    float4 node_152 = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
-                    float4 node_12 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
-                    v.vertex.xyz +=  (v.normal*((1.0 - max(node_152.r,node_12.a))*((-1.0)*_Depth)));
+                    float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
+                    float4 node_803 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
+                    v.vertex.xyz +=  (v.normal*((1.0 - max(_DisplacementR_var.r,node_803.a))*((-1.0)*_Depth)));
                 }
                 float Tessellation(TessVertex v, TessVertex v1, TessVertex v2){
                     return 3.0;
@@ -301,44 +304,45 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             fixed4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
+/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-/////// Normals:
-                float2 node_6 = (i.uv0.rg*2.0);
+                float2 node_6 = (i.uv0*2.0);
+                float3 _Normals_var = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_6, _Normals)));
                 float node_15 = 1.0;
-                float4 node_12 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
-                float4 node_350 = _Time + _TimeEditor;
-                float2 node_161 = (node_6+node_350.g*float2(1,0));
-                float4 node_152 = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
-                float node_156 = saturate((node_12.a-node_152.r));
-                float3 normalLocal = normalize(lerp(float3(0,0,1),UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_6, _Normals))).rgb,node_156));
-                float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
+                float4 node_803 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
+                float4 node_859 = _Time + _TimeEditor;
+                float2 node_161 = (node_6+node_859.g*float2(1,0));
+                float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
+                float node_156 = saturate((node_803.a-_DisplacementR_var.r));
+                float3 normalLocal = normalize(lerp(float3(0,0,1),_Normals_var.rgb,node_156));
+                float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
-/////// Diffuse:
-                float NdotL = dot( normalDirection, lightDirection );
-                float node_237 = (0.5*(1.0 - node_156));
-                float3 w = float3(node_237,node_237,node_237)*0.5; // Light wrapping
-                float3 NdotLWrap = NdotL * ( 1.0 - w );
-                float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
-                float3 diffuse = forwardLight * attenColor;
 ///////// Gloss:
                 float gloss = 10.0;
                 float specPow = exp2( gloss * 10.0+1.0);
 ////// Specular:
-                NdotL = max(0.0, NdotL);
-                float2 node_351 = i.uv0;
-                float3 node_162 = lerp(float3(0.4117647,0.3826572,0.3602941),(tex2D(_Diffuse,TRANSFORM_TEX(node_351.rg, _Diffuse)).rgb*tex2D(_AORGBHeightA,TRANSFORM_TEX(node_6, _AORGBHeightA)).rgb),node_156);
+                float NdotL = max(0, dot( normalDirection, lightDirection ));
+                float4 _Diffuse_var = tex2D(_Diffuse,TRANSFORM_TEX(i.uv0, _Diffuse));
+                float4 node_798 = tex2D(_AORGBHeightA,TRANSFORM_TEX(node_6, _AORGBHeightA));
+                float3 node_162 = lerp(float3(0.4117647,0.3826572,0.3602941),(_Diffuse_var.rgb*node_798.rgb),node_156);
                 float node_165 = (node_156*node_162.r);
                 float3 specularColor = float3(node_165,node_165,node_165);
-                float3 specular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),specPow) * specularColor;
-                float3 finalColor = 0;
-                float3 diffuseLight = diffuse;
-                finalColor += diffuseLight * node_162;
-                finalColor += specular;
+                float3 directSpecular = attenColor * pow(max(0,dot(halfDirection,normalDirection)),specPow);
+                float3 specular = directSpecular * specularColor;
+/////// Diffuse:
+                NdotL = dot( normalDirection, lightDirection );
+                float node_237 = (0.5*(1.0 - node_156));
+                float3 w = float3(node_237,node_237,node_237)*0.5; // Light wrapping
+                float3 NdotLWrap = NdotL * ( 1.0 - w );
+                float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
+                float3 directDiffuse = forwardLight * attenColor;
+                float3 diffuse = directDiffuse * node_162;
 /// Final Color:
+                float3 finalColor = diffuse + specular;
                 return fixed4(finalColor * 1,0);
             }
             ENDCG
@@ -383,7 +387,7 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
+                o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 TRANSFER_SHADOW_COLLECTOR(o)
                 return o;
@@ -413,13 +417,13 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
                     return o;
                 }
                 void displacement (inout VertexInput v){
-                    float4 node_352 = _Time + _TimeEditor;
-                    float2 node_6 = (v.texcoord0.rg*2.0);
-                    float2 node_161 = (node_6+node_352.g*float2(1,0));
+                    float4 node_861 = _Time + _TimeEditor;
+                    float2 node_6 = (v.texcoord0*2.0);
+                    float2 node_161 = (node_6+node_861.g*float2(1,0));
                     float node_15 = 1.0;
-                    float4 node_152 = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
-                    float4 node_12 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
-                    v.vertex.xyz +=  (v.normal*((1.0 - max(node_152.r,node_12.a))*((-1.0)*_Depth)));
+                    float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
+                    float4 node_803 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
+                    v.vertex.xyz +=  (v.normal*((1.0 - max(_DisplacementR_var.r,node_803.a))*((-1.0)*_Depth)));
                 }
                 float Tessellation(TessVertex v, TessVertex v1, TessVertex v2){
                     return 3.0;
@@ -455,6 +459,7 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             #endif
             fixed4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
+/////// Vectors:
                 SHADOW_COLLECTOR_FRAGMENT(i)
             }
             ENDCG
@@ -500,7 +505,7 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
+                o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 TRANSFER_SHADOW_CASTER(o)
                 return o;
@@ -530,13 +535,13 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
                     return o;
                 }
                 void displacement (inout VertexInput v){
-                    float4 node_353 = _Time + _TimeEditor;
-                    float2 node_6 = (v.texcoord0.rg*2.0);
-                    float2 node_161 = (node_6+node_353.g*float2(1,0));
+                    float4 node_862 = _Time + _TimeEditor;
+                    float2 node_6 = (v.texcoord0*2.0);
+                    float2 node_161 = (node_6+node_862.g*float2(1,0));
                     float node_15 = 1.0;
-                    float4 node_152 = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
-                    float4 node_12 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
-                    v.vertex.xyz +=  (v.normal*((1.0 - max(node_152.r,node_12.a))*((-1.0)*_Depth)));
+                    float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
+                    float4 node_803 = tex2Dlod(_AORGBHeightA,float4(TRANSFORM_TEX(node_6, _AORGBHeightA),0.0,node_15));
+                    v.vertex.xyz +=  (v.normal*((1.0 - max(_DisplacementR_var.r,node_803.a))*((-1.0)*_Depth)));
                 }
                 float Tessellation(TessVertex v, TessVertex v1, TessVertex v2){
                     return 3.0;
@@ -572,6 +577,7 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             #endif
             fixed4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
+/////// Vectors:
                 SHADOW_CASTER_FRAGMENT(i)
             }
             ENDCG

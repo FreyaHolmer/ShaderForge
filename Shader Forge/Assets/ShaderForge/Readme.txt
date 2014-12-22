@@ -1,13 +1,10 @@
+﻿
 
-
-README - SHADER FORGE BETA:
----------------------------
-
+README - SHADER FORGE:
+----------------------
 First off - Massive thanks for purchasing Shader Forge!
 You hopefully can't wait to get started, but you should give this document a read, it's not that long :)
 
-Shader Forge is currently in beta, which means that things could potentially change in a way that alters your shaders,
-when opening them with a newer version. I will, however, try to avoid this. I honestly don't think it will happen, but it could.
 
 Contact / Support:
 ------------------
@@ -55,15 +52,15 @@ linked to either the website http://www.acegikmo.com/shaderforge/ or the asset s
 
 Quick start:
 ------------
-   Opening Shader Forge = Window -> Shader Forge
- 	     	    Panning = Click and drag empty space
-	     	    Zooming = Mouse wheel
-		   Adding nodes = RMB + select node OR drag from right panel and place
-		   Moving nodes = Click and drag
-	    Selecting nodes = Click to select, shift/control click to add to selection
-	   Box select nodes = Hold Alt + Drag. Shift/control click to add to selection
-      	 Deleting nodes = Select and press delete
-   Deleting connections = Hold alt and drag RMB in empty space to start cutting lines.
-  Disconnect connectors = Alt+RMB on connectors to disconnect them. Alternatively, hover the cursor over a connector and press backspace
+Opening Shader Forge = Window -> Shader Forge
+Panning = Click and drag empty space
+Zooming = Mouse wheel
+Adding nodes = RMB + select node OR drag from right panel and place
+Moving nodes = Click and drag
+Selecting nodes = Click to select, shift/control click to add to selection
+Box select nodes = Hold Alt + Drag. Shift/control click to add to selection
+Deleting nodes = Select and press delete
+Deleting connections = Hold alt and drag RMB in empty space to start cutting lines.
+Disconnect connectors = Alt+RMB on connectors to disconnect them. Alternatively, hover the cursor over a connector and press backspace
 
 

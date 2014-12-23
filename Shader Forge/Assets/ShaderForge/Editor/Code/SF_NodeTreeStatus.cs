@@ -257,6 +257,13 @@ namespace ShaderForge {
 			}
 
 
+			if(editor.ps.HasDiffuse() && !editor.ps.HasSpecular() && editor.ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL){
+				errors.Add( SF_ErrorEntry.Create( "Using PBL without specular doesn't make much sense - consider plugging in a value into the Specular input", true ) );
+			}
+
+
+
+
 
 
 

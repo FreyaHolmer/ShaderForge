@@ -44,6 +44,7 @@ namespace ShaderForge {
 		public bool frag_viewDirection = false;
 		public bool frag_normalDirection = false;
 		public bool frag_lightDirection = false;
+		public bool frag_lightColor = false;
 		public bool frag_halfDirection = false;
 		public bool frag_attenuation = false;
 		public bool frag_tangentTransform = false;
@@ -144,6 +145,7 @@ namespace ShaderForge {
 
 		public void NeedLightColor() {
 			lightColor = true;
+			frag_lightColor = true;
 		}
 
 		public void NeedFragAttenuation(){

@@ -129,6 +129,12 @@ namespace ShaderForge {
 				if( ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.BlinnPhong || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) && ps.mOut.specular.IsConnectedEnabledAndAvailableInThisPass( currentPass ) ) {
 					dependencies.NeedFragHalfDir();
 				}
+
+				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL && SF_Tools.UsingUnity5plus && ps.mOut.diffuse.IsConnectedEnabledAndAvailableInThisPass(currentPass)){
+					dependencies.NeedFragHalfDir();
+				}
+
+
 			}
 
 			if( currentPass == PassType.PrePassBase ) {
@@ -160,6 +166,16 @@ namespace ShaderForge {
 				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.BlinnPhong || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL )
 					dependencies.NeedVertHalfDir();
 				dependencies.NeedVertLightDir();
+			}
+
+
+			if( ps.catLighting.lightmapped && SF_Tools.UsingUnity5plus){
+				dependencies.NeedFragWorldPos();
+				dependencies.NeedFragViewDirection();
+				dependencies.uv1 = true;
+				dependencies.uv1_frag = true;
+				dependencies.uv2 = true;
+				dependencies.uv2_frag = true;
 			}
 
 
@@ -515,6 +531,17 @@ namespace ShaderForge {
 			}
 
 
+			if( ps.catLighting.lightprobed ) {
+				if( SF_Tools.UsingUnity5plus )
+					App( "#define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )" );
+				else
+					App( "#define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )" );
+			}
+			
+			if(SF_Tools.UsingUnity5plus & ps.catLighting.reflectprobed ){
+				App ("#define _GLOSSYENV 1");
+			}
+
 
 
 			App( "#include \"UnityCG.cginc\"" );
@@ -525,17 +552,11 @@ namespace ShaderForge {
 				App( "#include \"Lighting.cginc\"" );
 			if( dependencies.tessellation )
 				App( "#include \"Tessellation.cginc\"" );
-
-			if( ps.catLighting.lightprobed ) {
-				if( SF_Tools.CurrentUnityVersion >= 5.0 )
-					App( "#define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )" );
-				else
-					App( "#define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )" );
-			}
-
-			if( ps.catLighting.reflectprobed || Unity5PBL() ) {
+			if( SF_Tools.UsingUnity5plus && (ps.catLighting.lightmapped || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL)){
+				App( "#include \"UnityPBSLighting.cginc\"" );
 				App( "#include \"UnityStandardBRDF.cginc\"" );
 			}
+
 
 			if( currentPass == PassType.PrePassFinal ) {
 				App( "#pragma multi_compile_prepassfinal" );
@@ -747,7 +768,7 @@ namespace ShaderForge {
 			}
 
 
-			if( LightmapThisPass() ) {
+			if( LightmapThisPass() && SF_Tools.UsingUnity4) {
 				App( "#ifndef LIGHTMAP_OFF" );
 				scope++;
 				{
@@ -770,47 +791,40 @@ namespace ShaderForge {
 				App( "#endif" );
 			}
 
+			// TODO: U5 LMs
+
+
+			if(SF_Tools.UsingUnity5){
+				App("float4 unity_LightmapST;");
+				App("#ifdef DYNAMICLIGHTMAP_ON");
+				scope++;
+				App("float4 unity_DynamicLightmapST;");
+				scope--;
+				App("#endif");
+			}
 
 
 			if( dependencies.reflection_probes ) {
 
-				App( "#define _GLOSSYENV" );
-				App( "#if !defined(SHADER_API_MOBILE) && !defined(SHADER_API_SM2) && !defined(SHADER_API_D3D11_9X)" );
-				scope++;
-				App( "#define _GLOSSYENV_BOX_PROJECTION 1" );
-				scope--;
-				App( "#endif" );
+	
+				
+				
 
-				App( "" );
-				App( "#ifdef _GLOSSYENV" );
-				scope++;
-				App( "#ifdef _GLOSSYENV_BOX_PROJECTION" );
-				scope++;
-				App( "float4 unity_SpecCube_BoxMax;" );
-				App( "float4 unity_SpecCube_BoxMin;" );
-				App( "float4 unity_SpecCube_ProbePosition;" );
-				App( "inline void BoxProject(inout float3 cubeDir, float3 worldPos, float4 probePos, float4 boxMin, float4 boxMax ){" );
-				scope++;
-				App( "if (probePos.w > 0.0){" );
-				scope++;
-				App( "half3 nrdir = normalize(cubeDir);" );
-				App( "half3 rbmax = (boxMax.xyz - worldPos) / nrdir;" );
-				App( "half3 rbmin = (boxMin.xyz - worldPos) / nrdir;" );
-				App( "half3 rbminmax = (nrdir > 0.0f) ? rbmax : rbmin;" );
-				App( "half fa = min(min(rbminmax.x, rbminmax.y), rbminmax.z);" );
-				App( "float3 aabbCenter = (boxMax.xyz + boxMin.xyz) * 0.5;" );
-				App( "float3 offset = aabbCenter - probePos.xyz;" );
-				App( "float3 posonbox = offset + worldPos + nrdir * fa;" );
-				App( "cubeDir = posonbox - aabbCenter;" );
-				scope--;
-				App( "}" );
-				scope--;
-				App( "}" );
-				scope--;
-				App( "#endif" );
-				scope--;
-				App( "#endif" );
+				
+				App("float4 unity_SpecCube_BoxMax;");
+				App("float4 unity_SpecCube_BoxMin;");
+				App("float4 unity_SpecCube_ProbePosition;");
+				App("half4 unity_SpecCube_HDR;");
+				
+				App("float4 unity_SpecCube_BoxMax1;");
+				App("float4 unity_SpecCube_BoxMin1;");
+				App("float4 unity_SpecCube_ProbePosition1;");
+				App("half4 unity_SpecCube_HDR1;");
+
+
 			}
+
+
 
 
 
@@ -845,24 +859,33 @@ namespace ShaderForge {
 		void PrepareLightmapVars() {
 			if( !LightmapThisPass() )
 				return;
-			App( "#ifndef LIGHTMAP_OFF" );
-			scope++;
-			App( "float4 lmtex = tex2D(unity_Lightmap,i.uvLM);" );
-			App( "#ifndef DIRLIGHTMAP_OFF" );
-			scope++;
-			App( "float3 lightmap = DecodeLightmap(lmtex);" );
-			App( "float3 scalePerBasisVector = DecodeLightmap(tex2D(unity_LightmapInd,i.uvLM));" );
-			App( "UNITY_DIRBASIS" );
-			App( "half3 normalInRnmBasis = saturate (mul (unity_DirBasis, " + LightmapNormalDir() + "));" );
-			App( "lightmap *= dot (normalInRnmBasis, scalePerBasisVector);" );
-			scope--;
-			App( "#else" );
-			scope++;
-			App( "float3 lightmap = DecodeLightmap(lmtex);" );
-			scope--;
-			App( "#endif" );
-			scope--;
-			App( "#endif" );
+
+			if(SF_Tools.UsingUnity4){
+				App( "#ifndef LIGHTMAP_OFF" );
+				scope++;
+				App( "float4 lmtex = tex2D(unity_Lightmap,i.uvLM);" );
+				App( "#ifndef DIRLIGHTMAP_OFF" );
+				scope++;
+				App( "float3 lightmap = DecodeLightmap(lmtex);" );
+				App( "float3 scalePerBasisVector = DecodeLightmap(tex2D(unity_LightmapInd,i.uvLM));" );
+				App( "UNITY_DIRBASIS" );
+				App( "half3 normalInRnmBasis = saturate (mul (unity_DirBasis, " + LightmapNormalDir() + "));" );
+				App( "lightmap *= dot (normalInRnmBasis, scalePerBasisVector);" );
+				scope--;
+				App( "#else" );
+				scope++;
+				App( "float3 lightmap = DecodeLightmap(lmtex);" );
+				scope--;
+				App( "#endif" );
+				scope--;
+				App( "#endif" );
+			} else {
+
+				// TODO U5 LMs
+
+
+			}
+
 		}
 
 		void InitLightDir() {
@@ -874,14 +897,15 @@ namespace ShaderForge {
 				return;
 
 			if( currentPass == PassType.FwdBase ) {
-				if( ps.catLighting.lightmapped ) {
+				if( ps.catLighting.lightmapped && SF_Tools.UsingUnity4 ) {
 					App( "#ifndef LIGHTMAP_OFF" );
 					scope++;
 					App( "#ifdef DIRLIGHTMAP_OFF" );
 					scope++;
 				}
 				App( "float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);" );
-				if( ps.catLighting.lightmapped ) {
+
+				if( ps.catLighting.lightmapped && SF_Tools.UsingUnity4 ) {
 					scope--;
 					App( "#else" );
 					scope++;
@@ -904,6 +928,11 @@ namespace ShaderForge {
 			App( "float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - " + WithProgramPrefix( "posWorld.xyz" ) + ",_WorldSpaceLightPos0.w));" );
 
 		}
+
+		void InitLightColor(){
+			App("float3 lightColor = _LightColor0.rgb;");
+		}
+
 
 		void InitHalfVector() {
 			if( ( !dependencies.frag_halfDirection && currentProgram == ShaderProgram.Frag ) || ( !dependencies.vert_halfDirection && currentProgram == ShaderProgram.Vert ) )
@@ -994,10 +1023,21 @@ namespace ShaderForge {
 				lmbStr = "";
 			} else {
 
-				if( !ps.HasSpecular() ) {
-					App( "float NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
+
+				bool noSpec = !ps.HasSpecular();
+				bool unity5pblDiffuse = SF_Tools.UsingUnity5plus && ps.HasDiffuse() && ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL;
+
+				bool needsToDefineNdotV = noSpec && unity5pblDiffuse;
+
+				if( needsToDefineNdotV ) {
+					App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
+				}
+
+
+				if( noSpec ) {
+					App( "float NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
 				} else {
-					App( "NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
+					App( "NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
 				}
 
 				if( Unity5PBL() ) {
@@ -1050,7 +1090,7 @@ namespace ShaderForge {
 
 
 
-			if( LightmapThisPass() ) {
+			if( LightmapThisPass() && SF_Tools.UsingUnity4 ) {
 				App( "#ifndef LIGHTMAP_OFF" );
 				scope++;
 				App( "float3 directDiffuse = float3(0,0,0);" );
@@ -1069,7 +1109,7 @@ namespace ShaderForge {
 
 
 
-			if( LightmapThisPass() ) {
+			if( LightmapThisPass() && SF_Tools.UsingUnity4) {
 				App( "#ifndef LIGHTMAP_OFF" );
 				scope++;
 				if( InDeferredPass() ) {
@@ -1125,7 +1165,7 @@ namespace ShaderForge {
 				if( ambDiff )
 					App( "indirectDiffuse += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light" );
 
-				if( shLight ) {
+				if( shLight && SF_Tools.UsingUnity4 ) {
 
 
 					App( "#if SHOULD_SAMPLE_SH_PROBE" );
@@ -1136,6 +1176,14 @@ namespace ShaderForge {
 						App( "indirectDiffuse += i.shLight; // Per-Vertex Light Probes / Spherical harmonics" );
 					scope--;
 					App( "#endif" );
+
+				}
+
+				if(SF_Tools.UsingUnity5plus && (ps.catLighting.lightmapped || ps.catLighting.lightprobed)){
+
+
+					App ("indirectDiffuse += gi.indirect.diffuse;");
+
 
 				}
 
@@ -1322,7 +1370,7 @@ namespace ShaderForge {
 			bool occluded = ps.mOut.specularOcclusion.IsConnectedEnabledAndAvailableInThisPass( currentPass );
 			bool ambSpec = DoAmbientSpecThisPass();
 			bool reflProbed = dependencies.reflection_probes;
-			bool hasIndirectSpecular = ambSpec || reflProbed;
+			bool hasIndirectSpecular = ambSpec || (reflProbed && (currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ));
 			string indirectSpecular = "";
 
 			if( hasIndirectSpecular ) {
@@ -1333,23 +1381,13 @@ namespace ShaderForge {
 
 				indirectSpecular = "float3 indirectSpecular = ";
 
-				if( reflProbed ) {
-					App( "float3 reflectionProbes = float3(0,0,0);" );
-					App( "#ifdef _GLOSSYENV" );
-					scope++;
-					App( "half3 cubeDir = viewReflectDirection;" );
-					App( "#ifdef _GLOSSYENV_BOX_PROJECTION" );
-					scope++;
-					App( "BoxProject(cubeDir, i.posWorld, unity_SpecCube_ProbePosition, unity_SpecCube_BoxMin, unity_SpecCube_BoxMax );" );
-					scope--;
-					App( "#endif" );
-					App( "reflectionProbes = Unity_GlossyEnvironment (cubeDir, 1-gloss);" );
-					scope--;
-					App( "#endif" );
-				}
+
+
+
+
 
 				if( reflProbed ) {
-					indirectSpecular += "(reflectionProbes";
+					indirectSpecular += "(gi.indirect.specular";
 				} else {
 					indirectSpecular += "(0";
 				}
@@ -1365,7 +1403,13 @@ namespace ShaderForge {
 					indirectSpecular += " * specularAO";
 				}
 
+
 			}
+
+
+
+
+
 
 
 
@@ -1552,8 +1596,8 @@ namespace ShaderForge {
 
 
 
-			
-			if( LightmapThisPass() ) {
+
+			if( LightmapThisPass() && SF_Tools.UsingUnity4 ) {
 				if( !InDeferredPass() ) {
 					App( "#if !defined(LIGHTMAP_OFF) && defined(DIRLIGHTMAP_OFF)" );
 					scope++;
@@ -1599,7 +1643,7 @@ namespace ShaderForge {
 				#endif 
 			 */
 
-			if( ps.catLighting.lightmapped ) {
+			if( ps.catLighting.lightmapped && SF_Tools.UsingUnity4 ) {
 				if( currentPass == PassType.FwdBase ) {
 					App( "#ifndef LIGHTMAP_OFF" );
 					scope++;
@@ -1899,7 +1943,7 @@ namespace ShaderForge {
 				scope--;
 				App( "#endif" );
 
-				if( ps.catLighting.lightmapped ) {
+				if( ps.catLighting.lightmapped && SF_Tools.UsingUnity4 ) {
 					App( "#ifndef LIGHTMAP_OFF" );
 					scope++;
 					{
@@ -1956,12 +2000,23 @@ namespace ShaderForge {
 			}
 
 
+			bool unity5pblDiffusePlugged = SF_Tools.UsingUnity5plus && ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL && ps.mOut.diffuse.IsConnectedEnabledAndAvailableInThisPass(currentPass);
+
+
+			if( DoPassSpecular() || unity5pblDiffusePlugged ) { // Specular
+				if( !InDeferredPass() )
+					CalcGloss();
+			}
+
+
+			CalcGIdata();
+
 
 
 
 			if( DoPassSpecular() ) { // Specular
-				if( !InDeferredPass() )
-					CalcGloss();
+				//if( !InDeferredPass() )
+					//CalcGloss();
 				CalcSpecular();
 				//AppDebug("Spec done"); 
 			}
@@ -1984,11 +2039,17 @@ namespace ShaderForge {
 				bool fresnelIndirectPBL =
 					Unity5PBL() &&
 					ps.catLighting.fresnelTerm &&
-					( ps.catLighting.reflectprobed || ps.HasAmbientSpecular() )
+					( ps.catLighting.reflectprobed || ps.HasAmbientSpecular() ) && 
+					(currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal)
 				;
 
 				if( fresnelIndirectPBL ) {
-					App( "float3 indirectFresnelPBL = indirectSpecular*(1-specularMonochrome)*gloss*FresnelTerm(0,NdotV);" );
+					if(ps.HasSpecular()){
+						App( "float3 indirectFresnelPBL = indirectSpecular*(1-specularMonochrome)*gloss*FresnelTerm(0,NdotV);" );
+					} else {
+						App( "float3 indirectFresnelPBL = gloss*FresnelTerm(0,NdotV);;" );
+					}
+
 				}
 
 
@@ -2003,6 +2064,85 @@ namespace ShaderForge {
 			}
 
 		}
+
+
+		void CalcGIdata(){
+
+
+			if( currentPass == PassType.FwdBase && SF_Tools.UsingUnity5plus ){
+				
+				
+				
+				
+				
+				App("UnityLight light;");
+				App("#ifdef LIGHTMAP_OFF");
+				scope++;
+				App("light.color = lightColor;");
+				App("light.dir = lightDirection;");
+				App("light.ndotl = LambertTerm (normalDirection, light.dir);");
+				scope--;
+				App("#else");
+				scope++;
+				App("light.color = half3(0.f, 0.f, 0.f);");
+				App("light.ndotl = 0.0f;");
+				App("light.dir = half3(0.f, 0.f, 0.f);");
+				scope--;
+				App("#endif");
+				
+				
+				App("UnityGIInput d;");
+				App("d.light = light;");
+				App("d.worldPos = i.posWorld.xyz;");
+				App("d.worldViewDir = viewDirection;");
+				App("d.atten = attenuation;");
+				
+				App ("#ifndef LIGHTMAP_OFF");
+				scope++;
+				App("d.ambientOrLightmapUV = i.uvLM;");
+				scope--;
+				App ("#else");
+				scope++;
+				App("d.ambientOrLightmapUV.xyz = i.shLight;");
+				scope--;
+				App ("#endif");
+				
+
+
+				if(DoPassSpecular()){
+					App("d.boxMax[0] = unity_SpecCube_BoxMax;");
+					App("d.boxMin[0] = unity_SpecCube_BoxMin;");
+					App("d.probePosition[0] = unity_SpecCube_ProbePosition;");
+					App("d.probeHDR[0] = unity_SpecCube_HDR;");
+					
+					App("d.boxMax[1] = unity_SpecCube_BoxMax1;");
+					App("d.boxMin[1] = unity_SpecCube_BoxMin1;");
+					App("d.probePosition[1] = unity_SpecCube_ProbePosition1;");
+					App("d.probeHDR[1] = unity_SpecCube_HDR1;");
+
+				}
+
+				
+				string glossStr = DoPassSpecular() ? "gloss" : "0";
+				App("UnityGI gi = UnityStandardGlobalIllumination (d, 1, "+glossStr+", normalDirection);");
+
+				// Run the BRDF again per light (light2, light3)
+
+				App ("lightDirection = gi.light.dir;");
+				App ("lightColor = gi.light.color;");
+				
+				
+			}
+
+
+
+
+
+		}
+
+
+
+
 
 		string SumString( bool[] bools, string[] strings, string defStr ) {
 
@@ -2211,46 +2351,72 @@ namespace ShaderForge {
 
 				bool sh = DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes;
 				bool lm = LightmapThisPass();
+
+
 				string shlmTexCoord = GetVertOutTexcoord();
-				//string shlmTexCoord2 = GetVertOutTexcoord();
 
-				if( lm && sh ) {
-					App( "#ifndef LIGHTMAP_OFF" );
-					scope++;
-					App( "float2 uvLM" + shlmTexCoord );
+				if(SF_Tools.UsingUnity4){
 
-
-					if( currentPass == PassType.PrePassFinal ) {
-						App( "#ifdef DIRLIGHTMAP_OFF" );
+					if( lm && sh ) {
+						App( "#ifndef LIGHTMAP_OFF" );
 						scope++;
-						App( "float4 lmapFadePos" + GetVertOutTexcoord() );
+						App( "float2 uvLM" + shlmTexCoord );
+						
+						
+						if( currentPass == PassType.PrePassFinal ) {
+							App( "#ifdef DIRLIGHTMAP_OFF" );
+							scope++;
+							App( "float4 lmapFadePos" + GetVertOutTexcoord() );
+							scope--;
+							App( "#endif" );
+						}
+						
+						scope--;
+						App( "#elif SHOULD_SAMPLE_SH_PROBE" );
+						scope++;
+						App( "float3 shLight" + shlmTexCoord );
 						scope--;
 						App( "#endif" );
+						
+					} else if( lm ) {
+						App( "#ifndef LIGHTMAP_OFF" );
+						scope++;
+						App( "float2 uvLM" + shlmTexCoord );
+						if( currentPass == PassType.PrePassFinal ) {
+							App( "#ifdef DIRLIGHTMAP_OFF" );
+							scope++;
+							App( "float4 lmapFadePos" + GetVertOutTexcoord() );
+							scope--;
+							App( "#endif" );
+						}
+						scope--;
+						App( "#endif" );
+					} else if( sh ) {
+						App( "float3 shLight" + shlmTexCoord );
 					}
+				} else {
 
+					// Unity 5 LMs
+
+
+				
+
+					App( "#ifndef LIGHTMAP_OFF" );
+					scope++;
+					App( "float4 uvLM" + shlmTexCoord);
 					scope--;
-					App( "#elif SHOULD_SAMPLE_SH_PROBE" );
+					App( "#else" );
 					scope++;
 					App( "float3 shLight" + shlmTexCoord );
 					scope--;
 					App( "#endif" );
 
-				} else if( lm ) {
-					App( "#ifndef LIGHTMAP_OFF" );
-					scope++;
-					App( "float2 uvLM" + shlmTexCoord );
-					if( currentPass == PassType.PrePassFinal ) {
-						App( "#ifdef DIRLIGHTMAP_OFF" );
-						scope++;
-						App( "float4 lmapFadePos" + GetVertOutTexcoord() );
-						scope--;
-						App( "#endif" );
-					}
-					scope--;
-					App( "#endif" );
-				} else if( sh ) {
-					App( "float3 shLight" + shlmTexCoord );
+
+
+
+
 				}
+
 
 			}
 			scope--;
@@ -2297,15 +2463,34 @@ namespace ShaderForge {
 			if( DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes ) {
 
 
+				string worldNormalFunctionName = SF_Tools.UsingUnity4 ? "UnityObjectToWorldNorm" : "UnityObjectToWorldNormal";
 
 				App( "#if SHOULD_SAMPLE_SH_PROBE" );
 				scope++;
-				string nrmStr = SF_Tools.CurrentUnityVersion >= 5 ? "UnityObjectToWorldNorm(v.normal)" : "mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w";
+				string nrmStr = SF_Tools.CurrentUnityVersion >= 5 ? worldNormalFunctionName + "(v.normal)" : "mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w";
 				App( "o.shLight = ShadeSH9(float4(" + nrmStr + ",1))" + ( ps.catLighting.doubleIncomingLight ? "" : " * 0.5" ) + ";" );
 				scope--;
 				App( "#endif" );
 
 			}
+
+			if( SF_Tools.UsingUnity5plus){
+				App("#ifdef LIGHTMAP_ON");
+				scope++;
+				App("o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;");
+				App("o.uvLM.zw = 0;");
+				scope--;
+				App("#endif");
+				App("#ifdef DYNAMICLIGHTMAP_ON");
+				scope++;
+				App("o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;");
+				scope--;
+				App("#endif");
+			}
+
+
+
+
 			if( dependencies.vert_out_normals )
 				InitNormalDirVert();
 			if( dependencies.vert_out_tangents )
@@ -2333,6 +2518,8 @@ namespace ShaderForge {
 			if( dependencies.frag_lightDirection ) {
 				InitLightDir();
 			}
+			if(dependencies.frag_lightColor)
+				InitLightColor();
 			InitHalfVector();
 
 			if( currentPass == PassType.Outline ) {
@@ -2362,23 +2549,44 @@ namespace ShaderForge {
 					App( "o.screenPos.y *= _ProjectionParams.x;" );
 				}
 			}
-			if( LightmapThisPass() ) {
-				App( "#ifndef LIGHTMAP_OFF" );
-				scope++;
-				App( "o.uvLM = v.texcoord1 * unity_LightmapST.xy + unity_LightmapST.zw;" );
 
-				if( currentPass == PassType.PrePassFinal ) {
-					App( "#ifdef DIRLIGHTMAP_OFF" );
+
+
+			if( LightmapThisPass() ){
+
+				if( SF_Tools.UsingUnity4 ) {
+					App( "#ifndef LIGHTMAP_OFF" );
 					scope++;
-					App( "o.lmapFadePos.xyz = (mul(_Object2World, v.vertex).xyz - unity_ShadowFadeCenterAndType.xyz) * unity_ShadowFadeCenterAndType.w;" );
-					App( "o.lmapFadePos.w = (-mul(UNITY_MATRIX_MV, v.vertex).z) * (1.0 - unity_ShadowFadeCenterAndType.w);" );
+					App( "o.uvLM = v.texcoord1 * unity_LightmapST.xy + unity_LightmapST.zw;" );
+					
+					if( currentPass == PassType.PrePassFinal ) {
+						App( "#ifdef DIRLIGHTMAP_OFF" );
+						scope++;
+						App( "o.lmapFadePos.xyz = (mul(_Object2World, v.vertex).xyz - unity_ShadowFadeCenterAndType.xyz) * unity_ShadowFadeCenterAndType.w;" );
+						App( "o.lmapFadePos.w = (-mul(UNITY_MATRIX_MV, v.vertex).z) * (1.0 - unity_ShadowFadeCenterAndType.w);" );
+						scope--;
+						App( "#endif" );
+					}
+					
 					scope--;
 					App( "#endif" );
+				} else if( SF_Tools.UsingUnity5plus ){
+
+
+
 				}
 
-				scope--;
-				App( "#endif" );
 			}
+
+			/* MOVE THIS:
+			App( "float4 unity_LightmapST;");
+			App( "#ifdef DYNAMICLIGHTMAP_ON");
+			scope++;
+			App( "float4 unity_DynamicLightmapST;");
+			scope--;
+			App( "#endif");
+*/
+
 
 
 
@@ -2434,9 +2642,10 @@ namespace ShaderForge {
 			PrepareLightmapVars();
 
 
-			if( dependencies.frag_lightDirection ) {
+			if( dependencies.frag_lightDirection )
 				InitLightDir();
-			}
+			if(dependencies.frag_lightColor)
+				InitLightColor();
 			InitHalfVector();
 
 

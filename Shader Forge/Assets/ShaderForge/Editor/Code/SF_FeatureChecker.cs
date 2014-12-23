@@ -39,6 +39,7 @@ namespace ShaderForge {
 
 			bool deferredPp = ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass;
 			bool unlit = (ps.catLighting.lightMode == SFPSC_Lighting.LightMode.Unlit);
+			bool pbr = (ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL);
 			bool lit = !unlit;
 
 			// Diffuse makes these available: Transmission, Light Wrapping, Ambient lighting, Diffuse Power
@@ -51,10 +52,15 @@ namespace ShaderForge {
 			bool ambDiffConnected = ps.HasAmbientDiffuse();
 			bool ambSpecConnected = ps.HasAmbientSpecular();
 
+
+
 			editor.mainNode.diffuse.SetAvailable( lit );
 			editor.mainNode.diffusePower.SetAvailable( lit && diffConnected && !deferredPp );
 			editor.mainNode.specular.SetAvailable( lit );
-			editor.mainNode.gloss.SetAvailable( lit && specConnected );
+			if(SF_Tools.UsingUnity4)
+				editor.mainNode.gloss.SetAvailable( lit && specConnected );
+			else
+				editor.mainNode.gloss.SetAvailable( lit && ( specConnected || ( diffConnected && pbr ) ));
 			editor.mainNode.normal.SetAvailable( true );
 			editor.mainNode.alpha.SetAvailable( !deferredPp  );
 			editor.mainNode.alphaClip.SetAvailable( true );

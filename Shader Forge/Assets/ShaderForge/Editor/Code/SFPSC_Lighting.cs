@@ -188,8 +188,21 @@ namespace ShaderForge {
 			if( lightMode == LightMode.PBL ) {
 				fresnelTerm = UndoableToggle( r, fresnelTerm, "[PBL] Fresnel term", "PBL fresnel term", null );
 				r.y += 20;
-				visibilityTerm = UndoableToggle( r, visibilityTerm, "[PBL] Visibility term", "PBL visibility term", null );
+
+				//visibilityTerm = UndoableToggle( r, visibilityTerm, "[PBL] Visibility term", "PBL visibility term", null );
+				//r.y += 20;
+
+				UndoableConditionalToggle(r, ref visibilityTerm,
+				                          	usableIf: 				ps.HasSpecular(),
+				                          	disabledDisplayValue: 	false,
+				                          	label: 					"[PBL] Visibility term",
+											undoSuffix:				"PBL visibility term"
+											);
 				r.y += 20;
+
+
+
+
 			}
 			
 			if( lightMode == LightMode.Unlit || lightMode == LightMode.PBL )

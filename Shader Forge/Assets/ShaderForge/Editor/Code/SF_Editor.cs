@@ -212,10 +212,10 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Color ), 			catProps + "Color" );
 			AddTemplate( typeof( SFN_Cubemap ), 		catProps + "Cubemap" );
 			AddTemplate( typeof( SFN_Slider ), 			catProps + "Slider" );
-			AddTemplate( typeof( SFN_SwitchProperty ),	catProps + "Switch" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_SwitchProperty ), catProps + "Switch" );
 			AddTemplate( typeof( SFN_Tex2d ), 			catProps + "Texture 2D", KeyCode.T );
 			AddTemplate( typeof( SFN_Tex2dAsset ), 		catProps + "Texture Asset" );
-			AddTemplate( typeof( SFN_ToggleProperty ), 	catProps + "Toggle" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_ToggleProperty ), catProps + "Toggle" );
 			AddTemplate( typeof( SFN_ValueProperty ), 	catProps + "Value" );
 			AddTemplate( typeof( SFN_Vector4Property ), catProps + "Vector 4" );
 
@@ -228,8 +228,8 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_ComponentMask ),	catVecOps + "Component Mask", KeyCode.C );
 			AddTemplate( typeof( SFN_Cross ), 			catVecOps + "Cross Product" );
 			AddTemplate( typeof( SFN_Desaturate ), 		catVecOps + "Desaturate" );
-			AddTemplate( typeof( SFN_DDX ),				catVecOps + "DDX" );
-			AddTemplate( typeof( SFN_DDY ),				catVecOps + "DDY" );
+			AddTemplate( typeof( SFN_DDX ), catVecOps + "DDX" ).MarkAsNewNode(); ;
+			AddTemplate( typeof( SFN_DDY ), catVecOps + "DDY" ).MarkAsNewNode(); ;
 			AddTemplate( typeof( SFN_Distance ), 		catVecOps + "Distance" );
 			AddTemplate( typeof( SFN_Dot ), 			catVecOps + "Dot Product" );
 			AddTemplate( typeof( SFN_Length ), 			catVecOps + "Length" );
@@ -253,7 +253,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_NormalVector ), 			catGeoData + "Normal Dir." );
 			AddTemplate( typeof( SFN_ObjectPosition ), 			catGeoData + "Object Position");
 			if(SF_Tools.CurrentUnityVersion >= 5)
-			AddTemplate( typeof( SFN_ObjectScale ),				catGeoData + "Object Scale" ); // Unity 5+ only
+				AddTemplate( typeof( SFN_ObjectScale ), catGeoData + "Object Scale" ).MarkAsNewNode(); ; // Unity 5+ only
 			AddTemplate( typeof( SFN_ScreenPos ), 				catGeoData + "Screen Position" );
 			AddTemplate( typeof( SFN_Tangent ), 				catGeoData + "Tangent Dir." );
 			AddTemplate( typeof( SFN_TexCoord ), 				catGeoData + "UV Coordinates", KeyCode.U );
@@ -278,7 +278,7 @@ namespace ShaderForge {
 
 			string catSceneData = "Scene Data/";
 			AddTemplate( typeof(SFN_DepthBlend), catSceneData + "Depth Blend" );
-			AddTemplate( typeof(SFN_FogColor),	 catSceneData + "Fog Color"	  );
+			AddTemplate( typeof( SFN_FogColor ), catSceneData + "Fog Color" ).MarkAsNewNode(); ;
 			AddTemplate( typeof(SFN_SceneColor), catSceneData + "Scene Color" );
 			AddTemplate( typeof(SFN_SceneDepth), catSceneData + "Scene Depth" );
 

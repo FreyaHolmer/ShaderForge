@@ -1832,7 +1832,7 @@ namespace ShaderForge {
 				btnRect.x = r.x - 4;
 				btnRect.width = r.width / 4f;
 				btnRect.x += btnRect.width;
-				btnRect.width *= 2.5f;
+				btnRect.width *= 2.55f;
 				SF_Settings.HierarcyMove = GUI.Toggle( btnRect, SF_Settings.HierarcyMove, "Hierarchal Node Move" );
 				btnRect = btnRect.MovedDown();
 				SF_Settings.DrawNodePreviews = GUI.Toggle( btnRect, SF_Settings.DrawNodePreviews, "Auto-Update Node Previews" );

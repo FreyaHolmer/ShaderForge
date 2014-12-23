@@ -1,7 +1,7 @@
 // Shader created with Shader Forge v1.00 
 // Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:1.00;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:0,uamb:False,mssp:True,lmpd:False,lprd:True,rprd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:False,tesm:0,blpr:2,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:False,ufog:False,aust:True,igpj:True,qofs:0,qpre:3,rntp:2,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.1280277,fgcg:0.1953466,fgcb:0.2352941,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:142,x:34662,y:32396,varname:node_142,prsc:2|emission-217-OUT;n:type:ShaderForge.SFN_Tex2d,id:144,x:34132,y:32516,ptovrint:False,ptlb:Cone Falloff,ptin:_ConeFalloff,varname:node_143,prsc:2,tex:857a8e9195b715848abbbbb790d378b1,ntxv:0,isnm:False|UVIN-180-OUT;n:type:ShaderForge.SFN_Append,id:180,x:33923,y:32452,varname:node_180,prsc:2|A-229-OUT,B-181-V;n:type:ShaderForge.SFN_TexCoord,id:181,x:33738,y:32523,varname:node_181,prsc:2,uv:0;n:type:ShaderForge.SFN_Color,id:215,x:34132,y:32338,ptovrint:False,ptlb:Cone Color,ptin:_ConeColor,varname:node_182,prsc:2,glob:False,c1:1,c2:1,c3:1,c4:0;n:type:ShaderForge.SFN_Multiply,id:217,x:34464,y:32495,varname:node_217,prsc:2|A-219-OUT,B-215-RGB,C-144-R,D-251-OUT;n:type:ShaderForge.SFN_Slider,id:219,x:33975,y:32230,ptovrint:False,ptlb:Cone Strength,ptin:_ConeStrength,varname:node_218,prsc:2,min:0,cur:0.55,max:2;n:type:ShaderForge.SFN_Vector1,id:226,x:33559,y:32412,varname:node_226,prsc:2,v1:0.5;n:type:ShaderForge.SFN_Fresnel,id:229,x:33738,y:32391,varname:node_229,prsc:2|EXP-226-OUT;n:type:ShaderForge.SFN_Tex2d,id:230,x:33959,y:32713,ptovrint:False,ptlb:Smoke,ptin:_Smoke,varname:node_230,prsc:2,tex:28c7aad1372ff114b90d330f8a2dd938,ntxv:0,isnm:False|UVIN-246-OUT;n:type:ShaderForge.SFN_FragmentPosition,id:244,x:33219,y:32719,varname:node_244,prsc:2;n:type:ShaderForge.SFN_Append,id:245,x:33403,y:32719,varname:node_245,prsc:2|A-244-X,B-244-Z;n:type:ShaderForge.SFN_Multiply,id:246,x:33786,y:32713,varname:node_246,prsc:2|A-318-OUT,B-255-UVOUT;n:type:ShaderForge.SFN_ConstantLerp,id:251,x:34132,y:32713,varname:node_251,prsc:2,a:0.4,b:1|IN-230-R;n:type:ShaderForge.SFN_Panner,id:255,x:33589,y:32774,varname:node_255,prsc:2,spu:1,spv:1|UVIN-245-OUT,DIST-339-TSL;n:type:ShaderForge.SFN_ValueProperty,id:318,x:33589,y:32713,ptovrint:False,ptlb:Smoke Scale,ptin:_SmokeScale,varname:node_256,prsc:2,glob:False,v1:0.5;n:type:ShaderForge.SFN_Time,id:339,x:33403,y:32845,varname:node_339,prsc:2;proporder:144-215-219-230-318;pass:END;sub:END;*/
+/*SF_DATA;ver:1.00;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:0,uamb:False,mssp:True,lmpd:False,lprd:True,rprd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:False,tesm:0,blpr:2,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:False,ufog:False,aust:True,igpj:True,qofs:0,qpre:3,rntp:2,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.1280277,fgcg:0.1953466,fgcb:0.2352941,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:142,x:34662,y:32396,varname:node_142,prsc:2|emission-217-OUT;n:type:ShaderForge.SFN_Tex2d,id:144,x:34132,y:32516,ptovrint:False,ptlb:Cone Falloff,ptin:_ConeFalloff,varname:_ConeFalloff,prsc:2,tex:857a8e9195b715848abbbbb790d378b1,ntxv:0,isnm:False|UVIN-180-OUT;n:type:ShaderForge.SFN_Append,id:180,x:33923,y:32452,varname:node_180,prsc:2|A-229-OUT,B-181-V;n:type:ShaderForge.SFN_TexCoord,id:181,x:33738,y:32523,varname:node_181,prsc:2,uv:0;n:type:ShaderForge.SFN_Color,id:215,x:34132,y:32338,ptovrint:False,ptlb:Cone Color,ptin:_ConeColor,varname:_ConeColor,prsc:2,glob:False,c1:1,c2:1,c3:1,c4:0;n:type:ShaderForge.SFN_Multiply,id:217,x:34464,y:32495,varname:node_217,prsc:2|A-219-OUT,B-215-RGB,C-144-R,D-251-OUT;n:type:ShaderForge.SFN_Slider,id:219,x:33975,y:32230,ptovrint:False,ptlb:Cone Strength,ptin:_ConeStrength,varname:_ConeStrength,prsc:2,min:0,cur:0.55,max:2;n:type:ShaderForge.SFN_Vector1,id:226,x:33559,y:32412,varname:node_226,prsc:2,v1:0.5;n:type:ShaderForge.SFN_Fresnel,id:229,x:33738,y:32391,varname:node_229,prsc:2|EXP-226-OUT;n:type:ShaderForge.SFN_Tex2d,id:230,x:33959,y:32713,ptovrint:False,ptlb:Smoke,ptin:_Smoke,varname:_Smoke,prsc:2,tex:28c7aad1372ff114b90d330f8a2dd938,ntxv:0,isnm:False|UVIN-246-OUT;n:type:ShaderForge.SFN_FragmentPosition,id:244,x:33219,y:32719,varname:node_244,prsc:2;n:type:ShaderForge.SFN_Append,id:245,x:33403,y:32719,varname:node_245,prsc:2|A-244-X,B-244-Z;n:type:ShaderForge.SFN_Multiply,id:246,x:33786,y:32713,varname:node_246,prsc:2|A-318-OUT,B-255-UVOUT;n:type:ShaderForge.SFN_ConstantLerp,id:251,x:34132,y:32713,varname:node_251,prsc:2,a:0.4,b:1|IN-230-R;n:type:ShaderForge.SFN_Panner,id:255,x:33589,y:32774,varname:node_255,prsc:2,spu:1,spv:1|UVIN-245-OUT,DIST-339-TSL;n:type:ShaderForge.SFN_ValueProperty,id:318,x:33589,y:32713,ptovrint:False,ptlb:Smoke Scale,ptin:_SmokeScale,varname:_SmokeScale,prsc:2,glob:False,v1:0.5;n:type:ShaderForge.SFN_Time,id:339,x:33403,y:32845,varname:node_339,prsc:2;proporder:144-215-219-230-318;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/LightCone" {
     Properties {
@@ -25,17 +25,22 @@ Shader "Shader Forge/Examples/LightCone" {
             Blend One One
             ZWrite Off
             
-            Fog {Mode Off}
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #define UNITY_PASS_FORWARDBASE
+            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #include "UnityCG.cginc"
-            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )
+            #include "UnityPBSLighting.cginc"
+            #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdbase
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _TimeEditor;
+            float4 unity_LightmapST;
+            #ifdef DYNAMICLIGHTMAP_ON
+                float4 unity_DynamicLightmapST;
+            #endif
             uniform sampler2D _ConeFalloff; uniform float4 _ConeFalloff_ST;
             uniform float4 _ConeColor;
             uniform float _ConeStrength;
@@ -51,10 +56,22 @@ Shader "Shader Forge/Examples/LightCone" {
                 float2 uv0 : TEXCOORD0;
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
+                #ifndef LIGHTMAP_OFF
+                    float4 uvLM : TEXCOORD3;
+                #else
+                    float3 shLight : TEXCOORD3;
+                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
+                #ifdef LIGHTMAP_ON
+                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+                    o.uvLM.zw = 0;
+                #endif
+                #ifdef DYNAMICLIGHTMAP_ON
+                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.posWorld = mul(_Object2World, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);

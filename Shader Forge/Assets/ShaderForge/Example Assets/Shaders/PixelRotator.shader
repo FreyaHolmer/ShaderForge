@@ -24,10 +24,15 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #pragma multi_compile_fwdbase_fullshadows
+            #pragma multi_compile_fog
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform float4 _TimeEditor;
+            float4 unity_LightmapST;
+            #ifdef DYNAMICLIGHTMAP_ON
+                float4 unity_DynamicLightmapST;
+            #endif
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -39,13 +44,28 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 LIGHTING_COORDS(3,4)
+                UNITY_FOG_COORDS(5)
+                #ifndef LIGHTMAP_OFF
+                    float4 uvLM : TEXCOORD6;
+                #else
+                    float3 shLight : TEXCOORD6;
+                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
+                #ifdef LIGHTMAP_ON
+                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+                    o.uvLM.zw = 0;
+                #endif
+                #ifdef DYNAMICLIGHTMAP_ON
+                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.posWorld = mul(_Object2World, v.vertex);
+                float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+                UNITY_TRANSFER_FOG(o,o.pos);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
             }
@@ -54,11 +74,12 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
 /////// Vectors:
                 float3 normalDirection = i.normalDir;
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
+                float3 lightColor = _LightColor0.rgb;
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 /////// Diffuse:
-                float NdotL = dot( normalDirection, lightDirection );
+                float NdotL = max(0.0,dot( normalDirection, lightDirection ));
                 float3 indirectDiffuse = float3(0,0,0);
                 float3 directDiffuse = max( 0.0, NdotL) * attenColor;
                 indirectDiffuse += UNITY_LIGHTMODEL_AMBIENT.rgb; // Ambient Light
@@ -87,7 +108,9 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float3 diffuse = (directDiffuse + indirectDiffuse) * (pow(float3(float2(node_737,node_739),node_741),2.0)*(1.0 - floor(saturate(length((float2(1,3)*node_563))))));
 /// Final Color:
                 float3 finalColor = diffuse;
-                return fixed4(finalColor,1);
+                fixed4 finalRGBA = fixed4(finalColor,1);
+                UNITY_APPLY_FOG(i.fogCoord, finalRGBA);
+                return finalRGBA;
             }
             ENDCG
         }
@@ -99,7 +122,6 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             Blend One One
             
             
-            Fog { Color (0,0,0,0) }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -107,10 +129,15 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #pragma multi_compile_fwdadd_fullshadows
+            #pragma multi_compile_fog
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform float4 _TimeEditor;
+            float4 unity_LightmapST;
+            #ifdef DYNAMICLIGHTMAP_ON
+                float4 unity_DynamicLightmapST;
+            #endif
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -122,12 +149,25 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 LIGHTING_COORDS(3,4)
+                #ifndef LIGHTMAP_OFF
+                    float4 uvLM : TEXCOORD5;
+                #else
+                    float3 shLight : TEXCOORD5;
+                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
+                #ifdef LIGHTMAP_ON
+                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+                    o.uvLM.zw = 0;
+                #endif
+                #ifdef DYNAMICLIGHTMAP_ON
+                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.posWorld = mul(_Object2World, v.vertex);
+                float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
@@ -137,11 +177,12 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
 /////// Vectors:
                 float3 normalDirection = i.normalDir;
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
+                float3 lightColor = _LightColor0.rgb;
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 /////// Diffuse:
-                float NdotL = dot( normalDirection, lightDirection );
+                float NdotL = max(0.0,dot( normalDirection, lightDirection ));
                 float3 directDiffuse = max( 0.0, NdotL) * attenColor;
                 float node_546 = 10.0;
                 float2 node_545 = (i.uv0*node_546);

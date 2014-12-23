@@ -310,7 +310,10 @@ namespace ShaderForge {
 					if(editor.PropertyNameTaken(node.property))
 						node.property.SetName(node.property.GetClonedName()); // Rename if needed
 				idOld[i] = node.id;
-				node.id = editor.idIncrement++; // Increment IDs
+				editor.idIncrement++;
+				node.id = editor.idIncrement; // Increment IDs
+				if( !node.IsProperty() )
+					node.ResetVariableName();
 				idNew[i] = node.id;
 				node.rect.x += posOffset.x;
 				node.rect.y += posOffset.y;

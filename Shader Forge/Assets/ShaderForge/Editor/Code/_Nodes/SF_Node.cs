@@ -27,7 +27,7 @@ namespace ShaderForge {
 		public string variableName{
 			get{
 				if(string.IsNullOrEmpty(_variableName) && GUI.GetNameOfFocusedControl() != VarNameControl() ){
-					_variableName = "node_" + id;
+					ResetVariableName();
 				}
 				return _variableName;
 			}
@@ -101,6 +101,10 @@ namespace ShaderForge {
 				Undo.RecordObject(con, undoMsg);
 			}
 			SetDirty(UpToDateState.UpToDate); // Might need to comment this for Redo to work, it seems
+		}
+
+		public void ResetVariableName() {
+			_variableName = "node_" + id;
 		}
 		
 

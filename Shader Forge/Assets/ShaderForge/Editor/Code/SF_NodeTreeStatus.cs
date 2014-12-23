@@ -254,6 +254,12 @@ namespace ShaderForge {
 				LightmapCondition( cNodes, "_Shininess", editor.mainNode.specular, "Value or Slider");
 				LightmapCondition( cNodes, "_BumpMap", editor.mainNode.normal, "Texture" );
 				LightmapCondition( cNodes, "_Illum", editor.mainNode.emissive, "Texture", "Self-Illumin/" );
+
+
+				if( SF_Tools.UsingUnity5 ) {
+					errors.Add( SF_ErrorEntry.Create( "Unity 5 is in beta, and so is the Unity 5 support of Shader Forge. Lightmapping is currently somewhat broken!", true ) );
+				}
+
 			}
 
 
@@ -263,12 +269,32 @@ namespace ShaderForge {
 
 
 
+			List<SF_Node> dupes = new List<SF_Node>();
+
+			SF_Node[] propNodes = cNodes.Where(x=>x.IsProperty()).ToArray();
+
+			for( int i = 0; i < propNodes.Length; i++ ) {
+				for( int j = i+1; j < propNodes.Length; j++ ) {
+					string nameA = propNodes[i].property.nameInternal;
+					string nameB = propNodes[j].property.nameInternal;
+					if( nameA == nameB ) {
+						dupes.Add( propNodes[j] );
+					}
+				}
+			}
+
+			if( dupes.Count > 0 ) {
+				foreach( SF_Node dupe in dupes ) {
+					errors.Add( SF_ErrorEntry.Create( "You have property nodes with conflicting internal names. Please rename one of the " + dupe.property.nameInternal + " nodes", dupe, false ) );
+				}
+			}
 
 
 
 
-			// Check if there are any textures in the vertex input
-			texturesInVertShader = HasTextureInput( editor.mainNode.vertexOffset ) || HasTextureInput( editor.mainNode.outlineWidth );
+
+				// Check if there are any textures in the vertex input
+				texturesInVertShader = HasTextureInput( editor.mainNode.vertexOffset ) || HasTextureInput( editor.mainNode.outlineWidth );
 
 
 

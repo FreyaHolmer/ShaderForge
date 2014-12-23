@@ -552,7 +552,7 @@ namespace ShaderForge {
 				App( "#include \"Lighting.cginc\"" );
 			if( dependencies.tessellation )
 				App( "#include \"Tessellation.cginc\"" );
-			if( SF_Tools.UsingUnity5plus && (ps.catLighting.lightmapped || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL)){
+			if( SF_Tools.UsingUnity5plus && (ps.catLighting.lightmapped || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || ps.catLighting.lightprobed)){
 				App( "#include \"UnityPBSLighting.cginc\"" );
 				App( "#include \"UnityStandardBRDF.cginc\"" );
 			}
@@ -2069,7 +2069,7 @@ namespace ShaderForge {
 		void CalcGIdata(){
 
 
-			if( currentPass == PassType.FwdBase && SF_Tools.UsingUnity5plus ){
+			if( currentPass == PassType.FwdBase && SF_Tools.UsingUnity5plus && ( ps.catLighting.lightmapped || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || ps.catLighting.lightprobed ) ) {
 				
 				
 				
@@ -2109,7 +2109,7 @@ namespace ShaderForge {
 				
 
 
-				if(DoPassSpecular()){
+				if(DoPassSpecular() && ps.catLighting.reflectprobed){
 					App("d.boxMax[0] = unity_SpecCube_BoxMax;");
 					App("d.boxMin[0] = unity_SpecCube_BoxMin;");
 					App("d.probePosition[0] = unity_SpecCube_ProbePosition;");
@@ -2474,7 +2474,7 @@ namespace ShaderForge {
 
 			}
 
-			if( SF_Tools.UsingUnity5plus){
+			if( SF_Tools.UsingUnity5plus && LightmapThisPass()){
 				App("#ifdef LIGHTMAP_ON");
 				scope++;
 				App("o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;");

@@ -1,7 +1,7 @@
 // Shader created with Shader Forge v1.00 
 // Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:1.00;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:False,lprd:True,rprd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:False,tesm:0,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:False,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:33579,y:32393,varname:node_0,prsc:2|diff-270-RGB,spec-6-OUT,gloss-4-OUT,normal-9-RGB,lwrap-272-RGB;n:type:ShaderForge.SFN_Vector1,id:3,x:33060,y:32629,varname:node_3,prsc:2,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:4,x:33250,y:32637,varname:node_4,prsc:2,v1:2;n:type:ShaderForge.SFN_OneMinus,id:5,x:33060,y:32486,varname:node_5,prsc:2|IN-270-RGB;n:type:ShaderForge.SFN_Multiply,id:6,x:33250,y:32486,varname:node_6,prsc:2|A-5-OUT,B-3-OUT;n:type:ShaderForge.SFN_Tex2d,id:9,x:33250,y:32717,ptovrint:False,ptlb:Normal,ptin:_Normal,varname:node_7,prsc:2,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Color,id:270,x:32858,y:32412,ptovrint:False,ptlb:Diffuse,ptin:_Diffuse,varname:node_10,prsc:2,glob:False,c1:0.9019608,c2:0.7019608,c3:0.3764706,c4:1;n:type:ShaderForge.SFN_Color,id:272,x:33250,y:32896,ptovrint:False,ptlb:Light Wrapping,ptin:_LightWrapping,varname:node_271,prsc:2,glob:False,c1:0.9058824,c2:0.4941176,c3:0.4901961,c4:1;proporder:9-272-270;pass:END;sub:END;*/
+/*SF_DATA;ver:1.00;sub:START;pass:START;ps:flbk:,lico:1,lgpr:1,nrmq:1,limd:1,uamb:True,mssp:True,lmpd:False,lprd:True,rprd:False,enco:False,frtr:True,vitr:True,dbil:False,rmgx:True,rpth:0,hqsc:True,hqlp:False,tesm:0,blpr:0,bsrc:0,bdst:0,culm:0,dpts:2,wrdp:True,ufog:False,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:33579,y:32393,varname:node_0,prsc:2|diff-270-RGB,spec-6-OUT,gloss-4-OUT,normal-9-RGB,lwrap-272-RGB;n:type:ShaderForge.SFN_Vector1,id:3,x:33060,y:32629,varname:node_3,prsc:2,v1:0.3;n:type:ShaderForge.SFN_Vector1,id:4,x:33250,y:32637,varname:node_4,prsc:2,v1:2;n:type:ShaderForge.SFN_OneMinus,id:5,x:33060,y:32486,varname:node_5,prsc:2|IN-270-RGB;n:type:ShaderForge.SFN_Multiply,id:6,x:33250,y:32486,varname:node_6,prsc:2|A-5-OUT,B-3-OUT;n:type:ShaderForge.SFN_Tex2d,id:9,x:33250,y:32717,ptovrint:False,ptlb:Normal,ptin:_Normal,varname:_Normal,prsc:2,tex:80286949e259c2d44876306923857245,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Color,id:270,x:32858,y:32412,ptovrint:False,ptlb:Diffuse,ptin:_Diffuse,varname:_Diffuse,prsc:2,glob:False,c1:0.9019608,c2:0.7019608,c3:0.3764706,c4:1;n:type:ShaderForge.SFN_Color,id:272,x:33250,y:32896,ptovrint:False,ptlb:Light Wrapping,ptin:_LightWrapping,varname:_LightWrapping,prsc:2,glob:False,c1:0.9058824,c2:0.4941176,c3:0.4901961,c4:1;proporder:9-272-270;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/LightWrapping" {
     Properties {
@@ -20,18 +20,23 @@ Shader "Shader Forge/Examples/LightWrapping" {
             }
             
             
-            Fog {Mode Off}
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #define UNITY_PASS_FORWARDBASE
+            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
-            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )
+            #include "UnityPBSLighting.cginc"
+            #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdbase_fullshadows
             #pragma exclude_renderers xbox360 ps3 flash d3d11_9x 
             #pragma target 3.0
             uniform float4 _LightColor0;
+            float4 unity_LightmapST;
+            #ifdef DYNAMICLIGHTMAP_ON
+                float4 unity_DynamicLightmapST;
+            #endif
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
             uniform float4 _Diffuse;
             uniform float4 _LightWrapping;
@@ -49,18 +54,30 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 float3 tangentDir : TEXCOORD3;
                 float3 binormalDir : TEXCOORD4;
                 LIGHTING_COORDS(5,6)
-                float3 shLight : TEXCOORD7;
+                #ifndef LIGHTMAP_OFF
+                    float4 uvLM : TEXCOORD7;
+                #else
+                    float3 shLight : TEXCOORD7;
+                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
                 #if SHOULD_SAMPLE_SH_PROBE
-                    o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w,1)) * 0.5;
+                    o.shLight = ShadeSH9(float4(UnityObjectToWorldNormal(v.normal),1)) * 0.5;
+                #endif
+                #ifdef LIGHTMAP_ON
+                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+                    o.uvLM.zw = 0;
+                #endif
+                #ifdef DYNAMICLIGHTMAP_ON
+                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
                 #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(_Object2World, v.vertex);
+                float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
@@ -74,6 +91,7 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 float3 normalLocal = _Normal_var.rgb;
                 float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
+                float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
@@ -81,6 +99,29 @@ Shader "Shader Forge/Examples/LightWrapping" {
 ///////// Gloss:
                 float gloss = 2.0;
                 float specPow = exp2( gloss * 10.0+1.0);
+                UnityLight light;
+                #ifdef LIGHTMAP_OFF
+                    light.color = lightColor;
+                    light.dir = lightDirection;
+                    light.ndotl = LambertTerm (normalDirection, light.dir);
+                #else
+                    light.color = half3(0.f, 0.f, 0.f);
+                    light.ndotl = 0.0f;
+                    light.dir = half3(0.f, 0.f, 0.f);
+                #endif
+                UnityGIInput d;
+                d.light = light;
+                d.worldPos = i.posWorld.xyz;
+                d.worldViewDir = viewDirection;
+                d.atten = attenuation;
+                #ifndef LIGHTMAP_OFF
+                    d.ambientOrLightmapUV = i.uvLM;
+                #else
+                    d.ambientOrLightmapUV.xyz = i.shLight;
+                #endif
+                UnityGI gi = UnityStandardGlobalIllumination (d, 1, gloss, normalDirection);
+                lightDirection = gi.light.dir;
+                lightColor = gi.light.color;
 ////// Specular:
                 float NdotL = max(0, dot( normalDirection, lightDirection ));
                 float3 specularColor = ((1.0 - _Diffuse.rgb)*0.3);
@@ -93,9 +134,7 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 float3 forwardLight = max(float3(0.0,0.0,0.0), NdotLWrap + w );
                 float3 indirectDiffuse = float3(0,0,0);
                 float3 directDiffuse = forwardLight * attenColor;
-                #if SHOULD_SAMPLE_SH_PROBE
-                    indirectDiffuse += i.shLight; // Per-Vertex Light Probes / Spherical harmonics
-                #endif
+                indirectDiffuse += gi.indirect.diffuse;
                 float3 diffuse = (directDiffuse + indirectDiffuse) * _Diffuse.rgb;
 /// Final Color:
                 float3 finalColor = diffuse + specular;
@@ -111,18 +150,23 @@ Shader "Shader Forge/Examples/LightWrapping" {
             Blend One One
             
             
-            Fog { Color (0,0,0,0) }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #define UNITY_PASS_FORWARDADD
+            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
-            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )
+            #include "UnityPBSLighting.cginc"
+            #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdadd_fullshadows
             #pragma exclude_renderers xbox360 ps3 flash d3d11_9x 
             #pragma target 3.0
             uniform float4 _LightColor0;
+            float4 unity_LightmapST;
+            #ifdef DYNAMICLIGHTMAP_ON
+                float4 unity_DynamicLightmapST;
+            #endif
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
             uniform float4 _Diffuse;
             uniform float4 _LightWrapping;
@@ -140,14 +184,27 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 float3 tangentDir : TEXCOORD3;
                 float3 binormalDir : TEXCOORD4;
                 LIGHTING_COORDS(5,6)
+                #ifndef LIGHTMAP_OFF
+                    float4 uvLM : TEXCOORD7;
+                #else
+                    float3 shLight : TEXCOORD7;
+                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
+                #ifdef LIGHTMAP_ON
+                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
+                    o.uvLM.zw = 0;
+                #endif
+                #ifdef DYNAMICLIGHTMAP_ON
+                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(_Object2World, v.vertex);
+                float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
@@ -161,6 +218,7 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 float3 normalLocal = _Normal_var.rgb;
                 float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
+                float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);

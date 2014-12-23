@@ -17,6 +17,11 @@ namespace ShaderForge {
 		public bool uv0_frag = false;
 		public bool uv1 = false;
 		public bool uv1_frag = false;
+		public bool uv2 = false;
+		public bool uv2_frag = false;
+		public bool uv3 = false;
+		public bool uv3_frag = false;
+
 		public bool vertexColor = false;
 		public bool lightColor = false;
 		public bool time = false;

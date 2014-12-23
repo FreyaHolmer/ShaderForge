@@ -317,6 +317,14 @@ namespace ShaderForge {
 							dependencies.uv1 = true;
 							dependencies.uv1_frag = true;
 							break;
+						case SFN_TexCoord.UV.uv2:
+							dependencies.uv2 = true;
+							dependencies.uv2_frag = true;
+							break;
+						case SFN_TexCoord.UV.uv3:
+							dependencies.uv3 = true;
+							dependencies.uv3_frag = true;
+							break;
 					}
 				}
 				if( n is SFN_Pi ) {
@@ -2111,6 +2119,10 @@ namespace ShaderForge {
 				App( "float2 texcoord0 : TEXCOORD0;" );
 			if( dependencies.uv1 )
 				App( "float2 texcoord1 : TEXCOORD1;" );
+			if( dependencies.uv2 )
+				App( "float2 texcoord2 : TEXCOORD2;" );
+			if( dependencies.uv3 )
+				App( "float2 texcoord3 : TEXCOORD3;" );
 			if( dependencies.vert_in_vertexColor )
 				App( "float4 vertexColor : COLOR;" );
 		}
@@ -2126,11 +2138,19 @@ namespace ShaderForge {
 					App( "o.texcoord0 = v.texcoord0;" );
 				if( dependencies.uv1 )
 					App( "o.texcoord1 = v.texcoord1;" );
+				if( dependencies.uv2 )
+					App( "o.texcoord2 = v.texcoord2;" );
+				if( dependencies.uv3 )
+					App( "o.texcoord3 = v.texcoord3;" );
 			} else {
 				if( dependencies.uv0 )
 					App( "o.uv0 = v.texcoord0;" );
 				if( dependencies.uv1 )
 					App( "o.uv1 = v.texcoord1;" );
+				if( dependencies.uv2 )
+					App( "o.uv2 = v.texcoord2;" );
+				if( dependencies.uv3 )
+					App( "o.uv3 = v.texcoord3;" );
 			}
 
 			if( dependencies.vert_in_vertexColor )
@@ -2166,6 +2186,10 @@ namespace ShaderForge {
 					App( "float2 uv0" + GetVertOutTexcoord() );
 				if( dependencies.uv1_frag )
 					App( "float2 uv1" + GetVertOutTexcoord() );
+				if( dependencies.uv2_frag )
+					App( "float2 uv2" + GetVertOutTexcoord() );
+				if( dependencies.uv3_frag )
+					App( "float2 uv3" + GetVertOutTexcoord() );
 				if( dependencies.vert_out_worldPos )
 					App( "float4 posWorld" + GetVertOutTexcoord() );
 				if( dependencies.vert_out_normals )
@@ -2264,6 +2288,10 @@ namespace ShaderForge {
 				App( "o.uv0 = v.texcoord0;" );
 			if( dependencies.uv1_frag )
 				App( "o.uv1 = v.texcoord1;" );
+			if( dependencies.uv2_frag )
+				App( "o.uv2 = v.texcoord2;" );
+			if( dependencies.uv3_frag )
+				App( "o.uv3 = v.texcoord3;" );
 			if( dependencies.vert_out_vertexColor )
 				App( "o.vertexColor = v.vertexColor;" );
 			if( DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes ) {

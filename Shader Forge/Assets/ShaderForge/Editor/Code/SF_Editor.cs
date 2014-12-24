@@ -1529,11 +1529,12 @@ namespace ShaderForge {
 			CreditsLine( "Robert Briscoe", "For actively testing SF and providing excellent feedback" );
 			CreditsLine( "Thomas Pasieka", "For helping out immensely in getting the word out, as well as motivating me to continue" );
 			CreditsLine( "Aras Pranckevi" +'\u010D'+ "ius", "For helping out with various shader code issues");
+			CreditsLine( "Renaldas 'ReJ' Zioma", "For assisting in the Unity 5 transition" );
 			CreditsLine( "Tim 'Stramit' Cooper & David 'Texel' Jones", "For giving helpful tips");
 			CreditsLine( "Sander 'Zerot' Homan", "For helping out stealing Unity's internal RT code");
 			CreditsLine( "Carlos 'Darkcoder' Wilkes", "For helping out with various serialization issues");
 			CreditsLine( "Ville 'wiliz' Mäkynen", "For helping out with the undo system");
-			CreditsLine( "Daniele Giardini", "For his editor window icon script (also, check out his plugin HOTween!)");
+			CreditsLine( "Daniele Giardini", "For his editor window icon script (also, check out his plugin DOTween!)");
 			CreditsLine( "Beck Sebenius", "For helping out getting coroutines to run in the Editor");
 			CreditsLine( "James 'Farfarer' O'Hare", "For asking all the advanced shader questions on the forums so I didn't have to");
 			CreditsLine( "Tenebrous", "For helping with... Something... (I can't remember)");

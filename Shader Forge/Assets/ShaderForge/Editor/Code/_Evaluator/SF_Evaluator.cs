@@ -323,6 +323,10 @@ namespace ShaderForge {
 					dependencies.fog_color = true;
 				}
 
+				if( n is SFN_DDX || n is SFN_DDY ) {
+					dependencies.pragmaGlsl = true;
+				}
+
 				if( n is SFN_TexCoord ) {
 					switch( ( (SFN_TexCoord)n ).currentUV ) {
 						case SFN_TexCoord.UV.uv0:
@@ -602,7 +606,7 @@ namespace ShaderForge {
 				else
 					App( "#pragma target " + dependencies.GetShaderTarget() );
 			}
-			if( editor.nodeView.treeStatus.mipInputUsed || editor.nodeView.treeStatus.texturesInVertShader )
+			if( editor.nodeView.treeStatus.mipInputUsed || editor.nodeView.treeStatus.texturesInVertShader || dependencies.pragmaGlsl )
 				App( "#pragma glsl" ); // Kills non DX instruction counts
 		}
 		void EndCG() {

@@ -81,6 +81,7 @@ namespace ShaderForge {
 		public bool const_e = false;
 		public bool const_phi = false;
 
+		public bool pragmaGlsl = false;
 
 
 		int shaderTarget = 3; // Shader target: #pragma target 3.0

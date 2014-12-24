@@ -138,7 +138,8 @@ namespace ShaderForge {
 				if(boldEnumField == null){
 					boldEnumField = new GUIStyle((GUIStyle)"MiniPopup");
 					boldEnumField.fontStyle = FontStyle.Bold;
-					Color c = new Color32(161,225,87,255);
+					Color c = SF_GUI.ProSkin ? (Color)new Color32( 161, 225, 87, 255 ) : ((Color)new Color32( 161, 225, 87, 255 ))*0.5f; // Used for variable precision
+					c.a = 1;
 					boldEnumField.normal.textColor = c;
 					boldEnumField.active.textColor = c;
 					boldEnumField.focused.textColor = c;

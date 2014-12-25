@@ -1,4 +1,9 @@
-﻿Shader "Custom/Reference Shader" {
+﻿// Upgrade NOTE: commented out 'sampler2D unity_Lightmap', a built-in variable
+// Upgrade NOTE: commented out 'sampler2D unity_LightmapInd', a built-in variable
+// Upgrade NOTE: replaced tex2D unity_Lightmap with UNITY_SAMPLE_TEX2D
+// Upgrade NOTE: replaced tex2D unity_LightmapInd with UNITY_SAMPLE_TEX2D_SAMPLER
+
+Shader "Custom/Reference Shader" {
 	Properties {
 		_Color ("Main Color", Color) = (1,1,1,1)
 		_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
@@ -137,9 +142,9 @@
 				return o;
 			}
 			#ifndef LIGHTMAP_OFF
-				sampler2D unity_Lightmap;
+				// sampler2D unity_Lightmap;
 				#ifndef DIRLIGHTMAP_OFF
-					sampler2D unity_LightmapInd;
+					// sampler2D unity_LightmapInd;
 				#endif
 			#endif
 
@@ -185,13 +190,13 @@
 					#ifndef DIRLIGHTMAP_OFF
 						// directional lightmaps
 						half3 specColor;
-						fixed4 lmtex = tex2D(unity_Lightmap, IN.lmap.xy);
-						fixed4 lmIndTex = tex2D(unity_LightmapInd, IN.lmap.xy);
+						fixed4 lmtex = UNITY_SAMPLE_TEX2D(unity_Lightmap, IN.lmap.xy);
+						fixed4 lmIndTex = UNITY_SAMPLE_TEX2D_SAMPLER(unity_LightmapInd,unity_Lightmap, IN.lmap.xy);
 						half3 lm = LightingBlinnPhong_DirLightmap(o, lmtex, lmIndTex, normalize(half3(IN.viewDir)), 1, specColor).rgb;
 						c.rgb += specColor;
 					#else
 						// single lightmap
-						fixed4 lmtex = tex2D(unity_Lightmap, IN.lmap.xy);
+						fixed4 lmtex = UNITY_SAMPLE_TEX2D(unity_Lightmap, IN.lmap.xy);
 						fixed3 lm = DecodeLightmap (lmtex);
 					#endif
 
@@ -544,8 +549,8 @@
 		sampler2D _LightSpecBuffer;
 		#endif
 		#ifndef LIGHTMAP_OFF
-		sampler2D unity_Lightmap;
-		sampler2D unity_LightmapInd;
+		// sampler2D unity_Lightmap;
+		// sampler2D unity_LightmapInd;
 		float4 unity_LightmapFade;
 		#endif
 		fixed4 unity_Ambient;
@@ -588,8 +593,8 @@
 		#ifndef LIGHTMAP_OFF
 		#ifdef DIRLIGHTMAP_OFF
 		// dual lightmaps
-		fixed4 lmtex = tex2D(unity_Lightmap, IN.lmap.xy);
-		fixed4 lmtex2 = tex2D(unity_LightmapInd, IN.lmap.xy);
+		fixed4 lmtex = UNITY_SAMPLE_TEX2D(unity_Lightmap, IN.lmap.xy);
+		fixed4 lmtex2 = UNITY_SAMPLE_TEX2D_SAMPLER(unity_LightmapInd,unity_Lightmap, IN.lmap.xy);
 		half lmFade = length (IN.lmapFadePos) * unity_LightmapFade.z + unity_LightmapFade.w;
 		half3 lmFull = DecodeLightmap (lmtex);
 		half3 lmIndirect = DecodeLightmap (lmtex2);
@@ -598,8 +603,8 @@
 		#else
 		// directional lightmaps
 		half3 specColor;
-		fixed4 lmtex = tex2D(unity_Lightmap, IN.lmap.xy);
-		fixed4 lmIndTex = tex2D(unity_LightmapInd, IN.lmap.xy);
+		fixed4 lmtex = UNITY_SAMPLE_TEX2D(unity_Lightmap, IN.lmap.xy);
+		fixed4 lmIndTex = UNITY_SAMPLE_TEX2D_SAMPLER(unity_LightmapInd,unity_Lightmap, IN.lmap.xy);
 		half4 lm = LightingBlinnPhong_DirLightmap(o, lmtex, lmIndTex, normalize(half3(IN.viewDir)), 1, specColor);
 		light += lm;
 		#endif

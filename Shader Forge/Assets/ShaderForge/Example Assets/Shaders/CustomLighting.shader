@@ -21,42 +21,25 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             }
             Cull Front
             
+            Fog {Mode Off}
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
+            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )
             #include "UnityCG.cginc"
-            #include "UnityPBSLighting.cginc"
-            #include "UnityStandardBRDF.cginc"
             #pragma fragmentoption ARB_precision_hint_fastest
             #pragma multi_compile_shadowcaster
             #pragma exclude_renderers xbox360 ps3 flash d3d11_9x 
             #pragma target 3.0
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD0;
-                #else
-                    float3 shLight : TEXCOORD0;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.pos = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz + v.normal*0.05,1));
                 return o;
             }
@@ -73,23 +56,18 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             }
             
             
+            Fog {Mode Off}
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #define UNITY_PASS_FORWARDBASE
-            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
+            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #include "Lighting.cginc"
-            #include "UnityPBSLighting.cginc"
-            #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdbase_fullshadows
             #pragma exclude_renderers xbox360 ps3 flash d3d11_9x 
             #pragma target 3.0
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             uniform float4 _Color;
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
             uniform sampler2D _Normals; uniform float4 _Normals_ST;
@@ -109,22 +87,10 @@ Shader "Shader Forge/Examples/Custom Lighting" {
                 float3 tangentDir : TEXCOORD3;
                 float3 binormalDir : TEXCOORD4;
                 LIGHTING_COORDS(5,6)
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD7;
-                #else
-                    float3 shLight : TEXCOORD7;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
@@ -161,23 +127,18 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             Blend One One
             
             
+            Fog { Color (0,0,0,0) }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #define UNITY_PASS_FORWARDADD
-            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
+            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #include "Lighting.cginc"
-            #include "UnityPBSLighting.cginc"
-            #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdadd_fullshadows
             #pragma exclude_renderers xbox360 ps3 flash d3d11_9x 
             #pragma target 3.0
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             uniform float4 _Color;
             uniform sampler2D _Diffuse; uniform float4 _Diffuse_ST;
             uniform sampler2D _Normals; uniform float4 _Normals_ST;
@@ -197,22 +158,10 @@ Shader "Shader Forge/Examples/Custom Lighting" {
                 float3 tangentDir : TEXCOORD3;
                 float3 binormalDir : TEXCOORD4;
                 LIGHTING_COORDS(5,6)
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD7;
-                #else
-                    float3 shLight : TEXCOORD7;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);

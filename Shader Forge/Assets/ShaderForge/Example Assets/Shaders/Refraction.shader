@@ -24,6 +24,7 @@ Shader "Shader Forge/Examples/Refraction" {
             Cull Off
             
             
+            Fog {Mode Off}
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -35,10 +36,6 @@ Shader "Shader Forge/Examples/Refraction" {
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform sampler2D _GrabTexture;
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             uniform float _RefractionIntensity;
             uniform sampler2D _Refraction; uniform float4 _Refraction_ST;
             struct VertexInput {
@@ -56,22 +53,10 @@ Shader "Shader Forge/Examples/Refraction" {
                 float3 binormalDir : TEXCOORD4;
                 float4 screenPos : TEXCOORD5;
                 LIGHTING_COORDS(6,7)
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD8;
-                #else
-                    float3 shLight : TEXCOORD8;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
@@ -144,6 +129,7 @@ Shader "Shader Forge/Examples/Refraction" {
             Cull Off
             
             
+            Fog { Color (0,0,0,0) }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -155,10 +141,6 @@ Shader "Shader Forge/Examples/Refraction" {
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform sampler2D _GrabTexture;
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             uniform float _RefractionIntensity;
             uniform sampler2D _Refraction; uniform float4 _Refraction_ST;
             struct VertexInput {
@@ -176,22 +158,10 @@ Shader "Shader Forge/Examples/Refraction" {
                 float3 binormalDir : TEXCOORD4;
                 float4 screenPos : TEXCOORD5;
                 LIGHTING_COORDS(6,7)
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD8;
-                #else
-                    float3 shLight : TEXCOORD8;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);

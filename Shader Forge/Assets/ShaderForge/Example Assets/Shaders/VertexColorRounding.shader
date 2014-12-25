@@ -18,21 +18,16 @@ Shader "Shader Forge/Examples/Vertex Color Rounding" {
             }
             
             
+            Fog {Mode Off}
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #define UNITY_PASS_FORWARDBASE
-            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
+            #define SHOULD_SAMPLE_SH_PROBE ( defined (LIGHTMAP_OFF) )
             #include "UnityCG.cginc"
-            #include "UnityPBSLighting.cginc"
-            #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdbase_fullshadows
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             uniform float _Divisions;
             struct VertexInput {
                 float4 vertex : POSITION;
@@ -42,22 +37,10 @@ Shader "Shader Forge/Examples/Vertex Color Rounding" {
             struct VertexOutput {
                 float4 pos : SV_POSITION;
                 float4 vertexColor : COLOR;
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD0;
-                #else
-                    float3 shLight : TEXCOORD0;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.vertexColor = v.vertexColor;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 return o;
             }

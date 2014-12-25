@@ -28,14 +28,9 @@ Shader "Shader Forge/Examples/Cubemaps" {
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #pragma multi_compile_fwdbase_fullshadows
-            #pragma multi_compile_fog
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             uniform samplerCUBE _Cubemap;
             uniform sampler2D _Specular; uniform float4 _Specular_ST;
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
@@ -54,30 +49,16 @@ Shader "Shader Forge/Examples/Cubemaps" {
                 float3 tangentDir : TEXCOORD3;
                 float3 binormalDir : TEXCOORD4;
                 LIGHTING_COORDS(5,6)
-                UNITY_FOG_COORDS(7)
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD8;
-                #else
-                    float3 shLight : TEXCOORD8;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(_Object2World, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
-                UNITY_TRANSFER_FOG(o,o.pos);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
             }
@@ -119,9 +100,7 @@ Shader "Shader Forge/Examples/Cubemaps" {
                 float3 diffuse = (directDiffuse + indirectDiffuse) * float3(node_286,node_286,node_286);
 /// Final Color:
                 float3 finalColor = diffuse + specular;
-                fixed4 finalRGBA = fixed4(finalColor,1);
-                UNITY_APPLY_FOG(i.fogCoord, finalRGBA);
-                return finalRGBA;
+                return fixed4(finalColor,1);
             }
             ENDCG
         }
@@ -133,6 +112,7 @@ Shader "Shader Forge/Examples/Cubemaps" {
             Blend One One
             
             
+            Fog { Color (0,0,0,0) }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -140,14 +120,9 @@ Shader "Shader Forge/Examples/Cubemaps" {
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #pragma multi_compile_fwdadd_fullshadows
-            #pragma multi_compile_fog
             #pragma exclude_renderers gles xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             uniform sampler2D _Specular; uniform float4 _Specular_ST;
             uniform sampler2D _Normal; uniform float4 _Normal_ST;
             uniform float _FresnelExponent;
@@ -165,22 +140,10 @@ Shader "Shader Forge/Examples/Cubemaps" {
                 float3 tangentDir : TEXCOORD3;
                 float3 binormalDir : TEXCOORD4;
                 LIGHTING_COORDS(5,6)
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD7;
-                #else
-                    float3 shLight : TEXCOORD7;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);

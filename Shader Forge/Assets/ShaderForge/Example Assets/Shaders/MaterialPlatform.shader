@@ -31,15 +31,15 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #include "Lighting.cginc"
-            #include "UnityPBSLighting.cginc"
-            #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdbase_fullshadows
-            #pragma multi_compile_fog
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
+            #ifndef LIGHTMAP_OFF
+                float4 unity_LightmapST;
+                sampler2D unity_Lightmap;
+                #ifndef DIRLIGHTMAP_OFF
+                    sampler2D unity_LightmapInd;
+                #endif
             #endif
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
             uniform samplerCUBE _Cubemap;
@@ -54,47 +54,34 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                 float4 tangent : TANGENT;
                 float2 texcoord0 : TEXCOORD0;
                 float2 texcoord1 : TEXCOORD1;
-                float2 texcoord2 : TEXCOORD2;
                 float4 vertexColor : COLOR;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
                 float2 uv0 : TEXCOORD0;
-                float2 uv1 : TEXCOORD1;
-                float2 uv2 : TEXCOORD2;
-                float4 posWorld : TEXCOORD3;
-                float3 normalDir : TEXCOORD4;
-                float3 tangentDir : TEXCOORD5;
-                float3 binormalDir : TEXCOORD6;
+                float4 posWorld : TEXCOORD1;
+                float3 normalDir : TEXCOORD2;
+                float3 tangentDir : TEXCOORD3;
+                float3 binormalDir : TEXCOORD4;
                 float4 vertexColor : COLOR;
-                LIGHTING_COORDS(7,8)
-                UNITY_FOG_COORDS(9)
+                LIGHTING_COORDS(5,6)
                 #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD10;
-                #else
-                    float3 shLight : TEXCOORD10;
+                    float2 uvLM : TEXCOORD7;
                 #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                o.uv1 = v.texcoord1;
-                o.uv2 = v.texcoord2;
                 o.vertexColor = v.vertexColor;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(_Object2World, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
-                UNITY_TRANSFER_FOG(o,o.pos);
+                #ifndef LIGHTMAP_OFF
+                    o.uvLM = v.texcoord1 * unity_LightmapST.xy + unity_LightmapST.zw;
+                #endif
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
             }
@@ -111,7 +98,28 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                 float3 normalLocal = lerp(_FloorNormal_var.rgb,normalize(lerp(node_398.rgb,node_431.rgb,0.5)),i.vertexColor.b);
                 float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
-                float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
+                #ifndef LIGHTMAP_OFF
+                    float4 lmtex = tex2D(unity_Lightmap,i.uvLM);
+                    #ifndef DIRLIGHTMAP_OFF
+                        float3 lightmap = DecodeLightmap(lmtex);
+                        float3 scalePerBasisVector = DecodeLightmap(tex2D(unity_LightmapInd,i.uvLM));
+                        UNITY_DIRBASIS
+                        half3 normalInRnmBasis = saturate (mul (unity_DirBasis, normalLocal));
+                        lightmap *= dot (normalInRnmBasis, scalePerBasisVector);
+                    #else
+                        float3 lightmap = DecodeLightmap(lmtex);
+                    #endif
+                #endif
+                #ifndef LIGHTMAP_OFF
+                    #ifdef DIRLIGHTMAP_OFF
+                        float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
+                    #else
+                        float3 lightDirection = normalize (scalePerBasisVector.x * unity_DirBasis[0] + scalePerBasisVector.y * unity_DirBasis[1] + scalePerBasisVector.z * unity_DirBasis[2]);
+                        lightDirection = mul(lightDirection,tangentTransform); // Tangent to world
+                    #endif
+                #else
+                    float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
+                #endif
                 float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
@@ -121,49 +129,52 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                 float4 _MainTex_var = tex2D(_MainTex,TRANSFORM_TEX(i.uv0, _MainTex));
                 float gloss = lerp((0.4*_MainTex_var.a),0.8,i.vertexColor.b);
                 float specPow = exp2( gloss * 10.0+1.0);
-                UnityLight light;
-                #ifdef LIGHTMAP_OFF
-                    light.color = lightColor;
-                    light.dir = lightDirection;
-                    light.ndotl = LambertTerm (normalDirection, light.dir);
-                #else
-                    light.color = half3(0.f, 0.f, 0.f);
-                    light.ndotl = 0.0f;
-                    light.dir = half3(0.f, 0.f, 0.f);
-                #endif
-                UnityGIInput d;
-                d.light = light;
-                d.worldPos = i.posWorld.xyz;
-                d.worldViewDir = viewDirection;
-                d.atten = attenuation;
-                #ifndef LIGHTMAP_OFF
-                    d.ambientOrLightmapUV = i.uvLM;
-                #else
-                    d.ambientOrLightmapUV.xyz = i.shLight;
-                #endif
-                UnityGI gi = UnityStandardGlobalIllumination (d, 1, gloss, normalDirection);
-                lightDirection = gi.light.dir;
-                lightColor = gi.light.color;
 ////// Specular:
                 float NdotL = max(0, dot( normalDirection, lightDirection ));
                 float4 _Cubemap_var = texCUBE(_Cubemap,viewReflectDirection);
                 float node_146 = lerp(0.1,0.8,i.vertexColor.b);
                 float3 specularColor = float3(node_146,node_146,node_146);
-                float3 directSpecular = 1 * pow(max(0,dot(halfDirection,normalDirection)),specPow);
+                #if !defined(LIGHTMAP_OFF) && defined(DIRLIGHTMAP_OFF)
+                    float3 directSpecular = float3(0,0,0);
+                #else
+                    float3 directSpecular = 1 * pow(max(0,dot(halfDirection,normalDirection)),specPow);
+                #endif
                 float3 indirectSpecular = (0 + (i.vertexColor.b*(_Cubemap_var.rgb*_Cubemap_var.a*5.0)));
                 float3 specular = (directSpecular + indirectSpecular) * specularColor;
+                #ifndef LIGHTMAP_OFF
+                    #ifndef DIRLIGHTMAP_OFF
+                        specular *= lightmap;
+                    #else
+                        specular *= attenColor;
+                    #endif
+                #else
+                    specular *= attenColor;
+                #endif
 /////// Diffuse:
                 NdotL = max(0.0,dot( normalDirection, lightDirection ));
-                float3 directDiffuse = max( 0.0, NdotL) * attenColor;
+                #ifndef LIGHTMAP_OFF
+                    float3 directDiffuse = float3(0,0,0);
+                #else
+                    float3 directDiffuse = max( 0.0, NdotL) * attenColor;
+                #endif
+                #ifndef LIGHTMAP_OFF
+                    #ifdef SHADOWS_SCREEN
+                        #if (defined(SHADER_API_GLES) || defined(SHADER_API_GLES3)) && defined(SHADER_API_MOBILE)
+                            directDiffuse += min(lightmap.rgb, attenuation);
+                        #else
+                            directDiffuse += max(min(lightmap.rgb,attenuation*lmtex.rgb), lightmap.rgb*attenuation*0.5);
+                        #endif
+                    #else
+                        directDiffuse += lightmap.rgb;
+                    #endif
+                #endif
                 float2 node_350 = (i.uv0*2.0);
                 float4 _DirtMask_var = tex2D(_DirtMask,TRANSFORM_TEX(node_350, _DirtMask));
                 float node_524 = 0.0;
                 float3 diffuse = directDiffuse * lerp(lerp(_MainTex_var.rgb,(_MainTex_var.rgb*_DirtColor.rgb),(i.vertexColor.r*((1.0 - (_DirtMask_var.r*_DirtMask_var.r))*(1.0 - (_MainTex_var.a*_MainTex_var.a))))),float3(node_524,node_524,node_524),i.vertexColor.b);
 /// Final Color:
                 float3 finalColor = diffuse + specular;
-                fixed4 finalRGBA = fixed4(finalColor,1);
-                UNITY_APPLY_FOG(i.fogCoord, finalRGBA);
-                return finalRGBA;
+                return fixed4(finalColor,1);
             }
             ENDCG
         }
@@ -175,6 +186,7 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
             Blend One One
             
             
+            Fog { Color (0,0,0,0) }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -182,16 +194,9 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #include "Lighting.cginc"
-            #include "UnityPBSLighting.cginc"
-            #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdadd_fullshadows
-            #pragma multi_compile_fog
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
             uniform sampler2D _DirtMask; uniform float4 _DirtMask_ST;
             uniform sampler2D _FloorNormal; uniform float4 _FloorNormal_ST;
@@ -204,39 +209,22 @@ Shader "Shader Forge/Examples/MaterialPlatform" {
                 float4 tangent : TANGENT;
                 float2 texcoord0 : TEXCOORD0;
                 float2 texcoord1 : TEXCOORD1;
-                float2 texcoord2 : TEXCOORD2;
                 float4 vertexColor : COLOR;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
                 float2 uv0 : TEXCOORD0;
-                float2 uv1 : TEXCOORD1;
-                float2 uv2 : TEXCOORD2;
-                float4 posWorld : TEXCOORD3;
-                float3 normalDir : TEXCOORD4;
-                float3 tangentDir : TEXCOORD5;
-                float3 binormalDir : TEXCOORD6;
+                float4 posWorld : TEXCOORD1;
+                float3 normalDir : TEXCOORD2;
+                float3 tangentDir : TEXCOORD3;
+                float3 binormalDir : TEXCOORD4;
                 float4 vertexColor : COLOR;
-                LIGHTING_COORDS(7,8)
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD9;
-                #else
-                    float3 shLight : TEXCOORD9;
-                #endif
+                LIGHTING_COORDS(5,6)
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                o.uv1 = v.texcoord1;
-                o.uv2 = v.texcoord2;
                 o.vertexColor = v.vertexColor;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);

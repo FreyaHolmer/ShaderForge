@@ -24,15 +24,10 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #pragma multi_compile_fwdbase_fullshadows
-            #pragma multi_compile_fog
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform float4 _TimeEditor;
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -44,28 +39,14 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 LIGHTING_COORDS(3,4)
-                UNITY_FOG_COORDS(5)
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD6;
-                #else
-                    float3 shLight : TEXCOORD6;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.posWorld = mul(_Object2World, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
-                UNITY_TRANSFER_FOG(o,o.pos);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
             }
@@ -97,8 +78,8 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float2 node_741_skew = node_744 + 0.2127+node_744.x*0.3713*node_744.y;
                 float2 node_741_rnd = 4.789*sin(489.123*(node_741_skew));
                 float node_741 = frac(node_741_rnd.x*node_741_rnd.y*(1+node_741_skew.x));
-                float4 node_774 = _Time + _TimeEditor;
-                float node_563_ang = node_774.g;
+                float4 node_1267 = _Time + _TimeEditor;
+                float node_563_ang = node_1267.g;
                 float node_563_spd = 1.0;
                 float node_563_cos = cos(node_563_spd*node_563_ang);
                 float node_563_sin = sin(node_563_spd*node_563_ang);
@@ -108,9 +89,7 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float3 diffuse = (directDiffuse + indirectDiffuse) * (pow(float3(float2(node_737,node_739),node_741),2.0)*(1.0 - floor(saturate(length((float2(1,3)*node_563))))));
 /// Final Color:
                 float3 finalColor = diffuse;
-                fixed4 finalRGBA = fixed4(finalColor,1);
-                UNITY_APPLY_FOG(i.fogCoord, finalRGBA);
-                return finalRGBA;
+                return fixed4(finalColor,1);
             }
             ENDCG
         }
@@ -122,6 +101,7 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             Blend One One
             
             
+            Fog { Color (0,0,0,0) }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -129,15 +109,10 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #pragma multi_compile_fwdadd_fullshadows
-            #pragma multi_compile_fog
             #pragma exclude_renderers xbox360 ps3 flash 
             #pragma target 3.0
             uniform float4 _LightColor0;
             uniform float4 _TimeEditor;
-            float4 unity_LightmapST;
-            #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
-            #endif
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -149,22 +124,10 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float4 posWorld : TEXCOORD1;
                 float3 normalDir : TEXCOORD2;
                 LIGHTING_COORDS(3,4)
-                #ifndef LIGHTMAP_OFF
-                    float4 uvLM : TEXCOORD5;
-                #else
-                    float3 shLight : TEXCOORD5;
-                #endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                #ifdef LIGHTMAP_ON
-                    o.uvLM.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                    o.uvLM.zw = 0;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    o.uvLM.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-                #endif
                 o.normalDir = mul(_Object2World, float4(v.normal,0)).xyz;
                 o.posWorld = mul(_Object2World, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
@@ -198,8 +161,8 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float2 node_741_skew = node_744 + 0.2127+node_744.x*0.3713*node_744.y;
                 float2 node_741_rnd = 4.789*sin(489.123*(node_741_skew));
                 float node_741 = frac(node_741_rnd.x*node_741_rnd.y*(1+node_741_skew.x));
-                float4 node_775 = _Time + _TimeEditor;
-                float node_563_ang = node_775.g;
+                float4 node_1268 = _Time + _TimeEditor;
+                float node_563_ang = node_1268.g;
                 float node_563_spd = 1.0;
                 float node_563_cos = cos(node_563_spd*node_563_ang);
                 float node_563_sin = sin(node_563_spd*node_563_ang);

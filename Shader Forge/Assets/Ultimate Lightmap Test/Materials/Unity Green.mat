@@ -43,13 +43,6 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _SpecGlossMap
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
           name: _ParallaxMap
         second:
           m_Texture: {fileID: 0}
@@ -58,6 +51,13 @@ Material:
       data:
         first:
           name: _Occlusion
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SpecGlossMap
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -113,6 +113,10 @@ Material:
         second: 0
       data:
         first:
+          name: _Parallax
+        second: .0199999996
+      data:
+        first:
           name: _ZWrite
         second: 1
       data:
@@ -125,15 +129,7 @@ Material:
         second: 1
       data:
         first:
-          name: _Parallax
-        second: .0199999996
-      data:
-        first:
           name: _OcclusionStrength
-        second: 1
-      data:
-        first:
-          name: _EmissionScaleUI
         second: 1
       data:
         first:
@@ -147,6 +143,10 @@ Material:
         first:
           name: _Mode
         second: 0
+      data:
+        first:
+          name: _EmissionScaleUI
+        second: 1
       data:
         first:
           name: _Metallic
@@ -163,7 +163,7 @@ Material:
       data:
         first:
           name: _SpecColor
-        second: {r: .433823526, g: .433823526, b: .433823526, a: 1}
+        second: {r: .941176474, g: .941176474, b: .941176474, a: 1}
       data:
         first:
           name: _SpecularColor

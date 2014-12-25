@@ -48,7 +48,7 @@ namespace ShaderForge {
 		string[] _precisionLabels;
 		public string[] precisionLabels{
 			get{
-				if(_precisionLabels == null){
+				if(_precisionLabels == null || _precisionLabels.Length == 0){
 					_precisionLabels = FloatPrecision.Float.DisplayStrings();
 				}
 				return _precisionLabels;

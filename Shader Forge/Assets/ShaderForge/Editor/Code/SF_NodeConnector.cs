@@ -750,8 +750,20 @@ namespace ShaderForge {
 			if( other.conType == this.conType )
 				return false; // Disallow connecting same types (i <- i & o <- o)
 
+			if( conType == ConType.cOutput ) { // Disallow connecting loops
+				if( node.IsDescendantOf( other.node ) ) {
+					return false;
+				}
+			} else {
+				if( other.node.IsDescendantOf( node ) ) {
+					return false;
+				}
+			}
+
 			return true;
 		}
+
+		
 
 		public bool CanValidlyConnectTo(SF_NodeConnector other) {
 			if(!CanConnectTo(other))

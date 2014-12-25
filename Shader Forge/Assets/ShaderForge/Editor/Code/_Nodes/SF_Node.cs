@@ -388,12 +388,37 @@ namespace ShaderForge {
 		}
 
 
+		public bool IsDescendantOf( SF_Node other ) {
+			foreach( SF_NodeConnector con in other.connectors ) {
+				if( con.conType != ConType.cOutput )
+					continue;
+				if( !con.IsConnectedAndEnabled() )
+					continue;
+				foreach( SF_NodeConnector oCon in con.outputCons ) {
+					if( oCon.node == this ) {
+						return true;
+					} else if( this.IsDescendantOf( oCon.node ) ) {
+						return true;
+					}	
+				}
+			}
+			return false;
+		}
 
 
-
-
-
-
+		public bool IsChildOf( SF_Node other ) { 
+			foreach( SF_NodeConnector con in other.connectors ) {
+				if( con.conType != ConType.cOutput )
+					continue;
+				if( !con.IsConnectedAndEnabled() )
+					continue;
+				foreach( SF_NodeConnector oCon in con.outputCons ) {
+					if( oCon.node == this )
+						return true;
+				}
+			}
+			return false;
+		}
 
 
 

@@ -25,7 +25,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 1;
-		public static int versionNumSecondary = 1;
+		public static int versionNumSecondary = 2;
 		public static string versionStage = "";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge v" + version;
@@ -201,10 +201,7 @@ namespace ShaderForge {
 
 
 		public static void AssignShaderToMaterialAsset( ref Material m, Shader s ) {
-			string path = AssetDatabase.GetAssetPath( m );
-			AssetDatabase.DeleteAsset( path );
-			AssetDatabase.CreateAsset( m = new Material( s ), path );
-			AssetDatabase.ImportAsset( path, ImportAssetOptions.ForceUpdate );
+			m.shader = s;
 		}
 
 		public static float[] VectorToArray(Vector4 vec) {

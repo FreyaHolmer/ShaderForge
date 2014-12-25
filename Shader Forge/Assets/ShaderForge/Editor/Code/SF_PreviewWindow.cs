@@ -15,25 +15,13 @@ namespace ShaderForge {
 
 		// Preview assets
 		[SerializeField]
-		public Mesh mesh;
+		public Mesh mesh;  
 		[SerializeField]
 		public Material internalMaterial;
 		public Material InternalMaterial {
 			get {
 				if(internalMaterial == null){
-					internalMaterial = SF_Resources.Load<Material>("ShaderForgeInternal.mat");
-
-					if(internalMaterial == null){ 
-
-						//string meshesPath = AssetDatabase.GetAssetPath( Resources.Load("Meshes/sf_meshes",typeof(Mesh)) );
-						string sf_resourcePath = SF_Resources.InternalResourcesPath;
-						string matPath = sf_resourcePath + "ShaderForgeInternal.mat";
-						//Debug.Log(matPath);
-						AssetDatabase.CreateAsset(internalMaterial = new Material(editor.currentShaderAsset), matPath );
-						//AssetDatabase.Refresh(ImportAssetOptions.DontDownloadFromCacheServer);
-
-					}
-
+					internalMaterial = new Material(editor.currentShaderAsset);
 				}
 				return internalMaterial;
 			}

@@ -2747,11 +2747,11 @@ namespace ShaderForge {
 			App( "OutputPatchConstant hullconst (InputPatch<TessVertex,3> v) {" );
 			scope++;
 			App( "OutputPatchConstant o;" );
-			App( "float ts = Tessellation( v[0], v[1], v[2] );" );
-			App( "o.edge[0] = ts;" );
-			App( "o.edge[1] = ts;" );
-			App( "o.edge[2] = ts;" );
-			App( "o.inside = ts;" );
+			App( "float4 ts = Tessellation( v[0], v[1], v[2] );" );
+			App( "o.edge[0] = ts.x;" );
+			App( "o.edge[1] = ts.y;" );
+			App( "o.edge[2] = ts.z;" );
+			App( "o.inside = ts.w;" );
 			App( "return o;" );
 			scope--;
 			App( "}" );
@@ -2804,28 +2804,35 @@ namespace ShaderForge {
 
 
 		void FuncTessellation() {
-			App( "float Tessellation(TessVertex v, TessVertex v1, TessVertex v2){" );
-			scope++;
-
-
+			
 			switch( ps.catQuality.tessellationMode ) {
-
 				case SFPSC_Quality.TessellationMode.Regular:
-					App( "return " + ps.n_tessellation + ";" );
+
+					App("float Tessellation(TessVertex v){");// First, we need a per-vertex evaluation of the tess factor
+					scope++;
+					App( "return " + ps.n_tessellation + ";");
+					scope--;
+					App("}");
+
+					App( "float4 Tessellation(TessVertex v, TessVertex v1, TessVertex v2){" );
+					scope++;
+					App( "float tv = Tessellation(v);" );
+					App( "float tv1 = Tessellation(v1);" );
+					App( "float tv2 = Tessellation(v2);" );
+					App( "return float4( tv1+tv2, tv2+tv, tv+tv1, tv+tv1+tv2 ) / float4(2,2,2,3);" );
+					scope--;
+					App( "}" );
 					break;
 
 				case SFPSC_Quality.TessellationMode.EdgeLength:
+					App( "float4 Tessellation(TessVertex v, TessVertex v1, TessVertex v2){" );
+					scope++;
 					App( "return UnityEdgeLengthBasedTess(v.vertex, v1.vertex, v2.vertex, " + ps.n_tessellation + ");" );
+					scope--;
+					App( "}" );
 					break;
-
-				/*				case SFPSC_Quality.TessellationMode.EdgeLengthCulled:
-									App( "return UnityEdgeLengthBasedTessCull(v.vertex, v1.vertex, v2.vertex, " + ps.n_tessellation + ", 1.0 );" );
-									break;*/
-
 			}
-
-			scope--;
-			App( "}" );
+			
 		}
 
 		void FuncDisplacement() {
@@ -2833,7 +2840,7 @@ namespace ShaderForge {
 				return;
 			App( "void displacement (inout VertexInput v){" );
 			scope++;
-			App( "v.vertex.xyz +=  " + ps.n_displacement + ";" );
+			App( "v.vertex.xyz += " + ps.n_displacement + ";" );
 			scope--;
 			App( "}" );
 		}

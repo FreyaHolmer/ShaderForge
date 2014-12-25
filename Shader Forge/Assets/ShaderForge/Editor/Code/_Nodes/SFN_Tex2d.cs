@@ -121,6 +121,7 @@ namespace ShaderForge {
 			if(EditorGUI.EndChangeCheck()){
 				if(markedAsNormalMap && !preMarked)
 					noTexValue = NoTexValue.Bump;
+				UpdateCompCount();
 				UpdateNormalMapAlphaState();
 				OnUpdateNode();
 			}
@@ -469,6 +470,8 @@ namespace ShaderForge {
 				markedAsNormalMap = false;
 				UpdateNormalMapAlphaState();
 			}
+
+			UpdateCompCount();
 
 		}
 

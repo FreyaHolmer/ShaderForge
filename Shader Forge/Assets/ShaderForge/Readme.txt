@@ -8,15 +8,12 @@ You hopefully can't wait to get started, but you should give this document a rea
 
 Contact / Support:
 ------------------
-Joachim Holmér - webmaster@acegikmo.com
+Mail - joachim@neatcorporation.com
+Bugs & feature requests - http://shaderforge.userecho.com/
+Twitter - @JoachimHolmer / #ShaderForge
 
-Avoid sending me mails along the lines of "How do I make a shader that ________ ".
-Keep that to the forum threads so others can see and potentially help you too, though I will respond there as well :)
-
-Alternatively, you can use Twitter: @JoachimHolmer or the hashtag #ShaderForge
-
-Report bugs and/or request features here: http://shaderforge.userecho.com/
-
+Please avoid sending me mails along the lines of "How do I make a shader that ________ ? " - I'm not everyone's personal technical artist!
+Keep that to the forum threads so others can see and potentially help you too. (Though I will respond there as well)
 
 Website:
 --------
@@ -27,11 +24,6 @@ Installation:
 -------------
 Put the "ShaderForge" folder in the project you want to use Shader Forge in.
 If you have an old version of Shader Forge installed, remove the *entire* ShaderForge folder before installing the new one
-
-
-Version Control:
-----------------
-When running Shader Forge with version control, after the initial commit of SF, be sure to add the "ShaderForgeInternal.mat" material to the ignore list. (This behaviour will be mitigated in future versions)
 
 
 Legal Stuff / Licensing:

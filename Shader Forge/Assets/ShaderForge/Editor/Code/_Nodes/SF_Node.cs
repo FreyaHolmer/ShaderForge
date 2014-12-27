@@ -350,7 +350,7 @@ namespace ShaderForge {
 		}
 
 		public void AssignID() {
-			this.id = ( editor.idIncrement++ );
+			this.id = editor.GetUniqueNodeID();
 		}
 
 		public virtual void OnPreGetPreviewData() {
@@ -2109,7 +2109,6 @@ namespace ShaderForge {
 					break;
 				case "id":
 					node.id = int.Parse( dValue );
-					SF_Editor.instance.idIncrement = Mathf.Max( SF_Editor.instance.idIncrement, node.id + 1 );
 					break;
 				case "x":
 					node.rect.x = int.Parse( dValue );

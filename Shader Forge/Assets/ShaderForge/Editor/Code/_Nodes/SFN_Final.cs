@@ -42,7 +42,7 @@ namespace ShaderForge {
 			base.Initialize( "Main" );
 			this.editor = editor;
 			base.showColor = true;
-			this.id = ( editor.idIncrement++ );
+			AssignID();
 			base.nodeName = "Main";
 			Vector2 pos = new Vector2( 32768, 32768 );
 			base.rect = new Rect( pos.x - NODE_WIDTH / 2, pos.y - NODE_HEIGHT / 2, NODE_WIDTH * 1.7f, 400+20f*2 );

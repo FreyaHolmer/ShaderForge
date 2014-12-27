@@ -44,9 +44,6 @@ namespace ShaderForge {
 		public List<SF_Node> nodes;
 
 		[SerializeField]
-		public int idIncrement;
-
-		[SerializeField]
 		DateTime startTime = DateTime.UtcNow;
 
 		[SerializeField]
@@ -150,6 +147,23 @@ namespace ShaderForge {
 			if( !loaded )
 				return false;
 			return true;
+		}
+
+		public int GetUniqueNodeID() {
+
+			int[] occupiedIDs = nodes.Select( x => x.id ).ToArray();
+			int id = -1;
+			int limit = 1000000;
+
+			do {
+				id = UnityEngine.Random.Range(1,9999);
+				limit--;
+			} while( occupiedIDs.Contains( id ) && limit > 0 );
+
+			if( limit <= 0 )
+				Debug.LogError("Ran out of attempts to find a unique node ID");
+
+			return id;
 		}
 
 		/*

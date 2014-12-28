@@ -218,6 +218,10 @@ namespace ShaderForge {
 			}
 
 
+			if( ps.catBlending.dithering != Dithering.Off ) {
+				dependencies.NeedSceneUVs();
+			}
+
 
 
 
@@ -739,6 +743,72 @@ namespace ShaderForge {
 		}
 
 		void CGvars() {
+
+			if( ps.catBlending.dithering == Dithering.Dither2x2 ){
+				App( "// Dithering function, to use with scene UVs (screen pixel coords)" );
+				App( "// 2x2 Bayer matrix, based on https://en.wikipedia.org/wiki/Ordered_dithering" );
+				App( "float BinaryDither2x2( float value, float2 sceneUVs ) {" );
+				scope++;
+				App( "float2x2 mtx = float2x2(" );
+				scope++;
+				App( "float2( 1, 3 )/5.0," );
+				App( "float2( 4, 2 )/5.0" );
+				scope--;
+				App( ");" );
+				App( "float2 px = floor(_ScreenParams.xy * sceneUVs);" );
+				App( "int xSmp = fmod(px.x,2);" );
+				App( "int ySmp = fmod(px.y,2);" );
+				App( "float2 xVec = 1-saturate(abs(float2(0,1) - xSmp));" );
+				App( "float2 yVec = 1-saturate(abs(float2(0,1) - ySmp));" );
+				App( "float2 pxMult = float2( dot(mtx[0],yVec), dot(mtx[1],yVec) );" );
+				App( "return round(value + dot(pxMult, xVec));" );
+				scope--;
+				App( "}" );
+			} else if( ps.catBlending.dithering == Dithering.Dither3x3 ) {
+				App( "// Dithering function, to use with scene UVs (screen pixel coords)" );
+				App( "// 3x3 Bayer matrix, based on https://en.wikipedia.org/wiki/Ordered_dithering" );
+				App( "float BinaryDither3x3( float value, float2 sceneUVs ) {" );
+				scope++;
+				App( "float3x3 mtx = float3x3(" );
+				scope++;
+				App( "float3( 3,  7,  4 )/10.0," );
+				App( "float3( 6,  1,  9 )/10.0," );
+				App( "float3( 2,  8,  5 )/10.0" );
+				scope--;
+				App( ");" );
+				App( "float2 px = floor(_ScreenParams.xy * sceneUVs);" );
+				App( "int xSmp = fmod(px.x,3);" );
+				App( "int ySmp = fmod(px.y,3);" );
+				App( "float3 xVec = 1-saturate(abs(float3(0,1,2) - xSmp));" );
+				App( "float3 yVec = 1-saturate(abs(float3(0,1,2) - ySmp));" );
+				App( "float3 pxMult = float3( dot(mtx[0],yVec), dot(mtx[1],yVec), dot(mtx[2],yVec) );" );
+				App( "return round(value + dot(pxMult, xVec));" );
+				scope--;
+				App( "}" );
+			} else if( ps.catBlending.dithering == Dithering.Dither4x4 ) {
+				App("// Dithering function, to use with scene UVs (screen pixel coords)");
+				App("// 4x4 Bayer matrix, based on https://en.wikipedia.org/wiki/Ordered_dithering");
+				App("float BinaryDither4x4( float value, float2 sceneUVs ) {");
+				scope++;
+				App("float4x4 mtx = float4x4(");
+				scope++;
+				App("float4( 1,  9,  3, 11 )/17.0,");
+				App("float4( 13, 5, 15,  7 )/17.0,");
+				App("float4( 4, 12,  2, 10 )/17.0,");
+				App("float4( 16, 8, 14,  6 )/17.0");
+				scope--;
+				App( ");" );
+				App("float2 px = floor(_ScreenParams.xy * sceneUVs);");
+				App("int xSmp = fmod(px.x,4);             ");
+				App("int ySmp = fmod(px.y,4);");
+				App("float4 xVec = 1-saturate(abs(float4(0,1,2,3) - xSmp));");
+				App("float4 yVec = 1-saturate(abs(float4(0,1,2,3) - ySmp));");
+				App("float4 pxMult = float4( dot(mtx[0],yVec), dot(mtx[1],yVec), dot(mtx[2],yVec), dot(mtx[3],yVec) );");
+				App("return round(value + dot(pxMult, xVec));");
+				scope--;
+				App("}");
+			}
+
 
 			if( dependencies.lightColor && !IncludeLightingCginc()) // Lightmap and shadows include Lighting.cginc, which already has this
 				App( "uniform float4 _LightColor0;" );
@@ -2884,7 +2954,13 @@ namespace ShaderForge {
 		void CheckClip() {
 			if( !ps.UseClipping() )
 				return;
-			App( "clip(" + ps.n_alphaClip + " - 0.5);" );
+			if( ps.catBlending.dithering == Dithering.Off ) {
+				App( "clip(" + ps.n_alphaClip + " - 0.5);" );
+			} else {
+				string ditherStr = SFPSC_Blending.strDithering[(int)ps.catBlending.dithering].ToString().Split( ' ' )[0];
+				App( "clip( BinaryDither" + ditherStr + "(" + ps.n_alphaClip + " - 1.5, sceneUVs) );" );
+			}
+			
 		}
 
 

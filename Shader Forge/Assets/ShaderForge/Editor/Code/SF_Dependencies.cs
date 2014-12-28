@@ -159,6 +159,7 @@ namespace ShaderForge {
 		}
 
 		public void NeedSceneUVs(){
+			NeedFragScreenPos();
 			scene_uvs = true;
 		}
 

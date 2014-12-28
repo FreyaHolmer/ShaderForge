@@ -22,6 +22,8 @@ namespace ShaderForge {
 	public enum BlendMode { One, Zero, SrcColor, SrcAlpha, DstColor, DstAlpha, OneMinusSrcColor, OneMinusSrcAlpha, OneMinusDstColor, OneMinusDstAlpha };
 	public enum Queue { Background, Geometry, AlphaTest, Transparent, Overlay };
 
+	public enum Dithering { Off, Dither2x2, Dither3x3, Dither4x4 };
+
 
 	[System.Serializable]
 	public class SFPSC_Blending : SFPS_Category {
@@ -32,6 +34,7 @@ namespace ShaderForge {
 		public static string[] strDepthTest = new string[] { "<", ">", "\u2264 (Default)", "\u2265", "=", "\u2260", "Always" };
 		public static int[] queueNumbers = new int[] { 1000, 2000, 2450, 3000, 4000 };
 		public static string[] strQueue = new string[] { "Background (1000)", "Opaque Geometry (2000)", "Alpha Clip (2450)", "Transparent (3000)", "Overlay (4000)" };
+		public static string[] strDithering = new string[] { "Off", "2x2 matrix", "3x3 matrix", "4x4 matrix" };
 		
 
 		
@@ -54,6 +57,8 @@ namespace ShaderForge {
 		
 		public int offsetFactor = 0;
 		public int offsetUnits = 0;
+
+		public Dithering dithering = Dithering.Off;
 		
 		public bool writeDepth = true;
 		
@@ -97,6 +102,8 @@ namespace ShaderForge {
 			s += Serialize( "culm", ( (int)cullMode ).ToString() );
 			s += Serialize( "dpts", ( (int)depthTest ).ToString() );
 			s += Serialize( "wrdp", writeDepth.ToString() );
+
+			s += Serialize( "dith", ( (int)depthTest ).ToString() );
 			
 			
 			s += Serialize( "ufog", useFog.ToString() );
@@ -164,8 +171,10 @@ namespace ShaderForge {
 			case "wrdp":
 				writeDepth = bool.Parse( value );
 				break;
-				
-				
+			case "dith":
+				dithering = (Dithering)int.Parse( value );
+				break;
+
 			case "ufog":
 				useFog = bool.Parse( value );
 				break;
@@ -314,6 +323,17 @@ namespace ShaderForge {
 			}
 
 			cullMode = (CullMode)UndoableLabeledEnumPopup( r, "Face Culling", cullMode, "face culling" );
+			r.y += 20;
+			
+			
+			bool canEditDithering = editor.mainNode.alphaClip.IsConnectedAndEnabled();
+			EditorGUI.BeginDisabledGroup( !canEditDithering );
+			if( canEditDithering )
+				dithering = (Dithering)UndoableLabeledEnumPopupNamed( r, "Dithered alpha clip", dithering, strDithering, "dithered alpha clip" );
+			else
+				UndoableLabeledEnumPopup( r, "Dithered alpha clip", Dithering.Off, "dithered alpha clip" );
+			EditorGUI.EndDisabledGroup();
+			
 			r.y += 20;
 			
 			

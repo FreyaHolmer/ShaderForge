@@ -32,7 +32,7 @@ namespace ShaderForge {
 
 		public override void DrawExtraTitleContent( Rect r ) {
 
-			if( treeStatus.errors.Count > 0 && !expanded ) {
+			if( treeStatus.Errors.Count > 0 && !expanded ) {
 				r = r.MovedRight();
 				r.width = SF_Styles.IconErrorSmall.width;
 				r = r.MovedLeft();
@@ -41,8 +41,8 @@ namespace ShaderForge {
 				r.y += 1;
 
 				bool hasError = false;
-				for( int i = 0; i < treeStatus.errors.Count; i++ ) {
-					if( treeStatus.errors[i].isWarning == false ) {
+				for( int i = 0; i < treeStatus.Errors.Count; i++ ) {
+					if( treeStatus.Errors[i].isWarning == false ) {
 						hasError = true;
 						break;
 					}
@@ -72,14 +72,14 @@ namespace ShaderForge {
 
 			r.height = 20;
 
-			for( int i = 0; i < treeStatus.errors.Count; i++ ) {
+			for( int i = 0; i < treeStatus.Errors.Count; i++ ) {
 
-				bool isNode = treeStatus.errors[i].node != null;
+				bool isNode = treeStatus.Errors[i].node != null;
 
-				Texture2D icon = treeStatus.errors[i].icon;
+				Texture2D icon = treeStatus.Errors[i].icon;
 
 				Rect blockRect = r;
-				blockRect.height = treeStatus.errors[i].rows * 14f + 6;
+				blockRect.height = treeStatus.Errors[i].rows * 14f + 6;
 
 
 				Rect iconRect = blockRect;
@@ -93,21 +93,21 @@ namespace ShaderForge {
 
 				iconRect.center = new Vector2( iconRect.center.x, textRect.center.y );
 
-				bool hasAction = treeStatus.errors[i].action != null;
+				bool hasAction = treeStatus.Errors[i].action != null;
 
 				if( isNode || hasAction ) {
 					if( GUI.Button( iconRect.Pad( -2 ).PadHorizontal(-3), "" ) ) {
 						if( hasAction ) {
-							treeStatus.errors[i].OnPress();
+							treeStatus.Errors[i].OnPress();
 						} else if( isNode ) {
 							editor.nodeView.selection.DeselectAll( true );
-							treeStatus.errors[i].node.Select( true );
+							treeStatus.Errors[i].node.Select( true );
 						}
 					}
 				}
 				
 				GUI.DrawTexture( iconRect, icon );
-				EditorGUI.SelectableLabel( textRect, treeStatus.errors[i].error, SF_Styles.SmallTextArea );
+				EditorGUI.SelectableLabel( textRect, treeStatus.Errors[i].error, SF_Styles.SmallTextArea );
 				
 				r.y += textRect.height;
 			}

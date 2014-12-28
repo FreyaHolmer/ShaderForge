@@ -213,7 +213,7 @@ namespace ShaderForge {
 			scrollPos = GUI.BeginScrollView(scrollWrapper.PadRight(scrollPad),scrollPos,innerScrollRect,false,true);
 			{
 				//offset = SettingsMeta( 0 );
-				bool showErrors = editor.nodeView.treeStatus.errors.Count > 0;
+				bool showErrors = editor.nodeView.treeStatus.Errors.Count > 0;
 				if( !showErrors )
 					catConsole.expanded = false;
 				EditorGUI.BeginDisabledGroup( !showErrors );

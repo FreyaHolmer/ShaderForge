@@ -11,7 +11,20 @@ namespace ShaderForge {
 	public class SF_NodeTreeStatus : ScriptableObject {
 
 		public SF_Editor editor;
-		public List<SF_ErrorEntry> errors;
+		[SerializeField] List<SF_ErrorEntry> errors;
+		public List<SF_ErrorEntry> Errors {
+			get {
+				if( errors == null )
+					errors = new List<SF_ErrorEntry>();
+				return errors;
+			}
+			set {
+				errors = value;
+			}
+		}
+
+
+
 		public bool mipInputUsed = false; // If this is true, only DX is allowed :< OR: Enable glsl pragma
 		public bool texturesInVertShader = false;
 		public bool usesSceneData = false;
@@ -84,13 +97,13 @@ namespace ShaderForge {
 
 
 		public bool CheckCanCompile() {
-			if( errors == null ){
-				errors = new List<SF_ErrorEntry>();
-			} else if( errors.Count > 0 ) {
-				for( int i = 0; i < errors.Count; i++ ) {
-					DestroyImmediate( errors[i] );
+			if( Errors == null ){
+				Errors = new List<SF_ErrorEntry>();
+			} else if( Errors.Count > 0 ) {
+				for( int i = 0; i < Errors.Count; i++ ) {
+					DestroyImmediate( Errors[i] );
 				}
-				errors.Clear();
+				Errors.Clear();
 			}
 
 			
@@ -162,7 +175,7 @@ namespace ShaderForge {
 						string err = "Missing required";
 						err += string.IsNullOrEmpty( con.label ) ? " " : " [" + con.label + "] ";
 						err += "input on " + con.node.nodeName;
-						errors.Add( SF_ErrorEntry.Create( err, con, false ) );
+						Errors.Add( SF_ErrorEntry.Create( err, con, false ) );
 					}
 				}
 			}
@@ -181,7 +194,7 @@ namespace ShaderForge {
 					editor.ps.catBlending.blendModePreset = BlendModePreset.AlphaBlended;
 					editor.ps.catBlending.ConformBlendsToPreset();
 				};
-				errors.Add( error );
+				Errors.Add( error );
 			}
 
 			if( !alphaConnected && !notUsingAlphaBlend ) {
@@ -191,7 +204,7 @@ namespace ShaderForge {
 					editor.ps.catBlending.blendModePreset = BlendModePreset.Opaque;
 					editor.ps.catBlending.ConformBlendsToPreset();
 				};
-				errors.Add( error );
+				Errors.Add( error );
 			}
 
 
@@ -220,7 +233,7 @@ namespace ShaderForge {
 					editor.ps.catMeta.usedRenderers[2] = true;
 					editor.OnShaderModified( NodeUpdateType.Hard );
 				};
-				errors.Add( error );
+				Errors.Add( error );
 			} else if( windows ) {
 				if( inDx11Mode && !dx11 ) {
 					SF_ErrorEntry error = SF_ErrorEntry.Create( "Your shader might not render properly on your workstation - you need to have Direct3D 11 enabled when working in DX11 mode on Windows. Click the icon to enable Direct3D 11!", true );
@@ -229,7 +242,7 @@ namespace ShaderForge {
 						editor.ps.catMeta.usedRenderers[1] = true;
 						editor.OnShaderModified( NodeUpdateType.Soft );
 					};
-					errors.Add( error );
+					Errors.Add( error );
 				} else if( !inDx11Mode && !dx9 ) {
 					SF_ErrorEntry error = SF_ErrorEntry.Create( "Your shader might not render properly on your workstation - you need to have Direct3D 9 enabled when working on Windows. Click the icon to enable Direct3D 9!", true );
 					error.action = () => {
@@ -237,7 +250,7 @@ namespace ShaderForge {
 						editor.ps.catMeta.usedRenderers[0] = true;
 						editor.OnShaderModified( NodeUpdateType.Soft );
 					};
-					errors.Add( error );
+					Errors.Add( error );
 				}
 			}
 
@@ -257,14 +270,14 @@ namespace ShaderForge {
 
 
 				if( SF_Tools.UsingUnity5 ) {
-					errors.Add( SF_ErrorEntry.Create( "Unity 5 is in beta, and so is the Unity 5 support of Shader Forge. Lightmapping is currently somewhat broken!", true ) );
+					Errors.Add( SF_ErrorEntry.Create( "Unity 5 is in beta, and so is the Unity 5 support of Shader Forge. Lightmapping is currently somewhat broken!", true ) );
 				}
 
 			}
 
 
 			if(editor.ps.HasDiffuse() && !editor.ps.HasSpecular() && editor.ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL){
-				errors.Add( SF_ErrorEntry.Create( "Using PBL without specular doesn't make much sense - consider plugging in a value into the Specular input", true ) );
+				Errors.Add( SF_ErrorEntry.Create( "Using PBL without specular doesn't make much sense - consider plugging in a value into the Specular input", true ) );
 			}
 
 
@@ -285,7 +298,7 @@ namespace ShaderForge {
 
 			if( dupes.Count > 0 ) {
 				foreach( SF_Node dupe in dupes ) {
-					errors.Add( SF_ErrorEntry.Create( "You have property nodes with conflicting internal names. Please rename one of the " + dupe.property.nameInternal + " nodes", dupe, false ) );
+					Errors.Add( SF_ErrorEntry.Create( "You have property nodes with conflicting internal names. Please rename one of the " + dupe.property.nameInternal + " nodes", dupe, false ) );
 				}
 			}
 
@@ -311,7 +324,7 @@ namespace ShaderForge {
 			}
 
 
-			int errorCount = errors.Count( x => !x.isWarning ); // Let it compile, even though it has warnings
+			int errorCount = Errors.Count( x => !x.isWarning ); // Let it compile, even though it has warnings
 
 			if( errorCount == 0 )
 				return true;
@@ -327,12 +340,12 @@ namespace ShaderForge {
 
 			if( connected && !foundNamedNode ) {
 				SF_ErrorEntry error = SF_ErrorEntry.Create( "Lightmapping wants a " + propertyType + " property, with an internal name of " + internalName, true );
-				errors.Add( error );
+				Errors.Add( error );
 			}
 
 			if( connected && !pathValid ) {
 				SF_ErrorEntry errorPath = SF_ErrorEntry.Create( "Lightmapping expects the shader path to contain " + pathReq + " when " + reqConnection.label + " is connected", true );
-				errors.Add( errorPath );
+				Errors.Add( errorPath );
 			}
 
 

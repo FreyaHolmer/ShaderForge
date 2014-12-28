@@ -103,8 +103,12 @@ namespace UnityEditor {
 				//GUILayout.Label( "Opening this will clear the shader", EditorStyles.miniLabel );
 				//GUI.color = new Color( 1f, 0.8f, 0.8f );
 				if( GUILayout.Button( new GUIContent( "Replace with Shader Forge shader", SF_Styles.IconWarningSmall, "This will erase any existing shader code" ), hasShaderForgeData ? "Button" : "MiniButton" ) ) {
-					if( SF_GUI.AcceptedNewShaderReplaceDialog() )
+					if( SF_GUI.AcceptedNewShaderReplaceDialog() ) {
 						SF_Editor.Init( shader );
+						SF_Editor.instance.ps.fChecker.UpdateAvailability();
+						SF_Editor.instance.OnShaderModified( NodeUpdateType.Hard );
+					}
+					
 				}
 				//GUI.color = Color.white;
 				

@@ -693,6 +693,10 @@ namespace ShaderForge {
 			return false;
 		}
 
+		public virtual bool ExhaustedOptionalInputs() {
+			return false;
+		}
+
 		public virtual Color NodeOperator( int x, int y ) {
 			return new Color(
 				NodeOperator(x,y,0),

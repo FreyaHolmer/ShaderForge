@@ -1026,6 +1026,9 @@ namespace ShaderForge {
 			
 			bool isUnconnectedChild = IsChild() && !IsConnected();
 			bool isHiddenExtraConnector = isUnconnectedChild && !ValidlyPendingChild();
+
+			if( isUnconnectedChild && node.ExhaustedOptionalInputs() )
+				return true;
 			
 			if( hidden ){
 				return true;

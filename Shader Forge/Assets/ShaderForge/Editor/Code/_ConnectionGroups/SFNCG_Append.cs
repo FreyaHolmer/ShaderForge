@@ -18,22 +18,38 @@ namespace ShaderForge {
 
 
 		public int GetOutputComponentCount() {
-			return inputs[0].inputCon.GetCompCount() + inputs[1].inputCon.GetCompCount();
+
+			int cc = 0;
+			for( int i = 0; i < 4; i++ ) {
+				if(inputs[i].IsConnectedAndEnabled())
+					cc += inputs[i].inputCon.GetCompCount();
+			}
+
+			if( cc == 0 )
+				return 1;
+			else
+				return cc;
+
 		}
 
 
 		public override void Refresh() {
-			// Are none of the inputs connected? In that case, it's all default
+			
 
 			// ALLOWED COMBOS
 			/*
 			 * v1 v1 = v2
+			 * 
+			 * v1 v1 v1 = v3
 			 * v1 v2 = v3
-			 * v1 v3 = v4
-			 * v2 v1 = v3
+			 * 
+			 * v1 v1 v1 v1 = v4
+			 * v2 v1 v1 = v4
 			 * v2 v2 = v4
-			 * v3 v1 = v4
+			 * v1 v3 = v4
 			 */
+
+			// Are none of the inputs connected? In that case, it's all default
 			if( NoInputsConnected() )
 				ResetValueTypes();
 
@@ -44,6 +60,9 @@ namespace ShaderForge {
 
 			int inCompSum = GetOutputComponentCount();
 
+
+
+
 			if( inCompSum < 2 ) {
 				Debug.LogError( "Input sum is somehow " + inCompSum + " on " + inputs[0].node.nodeName );
 				inputs[1].Disconnect(); // This should never happen
@@ -51,11 +70,14 @@ namespace ShaderForge {
 			}
 
 			if( inCompSum > 4 ) { // TODO: Error message
-				Debug.LogWarning( "User connected vectors component overflow! " );
-				Debug.LogWarning( "[0]: " + inputs[0].inputCon.node.nodeName + " with " + inputs[0].inputCon.GetCompCount() + " components" );
-				Debug.LogWarning( "[1]: " + inputs[1].inputCon.node.nodeName + " with " + inputs[1].inputCon.GetCompCount() + " components" );
+				Debug.LogWarning( "Connected too many components in Append node! Disconnecting all" );
 
-				inputs[1].Disconnect();
+				for( int i = 0; i < 4; i++ ) {
+					if( inputs[i].IsConnectedAndEnabled() )
+						Debug.LogWarning( "["+i+"]: " + inputs[i].inputCon.node.nodeName + " with " + inputs[i].inputCon.GetCompCount() + " components" );
+					inputs[i].Disconnect();
+				}
+
 				return;
 			}
 

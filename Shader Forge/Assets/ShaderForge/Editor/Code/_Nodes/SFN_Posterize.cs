@@ -18,7 +18,7 @@ namespace ShaderForge {
 				SF_NodeConnector.Create( this, "STPS", "Steps", ConType.cInput, ValueType.VTv1, false ).SetRequired( true ).WithUseCount(2)
 			};
 			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1]);
-			base.extraWidthInput = 4;
+			base.extraWidthInput = 6;
 		}
 
 		public override bool IsUniformOutput() {

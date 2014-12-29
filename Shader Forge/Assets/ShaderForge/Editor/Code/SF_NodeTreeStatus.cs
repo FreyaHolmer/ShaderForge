@@ -267,6 +267,8 @@ namespace ShaderForge {
 				LightmapCondition( cNodes, "_Shininess", editor.mainNode.specular, "Value or Slider");
 				LightmapCondition( cNodes, "_BumpMap", editor.mainNode.normal, "Texture" );
 				LightmapCondition( cNodes, "_Illum", editor.mainNode.emissive, "Texture", "Self-Illumin/" );
+				LightmapCondition( cNodes, "_MainTex", editor.mainNode.alpha, "Texture", "Transparent/" );
+				LightmapCondition( cNodes, "_MainTex", editor.mainNode.alphaClip, "Texture", "Transparent/" );
 
 
 				if( SF_Tools.UsingUnity5 ) {
@@ -332,13 +334,13 @@ namespace ShaderForge {
 			return false;
 		}
 
-		private void LightmapCondition( List<SF_Node> cNodes, string internalName, SF_NodeConnector reqConnection, string propertyType, string pathReq = "" ) {
+		private void LightmapCondition( List<SF_Node> cNodes, string internalName, SF_NodeConnector reqConnection, string propertyType, string pathReq = "", bool justPath = false ) {
 
 			bool connected = reqConnection.IsConnectedEnabledAndAvailable();
 			bool foundNamedNode = ConnectedNodeWithInternalNameExists( cNodes, internalName );
 			bool pathValid = editor.currentShaderPath.Contains( pathReq );
 
-			if( connected && !foundNamedNode ) {
+			if( connected && !foundNamedNode && !justPath ) {
 				SF_ErrorEntry error = SF_ErrorEntry.Create( "Lightmapping wants a " + propertyType + " property, with an internal name of " + internalName, true );
 				Errors.Add( error );
 			}

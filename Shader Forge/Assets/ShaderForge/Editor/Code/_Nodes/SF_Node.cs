@@ -1451,7 +1451,8 @@ namespace ShaderForge {
 			
 			editor.nodeView.selection.MoveSelection(finalDelta, ignore:this);
 
-			if( delta != Vector2.zero && SF_Settings.HierarcyMove && ( GetType() != typeof( SFN_Final ) ) ) {
+			bool moveAsHierarchy = SF_GUI.HoldingControl() ^ SF_Settings.HierarcyMove;
+			if( delta != Vector2.zero && moveAsHierarchy && ( GetType() != typeof( SFN_Final ) ) ) {
 				MoveUnselectedChildren( delta );
 			}
 

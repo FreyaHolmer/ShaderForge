@@ -284,20 +284,23 @@ namespace ShaderForge {
 
 
 
+			
+			
+
+
 			List<SF_Node> dupes = new List<SF_Node>();
-
 			SF_Node[] propNodes = cNodes.Where(x=>x.IsProperty()).ToArray();
-
 			for( int i = 0; i < propNodes.Length; i++ ) {
 				for( int j = i+1; j < propNodes.Length; j++ ) {
 					string nameA = propNodes[i].property.nameInternal;
 					string nameB = propNodes[j].property.nameInternal;
+
 					if( nameA == nameB ) {
 						dupes.Add( propNodes[j] );
 					}
+
 				}
 			}
-
 			if( dupes.Count > 0 ) {
 				foreach( SF_Node dupe in dupes ) {
 					Errors.Add( SF_ErrorEntry.Create( "You have property nodes with conflicting internal names. Please rename one of the " + dupe.property.nameInternal + " nodes", dupe, false ) );
@@ -307,9 +310,34 @@ namespace ShaderForge {
 
 
 
+			List<SF_Node> dupesVarname = new List<SF_Node>();
+			for( int i = 0; i < cNodes.Count; i++ ) {
+				for( int j = i + 1; j < cNodes.Count; j++ ) {
 
-				// Check if there are any textures in the vertex input
-				texturesInVertShader = HasTextureInput( editor.mainNode.vertexOffset ) || HasTextureInput( editor.mainNode.outlineWidth );
+					string nameAvar = cNodes[i].variableName;
+					string nameBvar = cNodes[j].variableName;
+
+					if( nameAvar == nameBvar ) {
+						dupesVarname.Add( cNodes[j] );
+					}
+				}
+			}
+			if( dupesVarname.Count > 0 ) {
+				foreach( SF_Node dupeVarname in dupesVarname ) {
+					Errors.Add( SF_ErrorEntry.Create( "You have nodes with conflicting variable names. Please rename one of the " + dupeVarname.variableName + " nodes", dupeVarname, false ) );
+				}
+			}
+
+			
+
+			
+
+
+
+
+
+			// Check if there are any textures in the vertex input
+			texturesInVertShader = HasTextureInput( editor.mainNode.vertexOffset ) || HasTextureInput( editor.mainNode.outlineWidth );
 
 
 

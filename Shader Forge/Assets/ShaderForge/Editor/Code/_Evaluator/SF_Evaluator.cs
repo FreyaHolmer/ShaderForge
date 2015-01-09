@@ -2520,7 +2520,7 @@ namespace ShaderForge {
 			currentProgram = ShaderProgram.Vert;
 			App( "VertexOutput vert (VertexInput v) {" );
 			scope++;
-			App( "VertexOutput o;" );
+			App( "VertexOutput o = (VertexOutput)0;" );
 
 
 

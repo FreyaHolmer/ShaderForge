@@ -371,15 +371,20 @@ namespace ShaderForge {
 
 
 
-			if( IsProperty() && rectInner.Contains( Event.current.mousePosition ) && !SF_NodeConnector.IsConnecting() ) {
+			if( IsProperty()){
+
+				bool draw = rectInner.Contains( Event.current.mousePosition ) && !SF_NodeConnector.IsConnecting();
+
 				Rect selectRect = new Rect( rectInner );
 				selectRect.yMin += 80;
 				selectRect.xMin += 40;
-
+				Color c = GUI.color;
+				GUI.color = new Color( 1, 1, 1, draw ? 1 : 0 );
 				if(GUI.Button( selectRect, "Select", EditorStyles.miniButton )){
 					EditorGUIUtility.ShowObjectPicker<Texture>( TextureAsset, false, "", this.id );
 					Event.current.Use();
 				}
+				GUI.color = c;
 
 			}
 

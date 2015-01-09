@@ -281,8 +281,8 @@ namespace ShaderForge {
 				else if( neverDefineVariable)
 					return property.nameInternal;
 			}
-			if(createIfNull && string.IsNullOrEmpty(variableName))
-				variableName = "node_" + id;
+			if( createIfNull && string.IsNullOrEmpty( variableName ) )
+				ResetVariableName();
 			return variableName;
 		}
 

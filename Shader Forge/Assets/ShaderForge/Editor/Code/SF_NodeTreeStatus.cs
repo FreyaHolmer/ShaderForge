@@ -317,7 +317,7 @@ namespace ShaderForge {
 					string nameAvar = cNodes[i].variableName;
 					string nameBvar = cNodes[j].variableName;
 
-					if( nameAvar == nameBvar ) {
+					if( nameAvar == nameBvar && dupes.Contains( cNodes[j] ) == false ) {
 						dupesVarname.Add( cNodes[j] );
 					}
 				}

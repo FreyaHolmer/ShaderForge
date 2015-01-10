@@ -52,9 +52,9 @@ namespace ShaderForge {
 			nameInternal = s;
 		}
 
-		public void SetName(string s) {
+		public void SetName( string s) {
 			nameDisplay = s;
-			if(!overrideInternalName)
+			if( !overrideInternalName )
 				UpdateInternalName();
 		}
 

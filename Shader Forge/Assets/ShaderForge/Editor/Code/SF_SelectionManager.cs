@@ -306,9 +306,13 @@ namespace ShaderForge {
 			
 			for(int i=0;i<serializedNodes.Length;i++){
 				SF_Node node = SF_Node.Deserialize(serializedNodes[i], ref links);
-				if( node.IsProperty())
-					if(editor.PropertyNameTaken(node.property))
-						node.property.SetName(node.property.GetClonedName()); // Rename if needed
+				if( node.IsProperty() ) {
+					if( editor.PropertyNameTaken( node.property ) ) {
+						node.property.SetName( node.property.GetClonedName() ); // Rename if needed
+						node.variableName = node.property.nameInternal;
+					}
+				}
+						
 				idOld[i] = node.id;
 				node.AssignID(); // Increment IDs
 				if( !node.IsProperty() )

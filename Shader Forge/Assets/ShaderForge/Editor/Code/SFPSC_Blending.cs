@@ -103,7 +103,7 @@ namespace ShaderForge {
 			s += Serialize( "dpts", ( (int)depthTest ).ToString() );
 			s += Serialize( "wrdp", writeDepth.ToString() );
 
-			s += Serialize( "dith", ( (int)depthTest ).ToString() );
+			s += Serialize( "dith", ( (int)dithering ).ToString() );
 			
 			
 			s += Serialize( "ufog", useFog.ToString() );

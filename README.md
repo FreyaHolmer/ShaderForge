@@ -1,8 +1,5 @@
-ShaderForge
-===========
-
-For contributors
-================
+For contributors of Shader Forge
+================================
 If you've been given access to this source, there are a few things you should know!
 Let's start with the boring stuff
 

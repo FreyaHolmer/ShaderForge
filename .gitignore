@@ -276,3 +276,5 @@ dittoproperties.sh
 dittovehicles.sh
 
 
+SF_DLL_BUILDER/ShaderForge/Properties/AssemblyInfo.cs
+SF_DLL_BUILDER/ShaderForge/ShaderForge.csproj

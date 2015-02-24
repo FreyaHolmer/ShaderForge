@@ -1,3 +1,6 @@
+// Upgrade NOTE: commented out 'float4 unity_DynamicLightmapST', a built-in variable
+// Upgrade NOTE: commented out 'float4 unity_LightmapST', a built-in variable
+
 // Shader created with Shader Forge v1.00 
 // Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
@@ -37,9 +40,9 @@ Shader "Specular/Shader Forge/SF_lightmapped" {
             #pragma exclude_renderers xbox360 ps3 flash d3d11_9x 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            float4 unity_LightmapST;
+            // float4 unity_LightmapST;
             #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
+                // float4 unity_DynamicLightmapST;
             #endif
             float4 unity_SpecCube_BoxMax;
             float4 unity_SpecCube_BoxMin;
@@ -198,9 +201,9 @@ Shader "Specular/Shader Forge/SF_lightmapped" {
             #pragma exclude_renderers xbox360 ps3 flash d3d11_9x 
             #pragma target 3.0
             uniform float4 _LightColor0;
-            float4 unity_LightmapST;
+            // float4 unity_LightmapST;
             #ifdef DYNAMICLIGHTMAP_ON
-                float4 unity_DynamicLightmapST;
+                // float4 unity_DynamicLightmapST;
             #endif
             uniform sampler2D _BumpMap; uniform float4 _BumpMap_ST;
             uniform float4 _Color;

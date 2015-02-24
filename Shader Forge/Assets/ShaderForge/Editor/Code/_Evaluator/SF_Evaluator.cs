@@ -848,14 +848,10 @@ namespace ShaderForge {
 				App( "#ifndef LIGHTMAP_OFF" );
 				scope++;
 				{
-					App( "float4 unity_LightmapST;" );
-					App( "sampler2D unity_Lightmap;" );
-
 					if( !InDeferredPass() ) {
 						App( "#ifndef DIRLIGHTMAP_OFF" );
 						scope++;
 					}
-					App( "sampler2D unity_LightmapInd;" );
 					if( !InDeferredPass() ) {
 						scope--;
 						App( "#endif" );
@@ -866,42 +862,6 @@ namespace ShaderForge {
 				}
 				App( "#endif" );
 			}
-
-			// TODO: U5 LMs
-
-
-			if(SF_Tools.UsingUnity5){
-				App("float4 unity_LightmapST;");
-				App("#ifdef DYNAMICLIGHTMAP_ON");
-				scope++;
-				App("float4 unity_DynamicLightmapST;");
-				scope--;
-				App("#endif");
-			}
-
-
-			if( dependencies.reflection_probes ) {
-
-	
-				
-				
-
-				
-				App("float4 unity_SpecCube_BoxMax;");
-				App("float4 unity_SpecCube_BoxMin;");
-				App("float4 unity_SpecCube_ProbePosition;");
-				App("half4 unity_SpecCube_HDR;");
-				
-				App("float4 unity_SpecCube_BoxMax1;");
-				App("float4 unity_SpecCube_BoxMin1;");
-				App("float4 unity_SpecCube_ProbePosition1;");
-				App("half4 unity_SpecCube_HDR1;");
-
-
-			}
-
-
-
 
 
 
@@ -1625,7 +1585,7 @@ namespace ShaderForge {
 							initialized_NdotH = true;
 						}
 
-						App( "float normTerm = max(0.0, BlinnPhongNormalizedTerm (NdotH, RoughnessToSpecPower (1.0-gloss)));" );
+						App( "float normTerm = max(0.0, RDFBlinnPhongNormalizedTerm (NdotH, RoughnessToSpecPower (1.0-gloss)));" );
 						specularPBL += "*normTerm";
 					} else {
 						App( "float normTerm = (specPow + 8.0 ) / (8.0 * Pi);" );
@@ -2175,26 +2135,26 @@ namespace ShaderForge {
 				
 				App ("#ifndef LIGHTMAP_OFF");
 				scope++;
-				App("d.ambientOrLightmapUV = i.uvLM;");
+				App( "d.lightmapUV = i.uvLM;" );
 				scope--;
 				App ("#else");
 				scope++;
-				App("d.ambientOrLightmapUV.xyz = i.shLight;");
+				App( "d.ambient = i.shLight;" );
 				scope--;
 				App ("#endif");
 				
 
 
 				if(DoPassSpecular() && ps.catLighting.reflectprobed){
-					App("d.boxMax[0] = unity_SpecCube_BoxMax;");
-					App("d.boxMin[0] = unity_SpecCube_BoxMin;");
-					App("d.probePosition[0] = unity_SpecCube_ProbePosition;");
-					App("d.probeHDR[0] = unity_SpecCube_HDR;");
+					App("d.boxMax[0] = unity_SpecCube0_BoxMax;");
+					App("d.boxMin[0] = unity_SpecCube0_BoxMin;");
+					App("d.probePosition[0] = unity_SpecCube0_ProbePosition;");
+					App("d.probeHDR[0] = unity_SpecCube0_HDR;");
 					
-					App("d.boxMax[1] = unity_SpecCube_BoxMax1;");
-					App("d.boxMin[1] = unity_SpecCube_BoxMin1;");
-					App("d.probePosition[1] = unity_SpecCube_ProbePosition1;");
-					App("d.probeHDR[1] = unity_SpecCube_HDR1;");
+					App("d.boxMax[1] = unity_SpecCube1_BoxMax;");
+					App("d.boxMin[1] = unity_SpecCube1_BoxMin;");
+					App("d.probePosition[1] = unity_SpecCube1_ProbePosition;");
+					App("d.probeHDR[1] = unity_SpecCube1_HDR;");
 
 				}
 

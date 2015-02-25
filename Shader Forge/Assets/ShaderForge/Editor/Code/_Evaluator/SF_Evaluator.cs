@@ -489,7 +489,7 @@ namespace ShaderForge {
 				AppIfNonEmpty( cNodes[i].GetPrepareUniformsAndFunctions() );
 				if( cNodes[i].IsProperty() ) {
 					string propName = cNodes[i].property.nameInternal;
-					if( !( IncludeLightingCginc() && propName == "_SpecColor" ) ) // SpecColor already defined in Lighting.cginc
+					if( !( ( IncludeLightingCginc() || !IncludeUnity5BRDF() ) && propName == "_SpecColor" ) ) // SpecColor already defined in Lighting.cginc
 						App( cNodes[i].property.GetFilteredVariableLine() );
 				}
 			}
@@ -560,7 +560,7 @@ namespace ShaderForge {
 				App( "#include \"Lighting.cginc\"" );
 			if( dependencies.tessellation )
 				App( "#include \"Tessellation.cginc\"" );
-			if( SF_Tools.UsingUnity5plus && (ps.catLighting.lightmapped || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || ps.catLighting.lightprobed)){
+			if( IncludeUnity5BRDF() ){
 				App( "#include \"UnityPBSLighting.cginc\"" );
 				App( "#include \"UnityStandardBRDF.cginc\"" );
 			}
@@ -615,6 +615,10 @@ namespace ShaderForge {
 		}
 		void EndCG() {
 			App( "ENDCG" );
+		}
+
+		public bool IncludeUnity5BRDF() {
+			return SF_Tools.UsingUnity5plus && ( ps.catLighting.lightmapped || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || ps.catLighting.lightprobed );
 		}
 
 		bool UseUnity5Fog() {
@@ -812,7 +816,7 @@ namespace ShaderForge {
 			}
 
 
-			if( dependencies.lightColor && !IncludeLightingCginc()) // Lightmap and shadows include Lighting.cginc, which already has this
+			if( dependencies.lightColor && !IncludeLightingCginc() && !IncludeUnity5BRDF() ) // Lightmap and shadows include Lighting.cginc, which already has this. Don't include when making Unity 5 shaders
 				App( "uniform float4 _LightColor0;" );
 
 			if( currentPass == PassType.PrePassFinal ) {
@@ -1243,6 +1247,10 @@ namespace ShaderForge {
 				App( "float3 diffuse = directDiffuse * " + ps.n_diffuse + ";" );
 			}
 
+			//if( SF_Tools.UsingUnity5plus && ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
+			//	App( "diffuse *= 0.75;" );
+			//}
+
 
 			// To make diffuse/spec tradeoff better
 			if( DoPassDiffuse() && DoPassSpecular() ) {
@@ -1487,6 +1495,7 @@ namespace ShaderForge {
 				if( ps.catLighting.fresnelTerm ) {
 
 					if( SF_Tools.CurrentUnityVersion >= 5f ) {
+						/*
 						if( !initialized_VdotH ) {
 							App( "float VdotH = max(0.0,dot( viewDirection, halfDirection ));" );
 							initialized_VdotH = true;
@@ -1495,6 +1504,10 @@ namespace ShaderForge {
 						App( "float fresnelTerm = FresnelTerm(specularMonochrome, VdotH);" );
 						
 						specularPBL += "*fresnelTerm";
+						*/
+						// Fresnel is applied later
+
+						specularPBL += "*NdotL";
 
 					} else {
 						App( "float HdotL = max(0.0,dot(halfDirection,lightDirection));" );
@@ -1585,7 +1598,7 @@ namespace ShaderForge {
 							initialized_NdotH = true;
 						}
 
-						App( "float normTerm = max(0.0, RDFBlinnPhongNormalizedTerm (NdotH, RoughnessToSpecPower (1.0-gloss)));" );
+						App( "float normTerm = max(0.0, GGXTerm(NdotH, 1.0-gloss));" );
 						specularPBL += "*normTerm";
 					} else {
 						App( "float normTerm = (specPow + 8.0 ) / (8.0 * Pi);" );
@@ -1616,7 +1629,7 @@ namespace ShaderForge {
 				}
 
 				specularPBL = specularPBL.Substring( 1 ); // Remove first * symbol
-				specularPBL = "float specularPBL = max(0, (" + specularPBL + ") / (4 * NdotV + 1e-5f) );";
+				specularPBL = "float specularPBL = max(0, (" + specularPBL + ") * unity_LightGammaCorrectionConsts_PIDiv4 );";
 
 				App( specularPBL );
 				
@@ -1625,7 +1638,7 @@ namespace ShaderForge {
 
 
 			if( Unity5PBL() ) {
-				directSpecular += "*specularPBL";
+				directSpecular += "*specularPBL*lightColor";
 			}
 
 			directSpecular += ";";
@@ -2080,10 +2093,11 @@ namespace ShaderForge {
 				;
 
 				if( fresnelIndirectPBL ) {
+					App( "half grazingTerm = saturate( gloss + specularMonochrome );" );
 					if(ps.HasSpecular()){
-						App( "float3 indirectFresnelPBL = indirectSpecular*(1-specularMonochrome)*gloss*FresnelTerm(0,NdotV);" );
+						App( "float3 indirectFresnelPBL = indirectSpecular*FresnelLerp (specularColor, grazingTerm, NdotV);" );
 					} else {
-						App( "float3 indirectFresnelPBL = gloss*FresnelTerm(0,NdotV);;" );
+						App( "float3 indirectFresnelPBL = FresnelLerp (specularColor, grazingTerm, NdotV);" );
 					}
 
 				}
@@ -2160,7 +2174,7 @@ namespace ShaderForge {
 
 				
 				string glossStr = DoPassSpecular() ? "gloss" : "0";
-				App("UnityGI gi = UnityStandardGlobalIllumination (d, 1, "+glossStr+", normalDirection);");
+				App( "UnityGI gi = UnityGlobalIllumination (d, 1, " + glossStr + ", normalDirection);" );
 
 				// Run the BRDF again per light (light2, light3)
 

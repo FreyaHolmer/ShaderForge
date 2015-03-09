@@ -201,15 +201,15 @@ namespace ShaderForge {
 			                         );
 			r.y += 20;
 
-			if( SF_Tools.CurrentUnityVersion >= 5 ) {
-				UndoableConditionalToggle( r, ref reflectprobed,
-									 usableIf: ps.HasSpecular() && lightMode != LightMode.Unlit,
-									 disabledDisplayValue: false,
-									 label: "Reflection probe support",
-									 undoSuffix: "reflection probe support"
-									 );
-				r.y += 20;
-			}
+		
+			UndoableConditionalToggle( r, ref reflectprobed,
+									usableIf: ps.HasSpecular() && lightMode != LightMode.Unlit,
+									disabledDisplayValue: false,
+									label: "Reflection probe support",
+									undoSuffix: "reflection probe support"
+									);
+			r.y += 20;
+			
 			
 			
 			

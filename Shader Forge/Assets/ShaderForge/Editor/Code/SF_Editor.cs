@@ -266,8 +266,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Fresnel ), 				catGeoData + "Fresnel", KeyCode.F );
 			AddTemplate( typeof( SFN_NormalVector ), 			catGeoData + "Normal Dir." );
 			AddTemplate( typeof( SFN_ObjectPosition ), 			catGeoData + "Object Position");
-			if(SF_Tools.CurrentUnityVersion >= 5)
-				AddTemplate( typeof( SFN_ObjectScale ), catGeoData + "Object Scale" ).MarkAsNewNode(); ; // Unity 5+ only
+			AddTemplate( typeof( SFN_ObjectScale ),				catGeoData + "Object Scale" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_ScreenPos ), 				catGeoData + "Screen Position" );
 			AddTemplate( typeof( SFN_Tangent ), 				catGeoData + "Tangent Dir." );
 			AddTemplate( typeof( SFN_TexCoord ), 				catGeoData + "UV Coordinates", KeyCode.U );

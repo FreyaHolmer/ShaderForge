@@ -616,11 +616,11 @@ namespace ShaderForge {
 		}
 
 		bool UseUnity5Fog() {
-			return ps.catBlending.useFog && SF_Tools.CurrentUnityVersion >= 5.0;
+			return ps.catBlending.useFog;
 		}
 
 		bool UseUnity5FogInThisPass() {
-			return ps.catBlending.useFog && SF_Tools.CurrentUnityVersion >= 5.0 && ( currentPass == PassType.FwdBase || currentPass == PassType.Outline || currentPass == PassType.PrePassFinal );
+			return ps.catBlending.useFog && ( currentPass == PassType.FwdBase || currentPass == PassType.Outline || currentPass == PassType.PrePassFinal );
 		}
 
 
@@ -703,40 +703,7 @@ namespace ShaderForge {
 			App( ps.catBlending.GetOffsetString() );
 
 
-			// Fog was changed in Unity 5
-			if( SF_Tools.CurrentUnityVersion < 5 ) {
-				if( currentPass == PassType.PrePassBase ) {
-					App( "Fog {Mode Off}" );
-				} else if( currentPass == PassType.FwdAdd ) {
-					App( "Fog { Color (0,0,0,0) }" ); // Shadow cast, Shadow collect, PrePassBase
-				} else if( !ps.catBlending.useFog || !( currentPass == PassType.FwdBase || currentPass == PassType.Outline || currentPass == PassType.PrePassFinal ) ) {
-					App( "Fog {Mode Off}" ); // Turn off fog is user doesn't want it
-				} else {
-					// Fog overrides!
-					if( ps.catBlending.fogOverrideMode )
-						App( "Fog {Mode " + ps.catBlending.fogMode.ToString() + "}" );
-					if( ps.catBlending.fogOverrideColor )
-						App( "Fog { Color (" + ps.catBlending.fogColor.r + "," + ps.catBlending.fogColor.g + "," + ps.catBlending.fogColor.b + "," + ps.catBlending.fogColor.a + ") }" );
-					if( ps.catBlending.fogOverrideDensity )
-						App( "Fog {Density " + ps.catBlending.fogDensity + "}" );
-					if( ps.catBlending.fogOverrideRange )
-						App( "Fog {Range " + ps.catBlending.fogRange.x + "," + ps.catBlending.fogRange.y + "}" );
-				}
-			}
 
-
-
-			/*
-			if( ps.catBlending.useStencilBuffer ){
-				App ("Stencil {");
-				scope++;
-
-				App ( ps.catBlending.GetStencilContent() );
-
-				scope--;
-				App ("}");
-
-			}*/
 
 		}
 
@@ -1352,46 +1319,9 @@ namespace ShaderForge {
 				//App( "float3 specularColor = " + ps.n_specular + ";" );
 				
 
-				if( SF_Tools.CurrentUnityVersion >= 5f ) {
-					/*
-					if( !initialized_VdotH ) {
-						App( "float VdotH = max(0.0,dot( viewDirection, halfDirection ));" );
-						initialized_VdotH = true;
-					}
-
-					App( "float fresnelTerm = FresnelTerm(specularMonochrome, VdotH);" );
-						
-					specularPBL += "*fresnelTerm";
-					*/
-					// Fresnel is applied later
-
-					specularPBL += "*NdotL";
-
-				} else {
-					App( "float HdotL = max(0.0,dot(halfDirection,lightDirection));" );
-					string fTermDef = "float3 fresnelTerm = specularColor + ( 1.0 - specularColor ) * pow((1.0 - HdotL),5);";
-					App( fTermDef );
-					directSpecular += "*fresnelTerm";
-				}
-
-
-
-
-				// TODO: U5 PBL
-				if( hasIndirectSpecular && SF_Tools.CurrentUnityVersion < 5f ) {
-					if( !initialized_NdotV ) {
-						App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
-						initialized_NdotV = true;
-					}
-					//App (fTermDef.Replace("HdotL","NdotV").Replace("fresnelTerm","fresnelTermAmb"));
-
-					string fTermAmbDef = "float3 fresnelTermAmb = specularColor + ( 1.0 - specularColor ) * ( pow((1.0 - NdotV),5) / (4-3*gloss) );";
-					App( fTermAmbDef );
-
-					indirectSpecular += " * fresnelTermAmb";
-				}
-
 				
+				specularPBL += "*NdotL";
+
 
 
 				// VISIBILITY TERM / GEOMETRIC TERM?
@@ -1415,16 +1345,7 @@ namespace ShaderForge {
 
 					specularPBL += "*visTerm";
 
-				} else {
-					App( "float alpha = 1.0 / ( sqrt( (Pi/4.0) * specPow + Pi/2.0 ) );" );
-					string vTermDef = "float visTerm = ( NdotL * ( 1.0 - alpha ) + alpha ) * ( NdotV * ( 1.0 - alpha ) + alpha );";
-					App( vTermDef );
-					App( "visTerm = 1.0 / visTerm;" );
-					directSpecular += "*visTerm";
-
-				}
-
-
+				} 
 				
 
 
@@ -1564,7 +1485,7 @@ namespace ShaderForge {
 
 
 		bool Unity5PBL() {
-			return ( SF_Tools.CurrentUnityVersion >= 5f && ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL );
+			return ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL;
 		}
 
 
@@ -2206,7 +2127,7 @@ namespace ShaderForge {
 
 				App( "#if SHOULD_SAMPLE_SH_PROBE" );
 				scope++;
-				string nrmStr = SF_Tools.CurrentUnityVersion >= 5 ? worldNormalFunctionName + "(v.normal)" : "mul(_Object2World, float4(v.normal,0)).xyz * unity_Scale.w";
+				string nrmStr = worldNormalFunctionName + "(v.normal)";
 				App( "o.shLight = ShadeSH9(float4(" + nrmStr + ",1)) * 0.5;" ); // TODO: Maybe remove * 0.5
 				scope--;
 				App( "#endif" );

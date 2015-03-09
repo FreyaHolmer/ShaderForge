@@ -489,7 +489,7 @@ namespace ShaderForge {
 				AppIfNonEmpty( cNodes[i].GetPrepareUniformsAndFunctions() );
 				if( cNodes[i].IsProperty() ) {
 					string propName = cNodes[i].property.nameInternal;
-					if( !( ( IncludeLightingCginc() || !IncludeUnity5BRDF() ) && propName == "_SpecColor" ) ) // SpecColor already defined in Lighting.cginc
+					if( !( ( IncludeLightingCginc() || IncludeUnity5BRDF() ) && propName == "_SpecColor" ) ) // SpecColor already defined in Lighting.cginc
 						App( cNodes[i].property.GetFilteredVariableLine() );
 				}
 			}

@@ -25,7 +25,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 1;
-		public static int versionNumSecondary = 5;
+		public static int versionNumSecondary = 6;
 		public static string versionStage = "";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge v" + version;
@@ -95,6 +95,10 @@ namespace ShaderForge {
 
 		public static bool HasUnityPro(){
 			return UnityEditorInternal.InternalEditorUtility.HasPro();
+		}
+
+		public static bool CanUseDeferred() {
+			return HasUnityPro() || UsingUnity5plus;  // Unity 5 is feature complete, as announced at GDC
 		}
 
 

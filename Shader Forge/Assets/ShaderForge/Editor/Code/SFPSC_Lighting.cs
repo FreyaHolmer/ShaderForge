@@ -136,7 +136,7 @@ namespace ShaderForge {
 			
 			r.xMin += 20;
 			r.y += 20;
-			if(SF_Tools.HasUnityPro()){
+			if( SF_Tools.CanUseDeferred() ) {
 				renderPath = (RenderPath)UndoableContentScaledToolbar( r, "Render Path", (int)renderPath, strRenderPath, "render path" );
 			} else {
 				GUI.enabled = false;

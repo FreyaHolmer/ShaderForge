@@ -57,10 +57,7 @@ namespace ShaderForge {
 			editor.mainNode.diffuse.SetAvailable( lit );
 			editor.mainNode.diffusePower.SetAvailable( lit && diffConnected && !deferredPp );
 			editor.mainNode.specular.SetAvailable( lit );
-			if(SF_Tools.UsingUnity4)
-				editor.mainNode.gloss.SetAvailable( lit && specConnected );
-			else
-				editor.mainNode.gloss.SetAvailable( lit && ( specConnected || ( diffConnected && pbr ) ));
+			editor.mainNode.gloss.SetAvailable( lit && ( specConnected || ( diffConnected && pbr ) ));
 			editor.mainNode.normal.SetAvailable( true );
 			editor.mainNode.alpha.SetAvailable( !deferredPp  );
 			editor.mainNode.alphaClip.SetAvailable( true );

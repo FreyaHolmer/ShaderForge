@@ -28,10 +28,14 @@ namespace ShaderForge{
 			new SFIns_PassPlat(RenderPlatform.d3d11),
 			new SFIns_PassPlat(RenderPlatform.opengl),
 			new SFIns_PassPlat(RenderPlatform.gles),
+			new SFIns_PassPlat(RenderPlatform.gles3),
+			new SFIns_PassPlat(RenderPlatform.metal),
+			new SFIns_PassPlat(RenderPlatform.d3d11_9x),
 			new SFIns_PassPlat(RenderPlatform.xbox360),
+			new SFIns_PassPlat(RenderPlatform.xboxone),
 			new SFIns_PassPlat(RenderPlatform.ps3),
-			new SFIns_PassPlat(RenderPlatform.flash),
-			new SFIns_PassPlat(RenderPlatform.d3d11_9x)
+			new SFIns_PassPlat(RenderPlatform.ps4),
+			new SFIns_PassPlat(RenderPlatform.psp2)
 		};
 
 		public void Parse(ShaderProgram prog, string line, bool ignoreMin ) {

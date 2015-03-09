@@ -17,7 +17,6 @@ namespace ShaderForge {
 
 		public bool useAmbient = true;
 		public bool maskedSpec = true;
-		public bool doubleIncomingLight = false;
 		//public bool shadowCast = true;
 		//public bool shadowReceive = true;
 		public bool lightmapped = false;
@@ -25,9 +24,6 @@ namespace ShaderForge {
 		public bool reflectprobed = false;
 		public bool energyConserving = false;
 		public bool remapGlossExponentially = true;
-		// Optional PBL terms
-		public bool fresnelTerm = true;
-		public bool visibilityTerm = true;
 
 		public enum RenderPath { Forward, DeferredPrePass };
 		public string[] strRenderPath = new string[] { "Forward", "Deferred Pre-Pass" };
@@ -55,9 +51,6 @@ namespace ShaderForge {
 			s += Serialize( "lprd", lightprobed.ToString() );
 			s += Serialize( "rprd", reflectprobed.ToString() );
 			s += Serialize( "enco", energyConserving.ToString());
-			s += Serialize( "frtr", fresnelTerm.ToString() );
-			s += Serialize( "vitr", visibilityTerm.ToString() );
-			s += Serialize( "dbil", doubleIncomingLight.ToString() );
 			s += Serialize( "rmgx", remapGlossExponentially.ToString());
 			s += Serialize( "rpth", ((int)renderPath).ToString() );
 			//s += Serialize( "shdc", shadowCast.ToString() );
@@ -90,17 +83,8 @@ namespace ShaderForge {
 			case "shdr":
 				shadowReceive = bool.Parse( value );
 				break;*/
-			case "dbil":
-				doubleIncomingLight = bool.Parse( value );
-				break;
 			case "lico":
 				lightCount = (LightCount)int.Parse( value );
-				break;
-			case "frtr":
-				fresnelTerm = bool.Parse( value );
-				break;
-			case "vitr":
-				visibilityTerm = bool.Parse( value );
 				break;
 			case "lmpd":
 				lightmapped = bool.Parse( value );
@@ -136,16 +120,9 @@ namespace ShaderForge {
 			
 			r.xMin += 20;
 			r.y += 20;
-			if( SF_Tools.CanUseDeferred() ) {
-				renderPath = (RenderPath)UndoableContentScaledToolbar( r, "Render Path", (int)renderPath, strRenderPath, "render path" );
-			} else {
-				GUI.enabled = false;
-				if(renderPath == RenderPath.DeferredPrePass){
-					renderPath = RenderPath.Forward;
-				}
-				UndoableContentScaledToolbar( r, "Render Path", (int)RenderPath.Forward, strRenderPath, "render path" );
-				GUI.enabled = true;
-			}
+		
+			renderPath = (RenderPath)UndoableContentScaledToolbar( r, "Render Path", (int)renderPath, strRenderPath, "render path" );
+			
 
 			if(renderPath == RenderPath.DeferredPrePass){
 				if(lightMode != LightMode.BlinnPhong)
@@ -168,14 +145,6 @@ namespace ShaderForge {
 			}
 			r.y += 20;
 
-
-			UndoableConditionalToggle(r, ref doubleIncomingLight,
-			                         usableIf: 				ps.catLighting.IsLit(),
-			                         disabledDisplayValue: 	false,
-			                         label: 				"Double incoming light",
-			                         undoSuffix:			"double incoming light"
-			                         );
-			r.y += 20;
 			
 			UndoableConditionalToggle(r, ref remapGlossExponentially,
 			                         usableIf: 				ps.HasGloss() && renderPath != RenderPath.DeferredPrePass,
@@ -185,25 +154,6 @@ namespace ShaderForge {
 			                         );
 			r.y += 20;
 			
-			if( lightMode == LightMode.PBL ) {
-				fresnelTerm = UndoableToggle( r, fresnelTerm, "[PBL] Fresnel term", "PBL fresnel term", null );
-				r.y += 20;
-
-				//visibilityTerm = UndoableToggle( r, visibilityTerm, "[PBL] Visibility term", "PBL visibility term", null );
-				//r.y += 20;
-
-				UndoableConditionalToggle(r, ref visibilityTerm,
-				                          	usableIf: 				ps.HasSpecular(),
-				                          	disabledDisplayValue: 	false,
-				                          	label: 					"[PBL] Visibility term",
-											undoSuffix:				"PBL visibility term"
-											);
-				r.y += 20;
-
-
-
-
-			}
 			
 			if( lightMode == LightMode.Unlit || lightMode == LightMode.PBL )
 				GUI.enabled = false;

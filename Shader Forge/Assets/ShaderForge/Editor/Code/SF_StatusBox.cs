@@ -307,7 +307,7 @@ namespace ShaderForge {
 
 			Debug.LogWarning( "[SF] Unhandled platform settings. Make sure your build target (" + active + ") is sensible, and that you've got platforms enabled to compile for" );
 			// You're using some weird setup, pick first active one
-			for(int i=0;i<7;i++){
+			for(int i=0;i<12;i++){
 				if(editor.ps.catMeta.usedRenderers[i])
 					return (RenderPlatform)i;
 			}

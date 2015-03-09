@@ -8,34 +8,39 @@ namespace ShaderForge {
 	[System.Serializable]
 	public class SFPSC_Meta : SFPS_Category {
 
-
-
-		/* = new bool[7]{
-			true,	// - Direct3D 9
-			true,	// - Direct3D 11
-			true,	// - OpenGL
-			true,	// - OpenGL ES 2.0
-			false,  // - Xbox 360
-			false,	// - PlayStation 3
-			false,	// - Flash
-			false	// - Direct3D 11 for Windows RT
-		};*/
 		public bool[] usedRenderers; // TODO: Serialization?
 		public string fallback = "";
 		public int LOD = 0; // TODO: Serialization?
 
-
+		/*
+		d3d9 		= 0,	// - Direct3D 9
+		d3d11 		= 1,	// - Direct3D 11
+		opengl 		= 2,	// - OpenGL
+		gles 		= 3,	// - OpenGL ES 2.0
+		gles3		= 4,	// - OpenGL ES 3.0
+		metal		= 5,	// - iOS Metal
+		d3d11_9x 	= 6,	// - Direct3D 11 windows RT
+		xbox360 	= 7,	// - Xbox 360
+		xboxone 	= 8,	// - Xbox One
+		ps3 		= 9,	// - PlayStation 3
+		ps4 		= 10,	// - PlayStation 4
+		psp2 		= 11	// - PlayStation Vita
+		*/
 
 		public override SFPS_Category PostInitialize (){
-			usedRenderers = new bool[8]{ // TODO: Load from project settings
+			usedRenderers = new bool[12]{ // TODO: Load from project settings
 				true,	// - Direct3D 9
 				true,	// - Direct3D 11
 				true,	// - OpenGL
 				true,	// - OpenGL ES 2.0
-				false,  // - Xbox 360
+				false,  // - OpenGL ES 3.0
+				false,	// - iOS Metal
+				false,	// - Direct3D 11 windows RT
+				false,	// - Xbox 360
+				false,	// - Xbox One
 				false,	// - PlayStation 3
-				false,	// - Flash
-				false	// - Direct3D 11 for Windows RT
+				false,	// - PlayStation 4
+				false	// - PlayStation Vita
 			};
 			return this;
 		}

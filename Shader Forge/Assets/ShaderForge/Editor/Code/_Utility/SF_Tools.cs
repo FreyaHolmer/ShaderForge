@@ -13,10 +13,14 @@ namespace ShaderForge {
 		d3d11 		= 1,	// - Direct3D 11
 		opengl 		= 2,	// - OpenGL
 		gles 		= 3,	// - OpenGL ES 2.0
-		xbox360 	= 4,	// - Xbox 360
-		ps3 		= 5,	// - PlayStation 3
-		flash		= 6,	// - Flash
-		d3d11_9x 	= 7		// - Direct3D 11 windows RT
+		gles3		= 4,	// - OpenGL ES 3.0
+		metal		= 5,	// - iOS Metal
+		d3d11_9x 	= 6,	// - Direct3D 11 windows RT
+		xbox360 	= 7,	// - Xbox 360
+		xboxone 	= 8,	// - Xbox One
+		ps3 		= 9,	// - PlayStation 3
+		ps4 		= 10,	// - PlayStation 4
+		psp2 		= 11	// - PlayStation Vita
 	};
 	
 
@@ -25,7 +29,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 1;
-		public static int versionNumSecondary = 6;
+		public static int versionNumSecondary = 10;
 		public static string versionStage = "";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge v" + version;
@@ -41,10 +45,14 @@ namespace ShaderForge {
 			"Direct3D 11",
 			"OpenGL",
 			"OpenGL ES 2.0",
+			"OpenGL ES 3.0",
+			"iOS Metal",
+			"Direct3D 11 for Windows RT/Phone",
 			"Xbox 360",
+			"Xbox One",
 			"PlayStation 3",
-			"Flash",
-			"Direct3D 11 for Windows RT"
+			"PlayStation 4",
+			"PlayStation Vita"
 		};
 
 		public const string alphabetLower = "abcdefghijklmnopqrstuvwxyz";
@@ -60,7 +68,7 @@ namespace ShaderForge {
 		public static int stationaryCursorRadius = 7;
 		
 		
-		public const float minimumUnityVersion = 4.3f;
+		public const float minimumUnityVersion = 5.0f;
 
 		private static float currentUnityVersion = 0f;
 		public static float CurrentUnityVersion{
@@ -71,22 +79,6 @@ namespace ShaderForge {
 				return currentUnityVersion;
 			}
 		}
-
-		public static bool UsingUnity5 {
-			get {
-				return CurrentUnityVersion >= 5.0f && CurrentUnityVersion < 6.0f;
-			}
-		}
-		public static bool UsingUnity5plus {
-			get {
-				return CurrentUnityVersion >= 5.0f;
-			}
-		}
-		public static bool UsingUnity4 {
-			get {
-				return CurrentUnityVersion >= 4.0f && CurrentUnityVersion < 5.0f;
-			}
-		}
 		
 		public static bool CanRunShaderForge(){
 			return (CurrentUnityVersion >= minimumUnityVersion);
@@ -95,10 +87,6 @@ namespace ShaderForge {
 
 		public static bool HasUnityPro(){
 			return UnityEditorInternal.InternalEditorUtility.HasPro();
-		}
-
-		public static bool CanUseDeferred() {
-			return HasUnityPro() || UsingUnity5plus;  // Unity 5 is feature complete, as announced at GDC
 		}
 
 

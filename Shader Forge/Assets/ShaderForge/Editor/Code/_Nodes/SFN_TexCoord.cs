@@ -10,7 +10,6 @@ namespace ShaderForge {
 
 
 		public enum UV { uv0 = 0, uv1 = 1, uv2 = 2, uv3 = 3 };
-		public enum UVunity4 { uv0 = 0, uv1 = 1 };
 		public UV currentUV = UV.uv0;
 
 		public SFN_TexCoord() {
@@ -49,14 +48,8 @@ namespace ShaderForge {
 			GUI.color = Color.white;
 			EditorGUI.BeginChangeCheck();
 
-			if(SF_Tools.UsingUnity4){
-				UVunity4 legacyUV = (UVunity4)((int)currentUV);
-				currentUV = (UV)((int)((UVunity4)UndoableEnumPopup(lowerRect, legacyUV, "switch UV channel")));
-			} else {
-				currentUV = (UV)UndoableEnumPopup(lowerRect, currentUV, "switch UV channel");
-			}
-
-			//currentUV = (UV)EditorGUI.EnumPopup( lowerRect, currentUV );
+			currentUV = (UV)UndoableEnumPopup(lowerRect, currentUV, "switch UV channel");
+			
 			if(EditorGUI.EndChangeCheck())
 				OnUpdateNode();
 		}

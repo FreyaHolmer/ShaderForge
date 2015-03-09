@@ -270,11 +270,6 @@ namespace ShaderForge {
 				LightmapCondition( cNodes, "_MainTex", editor.mainNode.alpha, "Texture", "Transparent/" );
 				LightmapCondition( cNodes, "_MainTex", editor.mainNode.alphaClip, "Texture", "Transparent/" );
 
-
-				if( SF_Tools.UsingUnity5 ) {
-					Errors.Add( SF_ErrorEntry.Create( "Unity 5 is in beta, and so is the Unity 5 support of Shader Forge. Lightmapping is currently somewhat broken!", true ) );
-				}
-
 			}
 
 

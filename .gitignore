@@ -21,6 +21,8 @@
 CLEANUP/*
 OLD_FILES/AutoPlaceScreenshots*
 Shader Forge/Assets/Experiments/*
+Shader Forge/Assets/LOCAL/*
+Shader Forge/Assets/LOCAL.meta
 Shader Forge/Assets/Experiments.meta
 Shader Forge/Assets/Emily/*
 Shader Forge/Assets/Emily.meta

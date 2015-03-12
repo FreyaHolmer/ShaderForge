@@ -20,8 +20,7 @@ namespace ShaderForge {
 		public bool maskedSpec = true;
 		//public bool shadowCast = true;
 		//public bool shadowReceive = true;
-		public bool lightmapped = false;
-		public bool lightprobed = false;
+		public bool bakedLight = false;
 		public bool reflectprobed = false;
 		public bool energyConserving = false;
 		public bool remapGlossExponentially = true;
@@ -51,12 +50,12 @@ namespace ShaderForge {
 			s += Serialize( "limd", ( (int)lightMode ).ToString() );
 			s += Serialize( "uamb", useAmbient.ToString() );
 			s += Serialize( "mssp", maskedSpec.ToString() );
-			s += Serialize( "lmpd", lightmapped.ToString() );
-			s += Serialize( "lprd", lightprobed.ToString() );
+			s += Serialize( "bkdf", bakedLight.ToString() );
 			s += Serialize( "rprd", reflectprobed.ToString() );
 			s += Serialize( "enco", energyConserving.ToString());
 			s += Serialize( "rmgx", remapGlossExponentially.ToString());
 			s += Serialize( "rpth", ((int)renderPath).ToString() );
+			
 			//s += Serialize( "shdc", shadowCast.ToString() );
 			//s += Serialize( "shdr", shadowReceive.ToString() );
 			return s;
@@ -84,6 +83,9 @@ namespace ShaderForge {
 			case "mssp":
 				maskedSpec = bool.Parse( value );
 				break;
+			case "bkdf":
+				bakedLight = bool.Parse( value );
+				break;
 			/*case "shdc":
 				shadowCast = bool.Parse( value );
 				break;
@@ -94,10 +96,10 @@ namespace ShaderForge {
 				lightCount = (LightCount)int.Parse( value );
 				break;
 			case "lmpd":
-				lightmapped = bool.Parse( value );
+				bakedLight |= bool.Parse( value );
 				break;
 			case "lprd":
-				lightprobed = bool.Parse( value );
+				bakedLight |= bool.Parse( value );
 				break;
 			case "rprd":
 				reflectprobed = bool.Parse( value );
@@ -152,14 +154,17 @@ namespace ShaderForge {
 			}
 			r.y += 20;
 
+
+			if( ps.catLighting.IsPBL() == false ) {
+				UndoableConditionalToggle( r, ref remapGlossExponentially,
+									 usableIf: ps.HasGloss() && renderPath != RenderPath.DeferredPrePass,
+									 disabledDisplayValue: renderPath == RenderPath.DeferredPrePass ? true : false,
+									 label: "Remap gloss from [0-1] to " + ( ( renderPath == RenderPath.DeferredPrePass ) ? "[0-128]" : "[1-2048]" ),
+									 undoSuffix: "gloss remap"
+									 );
+				r.y += 20;
+			}
 			
-			UndoableConditionalToggle(r, ref remapGlossExponentially,
-			                         usableIf: 				ps.HasGloss() && renderPath != RenderPath.DeferredPrePass,
-			                         disabledDisplayValue: 	renderPath == RenderPath.DeferredPrePass ? true : false,
-			                         label: 				"Remap gloss from [0-1] to " + ((renderPath == RenderPath.DeferredPrePass) ? "[0-128]" : "[1-2048]"),
-			                         undoSuffix:			"gloss remap"
-			                         );
-			r.y += 20;
 			
 			
 			if( lightMode == LightMode.Unlit || lightMode == LightMode.PBL )
@@ -190,26 +195,20 @@ namespace ShaderForge {
 			normalQuality = (NormalQuality)UndoableContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality, "normal quality" );
 			GUI.enabled = true;
 			r.y += 20;
-			
-			UndoableConditionalToggle(r, ref lightmapped,
-			                         usableIf: 				ps.HasDiffuse() && lightMode != LightMode.Unlit,
-			                         disabledDisplayValue: 	false,
-			                         label: 				"Lightmap support",
-			                         undoSuffix:			"lightmap support"
-			                         );
+
 			GUI.enabled = ps.mOut.normal.IsConnectedEnabledAndAvailable();
 			normalSpace = (NormalSpace)UndoableContentScaledToolbar( r, "Normal Space", (int)normalSpace, strNormalSpace, "normal space" );
 			r.y += 20;
 			GUI.enabled = true;
-
-			//lightprobed = GUI.Toggle( r, lightprobed, "Light probe support" );
-			UndoableConditionalToggle(r, ref lightprobed,
+			
+			UndoableConditionalToggle(r, ref bakedLight,
 			                         usableIf: 				ps.HasDiffuse() && lightMode != LightMode.Unlit,
 			                         disabledDisplayValue: 	false,
-			                         label: 				"Light probe support",
-			                         undoSuffix:			"light probe support"
+			                         label: 				"Lightmap & light probes",
+									 undoSuffix:			"lightmap & light probes"
 			                         );
 			r.y += 20;
+
 
 		
 			UndoableConditionalToggle( r, ref reflectprobed,
@@ -236,8 +235,8 @@ namespace ShaderForge {
 			
 			
 			UndoableConditionalToggle(r, ref useAmbient,
-			                         usableIf: 				!lightprobed && ps.catLighting.IsLit(),
-			                         disabledDisplayValue: 	lightprobed,
+									 usableIf:				!bakedLight && ps.catLighting.IsLit(),
+									 disabledDisplayValue:	bakedLight,
 			                         label: 				"Receive Ambient Light",
 			                         undoSuffix:			"receive ambient light"
 			                         );

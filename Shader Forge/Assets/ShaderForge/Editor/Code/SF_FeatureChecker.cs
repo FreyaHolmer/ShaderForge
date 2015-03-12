@@ -46,8 +46,7 @@ namespace ShaderForge {
 			bool diffConnected = editor.mainNode.diffuse.IsConnectedAndEnabled();
 			bool specConnected = editor.mainNode.specular.IsConnectedAndEnabled();
 
-			bool probed = ps.catLighting.lightprobed;
-			bool lightmapped = ps.catLighting.lightmapped;
+			bool bakedData = ps.catLighting.bakedLight;
 			bool usesAmbient = ps.catLighting.useAmbient;
 			bool ambDiffConnected = ps.HasAmbientDiffuse();
 			bool ambSpecConnected = ps.HasAmbientSpecular();
@@ -69,8 +68,8 @@ namespace ShaderForge {
 
 
 
-			editor.mainNode.diffuseOcclusion.SetAvailable( lit && diffConnected && (probed || lightmapped || usesAmbient || ambDiffConnected) );
-			editor.mainNode.specularOcclusion.SetAvailable( lit && specConnected && (lightmapped || ambSpecConnected) ); // Masks ambient spec & directional lightmaps
+			editor.mainNode.diffuseOcclusion.SetAvailable( lit && diffConnected && ( bakedData || usesAmbient || ambDiffConnected ) );
+			editor.mainNode.specularOcclusion.SetAvailable( lit && specConnected && ( bakedData || ambSpecConnected ) ); // Masks ambient spec & directional lightmaps
 
 			editor.mainNode.ambientDiffuse.SetAvailable( lit && diffConnected);
 			editor.mainNode.ambientSpecular.SetAvailable( lit && specConnected );

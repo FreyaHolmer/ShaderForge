@@ -292,6 +292,16 @@ namespace ShaderForge {
 			return mOut.normal.IsConnectedAndEnabled();
 		}
 
+		public bool HasTangentSpaceNormalMap() {
+			return HasNormalMap() && catLighting.normalSpace == SFPSC_Lighting.NormalSpace.Tangent;
+		}
+		public bool HasObjectSpaceNormalMap() {
+			return HasNormalMap() && catLighting.normalSpace == SFPSC_Lighting.NormalSpace.Object;
+		}
+		public bool HasWorldSpaceNormalMap() {
+			return HasNormalMap() && catLighting.normalSpace == SFPSC_Lighting.NormalSpace.World;
+		}
+
 		public bool HasRefraction() {
 			return mOut.refraction.IsConnectedAndEnabled();
 		}

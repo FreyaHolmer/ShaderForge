@@ -1095,7 +1095,7 @@ namespace ShaderForge {
 
 		void InitNormalDirVert() {
 			if( dependencies.vert_out_normals ) {
-				App( "o.normalDir = mul(_Object2World, float4(" + ps.catBlending.GetNormalSign() + "v.normal,0)).xyz;" );
+				App( "o.normalDir = UnityObjectToWorldNormal(" + ps.catBlending.GetNormalSign() + "v.normal);" );
 			}
 		}
 
@@ -1136,9 +1136,14 @@ namespace ShaderForge {
 
 
 
-			if( ps.HasNormalMap() ) {
+			if( ps.HasTangentSpaceNormalMap() ) {
 				App( "float3 normalLocal = " + ps.n_normals + ";" );
 				App( "float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals" );
+			} else if( ps.HasObjectSpaceNormalMap() ) {
+				App( "float3 normalLocal = " + ps.n_normals + ";" );
+				App( "float3 normalDirection = mul( _World2Object, float4(normalLocal,0)) / recipObjScale;" );
+			} else if( ps.HasWorldSpaceNormalMap() ) {
+				App( "float3 normalDirection = " + ps.n_normals + ";" );
 			} else {
 				App( "float3 normalDirection = i.normalDir;" );
 			}

@@ -12,6 +12,7 @@ namespace ShaderForge {
 		public RenderPath renderPath = RenderPath.Forward;
 		public LightPrecision lightPrecision = LightPrecision.Fragment;
 		public NormalQuality normalQuality = NormalQuality.Normalized;
+		public NormalSpace normalSpace = NormalSpace.Tangent;
 		public LightMode lightMode = LightMode.BlinnPhong;
 		public LightCount lightCount = LightCount.Multi;
 
@@ -33,6 +34,8 @@ namespace ShaderForge {
 		public string[] strLightPrecision = new string[] { "Per-Vertex", "Per-Fragment" };
 		public enum NormalQuality { Interpolated, Normalized };
 		public string[] strNormalQuality = new string[] { "Interpolated", "Normalized" };
+		public enum NormalSpace { Tangent, Object, World };
+		public string[] strNormalSpace = new string[] { "Tangent", "Object", "World" };
 		public enum LightMode { Unlit, BlinnPhong, Phong, PBL };
 		public string[] strLightMode = new string[] { "Unlit/Custom", "Blinn-Phong", "Phong", "PBL" };
 		public enum LightCount { Single, Multi };
@@ -44,6 +47,7 @@ namespace ShaderForge {
 			s += Serialize( "lico", ( (int)lightCount ).ToString() );
 			s += Serialize( "lgpr", ( (int)lightPrecision ).ToString() );
 			s += Serialize( "nrmq", ( (int)normalQuality ).ToString() );
+			s += Serialize( "nrsp", ( (int)normalSpace ).ToString() );
 			s += Serialize( "limd", ( (int)lightMode ).ToString() );
 			s += Serialize( "uamb", useAmbient.ToString() );
 			s += Serialize( "mssp", maskedSpec.ToString() );
@@ -67,6 +71,9 @@ namespace ShaderForge {
 				break;
 			case "nrmq":
 				normalQuality = (NormalQuality)int.Parse( value );
+				break;
+			case "nrsp":
+				normalSpace = (NormalSpace)int.Parse( value );
 				break;
 			case "limd":
 				lightMode = (LightMode)int.Parse( value );
@@ -190,7 +197,10 @@ namespace ShaderForge {
 			                         label: 				"Lightmap support",
 			                         undoSuffix:			"lightmap support"
 			                         );
+			GUI.enabled = ps.mOut.normal.IsConnectedEnabledAndAvailable();
+			normalSpace = (NormalSpace)UndoableContentScaledToolbar( r, "Normal Space", (int)normalSpace, strNormalSpace, "normal space" );
 			r.y += 20;
+			GUI.enabled = true;
 
 			//lightprobed = GUI.Toggle( r, lightprobed, "Light probe support" );
 			UndoableConditionalToggle(r, ref lightprobed,

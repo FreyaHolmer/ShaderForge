@@ -35,7 +35,7 @@ namespace ShaderForge {
 		public bool vert_out_screenPos = false;
 		public bool vert_out_normals = false;
 		public bool vert_out_tangents = false;
-		public bool vert_out_binormals = false;
+		public bool vert_out_bitangents = false;
 		public bool vert_in_normals = false;
 		public bool vert_in_tangents = false;
 		public bool vert_in_vertexColor = false;
@@ -241,12 +241,12 @@ namespace ShaderForge {
 			vert_in_tangents = true;
 			vert_out_tangents = true;
 		}
-		public void NeedFragBinormals() {
+		public void NeedFragBitangents() {
 			vert_in_normals = true;
 			vert_out_normals = true;
 			vert_in_tangents = true;
 			vert_out_tangents = true;
-			vert_out_binormals = true;
+			vert_out_bitangents = true;
 		}
 
 		public void NeedFragTangentTransform() {
@@ -256,7 +256,7 @@ namespace ShaderForge {
 			vert_out_normals = true;
 			vert_in_tangents = true;
 			vert_out_tangents = true;
-			vert_out_binormals = true;
+			vert_out_bitangents = true;
 		}
 
 

@@ -2161,6 +2161,12 @@ namespace ShaderForge {
 
 		private static SF_Node TryCreateNodeOfType( string nodeType ) {
 			SF_Node node = null;
+
+			// Renamed nodes
+			if(nodeType == "ShaderForge.SFN_Binormal")
+				nodeType = "ShaderForge.SFN_Bitangent";
+
+
 			if( nodeType == "ShaderForge.SFN_Final" ) {
 				node = SF_Editor.instance.CreateOutputNode();
 			} else {

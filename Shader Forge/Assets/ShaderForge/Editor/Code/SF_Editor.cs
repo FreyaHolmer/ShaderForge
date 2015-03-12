@@ -261,7 +261,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Rotator ), 	catUvOps + "Rotator" );
 
 			string catGeoData = "Geometry Data/";
-			AddTemplate( typeof( SFN_Binormal ), 				catGeoData + "Binormal Dir.");
+			AddTemplate( typeof( SFN_Bitangent ), 				catGeoData + "Bitangent Dir.");
 			AddTemplate( typeof( SFN_Depth ), 					catGeoData + "Depth");
 			AddTemplate( typeof( SFN_Fresnel ), 				catGeoData + "Fresnel", KeyCode.F );
 			AddTemplate( typeof( SFN_NormalVector ), 			catGeoData + "Normal Dir." );

@@ -412,8 +412,8 @@ namespace ShaderForge {
 				if( n is SFN_Tangent ) {
 					dependencies.NeedFragTangents();
 				}
-				if( n is SFN_Binormal ) {
-					dependencies.NeedFragBinormals();
+				if( n is SFN_Bitangent ) {
+					dependencies.NeedFragBitangents();
 				}
 				if( n is SFN_NormalVector ) {
 					dependencies.NeedFragNormals();
@@ -824,7 +824,7 @@ namespace ShaderForge {
 		}
 		void InitTangentTransformFrag() {
 			if( ( dependencies.frag_tangentTransform && currentProgram == ShaderProgram.Frag ) || ( dependencies.vert_tangentTransform && currentProgram == ShaderProgram.Vert ) )
-				App( "float3x3 tangentTransform = float3x3( " + WithProgramPrefix( "tangentDir" ) + ", " + WithProgramPrefix( "binormalDir" ) + ", " + WithProgramPrefix( "normalDir" ) + ");" );
+				App( "float3x3 tangentTransform = float3x3( " + WithProgramPrefix( "tangentDir" ) + ", " + WithProgramPrefix( "bitangentDir" ) + ", " + WithProgramPrefix( "normalDir" ) + ");" );
 		}
 
 
@@ -1103,8 +1103,8 @@ namespace ShaderForge {
 			App( "o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );" );
 		}
 
-		void InitBinormalDirVert() {
-			App( "o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);" );
+		void InitBitangentDirVert() {
+			App( "o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);" );
 		}
 
 		void InitObjectPos() {
@@ -2040,8 +2040,8 @@ namespace ShaderForge {
 					App( "float3 normalDir" + GetVertOutTexcoord() );
 				if( dependencies.vert_out_tangents )
 					App( "float3 tangentDir" + GetVertOutTexcoord() );
-				if( dependencies.vert_out_binormals )
-					App( "float3 binormalDir" + GetVertOutTexcoord() );
+				if( dependencies.vert_out_bitangents )
+					App( "float3 bitangentDir" + GetVertOutTexcoord() );
 				if( dependencies.vert_out_screenPos )
 					App( "float4 screenPos" + GetVertOutTexcoord() );
 				if( dependencies.vert_in_vertexColor )
@@ -2151,12 +2151,14 @@ namespace ShaderForge {
 
 
 
+
+
 			if( dependencies.vert_out_normals )
 				InitNormalDirVert();
 			if( dependencies.vert_out_tangents )
 				InitTangentDirVert();
-			if( dependencies.vert_out_binormals )
-				InitBinormalDirVert();
+			if( dependencies.vert_out_bitangents )
+				InitBitangentDirVert();
 
 			InitObjectPos();
 

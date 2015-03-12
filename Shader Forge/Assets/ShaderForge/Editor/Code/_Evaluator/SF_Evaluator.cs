@@ -2398,8 +2398,9 @@ namespace ShaderForge {
 				App( "o.Emission = 0;" );
 			}
 			App( "" );
-			App( "float3 diffColor = " + ps.n_diffuse + ";");
 			App( "float3 specColor = " + ps.n_specular + ";" );
+			App( "float specularMonochrome = max(max(specColor.r, specColor.g),specColor.b);" );
+			App( "float3 diffColor = " + ps.n_diffuse + " * (1.0-specularMonochrome);");
 			App( "float roughness = 1.0 - " + ps.n_gloss + ";" );
 			App( "o.Albedo = diffColor + specColor * roughness * roughness * 0.5;" );
 			App( "" );

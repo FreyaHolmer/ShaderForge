@@ -261,6 +261,10 @@ namespace ShaderForge {
 			}
 			for( int i = 2; i < arr.Length; i++ ) { // i = 2 to ignore #pragma x_renderers
 				string rndr = arr[i];
+				if( rndr == "flash" ) {
+					Debug.LogWarning( "Flash is no longer supported by Unity, and was removed from the shader" );
+					return;
+				}
 				int enm = (int)((RenderPlatform)Enum.Parse( typeof( RenderPlatform ), rndr ));
 				editor.ps.catMeta.usedRenderers[enm] = only; // Disable or enable one
 			}

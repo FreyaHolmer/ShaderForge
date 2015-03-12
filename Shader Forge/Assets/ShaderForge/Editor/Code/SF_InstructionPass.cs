@@ -53,6 +53,11 @@ namespace ShaderForge{
 				return;
 			}
 
+			if( split[1] == "flash" ) {
+				Debug.LogWarning( "Flash is no longer supported by Unity, and was removed from the shader" );
+				return;
+			}
+
 			bool hasTex = ( split.Length == 11 );
 
 			object enumObj = Enum.Parse( typeof( RenderPlatform ), split[1] );

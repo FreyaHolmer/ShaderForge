@@ -257,25 +257,16 @@ namespace ShaderForge {
 
 
 
-			// LIGHTMAP WARNINGS
-			if( editor.ps.catLighting.IsLit() && editor.ps.catLighting.lightmapped ) {
 
-				// This is primarily for Unity 4, Unity 5 has attributes for this instead
-				LightmapCondition( cNodes, "_MainTex", editor.mainNode.diffuse, "Texture" );
-				LightmapCondition( cNodes, "_Color", editor.mainNode.diffuse, "Color" );
-				LightmapCondition( cNodes, "_SpecColor", editor.mainNode.specular, "Color", "Specular/" );
-				LightmapCondition( cNodes, "_Shininess", editor.mainNode.specular, "Value or Slider");
-				LightmapCondition( cNodes, "_BumpMap", editor.mainNode.normal, "Texture" );
-				LightmapCondition( cNodes, "_Illum", editor.mainNode.emissive, "Texture", "Self-Illumin/" );
-				LightmapCondition( cNodes, "_MainTex", editor.mainNode.alpha, "Texture", "Transparent/" );
-				LightmapCondition( cNodes, "_MainTex", editor.mainNode.alphaClip, "Texture", "Transparent/" );
-
+			if( editor.ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
+				if( editor.ps.HasDiffuse() && !editor.ps.HasSpecular() ) {
+					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires specular to be connected", false ) );
+				}
+				if( !editor.ps.HasDiffuse() && editor.ps.HasSpecular() ) {
+					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires diffuse to be connected", false ) );
+				}
 			}
-
-
-			if(editor.ps.HasDiffuse() && !editor.ps.HasSpecular() && editor.ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL){
-				Errors.Add( SF_ErrorEntry.Create( "Using PBL without specular doesn't make much sense - consider plugging in a value into the Specular input", true ) );
-			}
+			
 
 
 
@@ -355,26 +346,6 @@ namespace ShaderForge {
 				return true;
 			//DisplayErrors();
 			return false;
-		}
-
-		private void LightmapCondition( List<SF_Node> cNodes, string internalName, SF_NodeConnector reqConnection, string propertyType, string pathReq = "", bool justPath = false ) {
-
-			bool connected = reqConnection.IsConnectedEnabledAndAvailable();
-			bool foundNamedNode = ConnectedNodeWithInternalNameExists( cNodes, internalName );
-			bool pathValid = editor.currentShaderPath.Contains( pathReq );
-
-			if( connected && !foundNamedNode && !justPath ) {
-				SF_ErrorEntry error = SF_ErrorEntry.Create( "Lightmapping wants a " + propertyType + " property, with an internal name of " + internalName, true );
-				Errors.Add( error );
-			}
-
-			if( connected && !pathValid ) {
-				SF_ErrorEntry errorPath = SF_ErrorEntry.Create( "Lightmapping expects the shader path to contain " + pathReq + " when " + reqConnection.label + " is connected", true );
-				Errors.Add( errorPath );
-			}
-
-
-
 		}
 
 		private bool ConnectedNodeWithInternalNameExists( List<SF_Node> cNodes, string s ) {

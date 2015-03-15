@@ -2894,6 +2894,7 @@ namespace ShaderForge {
 		public void ResetDefinedState() {
 			for( int i = 0; i < cNodes.Count; i++ ) {
 				cNodes[i].varDefined = false;
+				cNodes[i].varPreDefined = false;
 			}
 		}
 

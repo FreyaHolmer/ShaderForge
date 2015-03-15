@@ -37,7 +37,7 @@ namespace ShaderForge {
 
 		public void UpdateAvailability() {
 
-			bool deferredPp = ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass;
+			bool deferredPp = ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Deferred;
 			bool unlit = (ps.catLighting.lightMode == SFPSC_Lighting.LightMode.Unlit);
 			bool pbr = (ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL);
 			bool lit = !unlit;
@@ -81,7 +81,38 @@ namespace ShaderForge {
 			editor.mainNode.outlineWidth.SetAvailable( !deferredPp  );
 
 
+			// Rename labels based on which lighting mode you're using
+			if(ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL){
+				if( ps.catLighting.specularMode == SFPSC_Lighting.SpecularMode.Metallic ){
+					editor.mainNode.diffuse.label = "Base Color";
+					editor.mainNode.specular.label = "Metallic";
+				} else {
+					editor.mainNode.diffuse.label = "Albedo";
+					editor.mainNode.specular.label = "Specular";
+				}
+			} else {
+				editor.mainNode.diffuse.label = "Diffuse";
+				editor.mainNode.specular.label = "Specular";
+			}
 
+			// Metallic is 1 component, specular has 3 components
+			if(ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL && ps.catLighting.specularMode == SFPSC_Lighting.SpecularMode.Metallic ){
+				editor.mainNode.specular.valueTypeDefault = ValueType.VTv1;
+				editor.mainNode.specular.SetValueType( ValueType.VTv1 );
+				editor.mainNode.specular.TypecastTo( 1 );
+			} else {
+				editor.mainNode.specular.valueTypeDefault = ValueType.VTvPending;
+				editor.mainNode.specular.SetValueType( ValueType.VTvPending );
+				editor.mainNode.specular.TypecastTo( 3 );
+			}
+
+
+			if( ps.catLighting.glossRoughMode == SFPSC_Lighting.GlossRoughMode.Roughness ) {
+				editor.mainNode.gloss.label = "Roughness";
+			} else {
+				editor.mainNode.gloss.label = "Gloss";
+			}
+			
 
 
 		

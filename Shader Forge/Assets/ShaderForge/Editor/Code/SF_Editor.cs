@@ -115,8 +115,6 @@ namespace ShaderForge {
 
 		void OnDisable(){
 
-
-
 			if(shaderOutdated != UpToDateState.UpToDate){
 
 				fullscreenMessage = "Saving...";
@@ -130,7 +128,7 @@ namespace ShaderForge {
 
 
 		void OnDestroy(){
-
+			DestroyImmediate( preview.internalMaterial );
 		}
 
 		public static bool Init( Shader initShader = null ) {

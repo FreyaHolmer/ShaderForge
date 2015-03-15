@@ -226,7 +226,7 @@ namespace ShaderForge {
 		public void DrawButton( SF_EditorNodeData entry, ref Rect btnRect ) {
 			GUI.color = entry.isProperty ? SF_Node.colorExposed : Color.white;
 
-			bool usable = !(!entry.availableInDeferredPrePass && editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass);
+			bool usable = !(!entry.availableInDeferredPrePass && editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Deferred);
 
 			if(!usable){
 				//GUI.color = Color.red;

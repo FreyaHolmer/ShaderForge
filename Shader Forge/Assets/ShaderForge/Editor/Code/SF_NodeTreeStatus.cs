@@ -260,10 +260,10 @@ namespace ShaderForge {
 
 			if( editor.ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
 				if( editor.ps.HasDiffuse() && !editor.ps.HasSpecular() ) {
-					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires specular to be connected", false ) );
+					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires " + editor.mainNode.specular.label + " to be connected", false ) );
 				}
 				if( !editor.ps.HasDiffuse() && editor.ps.HasSpecular() ) {
-					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires diffuse to be connected", false ) );
+					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires " + editor.mainNode.diffuse.label + " to be connected", false ) );
 				}
 			}
 			

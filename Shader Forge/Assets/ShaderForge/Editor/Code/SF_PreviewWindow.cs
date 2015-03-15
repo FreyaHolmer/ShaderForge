@@ -265,7 +265,7 @@ namespace ShaderForge {
 
 			if(rPath == SFPSC_Lighting.RenderPath.Forward){
 				pruCam.renderingPath = RenderingPath.Forward;
-			} else if(rPath == SFPSC_Lighting.RenderPath.DeferredPrePass){
+			} else if(rPath == SFPSC_Lighting.RenderPath.Deferred){
 				pruCam.renderingPath = RenderingPath.DeferredLighting;
 				//pruCam.clearFlags == CameraClearFlags.Depth;
 			}
@@ -444,7 +444,6 @@ namespace ShaderForge {
 			//		}
 			ieuSetCustomLighting.Invoke( null, new object[] { pruLights, ambient } );
 		}
-
 
 
 

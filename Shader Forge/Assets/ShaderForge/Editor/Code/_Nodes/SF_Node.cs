@@ -1035,7 +1035,7 @@ namespace ShaderForge {
 		}
 
 		public bool UnavailableInThisRenderPath(){
-			return editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass && !availableInDeferredPrePass;
+			return editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Deferred && !availableInDeferredPrePass;
 		}
 
 		float commentYposTarget;

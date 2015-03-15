@@ -14,6 +14,8 @@ namespace ShaderForge {
 		public NormalQuality normalQuality = NormalQuality.Normalized;
 		public NormalSpace normalSpace = NormalSpace.Tangent;
 		public LightMode lightMode = LightMode.BlinnPhong;
+		public SpecularMode specularMode = SpecularMode.Metallic;
+		public GlossRoughMode glossRoughMode = GlossRoughMode.Gloss;
 		public LightCount lightCount = LightCount.Multi;
 
 		public bool useAmbient = true;
@@ -25,8 +27,8 @@ namespace ShaderForge {
 		public bool energyConserving = false;
 		public bool remapGlossExponentially = true;
 
-		public enum RenderPath { Forward, DeferredPrePass };
-		public string[] strRenderPath = new string[] { "Forward", "Deferred Pre-Pass" };
+		public enum RenderPath { Forward, Deferred };
+		public string[] strRenderPath = new string[] { "Forward", "Deferred" };
 
 
 		public enum LightPrecision { Vertex, Fragment };
@@ -37,6 +39,10 @@ namespace ShaderForge {
 		public string[] strNormalSpace = new string[] { "Tangent", "Object", "World" };
 		public enum LightMode { Unlit, BlinnPhong, Phong, PBL };
 		public string[] strLightMode = new string[] { "Unlit/Custom", "Blinn-Phong", "Phong", "PBL" };
+		public enum SpecularMode { Specular, Metallic };
+		public string[] strSpecularMode = new string[] { "Specular", "Metallic" };
+		public enum GlossRoughMode { Gloss, Roughness };
+		public string[] strGlossRoughMode = new string[] { "Gloss", "Roughness" };
 		public enum LightCount { Single, Multi };
 		public string[] strLightCount = new string[] { "Single Directional", "Multi-light"};
 
@@ -48,6 +54,8 @@ namespace ShaderForge {
 			s += Serialize( "nrmq", ( (int)normalQuality ).ToString() );
 			s += Serialize( "nrsp", ( (int)normalSpace ).ToString() );
 			s += Serialize( "limd", ( (int)lightMode ).ToString() );
+			s += Serialize( "spmd", ( (int)specularMode ).ToString() );
+			s += Serialize( "grmd", ( (int)glossRoughMode ).ToString() );
 			s += Serialize( "uamb", useAmbient.ToString() );
 			s += Serialize( "mssp", maskedSpec.ToString() );
 			s += Serialize( "bkdf", bakedLight.ToString() );
@@ -86,6 +94,13 @@ namespace ShaderForge {
 			case "bkdf":
 				bakedLight = bool.Parse( value );
 				break;
+			case "spmd":
+				specularMode = (SpecularMode)int.Parse( value );
+				break;
+			case "grmd":
+				glossRoughMode = (GlossRoughMode)int.Parse( value );
+				break;
+					
 			/*case "shdc":
 				shadowCast = bool.Parse( value );
 				break;
@@ -133,9 +148,9 @@ namespace ShaderForge {
 			renderPath = (RenderPath)UndoableContentScaledToolbar( r, "Render Path", (int)renderPath, strRenderPath, "render path" );
 			
 
-			if(renderPath == RenderPath.DeferredPrePass){
-				if(lightMode != LightMode.BlinnPhong)
-					lightMode = LightMode.BlinnPhong;
+			if(renderPath == RenderPath.Deferred){
+				if(lightMode != LightMode.PBL)
+					lightMode = LightMode.PBL;
 				if(ps.catBlending.autoSort == false){
 					ps.catBlending.autoSort = true;
 				}
@@ -145,21 +160,32 @@ namespace ShaderForge {
 				}
 			}
 			r.y += 20;
-			if(renderPath == RenderPath.DeferredPrePass){
+			if(renderPath == RenderPath.Deferred){
 				GUI.enabled = false;
-				UndoableContentScaledToolbar( r, "Light Mode", (int)LightMode.BlinnPhong, strLightMode, "light mode" );
+				UndoableContentScaledToolbar( r, "Light Mode", (int)LightMode.PBL, strLightMode, "light mode" );
 				GUI.enabled = true;
 			} else {
 				lightMode = (LightMode)UndoableContentScaledToolbar( r, "Light Mode", (int)lightMode, strLightMode, "light mode" );
 			}
 			r.y += 20;
 
+			if( IsPBL() ) {
+				specularMode = (SpecularMode)UndoableContentScaledToolbar( r, "Specular Mode", (int)specularMode, strSpecularMode, "specular mode" );
+				r.y += 20;
+			}
+
+			GUI.enabled = ps.HasSpecular();
+			glossRoughMode = (GlossRoughMode)UndoableContentScaledToolbar( r, "Gloss Mode", (int)glossRoughMode, strGlossRoughMode , "gloss mode" );
+			r.y += 20;
+
+			GUI.enabled = true;
+
 
 			if( ps.catLighting.IsPBL() == false ) {
 				UndoableConditionalToggle( r, ref remapGlossExponentially,
-									 usableIf: ps.HasGloss() && renderPath != RenderPath.DeferredPrePass,
-									 disabledDisplayValue: renderPath == RenderPath.DeferredPrePass ? true : false,
-									 label: "Remap gloss from [0-1] to " + ( ( renderPath == RenderPath.DeferredPrePass ) ? "[0-128]" : "[1-2048]" ),
+									 usableIf: ps.HasGloss() && renderPath != RenderPath.Deferred,
+									 disabledDisplayValue: renderPath == RenderPath.Deferred ? true : false,
+									 label: "Remap gloss from [0-1] to " + ( ( renderPath == RenderPath.Deferred ) ? "[0-128]" : "[1-2048]" ),
 									 undoSuffix: "gloss remap"
 									 );
 				r.y += 20;

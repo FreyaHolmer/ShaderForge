@@ -14,7 +14,7 @@ namespace ShaderForge {
 	public enum PassType {
 		FwdBase, FwdAdd, ShadColl, ShadCast,
 		Outline,
-		PrePassBase, PrePassFinal,
+		Deferred,
 		Meta
 	};
 	public enum ShaderProgram { Any, Vert, Frag, Tess };
@@ -122,7 +122,7 @@ namespace ShaderForge {
 
 
 			// Dependencies
-			if( ps.catLighting.IsLit() && !IsShadowOrOutlineOrMetaPass() && currentPass != PassType.PrePassFinal && currentPass != PassType.PrePassBase ) {
+			if( ps.catLighting.IsLit() && !IsShadowOrOutlineOrMetaPass() && currentPass != PassType.Deferred ) {
 				dependencies.NeedLightColor();
 				dependencies.NeedFragNormals();
 				dependencies.NeedFragLightDir();
@@ -138,15 +138,11 @@ namespace ShaderForge {
 
 			}
 
-			if( currentPass == PassType.PrePassBase ) {
+			if( currentPass == PassType.Deferred ) {
 				dependencies.NeedFragNormals();
 			}
 
-			if( DoPassLightAccumulation() ) {
-				dependencies.frag_projPos = true;
-			}
-
-			if( ps.catLighting.reflectprobed && ps.HasSpecular() && ( currentPass == PassType.PrePassFinal || currentPass == PassType.FwdBase ) ) {
+			if( ps.catLighting.reflectprobed && ps.HasSpecular() && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) ) {
 				dependencies.NeedFragViewReflection();
 				dependencies.reflection_probes = true;
 			}
@@ -524,11 +520,8 @@ namespace ShaderForge {
 				case PassType.FwdAdd:
 					App( "#define UNITY_PASS_FORWARDADD" );
 					break;
-				case PassType.PrePassBase:
-					App( "#define UNITY_PASS_PREPASSBASE" );
-					break;
-				case PassType.PrePassFinal:
-					App( "#define UNITY_PASS_PREPASSFINAL" );
+				case PassType.Deferred:
+					App( "#define UNITY_PASS_DEFERRED" );
 					break;
 				case PassType.ShadColl:
 					App( "#define UNITY_PASS_SHADOWCOLLECTOR" );
@@ -571,18 +564,26 @@ namespace ShaderForge {
 			}
 
 
-			if( currentPass == PassType.PrePassFinal ) {
-				App( "#pragma multi_compile_prepassfinal" );
-			} else if( currentPass == PassType.FwdBase ) {
+			if( currentPass == PassType.FwdBase ) {
 				App( "#pragma multi_compile_fwdbase" + ps.catBlending.GetShadowPragmaIfUsed() );
 			} else if( currentPass == PassType.FwdAdd ) {
 				App( "#pragma multi_compile_fwdadd" + ps.catBlending.GetShadowPragmaIfUsed() );
-			} else if( currentPass != PassType.PrePassBase ) {
+			} else {
 				App( "#pragma fragmentoption ARB_precision_hint_fastest" );
 				if( currentPass == PassType.ShadColl )
 					App( "#pragma multi_compile_shadowcollector" );
 				else
 					App( "#pragma multi_compile_shadowcaster" );
+			}
+
+			if( currentPass == PassType.Deferred && ( ps.catLighting.bakedLight || ps.HasEmissive() ) ) {
+				App( "#pragma multi_compile ___ UNITY_HDR_ON" );
+			}
+
+			if( ps.catLighting.bakedLight ) {
+				App( "#pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON" );
+				App( "#pragma multi_compile DIRLIGHTMAP_OFF DIRLIGHTMAP_COMBINED DIRLIGHTMAP_SEPARATE" );
+				App( "#pragma multi_compile DYNAMICLIGHTMAP_OFF DYNAMICLIGHTMAP_ON" );
 			}
 
 			if( UseUnity5Fog() )
@@ -631,7 +632,7 @@ namespace ShaderForge {
 		}
 
 		bool UseUnity5FogInThisPass() {
-			return ps.catBlending.useFog && ( currentPass == PassType.FwdBase || currentPass == PassType.Outline || currentPass == PassType.PrePassFinal );
+			return ps.catBlending.useFog && ( currentPass == PassType.FwdBase || currentPass == PassType.Outline );
 		}
 
 
@@ -650,10 +651,8 @@ namespace ShaderForge {
 				AppTag( "LightMode", "ShadowCollector" );
 			else if( currentPass == PassType.ShadCast )
 				AppTag( "LightMode", "ShadowCaster" );
-			else if( currentPass == PassType.PrePassBase )
-				AppTag( "LightMode", "PrePassBase" );
-			else if( currentPass == PassType.PrePassFinal )
-				AppTag( "LightMode", "PrePassFinal" );
+			else if( currentPass == PassType.Deferred )
+				AppTag( "LightMode", "Deferred" );
 			else if( currentPass == PassType.Meta )
 				AppTag( "LightMode", "Meta" );
 			End();
@@ -697,7 +696,6 @@ namespace ShaderForge {
 			if( currentPass == PassType.Meta ) {
 				App( "Cull Off" );
 			} else if( currentPass == PassType.ShadCast ) {
-				App( "Cull Off" );
 				App( "Offset 1, 1" );
 			} else if( currentPass == PassType.Outline ) {
 				App( "Cull Front" );
@@ -708,10 +706,7 @@ namespace ShaderForge {
 				App( ps.catBlending.GetDepthTestString() );
 
 			if( !IsShadowOrOutlineOrMetaPass() ) {
-				if( currentPass == PassType.PrePassFinal )
-					App( "ZWrite Off" );
-				else
-					App( ps.catBlending.GetZWriteString() );
+				App( ps.catBlending.GetZWriteString() );
 			}
 
 			App( ps.catBlending.GetOffsetString() );
@@ -794,18 +789,6 @@ namespace ShaderForge {
 			if( dependencies.lightColor && !IncludeLightingCginc() && !IncludeUnity5BRDF() ) // Lightmap and shadows include Lighting.cginc, which already has this. Don't include when making Unity 5 shaders
 				App( "uniform float4 _LightColor0;" );
 
-			if( currentPass == PassType.PrePassFinal ) {
-				App( "uniform sampler2D _LightBuffer;" );
-				App( "#if defined (SHADER_API_XBOX360) && defined (HDR_LIGHT_PREPASS_ON)" );
-				scope++;
-				App( "sampler2D _LightSpecBuffer;" );
-				scope--;
-				App( "#endif" );
-			}
-
-			if( ps.catLighting.useAmbient && ( currentPass == PassType.PrePassBase || currentPass == PassType.PrePassFinal ) ) {
-				App( "uniform fixed4 unity_Ambient;" );
-			}
 
 			if( dependencies.grabPass )
 				App( "uniform sampler2D _GrabTexture;" );
@@ -925,7 +908,7 @@ namespace ShaderForge {
 			//InitAttenuation();
 
 
-			string lmbStr;
+			string lmbStr = "";
 
 
 
@@ -933,106 +916,111 @@ namespace ShaderForge {
 
 
 
-			if( ps.HasTransmission() || ps.HasLightWrapping() ) {
+			if( !InDeferredPass() ) {
+				if( ps.HasTransmission() || ps.HasLightWrapping() ) {
 
-				if( !InDeferredPass() ) {
-					if( !ps.HasSpecular() ) {
-						App( "float NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
+					if( !InDeferredPass() ) {
+						if( !ps.HasSpecular() ) {
+							App( "float NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
+						} else {
+							App( "NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
+						}
+					}
+
+					string fwdLight = "float3 forwardLight = "; // TODO
+					string backLight = "float3 backLight = "; // TODO
+
+
+					if( ps.HasLightWrapping() ) {
+						App( "float3 w = " + ps.n_lightWrap + "*0.5; // Light wrapping" );
+						App( "float3 NdotLWrap = NdotL * ( 1.0 - w );" );
+						App( fwdLight + GetWithDiffPow( "max(float3(0.0,0.0,0.0), NdotLWrap + w )" ) + ";" );
+						if( ps.HasTransmission() ) {
+							App( backLight + GetWithDiffPow( "max(float3(0.0,0.0,0.0), -NdotLWrap + w )" ) + " * " + ps.n_transmission + ";" );
+						}
+
 					} else {
-						App( "NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
+						App( fwdLight + GetWithDiffPow( "max(0.0, NdotL )" ) + ";" );
+						if( ps.HasTransmission() ) {
+							App( backLight + GetWithDiffPow( "max(0.0, -NdotL )" ) + " * " + ps.n_transmission + ";" );
+						}
 					}
-				}
 
-				string fwdLight = "float3 forwardLight = "; // TODO
-				string backLight = "float3 backLight = "; // TODO
+					lmbStr = "forwardLight";
 
-
-				if( ps.HasLightWrapping() ) {
-					App( "float3 w = " + ps.n_lightWrap + "*0.5; // Light wrapping" );
-					App( "float3 NdotLWrap = NdotL * ( 1.0 - w );" );
-					App( fwdLight + GetWithDiffPow( "max(float3(0.0,0.0,0.0), NdotLWrap + w )" ) + ";" );
 					if( ps.HasTransmission() ) {
-						App( backLight + GetWithDiffPow( "max(float3(0.0,0.0,0.0), -NdotLWrap + w )" ) + " * " + ps.n_transmission + ";" );
+						lmbStr += "+backLight";
+						lmbStr = "(" + lmbStr + ")";
 					}
 
-				} else {
-					App( fwdLight + GetWithDiffPow( "max(0.0, NdotL )" ) + ";" );
-					if( ps.HasTransmission() ) {
-						App( backLight + GetWithDiffPow( "max(0.0, -NdotL )" ) + " * " + ps.n_transmission + ";" );
+				}// else {
+
+
+					bool noSpec = !ps.HasSpecular();
+					bool unity5pblDiffuse = ps.HasDiffuse() && ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL;
+
+					bool needsToDefineNdotV = noSpec && unity5pblDiffuse;
+
+					if( needsToDefineNdotV ) {
+						App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
 					}
-				}
-
-				lmbStr = "forwardLight";
-
-				if( ps.HasTransmission() ) {
-					lmbStr += "+backLight";
-					lmbStr = "(" + lmbStr + ")";
-				}
-
-			} else if( currentPass == PassType.PrePassFinal ) {
-				lmbStr = "";
-			} else {
-
-
-				bool noSpec = !ps.HasSpecular();
-				bool unity5pblDiffuse = ps.HasDiffuse() && ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL;
-
-				bool needsToDefineNdotV = noSpec && unity5pblDiffuse;
-
-				if( needsToDefineNdotV ) {
-					App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
-				}
-				
-
-
-				if( noSpec ) {
-					App( "float NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
-				} else {
-					App( "NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
-				}
-
-				if( Unity5PBL() ) {
-					if( ps.HasTransmission() || ps.HasLightWrapping() )
-						App( "NdotL = max(0.0,NdotL);" );
-					App( "half fd90 = 0.5 + 2 * LdotH * LdotH * (1-gloss);" );
-					lmbStr = "((1 +(fd90 - 1)*pow((1.00001-NdotL), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
-				} else {
-					lmbStr = GetWithDiffPow( "max( 0.0, NdotL)" );
-				}
 
 
 
-			}
-
-			if( ps.catLighting.IsEnergyConserving() && currentPass != PassType.PrePassFinal ) {
-				if( ps.HasLightWrapping() ) {
-					lmbStr += "/(Pi*(dot(w,float3(0.3,0.59,0.11))+1))";
-				} else {
-					if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL && SF_Tools.CurrentUnityVersion >= 5f ) {
-						// Don't!
+					if( noSpec ) {
+						App( "float NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
 					} else {
-						lmbStr += "*InvPi";
+						App( "NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
 					}
 
-				}
-			}
+					if( Unity5PBL() ) {
+						//if( ps.HasTransmission() || ps.HasLightWrapping() )
+							//App( "NdotL = max(0.0,NdotL);" );
+						App( "half fd90 = 0.5 + 2 * LdotH * LdotH * (1-gloss);" );
 
-			if( currentPass == PassType.PrePassFinal )
-				lmbStr = "float3 directDiffuse = lightAccumulation.rgb * 0.5"; // TODO: Might need to remove 0.5 in Unity 5
-			else
+						
+
+						string pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotL), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
+						if( ps.HasTransmission() || ps.HasLightWrapping() ) {
+							App( "NdotLWrap = max(float3(0,0,0), NdotLWrap);" );
+							pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotLWrap), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
+							lmbStr = "(" + lmbStr + " + " + pbrStr + ")";
+						} else {
+							lmbStr = pbrStr;
+						}
+
+						
+					} else {
+						lmbStr = GetWithDiffPow( "max( 0.0, NdotL)" );
+					}
+
+
+
+				//}
+
+				if( ps.catLighting.IsEnergyConserving() ) {
+					if( ps.HasLightWrapping() ) {
+						lmbStr += "*(0.5-max(w.r,max(w.g,w.b))*0.5)";
+					}
+				}
+
+
 				lmbStr = "float3 directDiffuse = " + lmbStr + " * attenColor";
-
+				lmbStr += ";";
+				App( lmbStr );
+			}
+			
 
 
 			bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailableInThisPass( currentPass );
 			bool shLight = DoPassSphericalHarmonics();
 			bool diffAO = ps.mOut.diffuseOcclusion.IsConnectedEnabledAndAvailableInThisPass( currentPass );
-			bool ambLight = ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ) && !ps.catLighting.bakedLight; // Ambient is already in light probe data
+			bool ambLight = ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase ) && !ps.catLighting.bakedLight; // Ambient is already in light probe data
 
 			bool hasIndirectLight = ambDiff || shLight || ambLight; // TODO: Missing lightmaps
 
 
-			lmbStr += ";";
+			
 
 			if( hasIndirectLight ) {
 				App( "float3 indirectDiffuse = float3(0,0,0);" );
@@ -1041,38 +1029,39 @@ namespace ShaderForge {
 
 
 			
-			App( lmbStr );
+			
 			
 
 
 
 			// Direct light done, now let's do indirect light
 
+			//if( !InDeferredPass() ) {
+				if( hasIndirectLight ) {
+					//App( " indirectDiffuse = float3(0,0,0);" );
 
-			if( hasIndirectLight ) {
-				//App( " indirectDiffuse = float3(0,0,0);" );
-
-				if( ambLight )
-					App( "indirectDiffuse += " + GetAmbientStr() + "; // Ambient Light" );
-				if( ambDiff )
-					App( "indirectDiffuse += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light" );
-
-
-				if( ps.catLighting.bakedLight ) {
+					if( ambLight )
+						App( "indirectDiffuse += " + GetAmbientStr() + "; // Ambient Light" );
+					if( ambDiff )
+						App( "indirectDiffuse += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light" );
 
 
-					App ("indirectDiffuse += gi.indirect.diffuse;");
+					if( ps.catLighting.bakedLight ) {
+
+
+						App( "indirectDiffuse += gi.indirect.diffuse;" );
+
+
+					}
+
+					// Diffuse AO
+					if( diffAO ) {
+						App( "indirectDiffuse *= " + ps.n_diffuseOcclusion + "; // Diffuse AO" );
+					}
 
 
 				}
-
-				// Diffuse AO
-				if( diffAO ) {
-					App( "indirectDiffuse *= " + ps.n_diffuseOcclusion + "; // Diffuse AO" );
-				}
-
-
-			}
+			//}
 
 
 			//if( LightmapThisPass() ) {
@@ -1080,31 +1069,42 @@ namespace ShaderForge {
 			//App( "#endif" );
 			//	}
 
-			if( hasIndirectLight ) {
-				App( "float3 diffuse = (directDiffuse + indirectDiffuse) * " + ps.n_diffuse + ";" );
-			} else {
-				App( "float3 diffuse = directDiffuse * " + ps.n_diffuse + ";" );
+			// This has been defined before specular, in the case of metallic PBL
+			if( !MetallicPBL() ) {
+				App( "float3 diffuseColor = " + ps.n_diffuse + ";" );
 			}
 
+			// To make diffuse/spec tradeoff better
+			if( DoPassDiffuse() && DoPassSpecular() ) {
+				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
+					if(ps.catLighting.specularMode != SFPSC_Lighting.SpecularMode.Metallic) // Metallic has already done this by now
+						App( "diffuseColor *= 1-specularMonochrome;" );
+				} else if( ps.catLighting.energyConserving ) {
+					App( "diffuseColor *= 1-specularMonochrome;" );
+				}
+			}
+
+			if( !InDeferredPass() ) {
+				if( hasIndirectLight ) {
+					App( "float3 diffuse = (directDiffuse + indirectDiffuse) * diffuseColor;" );
+				} else {
+					App( "float3 diffuse = directDiffuse * diffuseColor;" );
+				}
+
+			}
+			
 			//if( SF_Tools.UsingUnity5plus && ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
 			//	App( "diffuse *= 0.75;" );
 			//}
 
 
-			// To make diffuse/spec tradeoff better
-			if( DoPassDiffuse() && DoPassSpecular() ) {
-				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
-					App( "diffuse *= 1-specularMonochrome;" );
-				} else if( ps.catLighting.energyConserving ) {
-					App( "diffuse *= 1-specularMonochrome;" );
-				}
-			}
+			
 
 
 		}
 
 		bool LightmapThisPass() {
-			return ps.catLighting.bakedLight && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal );
+			return ps.catLighting.bakedLight && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred );
 		}
 
 		void InitNormalDirVert() {
@@ -1177,16 +1177,24 @@ namespace ShaderForge {
 
 		void CalcGloss() {
 			AppDebug( "Gloss" );
-			App( "float gloss = " + ps.n_gloss + ";" );
-			if( ps.catLighting.remapGlossExponentially ) {
-				App( "float specPow = exp2( gloss * 10.0+1.0);" );
-			} else {
-				App( "float specPow = gloss;" );
+			if( ps.catLighting.glossRoughMode == SFPSC_Lighting.GlossRoughMode.Roughness )
+				App( "float gloss = 1.0 - " + ps.n_gloss + "; // Convert roughness to gloss" );
+			else
+				App( "float gloss = " + ps.n_gloss + ";" );
+			if( !InDeferredPass() ) {
+				if( ps.catLighting.remapGlossExponentially ) {
+					App( "float specPow = exp2( gloss * 10.0+1.0);" );
+				} else {
+					App( "float specPow = gloss;" );
+				}
 			}
+			
+			
+			
 		}
 
 		bool DoAmbientSpecThisPass() {
-			return ( mOut.ambientSpecular.IsConnectedEnabledAndAvailable() && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ) );
+			return ( mOut.ambientSpecular.IsConnectedEnabledAndAvailable() && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) );
 		}
 
 
@@ -1196,7 +1204,9 @@ namespace ShaderForge {
 
 			AppDebug( "Specular" );
 
-			if( currentPass != PassType.PrePassFinal ) {
+			
+
+			if( currentPass != PassType.Deferred ) {
 				App( "float NdotL = max(0, dot( " + VarNormalDir() + ", lightDirection ));" );
 			}
 
@@ -1233,12 +1243,7 @@ namespace ShaderForge {
 							#endif
 			 * */
 
-			if( currentPass == PassType.PrePassFinal ) {
-				if( ps.catLighting.useAmbient )
-					directSpecular += "(lightAccumulation.rgb * 2)*lightAccumulation.a";
-				else
-					directSpecular += "lightAccumulation.rgb*lightAccumulation.a";
-			} else if( !( currentPass == PassType.FwdBase && ps.catLighting.bakedLight ) ) {
+			if( !( currentPass == PassType.FwdBase && ps.catLighting.bakedLight ) ) {
 				directSpecular += attColStr; /* * " + ps.n_specular;*/ // TODO: Doesn't this double the spec? Removed for now. Shouldn't evaluate spec twice when using PBL
 			} else {
 				directSpecular += "1";
@@ -1255,10 +1260,10 @@ namespace ShaderForge {
 
 
 
-			bool occluded = ps.mOut.specularOcclusion.IsConnectedEnabledAndAvailableInThisPass( currentPass );
+			bool occluded = ps.mOut.specularOcclusion.IsConnectedEnabledAndAvailableInThisPass( currentPass ) && !InDeferredPass();
 			bool ambSpec = DoAmbientSpecThisPass();
 			bool reflProbed = dependencies.reflection_probes;
-			bool hasIndirectSpecular = ambSpec || (reflProbed && (currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal ));
+			bool hasIndirectSpecular = ambSpec || ( reflProbed && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) );
 			string indirectSpecular = "";
 
 			if( hasIndirectSpecular ) {
@@ -1268,7 +1273,6 @@ namespace ShaderForge {
 				}
 
 				indirectSpecular = "float3 indirectSpecular = ";
-
 
 
 
@@ -1301,9 +1305,11 @@ namespace ShaderForge {
 
 
 
-			if( ps.catLighting.IsPBL() ) {
+			if( ps.catLighting.IsPBL() && !InDeferredPass() ) {
 
 				App( "float LdotH = max(0.0,dot(lightDirection, halfDirection));" );
+
+				
 
 				//s += "*NdotL"; // TODO: Really? Is this the cosine part?
 
@@ -1325,15 +1331,29 @@ namespace ShaderForge {
 			bool initialized_NdotH = false;
 			bool initialized_VdotH = false;
 
-			App( "float3 specularColor = " + ps.n_specular + ";" );
-			if( ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.energyConserving ) && DoPassDiffuse() && DoPassSpecular() )
-				App( "float specularMonochrome = max( max(specularColor.r, specularColor.g), specularColor.b);" );
+			
+			if( MetallicPBL() ) {
+				App( "float3 diffuseColor = " + ps.n_diffuse + "; // Need this for specular when using metallic" );
+				App( "float specularMonochrome;" );
+				App( "float3 specularColor;" );
+				App( "diffuseColor = DiffuseAndSpecularFromMetallic( diffuseColor, " + ps.n_specular + ", specularColor, specularMonochrome );" );
+				App( "specularMonochrome = 1-specularMonochrome;" );
+			} else {
+				App( "float3 specularColor = " + ps.n_specular + ";" );
+				if( ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.energyConserving ) && DoPassDiffuse() && DoPassSpecular() )
+					App( "float specularMonochrome = max( max(specularColor.r, specularColor.g), specularColor.b);" );
+			}
+			
+			
+
+			
+			
 
 
 			string specularPBL = "";
 
 			// PBL SHADING, normalization term comes after this
-			if( ps.catLighting.IsPBL() ) {
+			if( ps.catLighting.IsPBL() && !InDeferredPass() ) {
 
 
 
@@ -1353,21 +1373,21 @@ namespace ShaderForge {
 					initialized_NdotV = true;
 				}
 
-				if( SF_Tools.CurrentUnityVersion >= 5 ) {
-					if( !initialized_NdotH ) {
-						App( "float NdotH = max(0.0,dot( " + VarNormalDir() + ", halfDirection ));" );
-						initialized_NdotH = true;
-					}
-					if( !initialized_VdotH ) {
-						App( "float VdotH = max(0.0,dot( viewDirection, halfDirection ));" );
-						initialized_VdotH = true;
-					}
+				
+				if( !initialized_NdotH ) {
+					App( "float NdotH = max(0.0,dot( " + VarNormalDir() + ", halfDirection ));" );
+					initialized_NdotH = true;
+				}
+				if( !initialized_VdotH ) {
+					App( "float VdotH = max(0.0,dot( viewDirection, halfDirection ));" );
+					initialized_VdotH = true;
+				}
 
-					App( "float visTerm = SmithBeckmannVisibilityTerm( NdotL, NdotV, 1.0-gloss );" );
+				App( "float visTerm = SmithBeckmannVisibilityTerm( NdotL, NdotV, 1.0-gloss );" );
 
-					specularPBL += "*visTerm";
+				specularPBL += "*visTerm";
 
-				} 
+				
 				
 
 
@@ -1379,14 +1399,10 @@ namespace ShaderForge {
 
 
 
-			if( ps.catLighting.IsEnergyConserving() ) {
+			if( ps.catLighting.IsEnergyConserving() && !InDeferredPass() ) {
 				// NORMALIZATION TERM
 				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.Phong ) {
 					App( "float normTerm = (specPow + 2.0 ) / (2.0 * Pi);" );
-					directSpecular += "*normTerm";
-				} else if( currentPass == ShaderForge.PassType.PrePassFinal ) {
-					App( "float specPow = max( 2, " + ps.n_gloss + " * 128 );" );
-					App( "float normTerm = (specPow + 8.0 ) / (8.0 * Pi);" );
 					directSpecular += "*normTerm";
 				} else if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.BlinnPhong || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
 					if( Unity5PBL() ) {
@@ -1419,49 +1435,52 @@ namespace ShaderForge {
 
 
 
+			if( !InDeferredPass() ) {
+				if( Unity5PBL() ) {
 
-			if( Unity5PBL() ) {
+					if( !initialized_NdotV ) {
+						App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
+						initialized_NdotV = true;
+					}
 
-				if( !initialized_NdotV ) {
-					App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
-					initialized_NdotV = true;
+
+
+					specularPBL = specularPBL.Substring( 1 ); // Remove first * symbol
+					specularPBL = "float specularPBL = max(0, (" + specularPBL + ") * unity_LightGammaCorrectionConsts_PIDiv4 );";
+
+					App( specularPBL );
+
 				}
 
 
 
-				specularPBL = specularPBL.Substring( 1 ); // Remove first * symbol
-				specularPBL = "float specularPBL = max(0, (" + specularPBL + ") * unity_LightGammaCorrectionConsts_PIDiv4 );";
+				if( Unity5PBL() ) {
+					directSpecular += "*specularPBL*lightColor*FresnelTerm(specularColor, LdotH)";
+				} else {
+					directSpecular += "*specularColor";
+				}
 
-				App( specularPBL );
-				
-			}
+				directSpecular += ";";
 
-
-
-			if( Unity5PBL() ) {
-				directSpecular += "*specularPBL*lightColor*FresnelTerm(specularColor, LdotH)";
+				App( directSpecular );
 			} else {
-				directSpecular += "*specularColor";
+				// If we're in deferred, we still need NdotV for lightmapping
+				if( !initialized_NdotV ) {
+					App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
+					initialized_NdotV = true;
+				}
 			}
 
-			directSpecular += ";";
 
-
-
-
-			
-			App( directSpecular );
-			
-
-
-
+			 
 
 
 			string specular = "";
 
+
 			if( hasIndirectSpecular ) {
 
-				if( Unity5PBL() ){
+				if( Unity5PBL() ) {
 					App( "half grazingTerm = saturate( gloss + specularMonochrome );" );
 				} else {
 					indirectSpecular += "*specularColor";
@@ -1476,13 +1495,18 @@ namespace ShaderForge {
 						//App( "float3 indirectFresnelPBL = FresnelLerp (specularColor, grazingTerm, NdotV);" );
 					}
 				}
-
-				specular = "float3 specular = (directSpecular + indirectSpecular);";
-			} else {
+				if( !InDeferredPass() ) {
+					specular = "float3 specular = (directSpecular + indirectSpecular);";
+				}
+					
+			} else if(!InDeferredPass()){
 				specular = "float3 specular = directSpecular;";
 			}
 
-			App( specular ); // Specular
+			if( !InDeferredPass() )
+				App( specular ); // Specular
+
+			
 
 
 
@@ -1527,6 +1551,10 @@ namespace ShaderForge {
 		*/
 
 
+		public bool MetallicPBL() {
+			return ps.catLighting.IsPBL() && ps.catLighting.specularMode == SFPSC_Lighting.SpecularMode.Metallic;
+		}
+
 		bool Unity5PBL() {
 			return ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL;
 		}
@@ -1537,18 +1565,14 @@ namespace ShaderForge {
 			App( "float3 emissive = " + ps.n_emissive + ";" );
 		}
 
-		bool DoPassLightAccumulation() {
-			return ( currentPass == PassType.PrePassFinal && ( DoPassDiffuse() || DoPassSpecular() ) );
-		}
-
 		bool DoPassDiffuse() {
-			return ps.HasDiffuse() && ( currentPass == PassType.FwdBase || currentPass == PassType.FwdAdd || currentPass == PassType.PrePassFinal );
+			return ps.HasDiffuse() && ( currentPass == PassType.FwdBase || currentPass == PassType.FwdAdd || currentPass == PassType.Deferred );
 		}
 		bool DoPassEmissive() { // Emissive should always be in the base pass
-			return ps.HasEmissive() && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal );
+			return ps.HasEmissive() && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred );
 		}
 		bool DoPassSpecular() { // Spec only in base and add passes
-			return ps.catLighting.HasSpecular() && ( currentPass == PassType.FwdBase || currentPass == PassType.FwdAdd || currentPass == PassType.PrePassFinal );
+			return ps.catLighting.HasSpecular() && ( currentPass == PassType.FwdBase || currentPass == PassType.FwdAdd || currentPass == PassType.Deferred );
 		}
 
 
@@ -1622,17 +1646,17 @@ namespace ShaderForge {
 
 
 		bool DoPassSphericalHarmonics() {
-			return DoPassDiffuse() && ps.catLighting.bakedLight && ( currentPass == PassType.FwdBase || currentPass == PassType.PrePassFinal );
+			return DoPassDiffuse() && ps.catLighting.bakedLight && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred );
 		}
 
 		bool InDeferredPass() {
-			return currentPass == PassType.PrePassFinal || currentPass == PassType.PrePassBase;
+			return currentPass == PassType.Deferred;
 		}
 
 
 		void Lighting() {
 
-			if( IsShadowOrOutlineOrMetaPass() || currentPass == PassType.PrePassBase )
+			if( IsShadowOrOutlineOrMetaPass() )
 				return;
 			AppDebug( "Lighting" );
 
@@ -1649,7 +1673,7 @@ namespace ShaderForge {
 			}
 			*/
 
-			bool attenBuiltin = ps.catLighting.IsLit() && ( ps.HasDiffuse() || ps.catLighting.HasSpecular() ) && currentPass != PassType.PrePassFinal;
+			bool attenBuiltin = ps.catLighting.IsLit() && ( ps.HasDiffuse() || ps.catLighting.HasSpecular() ) && currentPass != PassType.Deferred;
 
 			if( attenBuiltin || ( dependencies.frag_attenuation && SF_Evaluator.inFrag ) )
 				InitAttenuation();
@@ -1711,33 +1735,6 @@ namespace ShaderForge {
 
 			//if(SF_Evaluator.inFrag)
 
-			if( DoPassLightAccumulation() ) {
-				App( "half4 lightAccumulation = tex2Dproj(_LightBuffer, UNITY_PROJ_COORD(i.projPos));" );
-				App( "#if defined (SHADER_API_GLES) || defined (SHADER_API_GLES3)" );
-				scope++;
-				App( "lightAccumulation = max(lightAccumulation, half4(0.001));" );
-				scope--;
-				App( "#endif" );
-
-				App( "#ifndef HDR_LIGHT_PREPASS_ON" );
-				scope++;
-				App( "lightAccumulation = -log2(lightAccumulation);" );
-				scope--;
-				App( "#endif" );
-
-				App( "#if defined (SHADER_API_XBOX360) && defined (HDR_LIGHT_PREPASS_ON)" );
-				scope++;
-				App( "lightAccumulation.w = tex2Dproj (_LightSpecBuffer, UNITY_PROJ_COORD(i.projPos)).r;" );
-				scope--;
-				App( "#endif" );
-
-
-				//App ("finalColor +;");
-
-
-
-
-			}
 
 			if( DoPassDiffuse() || DoPassSpecular() ) {
 				if( ps.catLighting.IsEnergyConserving() ) {
@@ -1751,8 +1748,7 @@ namespace ShaderForge {
 
 
 			if( DoPassSpecular() || unity5pblDiffusePlugged ) { // Specular
-				if( !InDeferredPass() )
-					CalcGloss();
+				CalcGloss();
 			}
 
 
@@ -1792,15 +1788,17 @@ namespace ShaderForge {
 
 				
 
-
-
-				string s = SumString(
-					new bool[] { DoPassDiffuse(), DoPassSpecular(), DoPassEmissive() },
-					new string[] { "diffuse", "specular", "emissive" },
-					"0"
-				);
-
-				App( "float3 finalColor = " + s + ";" );
+				if(!InDeferredPass()){
+					string s = SumString(
+						new bool[] { DoPassDiffuse(), DoPassSpecular(), DoPassEmissive() },
+						new string[] { "diffuse", "specular", "emissive" },
+						"0"
+					);
+				
+					App( "float3 finalColor = " + s + ";" );
+				}
+			
+				
 			}
 
 		}
@@ -1809,33 +1807,44 @@ namespace ShaderForge {
 		void CalcGIdata(){
 
 
-			if( currentPass == PassType.FwdBase && ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || ps.catLighting.bakedLight ) ) {
+			if( (currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) && ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || ps.catLighting.bakedLight ) ) {
+
+
+				AppDebug("GI Data");
+
+
+				if( InDeferredPass() ) {
+					App( "UnityLight light; // Dummy light" );
+					App( "light.color = 0;" );
+					App( "light.dir = half3(0,1,0);" );
+					App( "light.ndotl = max(0,dot(normalDirection,light.dir));" );
+				} else {
+					App( "UnityLight light;" );
+					App( "#ifdef LIGHTMAP_OFF" );
+					scope++;
+					App( "light.color = lightColor;" );
+					App( "light.dir = lightDirection;" );
+					App( "light.ndotl = LambertTerm (normalDirection, light.dir);" );
+					scope--;
+					App( "#else" );
+					scope++;
+					App( "light.color = half3(0.f, 0.f, 0.f);" );
+					App( "light.ndotl = 0.0f;" );
+					App( "light.dir = half3(0.f, 0.f, 0.f);" );
+					scope--;
+					App( "#endif" );
+				}
 				
-				
-				
-				
-				
-				App("UnityLight light;");
-				App("#ifdef LIGHTMAP_OFF");
-				scope++;
-				App("light.color = lightColor;");
-				App("light.dir = lightDirection;");
-				App("light.ndotl = LambertTerm (normalDirection, light.dir);");
-				scope--;
-				App("#else");
-				scope++;
-				App("light.color = half3(0.f, 0.f, 0.f);");
-				App("light.ndotl = 0.0f;");
-				App("light.dir = half3(0.f, 0.f, 0.f);");
-				scope--;
-				App("#endif");
 				
 				
 				App("UnityGIInput d;");
 				App("d.light = light;");
 				App("d.worldPos = i.posWorld.xyz;");
 				App("d.worldViewDir = viewDirection;");
-				App("d.atten = attenuation;");
+				if( InDeferredPass() )
+					App( "d.atten = 1;" );
+				else
+					App("d.atten = attenuation;");
 
 				if( ps.catLighting.bakedLight ) {
 					App( "#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)" );
@@ -1870,10 +1879,11 @@ namespace ShaderForge {
 				string glossStr = DoPassSpecular() ? "gloss" : "0";
 				App( "UnityGI gi = UnityGlobalIllumination (d, 1, " + glossStr + ", normalDirection);" );
 
-				// Run the BRDF again per light (light2, light3)
 
-				App ("lightDirection = gi.light.dir;");
-				App ("lightColor = gi.light.color;");
+				if( !InDeferredPass() ) {
+					App ("lightDirection = gi.light.dir;");
+					App ("lightColor = gi.light.color;");
+				}
 				
 				
 			}
@@ -2308,8 +2318,18 @@ namespace ShaderForge {
 
 			if( currentPass == PassType.Meta ) {
 				App( "float4 frag(VertexOutput i) : SV_Target {" );
+			} else if(currentPass == PassType.Deferred) {
+				App( "void frag(" );
+				scope++;
+				App( "VertexOutput i," );
+				App( "out half4 outDiffuse : SV_Target0," );
+				App( "out half4 outSpecSmoothness : SV_Target1," );
+				App( "out half4 outNormal : SV_Target2," );
+				App( "out half4 outEmission : SV_Target3 )" );
+				scope--;
+				App( "{" );
 			} else {
-				App( "fixed4 frag(VertexOutput i) : COLOR {" );
+				App( "float4 frag(VertexOutput i) : COLOR {" );
 			}
 			
 			scope++;
@@ -2352,16 +2372,14 @@ namespace ShaderForge {
 
 
 
-			if( currentPass == PassType.PrePassBase ) {
-
-			} else {
-				Lighting(); // This is ignored in shadow passes
-			}
+			
+			Lighting(); // This is ignored in shadow passes
+			
 
 			if( currentPass == PassType.Meta ) {
 				LightmapMetaPassFrag();
-			} else if( currentPass == PassType.PrePassBase ) {
-				App( "return fixed4( normalDirection * 0.5 + 0.5, max(" + ps.n_gloss + ",0.0078125) );" ); // TODO
+			} else if( currentPass == PassType.Deferred ) {
+				DeferredFragReturn();
 			} else if( currentPass == PassType.ShadColl ) {
 				App( "SHADOW_COLLECTOR_FRAGMENT(i)" );
 			} else if( currentPass == PassType.ShadCast ) {
@@ -2385,9 +2403,75 @@ namespace ShaderForge {
 			End();
 		}
 
+		void DeferredFragReturn() {
+
+
+			// DIFFUSE
+			if( ps.HasDiffuse() ) {
+				if( ps.mOut.diffuseOcclusion.IsConnectedEnabledAndAvailable() ) {
+					App( "outDiffuse = half4( diffuseColor, " + ps.n_diffuseOcclusion + " );" );
+				} else {
+					App( "outDiffuse = half4( diffuseColor, 1 );" );
+				}
+			} else {
+				App( "outDiffuse = half4( 0, 0, 0, 1 );" );
+			}
+
+			// SPEC & GLOSS
+			if( ps.HasSpecular() ) {
+				if( ps.HasGloss() ) {
+					App( "outSpecSmoothness = half4( " + ps.n_specular + ", gloss );" );
+				} else {
+					App( "outSpecSmoothness = half4( " + ps.n_specular + ", 0.5 );" );
+				}
+			} else {
+				App( "outSpecSmoothness = half4(0,0,0,0);" );
+			}
+			
+			// NORMALS
+			App( "outNormal = half4( normalDirection * 0.5 + 0.5, 1 );" );
+
+			// EMISSION
+			if( ps.HasEmissive() ) {
+				App( "outEmission = half4( "+ps.n_emissive+", 1 );" );
+			} else {
+				App( "outEmission = half4(0,0,0,1);" );
+			}
+
+
+			bool specAmb = ps.catLighting.bakedLight && ps.HasSpecular() || ps.mOut.ambientSpecular.IsConnectedEnabledAndAvailable();
+			bool diffAmb = ps.catLighting.bakedLight && ps.HasDiffuse() || ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailable();
+
+			if( specAmb ) {
+				if( ps.mOut.ambientSpecular.IsConnectedEnabledAndAvailable() ) {
+					App( "outEmission.rgb += indirectSpecular;" );
+				} else {
+					App( "outEmission.rgb += indirectSpecular * "+ps.n_specularOcclusion+";" );
+				}
+			}
+			if( diffAmb ) {
+				App( "outEmission.rgb += indirectDiffuse * diffuseColor;" ); // No need for diffuse AO, since that's covered already
+			}
+
+		
+			App( "#ifndef UNITY_HDR_ON" );
+			scope++;
+			App( "outEmission.rgb = exp2(-outEmission.rgb);" );
+			scope--;
+			App( "#endif" );
+			
+
+
+		}
+
 
 
 		void LightmapMetaPassFrag() {
+
+
+			bool hasSpec = ps.mOut.specular.IsConnectedEnabledAndAvailable();
+			bool hasGloss = ps.mOut.gloss.IsConnectedEnabledAndAvailable();
+			
 
 			App( "UnityMetaInput o;" );
 			App( "UNITY_INITIALIZE_OUTPUT( UnityMetaInput, o );" );
@@ -2398,11 +2482,51 @@ namespace ShaderForge {
 				App( "o.Emission = 0;" );
 			}
 			App( "" );
-			App( "float3 specColor = " + ps.n_specular + ";" );
-			App( "float specularMonochrome = max(max(specColor.r, specColor.g),specColor.b);" );
-			App( "float3 diffColor = " + ps.n_diffuse + " * (1.0-specularMonochrome);");
-			App( "float roughness = 1.0 - " + ps.n_gloss + ";" );
-			App( "o.Albedo = diffColor + specColor * roughness * roughness * 0.5;" );
+
+			// Handle metallic properly
+			App( "float3 diffColor = " + ps.n_diffuse + ";" );
+			if( MetallicPBL() ) {
+				App( "float specularMonochrome;" );
+				App( "float3 specColor;" );
+				if( hasSpec )
+					App( "diffColor = DiffuseAndSpecularFromMetallic( diffColor, " + ps.n_specular + ", specColor, specularMonochrome );" );
+				else
+					App( "diffColor = DiffuseAndSpecularFromMetallic( diffColor, 0, specColor, specularMonochrome );" );
+			} else {
+				if( hasSpec ) {
+					App( "float3 specColor = " + ps.n_specular + ";" );
+					if( Unity5PBL() ) {
+						App( "float specularMonochrome = max(max(specColor.r, specColor.g),specColor.b);" );
+						App( "diffColor *= (1.0-specularMonochrome);" );
+					}
+				}
+			}
+
+			if( hasGloss ) {
+
+				if( hasSpec ) {
+					if( ps.catLighting.glossRoughMode == SFPSC_Lighting.GlossRoughMode.Roughness ) {
+						App( "float roughness = " + ps.n_gloss + ";" );
+					} else {
+						App( "float roughness = 1.0 - " + ps.n_gloss + ";" );
+					}
+				}
+			
+				if( hasSpec )
+					App( "o.Albedo = diffColor + specColor * roughness * roughness * 0.5;" );
+				else
+					App( "o.Albedo = diffColor;" );
+
+			} else {
+				if( hasSpec )
+					App( "o.Albedo = diffColor + specColor * 0.125; // No gloss connected. Assume it's 0.5" );
+				else
+					App( "o.Albedo = diffColor;" );
+			}
+			
+			
+			
+
 			App( "" );
 			//App( "o.Albedo = float3(0,1,0);" );	// Debug
            	//App( "o.Emission = float3(0,1,0);");
@@ -2605,7 +2729,7 @@ namespace ShaderForge {
 
 		// Todo: threshold
 		void CheckClip() {
-			if( !ps.UseClipping() )
+			if( !ps.UseClipping() || currentPass == PassType.Meta )
 				return;
 			if( ps.catBlending.dithering == Dithering.Off ) {
 				App( "clip(" + ps.n_alphaClip + " - 0.5);" );
@@ -2638,16 +2762,15 @@ namespace ShaderForge {
 
 		//////////////////////////////////////////////////////////////// DEFERRED
 
-		// Normal, gloss & depth writing
-		void DeferredPrePassBasePass() {
-			currentPass = PassType.PrePassBase;
+		void DeferredPass() {
+			currentPass = PassType.Deferred;
 			UpdateDependencies();
 			ResetDefinedState();
 			dependencies.ResetTexcoordNumbers();
 			App( "Pass {" );
 			scope++;
 			{
-				App( "Name \"PrePassBase\"" ); // TODO this name is a guess
+				App( "Name \"DEFERRED\"" ); // TODO this name is a guess
 				PassTags();
 				RenderSetup();
 				BeginCG();
@@ -2665,32 +2788,6 @@ namespace ShaderForge {
 			RemoveGhostNodes();
 		}
 
-		// Render accumulated light, do special shading etc
-		void DeferredPrePassFinalPass() {
-			currentPass = PassType.PrePassFinal;
-			UpdateDependencies();
-			ResetDefinedState();
-			dependencies.ResetTexcoordNumbers();
-			App( "Pass {" );
-			scope++;
-			{
-				App( "Name \"PrePassFinal\"" ); // TODO this name is a guess
-				PassTags();
-				RenderSetup();
-				BeginCG();
-				{
-					CGvars();
-					VertexInputStruct();
-					VertexOutputStruct();
-					Vertex();
-					Tessellation();
-					Fragment();
-				}
-				EndCG();
-			}
-			End();
-			RemoveGhostNodes();
-		}
 
 		////////////////////////////////////////////////////////////////
 
@@ -2705,7 +2802,7 @@ namespace ShaderForge {
 			App( "Pass {" );
 			scope++;
 			{
-				App( "Name \"ForwardBase\"" );
+				App( "Name \"FORWARD\"" );
 				PassTags();
 				RenderSetup();
 				BeginCG();
@@ -2748,7 +2845,7 @@ namespace ShaderForge {
 			App( "Pass {" );
 			scope++;
 			{
-				App( "Name \"ForwardAdd\"" );
+				App( "Name \"FORWARD_DELTA\"" );
 				PassTags();
 				RenderSetup();
 				BeginCG();
@@ -2770,7 +2867,8 @@ namespace ShaderForge {
 		// This is a custom shadow thing!
 		// Only needed when using alpha clip and/or vertex offset (May be needed with Tessellation as well)
 		public void ShadowCollectorPass() {
-			bool shouldUse = /*ps.shadowReceive &&*/ ( ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled() );
+			bool shouldUse = /*ps.shadowReceive &&*/
+			( ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled() );
 			if( !shouldUse )
 				return;
 			currentPass = PassType.ShadColl;
@@ -2931,9 +3029,8 @@ namespace ShaderForge {
 
 					GrabPass();
 					OutlinePass();
-					if( ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass ) {
-						DeferredPrePassBasePass();
-						DeferredPrePassFinalPass();
+					if( ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Deferred ) {
+						DeferredPass();
 					}
 					ForwardBasePass();
 					ForwardLightPass();

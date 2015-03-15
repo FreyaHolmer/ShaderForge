@@ -341,7 +341,7 @@ namespace ShaderForge {
 					// Now create the menu, add items and show it
 					GenericMenu menu = new GenericMenu();
 					for( int i = 0; i < editor.nodeTemplates.Count; i++ ) {
-						if( editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass && !editor.nodeTemplates[i].availableInDeferredPrePass)
+						if( editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Deferred && !editor.nodeTemplates[i].availableInDeferredPrePass)
 							continue; // Skip forward nodes when in deferred
 						menu.AddItem( new GUIContent( editor.nodeTemplates[i].fullPath ), false, ContextClick, editor.nodeTemplates[i] );
 					}

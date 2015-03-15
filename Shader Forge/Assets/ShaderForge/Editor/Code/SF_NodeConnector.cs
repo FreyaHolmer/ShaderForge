@@ -303,7 +303,7 @@ namespace ShaderForge {
 		}
 
 		public bool DisplayLock(){
-			return displayLockIfDeferredPrePassIsOn && node.editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass;
+			return displayLockIfDeferredPrePassIsOn && node.editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Deferred;
 		}
 
 		public bool HasID() {
@@ -1034,7 +1034,7 @@ namespace ShaderForge {
 				return true;
 			} else if(isHiddenExtraConnector){ // If it's flagged as enabled, but is an unconnected child, only draw it when it's either connected or has a pending valid connection
 				return true;
-			} else if( node.editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.DeferredPrePass && !node.availableInDeferredPrePass){
+			} else if( node.editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Deferred && !node.availableInDeferredPrePass){
 				if(IsConnected()){
 					Disconnect(true);
 				}
@@ -1152,9 +1152,7 @@ namespace ShaderForge {
 				//GUI.drawe
 				//GUI.Box(lockRect, "", );
 				if(Event.current.type == EventType.repaint){
-//					SF_Styles.IconLock.Draw(lockRect.PadTop(4), false, true, true, false);
-					SF_GUI.DrawLock(lockRect.PadTop(4),"Unavailable when using deferred pre-pass lighting", TextAlignment.Right );
-					//GUI.Label(lockRect, new GUIContent(string.Empty, "Unavailable when using deferred pre-pass lighting"));
+					SF_GUI.DrawLock(lockRect.PadTop(4),"Unavailable when using deferred rendering", TextAlignment.Right );
 
 				}
 				

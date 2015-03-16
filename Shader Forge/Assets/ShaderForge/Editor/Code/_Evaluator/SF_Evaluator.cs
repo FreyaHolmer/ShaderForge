@@ -2428,9 +2428,9 @@ namespace ShaderForge {
 			// SPEC & GLOSS
 			if( ps.HasSpecular() ) {
 				if( ps.HasGloss() ) {
-					App( "outSpecSmoothness = half4( " + ps.n_specular + ", gloss );" );
+					App( "outSpecSmoothness = half4( specularColor, gloss );" );
 				} else {
-					App( "outSpecSmoothness = half4( " + ps.n_specular + ", 0.5 );" );
+					App( "outSpecSmoothness = half4( specularColor, 0.5 );" );
 				}
 			} else {
 				App( "outSpecSmoothness = half4(0,0,0,0);" );

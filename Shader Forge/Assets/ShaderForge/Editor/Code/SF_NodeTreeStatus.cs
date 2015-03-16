@@ -188,7 +188,7 @@ namespace ShaderForge {
 			bool notUsingAlphaBlend = editor.ps.catBlending.autoSort && editor.ps.catBlending.blendModePreset != BlendModePreset.AlphaBlended;
 
 			if( alphaConnected && notUsingAlphaBlend ) {
-				SF_ErrorEntry error = SF_ErrorEntry.Create( "Alpha is connected, but your shader isn't alpha blended. Click the icon to make it alpha blended!", true );
+				SF_ErrorEntry error = SF_ErrorEntry.Create( "Opacity is connected, but your shader isn't alpha blended. Click the icon to make it alpha blended!", true );
 				error.action = () => {
 					UnityEditor.Undo.RecordObject( editor.ps.catBlending, "error correction" );
 					editor.ps.catBlending.blendModePreset = BlendModePreset.AlphaBlended;
@@ -198,7 +198,7 @@ namespace ShaderForge {
 			}
 
 			if( !alphaConnected && !notUsingAlphaBlend ) {
-				SF_ErrorEntry error = SF_ErrorEntry.Create( "Alpha is not connected, but your shader is alpha blended. Click the icon to make it opaque!", true );
+				SF_ErrorEntry error = SF_ErrorEntry.Create( "Opacity is not connected, but your shader is alpha blended. Click the icon to make it opaque!", true );
 				error.action = () => {
 					UnityEditor.Undo.RecordObject( editor.ps.catBlending, "error correction" );
 					editor.ps.catBlending.blendModePreset = BlendModePreset.Opaque;
@@ -260,10 +260,10 @@ namespace ShaderForge {
 
 			if( editor.ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
 				if( editor.ps.HasDiffuse() && !editor.ps.HasSpecular() ) {
-					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires " + editor.mainNode.specular.label + " to be connected", false ) );
+					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires metallic/specular to be connected", false ) );
 				}
 				if( !editor.ps.HasDiffuse() && editor.ps.HasSpecular() ) {
-					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires " + editor.mainNode.diffuse.label + " to be connected", false ) );
+					Errors.Add( SF_ErrorEntry.Create( "Using PBL requires metallic/specular to be connected", false ) );
 				}
 			}
 			

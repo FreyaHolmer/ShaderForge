@@ -47,7 +47,7 @@ Quick start:
 Opening Shader Forge = Window -> Shader Forge
 Panning = Click and drag empty space
 Zooming = Mouse wheel
-Adding nodes = RMB + select node OR drag from right panel and place
+Adding nodes = RMB + select node OR drag from right panel and place OR hold the first letter of the node name, and scroll to the node you want, then click
 Moving nodes = Click and drag
 Selecting nodes = Click to select, shift/control click to add to selection
 Box select nodes = Hold Alt + Drag. Shift/control click to add to selection

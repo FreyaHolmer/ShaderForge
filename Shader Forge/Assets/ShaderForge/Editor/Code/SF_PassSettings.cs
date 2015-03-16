@@ -327,7 +327,7 @@ namespace ShaderForge {
 		}
 
 		public bool HasDiffusePower(){
-			return mOut.diffusePower.IsConnectedAndEnabled();
+			return mOut.diffusePower.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasAmbientDiffuse() {
@@ -347,7 +347,7 @@ namespace ShaderForge {
 		}
 
 		public bool HasTransmission() {
-			return mOut.transmission.IsConnectedAndEnabled();
+			return mOut.transmission.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasAddedLight() {
@@ -355,7 +355,7 @@ namespace ShaderForge {
 		}
 
 		public bool HasLightWrapping() {
-			return mOut.lightWrap.IsConnectedAndEnabled();
+			return mOut.lightWrap.IsConnectedEnabledAndAvailable();
 		}
 	}
 }

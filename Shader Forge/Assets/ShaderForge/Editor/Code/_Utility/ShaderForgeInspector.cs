@@ -120,12 +120,12 @@ namespace UnityEditor {
 				GUILayout.BeginHorizontal();
 				{
 					GUIStyle btnStyle = hasShaderForgeData ? "MiniButton" : "Button";
-					if( GUILayout.Button( "Open source", btnStyle ) ) {
+					if( GUILayout.Button( "Open shader code", btnStyle ) ) {
 						UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal( AssetDatabase.GetAssetPath( shader ), 1 );
 					}
-					if( GUILayout.Button( "Open compiled", btnStyle ) ) {
-						OpenCompiledShader( shader );
-					}
+					//if( GUILayout.Button( "Open compiled", btnStyle ) ) {
+					//	OpenCompiledShader( shader );
+					//}
 				}
 				GUILayout.EndHorizontal();
 			}
@@ -137,6 +137,7 @@ namespace UnityEditor {
 
 
 		public static void OpenCompiledShader(Shader s) {
+			
 			Type shaderUtil = Type.GetType( "UnityEditor.ShaderUtil,UnityEditor" );
 			BindingFlags bfs = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 			MethodInfo ocs = shaderUtil.GetMethod( "OpenCompiledShader", bfs );

@@ -340,6 +340,12 @@ namespace ShaderForge {
 				if( rect.Contains( mousePos ) ) {
 					// Now create the menu, add items and show it
 					GenericMenu menu = new GenericMenu();
+
+					// First item is for creating a comment box
+					//menu.AddItem( new GUIContent("Create comment box"), false, ContextClick, mousePos );
+
+					//menu.AddSeparator("");
+
 					for( int i = 0; i < editor.nodeTemplates.Count; i++ ) {
 						if( editor.ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Deferred && !editor.nodeTemplates[i].availableInDeferredPrePass)
 							continue; // Skip forward nodes when in deferred
@@ -583,6 +589,7 @@ namespace ShaderForge {
 
 
 		public void ContextClick( object o ) {
+			// Add node
 			SF_EditorNodeData nodeData = o as SF_EditorNodeData;
 			editor.AddNode( nodeData, true );
 		}

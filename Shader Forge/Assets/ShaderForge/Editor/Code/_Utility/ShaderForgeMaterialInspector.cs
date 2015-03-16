@@ -88,12 +88,12 @@ public class ShaderForgeMaterialInspector : MaterialEditor {
 				GUILayout.BeginHorizontal();
 				{
 					GUIStyle btnStyle = "MiniButton";
-					if( GUILayout.Button( "Open shader source", btnStyle ) ) {
+					if( GUILayout.Button( "Open shader code", btnStyle ) ) {
 						UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal( AssetDatabase.GetAssetPath( shader ), 1 );
 					}
-					if( GUILayout.Button( "Open compiled shader", btnStyle ) ) {
-						ShaderForgeInspector.OpenCompiledShader( shader );
-					}
+					//if( GUILayout.Button( "Open compiled shader", btnStyle ) ) {
+					//	ShaderForgeInspector.OpenCompiledShader( shader );
+					//}
 				}
 				GUILayout.EndHorizontal();
 			}

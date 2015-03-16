@@ -73,12 +73,22 @@ namespace ShaderForge {
 
 			Rect iRect = r;
 
-			Rect rTmp = iRect;
-			rTmp = rTmp.MovedUp();
+			//Rect rTmp = iRect;
+			//rTmp = rTmp.MovedUp();
 
 			//GUI.Label(rTmp, "MIP USED; " + editor.nodeView.treeStatus.mipInputUsed);
 
+			iRect.width = 64f;
 
+			
+			GUI.color = new Color(1f,1f,1f,0.5f);
+			if( GUI.Button( iRect, "Select", EditorStyles.toolbarButton) ) {
+				Selection.activeObject = editor.currentShaderAsset;
+				EditorGUIUtility.PingObject(editor.currentShaderAsset);
+			}
+			GUI.color = Color.white;
+
+			/* Instruction count disabled.
 			if(!editor.nodeView.treeStatus.CanDisplayInstructionCount){
 				InstructionLabel( ref iRect, SF_Styles.IconWarningSmall, "Instruction count unavailable");
 			} else {
@@ -90,7 +100,7 @@ namespace ShaderForge {
 				if( !ftCount.Empty() )
 					InstructionLabel( ref iRect, SF_GUI.Inst_frag_tex, ftCount.ToString() );
 			}
-
+			*/
 			
 
 
@@ -143,6 +153,9 @@ namespace ShaderForge {
 		public void UpdateInstructionCount( Shader sh ) {
 			// Compiled shader string:
 			string[] css = ( new SerializedObject( sh ) ).FindProperty( "m_Script" ).stringValue.Split( '\n' );
+
+			Debug.Log( ( new SerializedObject( sh ) ).FindProperty( "m_Script" ).stringValue );
+			Debug.Log(css.Length);
 
 			if(css.Length < 2){
 				return;

@@ -104,6 +104,9 @@ namespace ShaderForge {
 			//Debug.Log( "Done removing ghost nodes. Count: " + ghostNodes.Count );
 		}
 
+		bool LightmappedAndLit() {
+			return ps.catLighting.bakedLight && ( ps.HasSpecular() || ps.HasDiffuse() ) && ps.catLighting.lightMode != SFPSC_Lighting.LightMode.Unlit;
+		}
 
 		public void UpdateDependencies() {
 
@@ -120,6 +123,10 @@ namespace ShaderForge {
 				cNodes[i].PrepareEvaluation();
 			}
 
+			if( currentPass == PassType.Meta ) {
+				dependencies.uv1 = true;
+				dependencies.uv2 = true;
+			}
 
 			// Dependencies
 			if( ps.catLighting.IsLit() && !IsShadowOrOutlineOrMetaPass() && currentPass != PassType.Deferred ) {
@@ -149,7 +156,7 @@ namespace ShaderForge {
 
 
 
-			if( ps.catLighting.bakedLight && !IsShadowOrOutlineOrMetaPass() ) {
+			if( LightmappedAndLit() && !IsShadowOrOutlineOrMetaPass() ) {
 				dependencies.vert_in_normals = true;
 				if( ps.catQuality.highQualityLightProbes )
 					dependencies.NeedFragNormals();
@@ -166,7 +173,7 @@ namespace ShaderForge {
 			}
 
 
-			if( ps.catLighting.bakedLight ) {
+			if( LightmappedAndLit() ) {
 				dependencies.NeedFragWorldPos();
 				dependencies.NeedFragViewDirection();
 				dependencies.uv1 = true;
@@ -176,7 +183,7 @@ namespace ShaderForge {
 			}
 
 
-			if( ps.catLighting.bakedLight && !IsShadowOrOutlineOrMetaPass() ) {
+			if( LightmappedAndLit() && !IsShadowOrOutlineOrMetaPass() ) {
 				dependencies.NeedFragTangentTransform(); // Directional LMs
 				dependencies.uv1 = true; // Lightmap UVs
 			}
@@ -536,7 +543,7 @@ namespace ShaderForge {
 			}
 
 
-			if( ps.catLighting.bakedLight ) {
+			if( LightmappedAndLit() ) {
 				App( "#define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )" );
 
 			}
@@ -576,11 +583,11 @@ namespace ShaderForge {
 					App( "#pragma multi_compile_shadowcaster" );
 			}
 
-			if( currentPass == PassType.Deferred && ( ps.catLighting.bakedLight || ps.HasEmissive() ) ) {
+			if( currentPass == PassType.Deferred && ( LightmappedAndLit() || ps.HasEmissive() ) ) {
 				App( "#pragma multi_compile ___ UNITY_HDR_ON" );
 			}
 
-			if( ps.catLighting.bakedLight ) {
+			if( LightmappedAndLit() ) {
 				App( "#pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON" );
 				App( "#pragma multi_compile DIRLIGHTMAP_OFF DIRLIGHTMAP_COMBINED DIRLIGHTMAP_SEPARATE" );
 				App( "#pragma multi_compile DYNAMICLIGHTMAP_OFF DYNAMICLIGHTMAP_ON" );
@@ -624,7 +631,7 @@ namespace ShaderForge {
 		}
 
 		public bool IncludeUnity5BRDF() {
-			return ps.catLighting.bakedLight || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed;
+			return LightmappedAndLit() || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed;
 		}
 
 		bool UseUnity5Fog() {
@@ -989,8 +996,8 @@ namespace ShaderForge {
 							lmbStr = pbrStr;
 						}
 
-						
-					} else {
+
+					} else if( !( ps.HasTransmission() || ps.HasLightWrapping() ) ) {
 						lmbStr = GetWithDiffPow( "max( 0.0, NdotL)" );
 					}
 
@@ -1015,7 +1022,7 @@ namespace ShaderForge {
 			bool ambDiff = ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailableInThisPass( currentPass );
 			bool shLight = DoPassSphericalHarmonics();
 			bool diffAO = ps.mOut.diffuseOcclusion.IsConnectedEnabledAndAvailableInThisPass( currentPass );
-			bool ambLight = ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase ) && !ps.catLighting.bakedLight; // Ambient is already in light probe data
+			bool ambLight = ps.catLighting.useAmbient && ( currentPass == PassType.FwdBase ) && !LightmappedAndLit(); // Ambient is already in light probe data
 
 			bool hasIndirectLight = ambDiff || shLight || ambLight; // TODO: Missing lightmaps
 
@@ -1046,7 +1053,7 @@ namespace ShaderForge {
 						App( "indirectDiffuse += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light" );
 
 
-					if( ps.catLighting.bakedLight ) {
+					if( LightmappedAndLit() ) {
 
 
 						App( "indirectDiffuse += gi.indirect.diffuse;" );
@@ -1104,7 +1111,7 @@ namespace ShaderForge {
 		}
 
 		bool LightmapThisPass() {
-			return ps.catLighting.bakedLight && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred );
+			return LightmappedAndLit() && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred );
 		}
 
 		void InitNormalDirVert() {
@@ -1134,9 +1141,6 @@ namespace ShaderForge {
 
 		void InitNormalDirFrag() {
 
-			if( IsShadowOrOutlineOrMetaPass() )
-				return;
-
 			if( ( !dependencies.frag_normalDirection && currentProgram == ShaderProgram.Frag ) )
 				return;
 
@@ -1149,18 +1153,22 @@ namespace ShaderForge {
 
 
 
-
-			if( ps.HasTangentSpaceNormalMap() ) {
-				App( "float3 normalLocal = " + ps.n_normals + ";" );
-				App( "float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals" );
-			} else if( ps.HasObjectSpaceNormalMap() ) {
-				App( "float3 normalLocal = " + ps.n_normals + ";" );
-				App( "float3 normalDirection = mul( _World2Object, float4(normalLocal,0)) / recipObjScale;" );
-			} else if( ps.HasWorldSpaceNormalMap() ) {
-				App( "float3 normalDirection = " + ps.n_normals + ";" );
-			} else {
+			if( currentPass == PassType.ShadCast || currentPass == PassType.ShadColl || currentPass == PassType.Meta ) {
 				App( "float3 normalDirection = i.normalDir;" );
+			} else {
+				if( ps.HasTangentSpaceNormalMap() ) {
+					App( "float3 normalLocal = " + ps.n_normals + ";" );
+					App( "float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals" );
+				} else if( ps.HasObjectSpaceNormalMap() ) {
+					App( "float3 normalLocal = " + ps.n_normals + ";" );
+					App( "float3 normalDirection = mul( _World2Object, float4(normalLocal,0)) / recipObjScale;" );
+				} else if( ps.HasWorldSpaceNormalMap() ) {
+					App( "float3 normalDirection = " + ps.n_normals + ";" );
+				} else {
+					App( "float3 normalDirection = i.normalDir;" );
+				}
 			}
+			
 
 			if( ps.catBlending.IsDoubleSided() ) {
 				App( "" );
@@ -1243,7 +1251,7 @@ namespace ShaderForge {
 							#endif
 			 * */
 
-			if( !( currentPass == PassType.FwdBase && ps.catLighting.bakedLight ) ) {
+			if( !( currentPass == PassType.FwdBase && LightmappedAndLit() ) ) {
 				directSpecular += attColStr; /* * " + ps.n_specular;*/ // TODO: Doesn't this double the spec? Removed for now. Shouldn't evaluate spec twice when using PBL
 			} else {
 				directSpecular += "1";
@@ -1646,7 +1654,7 @@ namespace ShaderForge {
 
 
 		bool DoPassSphericalHarmonics() {
-			return DoPassDiffuse() && ps.catLighting.bakedLight && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred );
+			return DoPassDiffuse() && LightmappedAndLit() && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred );
 		}
 
 		bool InDeferredPass() {
@@ -1807,7 +1815,7 @@ namespace ShaderForge {
 		void CalcGIdata(){
 
 
-			if( (currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) && ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || ps.catLighting.bakedLight ) ) {
+			if( ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) && ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || LightmappedAndLit() ) ) {
 
 
 				AppDebug("GI Data");
@@ -1846,7 +1854,7 @@ namespace ShaderForge {
 				else
 					App("d.atten = attenuation;");
 
-				if( ps.catLighting.bakedLight ) {
+				if( LightmappedAndLit() ) {
 					App( "#if defined(LIGHTMAP_ON) || defined(DYNAMICLIGHTMAP_ON)" );
 					scope++;
 					App( "d.ambient = 0;" );
@@ -2147,7 +2155,7 @@ namespace ShaderForge {
 		}
 
 		public bool IncludeLightingCginc() {
-			return ps.catLighting.bakedLight || IsShadowPass() || ( cNodes.Where( x => x is SFN_LightAttenuation ).Count() > 0 );
+			return LightmappedAndLit() || IsShadowPass() || ( cNodes.Where( x => x is SFN_LightAttenuation ).Count() > 0 );
 		}
 
 
@@ -2439,8 +2447,8 @@ namespace ShaderForge {
 			}
 
 
-			bool specAmb = ps.catLighting.bakedLight && ps.HasSpecular() || ps.mOut.ambientSpecular.IsConnectedEnabledAndAvailable();
-			bool diffAmb = ps.catLighting.bakedLight && ps.HasDiffuse() || ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailable();
+			bool specAmb = LightmappedAndLit() && ps.HasSpecular() || ps.mOut.ambientSpecular.IsConnectedEnabledAndAvailable();
+			bool diffAmb = LightmappedAndLit() && ps.HasDiffuse() || ps.mOut.ambientDiffuse.IsConnectedEnabledAndAvailable();
 
 			if( specAmb ) {
 				if( ps.mOut.ambientSpecular.IsConnectedEnabledAndAvailable() ) {

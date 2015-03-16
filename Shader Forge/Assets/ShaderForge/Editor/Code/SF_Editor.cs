@@ -180,6 +180,9 @@ namespace ShaderForge {
 		public void InitializeNodeTemplates() {
 			nodeTemplates = new List<SF_EditorNodeData>();
 
+
+			// AddTemplate( typeof( SFN_CommentBox ), "Comment Box" );
+
 			string catArithmetic = "Arithmetic/";
 			AddTemplate( typeof( SFN_Abs ), 			catArithmetic + "Abs" );
 			AddTemplate( typeof( SFN_Add ), 			catArithmetic + "Add", KeyCode.A );
@@ -1899,7 +1902,7 @@ namespace ShaderForge {
 
 
 		public void OnShaderEvaluated() {
-			statusBox.UpdateInstructionCount( preview.InternalMaterial.shader );
+			// statusBox.UpdateInstructionCount( preview.InternalMaterial.shader );
 		}
 
 

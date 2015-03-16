@@ -2,24 +2,18 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 3
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: TessellationDisplacement
   m_Shader: {fileID: 4800000, guid: 5e81283b11113de4295d1943aec0a765, type: 3}
-  m_ShaderKeywords: []
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
   m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
-      data:
-        first:
-          name: _Normals
-        second:
-          m_Texture: {fileID: 2800000, guid: cf20bfced7e912046a9ce991a4d775ec, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _Diffuse
@@ -29,16 +23,9 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _node9
+          name: _Normals
         second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _node3
-        second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: cf20bfced7e912046a9ce991a4d775ec, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -53,6 +40,20 @@ Material:
           name: _AORGBHeightA
         second:
           m_Texture: {fileID: 2800000, guid: 5fb7986dd6d0a8e4093ba82369dd6a4d, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _node9
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _node3
+        second:
+          m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -95,4 +96,8 @@ Material:
         first:
           name: _Depth
         second: .215384617
-    m_Colors: {}
+    m_Colors:
+      data:
+        first:
+          name: _SurfaceColor
+        second: {r: .164630204, g: .423464477, b: .639705896, a: 1}

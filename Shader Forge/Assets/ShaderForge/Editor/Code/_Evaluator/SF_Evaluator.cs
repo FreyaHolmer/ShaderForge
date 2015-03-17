@@ -2631,7 +2631,7 @@ namespace ShaderForge {
 			App( "[domain(\"tri\")]" );
 			App( "VertexOutput domain (OutputPatchConstant tessFactors, const OutputPatch<TessVertex,3> vi, float3 bary : SV_DomainLocation) {" );
 			scope++;
-			App( "VertexInput v;" );
+			App( "VertexInput v = (VertexInput)0;" );
 
 			TransferBarycentric( "vertex" );
 			if( dependencies.vert_in_normals )

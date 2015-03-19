@@ -12,7 +12,7 @@ namespace ShaderForge {
 
 
 	public enum PassType {
-		FwdBase, FwdAdd, ShadColl, ShadCast,
+		FwdBase, FwdAdd, ShadCast,
 		Outline,
 		Deferred,
 		Meta
@@ -530,10 +530,6 @@ namespace ShaderForge {
 				case PassType.Deferred:
 					App( "#define UNITY_PASS_DEFERRED" );
 					break;
-				case PassType.ShadColl:
-					App( "#define UNITY_PASS_SHADOWCOLLECTOR" );
-					App( "#define SHADOW_COLLECTOR_PASS" );
-					break;
 				case PassType.ShadCast:
 					App( "#define UNITY_PASS_SHADOWCASTER" );
 					break;
@@ -577,10 +573,7 @@ namespace ShaderForge {
 				App( "#pragma multi_compile_fwdadd" + ps.catBlending.GetShadowPragmaIfUsed() );
 			} else {
 				App( "#pragma fragmentoption ARB_precision_hint_fastest" );
-				if( currentPass == PassType.ShadColl )
-					App( "#pragma multi_compile_shadowcollector" );
-				else
-					App( "#pragma multi_compile_shadowcaster" );
+				App( "#pragma multi_compile_shadowcaster" );
 			}
 
 			if( currentPass == PassType.Deferred && ( LightmappedAndLit() || ps.HasEmissive() ) ) {
@@ -654,8 +647,6 @@ namespace ShaderForge {
 				AppTag( "LightMode", "ForwardBase" );
 			else if( currentPass == PassType.FwdAdd )
 				AppTag( "LightMode", "ForwardAdd" );
-			else if( currentPass == PassType.ShadColl )
-				AppTag( "LightMode", "ShadowCollector" );
 			else if( currentPass == PassType.ShadCast )
 				AppTag( "LightMode", "ShadowCaster" );
 			else if( currentPass == PassType.Deferred )
@@ -813,7 +804,7 @@ namespace ShaderForge {
 			}
 
 
-
+			 
 			PropertiesCG();
 
 		}
@@ -1153,7 +1144,7 @@ namespace ShaderForge {
 
 
 
-			if( currentPass == PassType.ShadCast || currentPass == PassType.ShadColl || currentPass == PassType.Meta ) {
+			if( currentPass == PassType.ShadCast || currentPass == PassType.Meta ) {
 				App( "float3 normalDirection = i.normalDir;" );
 			} else {
 				if( ps.HasTangentSpaceNormalMap() ) {
@@ -2070,10 +2061,7 @@ namespace ShaderForge {
 			App( "struct VertexOutput {" );
 			scope++;
 			{
-				if( currentPass == PassType.ShadColl ) {
-					App( "V2F_SHADOW_COLLECTOR;" );
-					dependencies.IncrementTexCoord( 5 );
-				} else if( currentPass == PassType.ShadCast ) {
+				if( currentPass == PassType.ShadCast ) {
 					App( "V2F_SHADOW_CASTER;" );
 					dependencies.IncrementTexCoord( 1 );
 				} else {
@@ -2147,7 +2135,7 @@ namespace ShaderForge {
 		}
 
 		public bool IsShadowPass() {
-			return currentPass == PassType.ShadCast || currentPass == PassType.ShadColl;
+			return currentPass == PassType.ShadCast;
 		}
 
 		public bool IsShadowOrOutlineOrMetaPass() {
@@ -2303,9 +2291,7 @@ namespace ShaderForge {
 
 
 
-			if( currentPass == PassType.ShadColl ) {
-				App( "TRANSFER_SHADOW_COLLECTOR(o)" );
-			} else if( currentPass == PassType.ShadCast ) {
+			if( currentPass == PassType.ShadCast ) {
 				App( "TRANSFER_SHADOW_CASTER(o)" );
 			} else {
 				if( ps.catLighting.IsVertexLit() )
@@ -2388,8 +2374,6 @@ namespace ShaderForge {
 				LightmapMetaPassFrag();
 			} else if( currentPass == PassType.Deferred ) {
 				DeferredFragReturn();
-			} else if( currentPass == PassType.ShadColl ) {
-				App( "SHADOW_COLLECTOR_FRAGMENT(i)" );
 			} else if( currentPass == PassType.ShadCast ) {
 				App( "SHADOW_CASTER_FRAGMENT(i)" );
 			} else if( currentPass == PassType.Outline ) {
@@ -2477,6 +2461,7 @@ namespace ShaderForge {
 		void LightmapMetaPassFrag() {
 
 
+			bool hasDiffuse = ps.mOut.diffuse.IsConnectedEnabledAndAvailable();
 			bool hasSpec = ps.mOut.specular.IsConnectedEnabledAndAvailable();
 			bool hasGloss = ps.mOut.gloss.IsConnectedEnabledAndAvailable();
 			
@@ -2491,8 +2476,13 @@ namespace ShaderForge {
 			}
 			App( "" );
 
+			
+			if(hasDiffuse)
+				App( "float3 diffColor = " + ps.n_diffuse + ";" );
+			else
+				App( "float3 diffColor = float3(0,0,0);" );
+
 			// Handle metallic properly
-			App( "float3 diffColor = " + ps.n_diffuse + ";" );
 			if( MetallicPBL() ) {
 				App( "float specularMonochrome;" );
 				App( "float3 specColor;" );
@@ -2872,38 +2862,6 @@ namespace ShaderForge {
 		}
 
 
-		// This is a custom shadow thing!
-		// Only needed when using alpha clip and/or vertex offset (May be needed with Tessellation as well)
-		public void ShadowCollectorPass() {
-			bool shouldUse = /*ps.shadowReceive &&*/
-			( ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled() );
-			if( !shouldUse )
-				return;
-			currentPass = PassType.ShadColl;
-			UpdateDependencies();
-			ResetDefinedState();
-			dependencies.ResetTexcoordNumbers();
-
-			App( "Pass {" );
-			scope++;
-			{
-				App( "Name \"ShadowCollector\"" );
-				PassTags();
-				RenderSetup();
-				BeginCG();
-				{
-					CGvars();
-					VertexInputStruct();
-					VertexOutputStruct();
-					Vertex();
-					Tessellation();
-					Fragment();
-				}
-				EndCG();
-			}
-			End();
-			RemoveGhostNodes();
-		}
 
 		// Only needed when using alpha clip and/or vertex offset (May be needed with Tessellation as well)
 		public void ShadowCasterPass() {
@@ -3042,7 +3000,6 @@ namespace ShaderForge {
 					}
 					ForwardBasePass();
 					ForwardLightPass();
-					ShadowCollectorPass();
 					ShadowCasterPass();
 					MetaPass();
 

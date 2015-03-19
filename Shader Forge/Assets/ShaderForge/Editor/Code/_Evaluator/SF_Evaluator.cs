@@ -437,7 +437,7 @@ namespace ShaderForge {
 
 
 				// This has to be done afterwards
-				if( dependencies.frag_normalDirection && ps.catBlending.IsDoubleSided() && !IsShadowOrOutlineOrMetaPass() ) {
+				if( dependencies.frag_normalDirection && ps.catBlending.IsDoubleSided() ) {
 					dependencies.NeedFragViewDirection();
 				}
 

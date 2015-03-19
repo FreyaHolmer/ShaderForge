@@ -277,19 +277,19 @@ namespace ShaderForge {
 		}
 		
 		public bool IsOutlined(){
-			return mOut.outlineWidth.IsConnectedAndEnabled();
+			return mOut.outlineWidth.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool UseClipping() {
-			return mOut.alphaClip.IsConnectedAndEnabled();
+			return mOut.alphaClip.IsConnectedEnabledAndAvailable();
 		}
 		
 		public bool HasGloss(){
-			return mOut.gloss.IsConnectedAndEnabled();
+			return mOut.gloss.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasNormalMap() {
-			return mOut.normal.IsConnectedAndEnabled();
+			return mOut.normal.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasTangentSpaceNormalMap() {
@@ -303,27 +303,27 @@ namespace ShaderForge {
 		}
 
 		public bool HasRefraction() {
-			return mOut.refraction.IsConnectedAndEnabled();
+			return mOut.refraction.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasTessellation() {
-			return mOut.tessellation.IsConnectedAndEnabled();
+			return mOut.tessellation.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasDisplacement() {
-			return mOut.displacement.IsConnectedAndEnabled();
+			return mOut.displacement.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasEmissive() {
-			return mOut.emissive.IsConnectedAndEnabled();
+			return mOut.emissive.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasDiffuse(){
-			return mOut.diffuse.IsConnectedAndEnabled();
+			return mOut.diffuse.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasSpecular(){
-			return mOut.specular.IsConnectedAndEnabled();
+			return mOut.specular.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasDiffusePower(){
@@ -331,19 +331,19 @@ namespace ShaderForge {
 		}
 
 		public bool HasAmbientDiffuse() {
-			return mOut.ambientDiffuse.IsConnectedAndEnabled();
+			return mOut.ambientDiffuse.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasAmbientSpecular() {
-			return mOut.ambientSpecular.IsConnectedAndEnabled();
+			return mOut.ambientSpecular.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasAmbientOcclusionDiffuse() {
-			return mOut.diffuseOcclusion.IsConnectedAndEnabled();
+			return mOut.diffuseOcclusion.IsConnectedEnabledAndAvailable();
 		}
 		
 		public bool HasAmbientOcclusionSpecular() {
-			return mOut.specularOcclusion.IsConnectedAndEnabled();
+			return mOut.specularOcclusion.IsConnectedEnabledAndAvailable();
 		}
 
 		public bool HasTransmission() {

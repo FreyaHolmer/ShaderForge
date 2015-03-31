@@ -915,14 +915,20 @@ namespace ShaderForge {
 
 
 			if( !InDeferredPass() ) {
+				bool definedNdotL = ps.HasSpecular();
+
 				if( ps.HasTransmission() || ps.HasLightWrapping() ) {
 
+					
+
 					if( !InDeferredPass() ) {
-						if( !ps.HasSpecular() ) {
+						if( !definedNdotL ) {
 							App( "float NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
+							definedNdotL = true;
 						} else {
 							App( "NdotL = dot( " + VarNormalDir() + ", lightDirection );" );
 						}
+						definedNdotL = true;
 					}
 
 					string fwdLight = "float3 forwardLight = "; // TODO
@@ -954,43 +960,43 @@ namespace ShaderForge {
 				}// else {
 
 
-					bool noSpec = !ps.HasSpecular();
-					bool unity5pblDiffuse = ps.HasDiffuse() && ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL;
+				bool noSpec = !ps.HasSpecular();
+				bool unity5pblDiffuse = ps.HasDiffuse() && ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL;
 
-					bool needsToDefineNdotV = noSpec && unity5pblDiffuse;
+				bool needsToDefineNdotV = noSpec && unity5pblDiffuse;
 
-					if( needsToDefineNdotV ) {
-						App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
-					}
+				if( needsToDefineNdotV ) {
+					App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
+				}
 
 
 
-					if( noSpec ) {
-						App( "float NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
-					} else {
-						App( "NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
-					}
+				if( !definedNdotL ) {
+					App( "float NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
+				} else {
+					App( "NdotL = max(0.0,dot( " + VarNormalDir() + ", lightDirection ));" );
+				}
 
-					if( Unity5PBL() ) {
-						//if( ps.HasTransmission() || ps.HasLightWrapping() )
-							//App( "NdotL = max(0.0,NdotL);" );
-						App( "half fd90 = 0.5 + 2 * LdotH * LdotH * (1-gloss);" );
+				if( Unity5PBL() ) {
+					//if( ps.HasTransmission() || ps.HasLightWrapping() )
+						//App( "NdotL = max(0.0,NdotL);" );
+					App( "half fd90 = 0.5 + 2 * LdotH * LdotH * (1-gloss);" );
 
 						
 
-						string pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotL), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
-						if( ps.HasTransmission() || ps.HasLightWrapping() ) {
-							App( "NdotLWrap = max(float3(0,0,0), NdotLWrap);" );
-							pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotLWrap), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
-							lmbStr = "(" + lmbStr + " + " + pbrStr + ")";
-						} else {
-							lmbStr = pbrStr;
-						}
-
-
-					} else if( !( ps.HasTransmission() || ps.HasLightWrapping() ) ) {
-						lmbStr = GetWithDiffPow( "max( 0.0, NdotL)" );
+					string pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotL), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
+					if( ps.HasTransmission() || ps.HasLightWrapping() ) {
+						App( "NdotLWrap = max(float3(0,0,0), NdotLWrap);" );
+						pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotLWrap), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
+						lmbStr = "(" + lmbStr + " + " + pbrStr + ")";
+					} else {
+						lmbStr = pbrStr;
 					}
+
+
+				} else if( !( ps.HasTransmission() || ps.HasLightWrapping() ) ) {
+					lmbStr = GetWithDiffPow( "max( 0.0, NdotL)" );
+				}
 
 
 

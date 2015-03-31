@@ -15,6 +15,7 @@ namespace ShaderForge {
 		public NormalSpace normalSpace = NormalSpace.Tangent;
 		public LightMode lightMode = LightMode.BlinnPhong;
 		public SpecularMode specularMode = SpecularMode.Metallic;
+		public TransparencyMode transparencyMode = TransparencyMode.Fade;
 		public GlossRoughMode glossRoughMode = GlossRoughMode.Gloss;
 		public LightCount lightCount = LightCount.Multi;
 
@@ -41,10 +42,13 @@ namespace ShaderForge {
 		public string[] strLightMode = new string[] { "Unlit/Custom", "Blinn-Phong", "Phong", "PBL" };
 		public enum SpecularMode { Specular, Metallic };
 		public string[] strSpecularMode = new string[] { "Specular", "Metallic" };
+		public enum TransparencyMode { Fade, Reflective };
+		public string[] strTransparencyMode = new string[] { "Fade", "Reflective" };
 		public enum GlossRoughMode { Gloss, Roughness };
 		public string[] strGlossRoughMode = new string[] { "Gloss", "Roughness" };
 		public enum LightCount { Single, Multi };
 		public string[] strLightCount = new string[] { "Single Directional", "Multi-light"};
+		
 
 
 		public override string Serialize(){
@@ -55,6 +59,7 @@ namespace ShaderForge {
 			s += Serialize( "nrsp", ( (int)normalSpace ).ToString() );
 			s += Serialize( "limd", ( (int)lightMode ).ToString() );
 			s += Serialize( "spmd", ( (int)specularMode ).ToString() );
+			s += Serialize( "trmd", ( (int)transparencyMode ).ToString() );
 			s += Serialize( "grmd", ( (int)glossRoughMode ).ToString() );
 			s += Serialize( "uamb", useAmbient.ToString() );
 			s += Serialize( "mssp", maskedSpec.ToString() );
@@ -96,6 +101,9 @@ namespace ShaderForge {
 				break;
 			case "spmd":
 				specularMode = (SpecularMode)int.Parse( value );
+				break;
+			case "trmd":
+				transparencyMode = (TransparencyMode)int.Parse( value );
 				break;
 			case "grmd":
 				glossRoughMode = (GlossRoughMode)int.Parse( value );
@@ -175,10 +183,20 @@ namespace ShaderForge {
 			}
 
 			GUI.enabled = ps.HasSpecular();
-			glossRoughMode = (GlossRoughMode)UndoableContentScaledToolbar( r, "Gloss Mode", (int)glossRoughMode, strGlossRoughMode , "gloss mode" );
+			glossRoughMode = (GlossRoughMode)UndoableContentScaledToolbar( r, "Gloss Mode", (int)glossRoughMode, strGlossRoughMode, "gloss mode" );
 			r.y += 20;
-
 			GUI.enabled = true;
+
+			GUI.enabled = ps.mOut.alpha.IsConnectedEnabledAndAvailable(); // Has Opacity connected
+			TransparencyMode prev = transparencyMode;
+			transparencyMode = (TransparencyMode)UndoableContentScaledToolbar( r, "Transparency Mode", (int)transparencyMode, strTransparencyMode, "transparency mode" );
+			if( prev != transparencyMode && ps.catBlending.autoSort ) {
+				ps.catBlending.ConformBlendsToPreset();
+			}
+
+			r.y += 20;
+			GUI.enabled = true;
+			
 
 
 			if( ps.catLighting.IsPBL() == false ) {

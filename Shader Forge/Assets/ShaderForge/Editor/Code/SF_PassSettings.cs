@@ -322,6 +322,10 @@ namespace ShaderForge {
 			return mOut.diffuse.IsConnectedEnabledAndAvailable();
 		}
 
+		public bool HasAlpha() {
+			return mOut.alpha.IsConnectedEnabledAndAvailable();
+		}
+
 		public bool HasSpecular(){
 			return mOut.specular.IsConnectedEnabledAndAvailable();
 		}

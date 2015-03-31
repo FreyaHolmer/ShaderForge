@@ -185,28 +185,67 @@ namespace ShaderForge {
 			// WARNINGS
 
 			if( editor.ps.catBlending.autoSort ) {
+
 				bool alphaConnected = editor.mainNode.alpha.IsConnectedEnabledAndAvailable();
-				bool notUsingAlphaBlend = !( editor.ps.catBlending.blendSrc == BlendMode.SrcAlpha && editor.ps.catBlending.blendDst == BlendMode.OneMinusSrcAlpha );
+				
 
-				if( alphaConnected && notUsingAlphaBlend ) {
-					SF_ErrorEntry error = SF_ErrorEntry.Create( "Opacity is connected, but your shader isn't alpha blended. Click the icon to make it alpha blended!", true );
-					error.action = () => {
-						UnityEditor.Undo.RecordObject( editor.ps.catBlending, "error correction" );
-						editor.ps.catBlending.blendModePreset = BlendModePreset.AlphaBlended;
-						editor.ps.catBlending.ConformBlendsToPreset();
-					};
-					Errors.Add( error );
+
+				if( editor.ps.catLighting.transparencyMode == SFPSC_Lighting.TransparencyMode.Fade ) {
+
+					bool usingAlphaBlend = editor.ps.catBlending.blendSrc == BlendMode.SrcAlpha && editor.ps.catBlending.blendDst == BlendMode.OneMinusSrcAlpha;
+
+					if( alphaConnected && !usingAlphaBlend ) {
+						SF_ErrorEntry error = SF_ErrorEntry.Create( "Opacity is connected, but your shader isn't alpha blended, which is required by the fade transparency mode. Click the icon to make it alpha blended!", true );
+						error.action = () => {
+							UnityEditor.Undo.RecordObject( editor.ps.catBlending, "error correction" );
+							editor.ps.catBlending.blendModePreset = BlendModePreset.AlphaBlended;
+							editor.ps.catBlending.ConformBlendsToPreset();
+						};
+						Errors.Add( error );
+					}
+
+					if( !alphaConnected && usingAlphaBlend ) {
+						SF_ErrorEntry error = SF_ErrorEntry.Create( "Opacity is not connected, but your shader is alpha blended. Click the icon to make it opaque!", true );
+						error.action = () => {
+							UnityEditor.Undo.RecordObject( editor.ps.catBlending, "error correction" );
+							editor.ps.catBlending.blendModePreset = BlendModePreset.Opaque;
+							editor.ps.catBlending.ConformBlendsToPreset();
+						};
+						Errors.Add( error );
+					}
 				}
 
-				if( !alphaConnected && !notUsingAlphaBlend ) {
-					SF_ErrorEntry error = SF_ErrorEntry.Create( "Opacity is not connected, but your shader is alpha blended. Click the icon to make it opaque!", true );
-					error.action = () => {
-						UnityEditor.Undo.RecordObject( editor.ps.catBlending, "error correction" );
-						editor.ps.catBlending.blendModePreset = BlendModePreset.Opaque;
-						editor.ps.catBlending.ConformBlendsToPreset();
-					};
-					Errors.Add( error );
+
+
+
+
+				if( editor.ps.catLighting.transparencyMode == SFPSC_Lighting.TransparencyMode.Reflective ) {
+
+					bool usingAlphaBlendPremul = editor.ps.catBlending.blendSrc == BlendMode.One && editor.ps.catBlending.blendDst == BlendMode.OneMinusSrcAlpha;
+
+					if( alphaConnected && !usingAlphaBlendPremul ) {
+						SF_ErrorEntry error = SF_ErrorEntry.Create( "Opacity is connected, but your shader isn't using premultiplied alpha blending, which is required by the reflective transparency mode. Click the icon to use premultiplied alpha blending!", true );
+						error.action = () => {
+							UnityEditor.Undo.RecordObject( editor.ps.catBlending, "error correction" );
+							editor.ps.catBlending.blendModePreset = BlendModePreset.AlphaBlendedPremultiplied;
+							editor.ps.catBlending.ConformBlendsToPreset();
+						};
+						Errors.Add( error );
+					}
+
+					if( !alphaConnected && usingAlphaBlendPremul ) {
+						SF_ErrorEntry error = SF_ErrorEntry.Create( "Opacity is not connected, but your shader is using premultiplied alpha blending. Click the icon to make it opaque!", true );
+						error.action = () => {
+							UnityEditor.Undo.RecordObject( editor.ps.catBlending, "error correction" );
+							editor.ps.catBlending.blendModePreset = BlendModePreset.Opaque;
+							editor.ps.catBlending.ConformBlendsToPreset();
+						};
+						Errors.Add( error );
+					}
 				}
+
+
+
 			}
 			
 

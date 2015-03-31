@@ -1794,9 +1794,13 @@ namespace ShaderForge {
 				
 
 				if(!InDeferredPass()){
+
+
+					string diffuse = ps.HasAlpha() && ps.catLighting.transparencyMode == SFPSC_Lighting.TransparencyMode.Reflective ? "diffuse * " + ps.n_alpha : "diffuse" ;
+
 					string s = SumString(
 						new bool[] { DoPassDiffuse(), DoPassSpecular(), DoPassEmissive() },
-						new string[] { "diffuse", "specular", "emissive" },
+						new string[] { diffuse, "specular", "emissive" },
 						"0"
 					);
 				
@@ -2390,7 +2394,10 @@ namespace ShaderForge {
 				//	AppFinalOutput("lightFinal + " + "diffuse", ps.n_alpha); // This is really weird, it should already be included in the light calcs. Do more research // TODO
 				//}else
 				if( currentPass == PassType.FwdAdd ) {
-					AppFinalOutput( "finalColor * " + ps.n_alpha, "0" );
+					if(ps.catLighting.transparencyMode == SFPSC_Lighting.TransparencyMode.Fade)
+						AppFinalOutput( "finalColor * " + ps.n_alpha, "0" );
+					else
+						AppFinalOutput( "finalColor", "0" );
 				} else {
 					AppFinalOutput( "finalColor", ps.n_alpha );
 				}

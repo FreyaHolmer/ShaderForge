@@ -13,6 +13,7 @@ namespace ShaderForge {
 	public enum BlendModePreset {
 		Opaque,
 		AlphaBlended,
+		AlphaBlendedPremultiplied,
 		Additive,
 		Screen,
 		Multiplicative,
@@ -35,7 +36,16 @@ namespace ShaderForge {
 		public static int[] queueNumbers = new int[] { 1000, 2000, 2450, 3000, 4000 };
 		public static string[] strQueue = new string[] { "Background (1000)", "Opaque Geometry (2000)", "Alpha Clip (2450)", "Transparent (3000)", "Overlay (4000)" };
 		public static string[] strDithering = new string[] { "Off", "2x2 matrix", "3x3 matrix", "4x4 matrix" };
-		
+
+		public static string[] strBlendModePreset = new string[] {
+			"Opaque",
+			"Alpha Blended",
+			"Alpha Blended (Premultiplied)",
+			"Additive",
+			"Screen",
+			"Multiplicative",
+			""
+		};
 
 		
 		// Vars
@@ -89,14 +99,10 @@ namespace ShaderForge {
 		//public bool useStencilBuffer = false;
 
 
-
-
-
-
 		public override string Serialize(){
 			string s = "";
 
-			s += Serialize( "blpr", ( (int)blendModePreset ).ToString() );
+			//s += Serialize( "blpr", ( (int)blendModePreset ).ToString() );
 			s += Serialize( "bsrc", ( (int)blendSrc ).ToString() );
 			s += Serialize( "bdst", ( (int)blendDst ).ToString() );
 			s += Serialize( "culm", ( (int)cullMode ).ToString() );
@@ -153,14 +159,16 @@ namespace ShaderForge {
 
 			switch( key ) {
 
-			case "blpr":
-				blendModePreset = (BlendModePreset)int.Parse( value );
-				break;
+			//case "blpr":
+				//blendModePreset = (BlendModePreset)int.Parse( value );
+				//break;
 			case "bsrc":
 				blendSrc = (BlendMode)int.Parse( value );
+				ConformPresetToBlend();
 				break;
 			case "bdst":
 				blendDst = (BlendMode)int.Parse( value );
+				ConformPresetToBlend();
 				break;
 			case "culm":
 				cullMode = (CullMode)int.Parse( value );
@@ -285,42 +293,53 @@ namespace ShaderForge {
 			
 			BlendModePreset before = blendModePreset;
 			GUI.enabled = ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Forward;
-			blendModePreset = (BlendModePreset)UndoableLabeledEnumPopup( r, "Blend Mode", blendModePreset, "blend mode");
+			blendModePreset = (BlendModePreset)UndoableLabeledEnumPopupNamed( r, "Blend Mode", blendModePreset, strBlendModePreset, "blend mode");
 			GUI.enabled = true;
 			if( blendModePreset != before ) {
 				ConformBlendsToPreset();
 			}
+			if( blendModePreset == BlendModePreset.Custom ) {
+				GUI.color = new Color(1f,1f,1f,0.5f);
+				GUI.Label(r.PadLeft(70).PadTop(-1), "Custom blending. Click select preset", EditorStyles.miniLabel);
+				GUI.color = Color.white;
+			}
 			
 			r.y += 20;
 			
-			if( blendModePreset != BlendModePreset.Opaque ) {
-				if( blendModePreset != BlendModePreset.Custom )
-					GUI.enabled = false;
+			//if( blendModePreset != BlendModePreset.Opaque ) {
+				//if( blendModePreset != BlendModePreset.Custom )
+					//GUI.enabled = false;
 				//EditorGUILayout.BeginHorizontal( GUILayout.Width( maxWidth ) );
 				//{
 				//Indent();
 				
-				string srcStr = "Source * ";
-				string dstStr = " + Destination * ";
-				int srcStrWidth = SF_GUI.WidthOf(srcStr,EditorStyles.miniLabel);
-				int dstStrWidth = SF_GUI.WidthOf(dstStr,EditorStyles.miniLabel);
-				int fieldWidth = Mathf.FloorToInt((r.width - srcStrWidth - dstStrWidth)/2);
+			string srcStr = "Source * ";
+			string dstStr = " + Destination * ";
+			int srcStrWidth = SF_GUI.WidthOf(srcStr,EditorStyles.miniLabel);
+			int dstStrWidth = SF_GUI.WidthOf(dstStr,EditorStyles.miniLabel);
+			int fieldWidth = Mathf.FloorToInt((r.width - srcStrWidth - dstStrWidth)/2);
 				
-				Rect rSrcLb =		new Rect(r);			rSrcLb.width = srcStrWidth;
-				Rect rSrcField =	new Rect(r);			rSrcField.x = rSrcLb.xMax;	rSrcField.width = fieldWidth;
-				Rect rDstLb =		new Rect(r);			rDstLb.x = rSrcField.xMax;	rDstLb.width = dstStrWidth;
-				Rect rDstField =	new Rect(rSrcField);	rDstField.x = rDstLb.xMax;
-				
-				GUI.Label( rSrcLb, srcStr, EditorStyles.miniLabel );
-				blendSrc = (BlendMode)UndoableEnumPopup(rSrcField, blendSrc, "blend source" );
-				GUI.Label( rDstLb, dstStr, EditorStyles.miniLabel );
-				blendDst = (BlendMode)UndoableEnumPopup(rDstField, blendDst, "blend destination" );
-				
-				if( blendModePreset != BlendModePreset.Custom )
-					GUI.enabled = true;
-				
-				r.y += 20;
+			Rect rSrcLb =		new Rect(r);			rSrcLb.width = srcStrWidth;
+			Rect rSrcField =	new Rect(r);			rSrcField.x = rSrcLb.xMax;	rSrcField.width = fieldWidth;
+			Rect rDstLb =		new Rect(r);			rDstLb.x = rSrcField.xMax;	rDstLb.width = dstStrWidth;
+			Rect rDstField =	new Rect(rSrcField);	rDstField.x = rDstLb.xMax;
+
+			EditorGUI.BeginChangeCheck();
+
+			GUI.Label( rSrcLb, srcStr, EditorStyles.miniLabel );
+			blendSrc = (BlendMode)UndoableEnumPopup(rSrcField, blendSrc, "blend source" );
+			GUI.Label( rDstLb, dstStr, EditorStyles.miniLabel );
+			blendDst = (BlendMode)UndoableEnumPopup(rDstField, blendDst, "blend destination" );
+
+			if( EditorGUI.EndChangeCheck() ) {
+				ConformPresetToBlend();
 			}
+				
+			//if( blendModePreset != BlendModePreset.Custom )
+				//GUI.enabled = true;
+				
+			r.y += 20;
+			//}
 
 			cullMode = (CullMode)UndoableLabeledEnumPopup( r, "Face Culling", cullMode, "face culling" );
 			r.y += 20;
@@ -356,6 +375,34 @@ namespace ShaderForge {
 			queuePreset = in_queue;
 		}
 
+		public void ConformPresetToBlend() {
+			
+			bool matched = false;
+			matched |= ApplyIfMatch(BlendModePreset.Opaque,						BlendMode.One,				BlendMode.Zero );
+			matched |= ApplyIfMatch(BlendModePreset.Additive,					BlendMode.One,				BlendMode.One );
+			matched |= ApplyIfMatch(BlendModePreset.Screen,						BlendMode.OneMinusDstColor, BlendMode.One );
+			matched |= ApplyIfMatch(BlendModePreset.Screen,						BlendMode.One,				BlendMode.OneMinusSrcColor );
+			matched |= ApplyIfMatch(BlendModePreset.AlphaBlended,				BlendMode.SrcAlpha,			BlendMode.OneMinusSrcAlpha );
+			matched |= ApplyIfMatch(BlendModePreset.AlphaBlendedPremultiplied,	BlendMode.One,				BlendMode.OneMinusSrcAlpha );
+			matched |= ApplyIfMatch(BlendModePreset.Multiplicative,				BlendMode.DstColor,			BlendMode.Zero );
+			matched |= ApplyIfMatch(BlendModePreset.Multiplicative,				BlendMode.Zero,				BlendMode.SrcColor );
+			
+			if(!matched){
+				blendModePreset = BlendModePreset.Custom;
+			}
+			
+		}
+
+
+		public bool ApplyIfMatch(BlendModePreset preset, BlendMode src, BlendMode dst) {
+			if( blendSrc == src && blendDst == dst ) {
+				blendModePreset = preset;
+				UpdateAutoSettings();
+				return true;
+			}
+			return false;
+				
+		}
 
 		public void ConformBlendsToPreset() {
 			switch( blendModePreset ) {
@@ -375,10 +422,10 @@ namespace ShaderForge {
 				blendSrc = BlendMode.SrcAlpha;
 				blendDst = BlendMode.OneMinusSrcAlpha;
 				break;
-				//case BlendModePreset.PremultipliedAlphaBlended:
-				//	blendSrc = BlendMode.One;
-				//	blendDst = BlendMode.OneMinusSrcAlpha;
-				//	break;
+			case BlendModePreset.AlphaBlendedPremultiplied:
+				blendSrc = BlendMode.One;
+				blendDst = BlendMode.OneMinusSrcAlpha;
+				break;
 			case BlendModePreset.Multiplicative:
 				blendSrc = BlendMode.DstColor;
 				blendDst = BlendMode.Zero;
@@ -617,6 +664,15 @@ namespace ShaderForge {
 			
 			if( !autoSort )
 				return;
+
+			if( editor == null )
+				return;
+
+			if( editor.mainNode == null )
+				return;
+
+			if( editor.nodeView == null )
+				return;
 			
 			if( editor.mainNode.alpha.IsConnectedAndEnabled() || editor.mainNode.refraction.IsConnectedAndEnabled() || editor.nodeView.treeStatus.usesSceneData ) {
 				SetQueuePreset(Queue.Transparent);
@@ -624,7 +680,7 @@ namespace ShaderForge {
 				ignoreProjector = true;
 				writeDepth = false;
 				return;
-			}
+			} 
 			if( ps.UseClipping() ){
 				SetQueuePreset(Queue.AlphaTest);
 				renderType = RenderType.TransparentCutout;

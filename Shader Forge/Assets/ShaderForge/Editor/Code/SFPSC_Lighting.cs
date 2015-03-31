@@ -187,13 +187,8 @@ namespace ShaderForge {
 			r.y += 20;
 			GUI.enabled = true;
 
-			GUI.enabled = ps.mOut.alpha.IsConnectedEnabledAndAvailable(); // Has Opacity connected
-			TransparencyMode prev = transparencyMode;
+			GUI.enabled = ps.HasAlpha(); // Has Opacity connected
 			transparencyMode = (TransparencyMode)UndoableContentScaledToolbar( r, "Transparency Mode", (int)transparencyMode, strTransparencyMode, "transparency mode" );
-			if( prev != transparencyMode && ps.catBlending.autoSort ) {
-				ps.catBlending.ConformBlendsToPreset();
-			}
-
 			r.y += 20;
 			GUI.enabled = true;
 			

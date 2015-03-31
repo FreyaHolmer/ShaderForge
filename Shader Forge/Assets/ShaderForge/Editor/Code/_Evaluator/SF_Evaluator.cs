@@ -480,7 +480,7 @@ namespace ShaderForge {
 				}
 			}
 
-			bool transparency = ps.mOut.alphaClip.IsConnectedEnabledAndAvailable() || ps.mOut.alpha.IsConnectedEnabledAndAvailable();
+			bool transparency = ps.mOut.alphaClip.IsConnectedEnabledAndAvailable() || ps.HasAlpha();
 
 			if( transparency )
 				App( "[HideInInspector]_Cutoff (\"Alpha cutoff\", Range(0,1)) = 0.5" ); // Hack, but, required for transparency to play along with depth etc
@@ -916,6 +916,7 @@ namespace ShaderForge {
 
 			if( !InDeferredPass() ) {
 				bool definedNdotL = ps.HasSpecular();
+				bool definedNdotLwrap = false;
 
 				if( ps.HasTransmission() || ps.HasLightWrapping() ) {
 
@@ -937,7 +938,11 @@ namespace ShaderForge {
 
 					if( ps.HasLightWrapping() ) {
 						App( "float3 w = " + ps.n_lightWrap + "*0.5; // Light wrapping" );
-						App( "float3 NdotLWrap = NdotL * ( 1.0 - w );" );
+						if( !definedNdotLwrap ) {
+							App( "float3 NdotLWrap = NdotL * ( 1.0 - w );" );
+							definedNdotLwrap = true;
+						}
+							
 						App( fwdLight + GetWithDiffPow( "max(float3(0.0,0.0,0.0), NdotLWrap + w )" ) + ";" );
 						if( ps.HasTransmission() ) {
 							App( backLight + GetWithDiffPow( "max(float3(0.0,0.0,0.0), -NdotLWrap + w )" ) + " * " + ps.n_transmission + ";" );
@@ -986,6 +991,8 @@ namespace ShaderForge {
 
 					string pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotL), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
 					if( ps.HasTransmission() || ps.HasLightWrapping() ) {
+						if( !definedNdotLwrap )
+							App( "float3 NdotLWrap = max(0,NdotL);" );
 						App( "NdotLWrap = max(float3(0,0,0), NdotLWrap);" );
 						pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotLWrap), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
 						lmbStr = "(" + lmbStr + " + " + pbrStr + ")";

@@ -154,21 +154,43 @@ namespace ShaderForge {
 			return s;
 		}
 
+		bool lockSrcDstRead = false;
+
 		public override void Deserialize(string key, string value){
+
 
 
 			switch( key ) {
 
-			//case "blpr":
-				//blendModePreset = (BlendModePreset)int.Parse( value );
-				//break;
+			case "blpr": // This is no longer saved, but in old shaders, we have to read it with old enum indices
+
+		//	0 "Opaque",
+		//	1 "Alpha Blended",
+		//	- "Alpha Blended (Premultiplied)",
+		//	2 "Additive",
+		//	3 "Screen",
+		//	4 "Multiplicative",
+
+				int iVal = int.Parse( value );
+				if( iVal > 1 ) // Offset due to adding premul
+					iVal++;
+				blendModePreset = (BlendModePreset)iVal;
+				ConformBlendsToPreset();
+				
+				lockSrcDstRead = true;
+				break;
 			case "bsrc":
+				if( lockSrcDstRead )
+					break;
 				blendSrc = (BlendMode)int.Parse( value );
-				ConformPresetToBlend();
 				break;
 			case "bdst":
+				if( lockSrcDstRead ) {
+					lockSrcDstRead = false;
+					break;
+				}	
 				blendDst = (BlendMode)int.Parse( value );
-				ConformPresetToBlend();
+				ConformPresetToBlend(); 
 				break;
 			case "culm":
 				cullMode = (CullMode)int.Parse( value );
@@ -376,7 +398,8 @@ namespace ShaderForge {
 		}
 
 		public void ConformPresetToBlend() {
-			
+
+
 			bool matched = false;
 			matched |= ApplyIfMatch(BlendModePreset.Opaque,						BlendMode.One,				BlendMode.Zero );
 			matched |= ApplyIfMatch(BlendModePreset.Additive,					BlendMode.One,				BlendMode.One );
@@ -390,7 +413,7 @@ namespace ShaderForge {
 			if(!matched){
 				blendModePreset = BlendModePreset.Custom;
 			}
-			
+
 		}
 
 

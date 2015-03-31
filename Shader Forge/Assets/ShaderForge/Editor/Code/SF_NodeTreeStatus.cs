@@ -186,7 +186,7 @@ namespace ShaderForge {
 
 			if( editor.ps.catBlending.autoSort ) {
 
-				bool alphaConnected = editor.mainNode.alpha.IsConnectedEnabledAndAvailable();
+				bool alphaConnected = editor.ps.HasAlpha();
 				
 
 

@@ -44,6 +44,7 @@ namespace ShaderForge {
 			foreach(SFPS_Category cat in cats){
 				cat.Deserialize(key, value);
 			}
+			catBlending.UpdateAutoSort();
 		}
 
 

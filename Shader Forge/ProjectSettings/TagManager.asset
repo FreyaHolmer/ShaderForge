@@ -3,20 +3,29 @@
 --- !u!78 &1
 TagManager:
   tags:
+  - ground
+  - Crate
+  - Enemy
+  - Wall
+  - Obstacle
+  - Bullet
+  - BombPickup
+  - ExplosionFX
+  - HealthBar
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
   Builtin Layer 2: Ignore Raycast
   Builtin Layer 3: 
   Builtin Layer 4: Water
-  Builtin Layer 5: UI
+  Builtin Layer 5: 
   Builtin Layer 6: 
   Builtin Layer 7: 
-  User Layer 8: Ignore dir
-  User Layer 9: lm_unity
-  User Layer 10: lm_sf
-  User Layer 11: 
-  User Layer 12: 
+  User Layer 8: Bombs
+  User Layer 9: Player
+  User Layer 10: Enemies
+  User Layer 11: Pickups
+  User Layer 12: Ground
   User Layer 13: 
   User Layer 14: 
   User Layer 15: 
@@ -40,4 +49,24 @@ TagManager:
   - name: Default
     userID: 0
     uniqueID: 0
+    locked: 0
+  - name: Default
+    userID: 1
+    uniqueID: 3363470833
+    locked: 0
+  - name: Background
+    userID: 2
+    uniqueID: 1535931219
+    locked: 0
+  - name: Character
+    userID: 4
+    uniqueID: 2511236001
+    locked: 0
+  - name: Foreground
+    userID: 3
+    uniqueID: 1024582385
+    locked: 0
+  - name: UI
+    userID: 5
+    uniqueID: 149272721
     locked: 0

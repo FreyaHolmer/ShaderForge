@@ -485,6 +485,9 @@ namespace ShaderForge {
 			if( transparency )
 				App( "[HideInInspector]_Cutoff (\"Alpha cutoff\", Range(0,1)) = 0.5" ); // Hack, but, required for transparency to play along with depth etc
 
+			if( ps.catGeometry.showPixelSnap )
+				App("[MaterialToggle] PixelSnap (\"Pixel snap\", Float) = 0");
+
 			End();
 
 		}
@@ -549,6 +552,9 @@ namespace ShaderForge {
 			}
 
 
+			if( ps.catGeometry.showPixelSnap )
+				App( "#pragma multi_compile _ PIXELSNAP_ON" );
+
 
 			App( "#include \"UnityCG.cginc\"" );
 
@@ -588,6 +594,8 @@ namespace ShaderForge {
 
 			if( UseUnity5Fog() )
 				App( "#pragma multi_compile_fog" );
+
+			
 
 
 			List<int> groups = new List<int>();
@@ -2286,6 +2294,15 @@ namespace ShaderForge {
 			} else {
 				App( "o.pos = mul(UNITY_MATRIX_MVP, v.vertex);" );
 			}
+
+			if( ps.catGeometry.showPixelSnap ) {
+				App( "#ifdef PIXELSNAP_ON" );
+				scope++;
+				App( "o.pos = UnityPixelSnap(o.pos);" );
+				scope--;
+				App( "#endif" );
+			}
+			
 
 			// New in Unity 5
 			if( UseUnity5FogInThisPass() ) {

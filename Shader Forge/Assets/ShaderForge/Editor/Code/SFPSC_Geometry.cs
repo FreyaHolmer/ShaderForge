@@ -27,7 +27,7 @@ namespace ShaderForge {
 		
 
 		
-		 
+		
 
 		public override string Serialize(){
 			string s = "";

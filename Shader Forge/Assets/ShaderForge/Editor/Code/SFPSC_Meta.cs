@@ -8,6 +8,14 @@ namespace ShaderForge {
 	[System.Serializable]
 	public class SFPSC_Meta : SFPS_Category {
 
+		public enum Inspector3DPreviewType { Sphere, Plane, Skybox };
+		public string[] strInspector3DPreviewType = new string[] { "3D object", "2D sprite", "Sky"};
+		public enum BatchingMode { Enabled, Disabled, DisableDuringLODFade };
+		public string[] strBatchingMode = new string[] { "Enabled", "Disabled", "Disabled during LOD fade" };
+		public Inspector3DPreviewType previewType = Inspector3DPreviewType.Sphere;
+
+		public BatchingMode batchingMode = BatchingMode.Enabled;
+		public bool canUseSpriteAtlas = false;
 		public bool[] usedRenderers; // TODO: Serialization?
 		public string fallback = "";
 		public int LOD = 0; // TODO: Serialization?
@@ -49,6 +57,9 @@ namespace ShaderForge {
 		public override string Serialize(){
 			string s = "";
 			s += Serialize( "flbk", fallback );
+			s += Serialize( "iptp", ((int)previewType).ToString() );
+			s += Serialize( "cusa", canUseSpriteAtlas.ToString() );
+			s += Serialize( "bamd", ( (int)batchingMode ).ToString() );
 			return s;
 		}
 
@@ -57,6 +68,15 @@ namespace ShaderForge {
 			switch( key ) {
 			case "flbk":
 				fallback = value;
+				break;
+			case "iptp":
+				previewType = (Inspector3DPreviewType)int.Parse(value);
+				break;
+			case "cusa":
+				canUseSpriteAtlas = bool.Parse(value);
+				break;
+			case "bamd":
+				batchingMode = (BatchingMode)int.Parse( value );
 				break;
 			}
 
@@ -136,7 +156,18 @@ namespace ShaderForge {
 			r.height = 20;
 			r.xMax += 3;
 			r.y += 20;
-			
+
+
+			canUseSpriteAtlas = UndoableToggle( r, canUseSpriteAtlas, "Allow using atlased sprites", "allow using atlased sprites", null );
+			r.y += 20;
+
+			batchingMode = (BatchingMode)UndoableLabeledEnumPopupNamed( r, "Draw call batching", batchingMode, strBatchingMode, "draw call batching" );
+			r.y += 20;
+
+			previewType = (Inspector3DPreviewType)UndoableLabeledEnumPopupNamed( r, "Inspector preview mode", previewType, strInspector3DPreviewType, "inspector preview mode" );
+			r.y += 20;
+
+			r.y += 10;
 			
 			
 			

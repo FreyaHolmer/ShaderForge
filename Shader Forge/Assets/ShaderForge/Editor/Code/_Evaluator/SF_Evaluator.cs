@@ -662,8 +662,11 @@ namespace ShaderForge {
 			bool ip = ps.catBlending.ignoreProjector;
 			bool doesOffset = ps.catBlending.queuePreset != Queue.Geometry || ps.catBlending.queueOffset != 0;
 			bool hasRenderType = ps.catBlending.renderType != RenderType.None;
+			bool hasBatchConfig = ps.catMeta.batchingMode != SFPSC_Meta.BatchingMode.Enabled;
+			bool hasAtlasConfig = ps.catMeta.canUseSpriteAtlas;
+			bool hasPreviewType = ps.catMeta.previewType != SFPSC_Meta.Inspector3DPreviewType.Sphere;
 
-			if( !ip && !doesOffset && !hasRenderType )
+			if( !ip && !doesOffset && !hasRenderType && !hasBatchConfig && !hasAtlasConfig && !hasPreviewType )
 				return; // No tags!
 
 			BeginTags();
@@ -678,6 +681,21 @@ namespace ShaderForge {
 			}
 			if( hasRenderType )
 				AppTag( "RenderType", ps.catBlending.renderType.ToString() );
+			if( hasBatchConfig ) {
+				if(ps.catMeta.batchingMode == SFPSC_Meta.BatchingMode.Disabled)
+					AppTag( "DisableBatching", "True" );
+				if(ps.catMeta.batchingMode == SFPSC_Meta.BatchingMode.DisableDuringLODFade)
+					AppTag( "DisableBatching", "LODFading" );
+			}
+			if( hasAtlasConfig ) {
+				AppTag( "CanUseSpriteAtlas", "True" );
+			}
+			if( hasPreviewType ) {
+				if( ps.catMeta.previewType == SFPSC_Meta.Inspector3DPreviewType.Plane)
+					AppTag( "PreviewType", "Plane" );
+				if( ps.catMeta.previewType == SFPSC_Meta.Inspector3DPreviewType.Skybox )
+					AppTag( "PreviewType", "Skybox" );
+			}
 
 
 

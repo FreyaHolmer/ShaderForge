@@ -112,6 +112,12 @@ namespace ShaderForge {
 			} else {
 				editor.mainNode.gloss.label = "Gloss";
 			}
+
+			if( ps.catGeometry.vertexOffsetMode == SFPSC_Geometry.VertexOffsetMode.Relative ) {
+				editor.mainNode.vertexOffset.label = "Vertex Offset";
+			} else if( ps.catGeometry.vertexOffsetMode == SFPSC_Geometry.VertexOffsetMode.Absolute ) {
+				editor.mainNode.vertexOffset.label = "Vertex Position";
+			}
 			
 
 

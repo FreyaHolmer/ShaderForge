@@ -132,7 +132,7 @@ namespace ShaderForge {
 		public SFPSC_Meta catMeta;
 		public SFPSC_Properties catProperties;
 		public SFPSC_Lighting catLighting;
-		public SFPSC_Quality catQuality;
+		public SFPSC_Geometry catGeometry;
 		public SFPSC_Blending catBlending;
 		public SFPSC_Experimental catExperimental;
 		public SFPSC_Console catConsole;
@@ -158,7 +158,7 @@ namespace ShaderForge {
 			cats.Add( catMeta 			= NewCat<SFPSC_Meta>			(	"Shader Settings"	));
 			cats.Add( catProperties 	= NewCat<SFPSC_Properties>		( 	"Properties" 		));
 			cats.Add( catLighting 		= NewCat<SFPSC_Lighting>		(	"Lighting"			));
-			cats.Add( catQuality 		= NewCat<SFPSC_Quality>			(	"Quality"			));
+			cats.Add( catGeometry 		= NewCat<SFPSC_Geometry>		(	"Geometry"			));
 			cats.Add( catBlending 		= NewCat<SFPSC_Blending>		(	"Blending"			));
 			cats.Add( catExperimental 	= NewCat<SFPSC_Experimental>	(	"Experimental"		));
 			cats.Add( catConsole        = NewCat<SFPSC_Console>			(	"Console"			));
@@ -227,7 +227,7 @@ namespace ShaderForge {
 				offset = GUISeparator( offset ); // ----------------------------------------------
 				offset = catLighting.Draw(offset);
 				offset = GUISeparator( offset ); // ----------------------------------------------
-				offset = catQuality.Draw( offset );
+				offset = catGeometry.Draw( offset );
 				offset = GUISeparator( offset ); // ----------------------------------------------
 				offset = catBlending.Draw(offset);
 				offset = GUISeparator( offset ); // ----------------------------------------------
@@ -294,13 +294,13 @@ namespace ShaderForge {
 		}
 
 		public bool HasTangentSpaceNormalMap() {
-			return HasNormalMap() && catLighting.normalSpace == SFPSC_Lighting.NormalSpace.Tangent;
+			return HasNormalMap() && catGeometry.normalSpace == SFPSC_Geometry.NormalSpace.Tangent;
 		}
 		public bool HasObjectSpaceNormalMap() {
-			return HasNormalMap() && catLighting.normalSpace == SFPSC_Lighting.NormalSpace.Object;
+			return HasNormalMap() && catGeometry.normalSpace == SFPSC_Geometry.NormalSpace.Object;
 		}
 		public bool HasWorldSpaceNormalMap() {
-			return HasNormalMap() && catLighting.normalSpace == SFPSC_Lighting.NormalSpace.World;
+			return HasNormalMap() && catGeometry.normalSpace == SFPSC_Geometry.NormalSpace.World;
 		}
 
 		public bool HasRefraction() {

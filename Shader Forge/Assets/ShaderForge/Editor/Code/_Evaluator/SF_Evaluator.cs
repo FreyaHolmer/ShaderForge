@@ -158,7 +158,7 @@ namespace ShaderForge {
 
 			if( LightmappedAndLit() && !IsShadowOrOutlineOrMetaPass() ) {
 				dependencies.vert_in_normals = true;
-				if( ps.catQuality.highQualityLightProbes )
+				if( ps.catLighting.highQualityLightProbes )
 					dependencies.NeedFragNormals();
 			}
 
@@ -2116,7 +2116,7 @@ namespace ShaderForge {
 				if( UseUnity5FogInThisPass() )
 					App( "UNITY_FOG_COORDS(" + GetVertOutTexcoord( true ) + ")" ); // New in Unity 5
 
-				bool sh = DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes;
+				bool sh = DoPassSphericalHarmonics() && !ps.catLighting.highQualityLightProbes;
 				bool lm = LightmapThisPass();
 
 
@@ -2185,7 +2185,7 @@ namespace ShaderForge {
 
 
 			bool lm = LightmapThisPass();
-			bool sh = DoPassSphericalHarmonics() && !ps.catQuality.highQualityLightProbes;
+			bool sh = DoPassSphericalHarmonics() && !ps.catLighting.highQualityLightProbes;
 
 			if( lm ){
 				App("#ifdef LIGHTMAP_ON");
@@ -2239,7 +2239,10 @@ namespace ShaderForge {
 
 			if( editor.mainNode.vertexOffset.IsConnectedAndEnabled() ) {
 				InitObjectScale(); // Vertex shader only needs this here if it's used in this input
-				App( "v.vertex.xyz += " + ps.n_vertexOffset + ";" );
+				if( ps.catGeometry.vertexOffsetMode == SFPSC_Geometry.VertexOffsetMode.Relative  )
+					App( "v.vertex.xyz += " + ps.n_vertexOffset + ";" );
+				else
+					App( "v.vertex.xyz = " + ps.n_vertexOffset + ";" );
 			}
 
 			if( dependencies.vert_out_worldPos )
@@ -2280,7 +2283,7 @@ namespace ShaderForge {
 
 			if( dependencies.vert_out_screenPos ) { // TODO: Select screen pos accuracy etc
 
-				if( ps.catQuality.highQualityScreenCoords ) {
+				if( ps.catGeometry.highQualityScreenCoords ) {
 					App( "o.screenPos = o.pos;" ); // Unpacked per-pixel
 				} else {
 					App( "o.screenPos = float4( o.pos.xy / o.pos.w, 0, 0 );" );
@@ -2350,11 +2353,11 @@ namespace ShaderForge {
 
 			InitGrabPassSign();
 
-			if( ps.catLighting.normalQuality == SFPSC_Lighting.NormalQuality.Normalized && dependencies.frag_normalDirection ) {
+			if( ps.catGeometry.normalQuality == SFPSC_Geometry.NormalQuality.Normalized && dependencies.frag_normalDirection ) {
 				App( "i.normalDir = normalize(i.normalDir);" );
 			}
 
-			if( dependencies.vert_out_screenPos && ps.catQuality.highQualityScreenCoords ) {
+			if( dependencies.vert_out_screenPos && ps.catGeometry.highQualityScreenCoords ) {
 				App( "i.screenPos = float4( i.screenPos.xy / i.screenPos.w, 0, 0 );" );
 				App( "i.screenPos.y *= _ProjectionParams.x;" );
 			}
@@ -2670,8 +2673,8 @@ namespace ShaderForge {
 
 		void FuncTessellation() {
 			
-			switch( ps.catQuality.tessellationMode ) {
-				case SFPSC_Quality.TessellationMode.Regular:
+			switch( ps.catGeometry.tessellationMode ) {
+				case SFPSC_Geometry.TessellationMode.Regular:
 
 					App("float Tessellation(TessVertex v){");// First, we need a per-vertex evaluation of the tess factor
 					scope++;
@@ -2689,7 +2692,7 @@ namespace ShaderForge {
 					App( "}" );
 					break;
 
-				case SFPSC_Quality.TessellationMode.EdgeLength:
+				case SFPSC_Geometry.TessellationMode.EdgeLength:
 					App( "float4 Tessellation(TessVertex v, TessVertex v1, TessVertex v2){" );
 					scope++;
 					App( "return UnityEdgeLengthBasedTess(v.vertex, v1.vertex, v2.vertex, " + ps.n_tessellation + ");" );

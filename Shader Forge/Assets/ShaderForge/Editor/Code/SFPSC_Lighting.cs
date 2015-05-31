@@ -11,8 +11,6 @@ namespace ShaderForge {
 
 		public RenderPath renderPath = RenderPath.Forward;
 		public LightPrecision lightPrecision = LightPrecision.Fragment;
-		public NormalQuality normalQuality = NormalQuality.Normalized;
-		public NormalSpace normalSpace = NormalSpace.Tangent;
 		public LightMode lightMode = LightMode.BlinnPhong;
 		public SpecularMode specularMode = SpecularMode.Metallic;
 		public TransparencyMode transparencyMode = TransparencyMode.Fade;
@@ -24,6 +22,7 @@ namespace ShaderForge {
 		//public bool shadowCast = true;
 		//public bool shadowReceive = true;
 		public bool bakedLight = false;
+		public bool highQualityLightProbes = false;
 		public bool reflectprobed = false;
 		public bool energyConserving = false;
 		public bool remapGlossExponentially = true;
@@ -34,10 +33,6 @@ namespace ShaderForge {
 
 		public enum LightPrecision { Vertex, Fragment };
 		public string[] strLightPrecision = new string[] { "Per-Vertex", "Per-Fragment" };
-		public enum NormalQuality { Interpolated, Normalized };
-		public string[] strNormalQuality = new string[] { "Interpolated", "Normalized" };
-		public enum NormalSpace { Tangent, Object, World };
-		public string[] strNormalSpace = new string[] { "Tangent", "Object", "World" };
 		public enum LightMode { Unlit, BlinnPhong, Phong, PBL };
 		public string[] strLightMode = new string[] { "Unlit/Custom", "Blinn-Phong", "Phong", "PBL" };
 		public enum SpecularMode { Specular, Metallic };
@@ -55,8 +50,6 @@ namespace ShaderForge {
 			string s = "";
 			s += Serialize( "lico", ( (int)lightCount ).ToString() );
 			s += Serialize( "lgpr", ( (int)lightPrecision ).ToString() );
-			s += Serialize( "nrmq", ( (int)normalQuality ).ToString() );
-			s += Serialize( "nrsp", ( (int)normalSpace ).ToString() );
 			s += Serialize( "limd", ( (int)lightMode ).ToString() );
 			s += Serialize( "spmd", ( (int)specularMode ).ToString() );
 			s += Serialize( "trmd", ( (int)transparencyMode ).ToString() );
@@ -64,6 +57,7 @@ namespace ShaderForge {
 			s += Serialize( "uamb", useAmbient.ToString() );
 			s += Serialize( "mssp", maskedSpec.ToString() );
 			s += Serialize( "bkdf", bakedLight.ToString() );
+			s += Serialize( "hqlp", highQualityLightProbes.ToString() );
 			s += Serialize( "rprd", reflectprobed.ToString() );
 			s += Serialize( "enco", energyConserving.ToString());
 			s += Serialize( "rmgx", remapGlossExponentially.ToString());
@@ -80,12 +74,6 @@ namespace ShaderForge {
 			switch( key ) {
 			case "lgpr":
 				lightPrecision = (LightPrecision)int.Parse( value );
-				break;
-			case "nrmq":
-				normalQuality = (NormalQuality)int.Parse( value );
-				break;
-			case "nrsp":
-				normalSpace = (NormalSpace)int.Parse( value );
 				break;
 			case "limd":
 				lightMode = (LightMode)int.Parse( value );
@@ -123,6 +111,9 @@ namespace ShaderForge {
 				break;
 			case "lprd":
 				bakedLight |= bool.Parse( value );
+				break;
+			case "hqlp":
+				highQualityLightProbes = bool.Parse( value );
 				break;
 			case "rprd":
 				reflectprobed = bool.Parse( value );
@@ -230,15 +221,7 @@ namespace ShaderForge {
 			
 			//lightPrecision = (LightPrecision)ContentScaledToolbar(r, "Light Quality", (int)lightPrecision, strLightPrecision ); // TODO: Too unstable for release
 			//r.y += 20;	
-			GUI.enabled = renderPath == RenderPath.Forward;
-			normalQuality = (NormalQuality)UndoableContentScaledToolbar(r, "Normal Quality", (int)normalQuality, strNormalQuality, "normal quality" );
-			GUI.enabled = true;
-			r.y += 20;
-
-			GUI.enabled = ps.mOut.normal.IsConnectedEnabledAndAvailable();
-			normalSpace = (NormalSpace)UndoableContentScaledToolbar( r, "Normal Space", (int)normalSpace, strNormalSpace, "normal space" );
-			r.y += 20;
-			GUI.enabled = true;
+			
 			
 			UndoableConditionalToggle(r, ref bakedLight,
 			                         usableIf: 				ps.HasDiffuse() && lightMode != LightMode.Unlit,
@@ -246,6 +229,9 @@ namespace ShaderForge {
 			                         label: 				"Lightmap & light probes",
 									 undoSuffix:			"lightmap & light probes"
 			                         );
+			r.y += 20;
+
+			highQualityLightProbes = UndoableToggle( r, highQualityLightProbes, "Per-pixel light probe sampling", "per-pixel light probe sampling", null );
 			r.y += 20;
 
 

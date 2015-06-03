@@ -71,6 +71,9 @@ namespace ShaderForge {
 		
 		public bool useFog = true;
 
+		public bool perObjectRefraction = true;
+		public string refractionPassName = "Refraction";
+
 
 		public bool autoSort = true;
 		public Queue queuePreset = (Queue)1;
@@ -106,6 +109,9 @@ namespace ShaderForge {
 			s += Serialize( "wrdp", writeDepth.ToString() );
 
 			s += Serialize( "dith", ( (int)dithering ).ToString() );
+
+			s += Serialize( "rfrpo", perObjectRefraction.ToString() );
+			s += Serialize( "rfrpn", refractionPassName );
 			
 			
 			s += Serialize( "ufog", useFog.ToString() );
@@ -197,7 +203,12 @@ namespace ShaderForge {
 			case "dith":
 				dithering = (Dithering)int.Parse( value );
 				break;
-
+			case "rfrpo":
+				perObjectRefraction = bool.Parse( value );
+				break;
+			case "rfrpn":
+				refractionPassName = value;
+				break;
 			case "ufog":
 				useFog = bool.Parse( value );
 				break;
@@ -295,6 +306,15 @@ namespace ShaderForge {
 
 		}
 
+
+		public string GetGrabTextureName() {
+			if( perObjectRefraction ) {
+				return "_GrabTexture";
+			} else {
+				return refractionPassName;
+			}
+		}
+
 	
 
 		public override float DrawInner(ref Rect r){
@@ -370,6 +390,10 @@ namespace ShaderForge {
 			
 			
 			OffsetBlock (ref r);
+
+
+			RefractionBlock( ref r );
+
 			
 			FogBlock(ref r);
 			
@@ -469,6 +493,37 @@ namespace ShaderForge {
 			return s;
 			
 		}*/
+
+		public void RefractionBlock( ref Rect r ) {
+
+			
+
+			perObjectRefraction = UndoableToggle( r, perObjectRefraction, "Per-object refraction/scene color (expensive)", "per-object refraction", null );
+			r.y += 20;
+
+			ps.StartIgnoreChangeCheck();
+			r.xMin += 20;
+			Rect right = r;
+			right.xMin += 126;
+			right.width -= 18;
+			Rect left = r;
+			left.width -= right.width;
+			GUI.enabled = !perObjectRefraction;
+			GUI.Label(left, "Texture name/group");
+			EditorGUI.BeginChangeCheck();
+			refractionPassName = UndoableTextField( right, refractionPassName, "refraction pass name", null, null, true );
+			if( EditorGUI.EndChangeCheck() ) {
+				editor.ShaderOutdated = UpToDateState.OutdatedSoft;
+				SF_Tools.FormatAlphanumeric( ref refractionPassName );
+			}
+			GUI.enabled = true;
+			r.y += 20;
+			r.xMin -= 20;
+
+
+
+			ps.EndIgnoreChangeCheck();
+		}
 
 
 		public void OffsetBlock(ref Rect r){

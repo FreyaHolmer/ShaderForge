@@ -814,8 +814,10 @@ namespace ShaderForge {
 				App( "uniform float4 _LightColor0;" );
 
 
-			if( dependencies.grabPass )
-				App( "uniform sampler2D _GrabTexture;" );
+			if( dependencies.grabPass ) {
+				App( "uniform sampler2D " + ps.catBlending.GetGrabTextureName() + ";" );
+			}
+				
 
 			if( dependencies.frag_sceneDepth )
 				App( "uniform sampler2D _CameraDepthTexture;" );
@@ -2001,7 +2003,7 @@ namespace ShaderForge {
 			if( dependencies.grabPass ) {
 
 				string s = "float4 sceneColor = ";
-				s += "tex2D(_GrabTexture, sceneUVs);";
+				s += "tex2D(" + ps.catBlending.GetGrabTextureName() + ", sceneUVs);";
 				App( s );
 			}
 
@@ -2813,7 +2815,11 @@ namespace ShaderForge {
 		public void GrabPass() {
 			if( !dependencies.grabPass )
 				return;
-			App( "GrabPass{ }" ); // TODO: Select if it's per-object or per-frame
+			if(ps.catBlending.perObjectRefraction)
+				App( "GrabPass{ }" );
+			else
+				App( "GrabPass{ \"" + ps.catBlending.GetGrabTextureName() + "\" }" );
+				
 		}
 
 		//////////////////////////////////////////////////////////////// DEFERRED

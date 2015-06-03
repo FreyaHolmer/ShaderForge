@@ -285,6 +285,11 @@ namespace ShaderForge {
 			s = rgx.Replace( s, "" );
 		}
 
+		public static void FormatAlphanumeric( ref string s ) {
+			Regex rgx = new Regex( "[^a-zA-Z0-9-_]" ); // Only allow Alphanumeric, forward slash, space, dash and underscore
+			s = rgx.Replace( s, "" );
+		}
+
 		public static void FormatSerializableComment(ref string s){
 			Regex rgx = new Regex( "[^\\w\\s_\\?\\.-]" ); // Only allow Alphanumeric, dot, dash, underscore and questionmark
 			s = rgx.Replace( s, "" );

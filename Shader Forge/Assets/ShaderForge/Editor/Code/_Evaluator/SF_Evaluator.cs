@@ -437,7 +437,7 @@ namespace ShaderForge {
 
 
 				// This has to be done afterwards
-				if( dependencies.frag_normalDirection && ps.catBlending.IsDoubleSided() ) {
+				if( dependencies.frag_normalDirection && ps.catGeometry.IsDoubleSided() ) {
 					dependencies.NeedFragViewDirection();
 				}
 
@@ -723,8 +723,8 @@ namespace ShaderForge {
 				App( "Offset 1, 1" );
 			} else if( currentPass == PassType.Outline ) {
 				App( "Cull Front" );
-			} else if( ps.catBlending.UseCulling() )
-				App( ps.catBlending.GetCullString() );
+			} else if( ps.catGeometry.UseCulling() )
+				App( ps.catGeometry.GetCullString() );
 
 			if( ps.catBlending.UseDepthTest() && !IsShadowOrOutlineOrMetaPass() ) // Shadow passes and outlines use default
 				App( ps.catBlending.GetDepthTestString() );
@@ -1146,7 +1146,7 @@ namespace ShaderForge {
 
 		void InitNormalDirVert() {
 			if( dependencies.vert_out_normals ) {
-				App( "o.normalDir = UnityObjectToWorldNormal(" + ps.catBlending.GetNormalSign() + "v.normal);" );
+				App( "o.normalDir = UnityObjectToWorldNormal(" + ps.catGeometry.GetNormalSign() + "v.normal);" );
 			}
 		}
 
@@ -1198,9 +1198,9 @@ namespace ShaderForge {
 					App( "float3 normalDirection = i.normalDir;" );
 				}
 			}
-			
 
-			if( ps.catBlending.IsDoubleSided() ) {
+
+			if( ps.catGeometry.IsDoubleSided() ) {
 				App( "" );
 				App( "float nSign = sign( dot( viewDirection, i.normalDir ) ); // Reverse normal if this is a backface" );
 				App( "i.normalDir *= nSign;" );

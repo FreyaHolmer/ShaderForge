@@ -7,7 +7,6 @@ namespace ShaderForge {
 
 	public enum DepthTestStencil { Less, Greater, LEqual, GEqual, Equal, NotEqual, Always, Never };
 	public enum StencilOp { Keep, Zero, Replace, Invert, IncrSat, DecrSat, IncrWrap, DecrWrap };
-	public enum CullMode { BackfaceCulling, FrontfaceCulling, DoubleSided };
 	public enum DepthTest { Less, Greater, LEqual, GEqual, Equal, NotEqual, Always };
 	public enum RenderType { None, Opaque, Transparent, TransparentCutout, Background, Overlay, TreeOpaque, TreeTransparentCutout, TreeBillboard, Grass, GrassBillboard };
 	public enum BlendModePreset {
@@ -31,7 +30,6 @@ namespace ShaderForge {
 
 		public static string[] strDepthTestStencil = new string[] { "<", ">", "\u2264", "\u2265", "=", "\u2260", "Always (Default)", "Never" };
 		public static string[] strStencilOp = new string[] { "Keep (Default)", "Zero", "Replace", "Invert", "Increase (Clamped)", "Decrease (Clamped)", "Increase (Wrapped)", "Decrease (Wrapped)" };
-		public static string[] strCullMode = new string[] { "Back", "Front", "Off" };
 		public static string[] strDepthTest = new string[] { "<", ">", "\u2264 (Default)", "\u2265", "=", "\u2260", "Always" };
 		public static int[] queueNumbers = new int[] { 1000, 2000, 2450, 3000, 4000 };
 		public static string[] strQueue = new string[] { "Background (1000)", "Opaque Geometry (2000)", "Alpha Clip (2450)", "Transparent (3000)", "Overlay (4000)" };
@@ -53,7 +51,6 @@ namespace ShaderForge {
 		public BlendModePreset blendModePreset = BlendModePreset.Opaque;
 		public BlendMode blendSrc = BlendMode.One;
 		public BlendMode blendDst = BlendMode.Zero;
-		public CullMode cullMode = CullMode.BackfaceCulling;
 		public DepthTest depthTest = DepthTest.LEqual;
 
 
@@ -105,7 +102,6 @@ namespace ShaderForge {
 			//s += Serialize( "blpr", ( (int)blendModePreset ).ToString() );
 			s += Serialize( "bsrc", ( (int)blendSrc ).ToString() );
 			s += Serialize( "bdst", ( (int)blendDst ).ToString() );
-			s += Serialize( "culm", ( (int)cullMode ).ToString() );
 			s += Serialize( "dpts", ( (int)depthTest ).ToString() );
 			s += Serialize( "wrdp", writeDepth.ToString() );
 
@@ -191,9 +187,6 @@ namespace ShaderForge {
 				}	
 				blendDst = (BlendMode)int.Parse( value );
 				ConformPresetToBlend(); 
-				break;
-			case "culm":
-				cullMode = (CullMode)int.Parse( value );
 				break;
 			case "dpts":
 				depthTest = (DepthTest)int.Parse( value );
@@ -363,8 +356,6 @@ namespace ShaderForge {
 			r.y += 20;
 			//}
 
-			cullMode = (CullMode)UndoableLabeledEnumPopup( r, "Face Culling", cullMode, "face culling" );
-			r.y += 20;
 			
 			
 			bool canEditDithering = editor.mainNode.alphaClip.IsConnectedAndEnabled();
@@ -736,15 +727,7 @@ namespace ShaderForge {
 
 
 
-		// TODO: Double sided support
-		public string GetNormalSign() {
-			if( cullMode == CullMode.BackfaceCulling )
-				return "";
-			if( cullMode == CullMode.FrontfaceCulling )
-				return "-";
-			//if( cullMode == CullMode.DoubleSided )
-			return "";
-		}
+
 
 
 		public bool UseBlending() {
@@ -777,16 +760,6 @@ namespace ShaderForge {
 		}
 		public string GetDepthTestString() {
 			return "ZTest " + depthTest.ToString();
-		}
-		
-		public bool UseCulling() {
-			return ( cullMode != CullMode.BackfaceCulling );
-		}
-		public string GetCullString() {
-			return "Cull " + strCullMode[(int)cullMode];
-		}
-		public bool IsDoubleSided() {
-			return ( cullMode == CullMode.DoubleSided );
 		}
 		
 		public string GetShadowPragmaIfUsed(){

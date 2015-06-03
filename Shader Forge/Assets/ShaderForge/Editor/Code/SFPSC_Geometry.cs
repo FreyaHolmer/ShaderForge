@@ -17,6 +17,8 @@ namespace ShaderForge {
 		public string[] tessModeStr = new string[] { "Regular", "Edge length based"/*, "Edge length based with frustrum culling"*/};
 		public enum VertexOffsetMode { Relative, Absolute }
 		public string[] vertexOffsetModeStr = new string[] { "Relative", "Absolute" };
+		public enum CullMode { BackfaceCulling, FrontfaceCulling, DoubleSided };
+		public static string[] strCullMode = new string[] { "Back", "Front", "Off" };
 
 		public NormalQuality normalQuality = NormalQuality.Normalized;
 		public NormalSpace normalSpace = NormalSpace.Tangent;
@@ -24,8 +26,9 @@ namespace ShaderForge {
 		public bool showPixelSnap = false;
 		public bool highQualityScreenCoords = true;
 		public TessellationMode tessellationMode = TessellationMode.Regular;
-		
+		public CullMode cullMode = CullMode.BackfaceCulling;
 
+		
 		
 		
 
@@ -37,6 +40,7 @@ namespace ShaderForge {
 			s += Serialize( "vomd", ( (int)vertexOffsetMode ).ToString() );
 			s += Serialize( "spxs",	showPixelSnap.ToString());
 			s += Serialize( "tesm", ((int)tessellationMode).ToString());
+			s += Serialize( "culm", ( (int)cullMode ).ToString() );
 			return s;
 		}
 
@@ -61,6 +65,9 @@ namespace ShaderForge {
 			case "tesm":
 				tessellationMode = (TessellationMode)int.Parse( value );
 				break;
+			case "culm":
+				cullMode = (CullMode)int.Parse( value );
+				break;
 			}
 
 		}
@@ -75,6 +82,9 @@ namespace ShaderForge {
 			r.xMin += 20;
 			r.y += 20;
 
+
+			cullMode = (CullMode)UndoableLabeledEnumPopup( r, "Face Culling", cullMode, "face culling" );
+			r.y += 20;
 
 			GUI.enabled = ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Forward;
 			normalQuality = (NormalQuality)UndoableContentScaledToolbar( r, "Normal Quality", (int)normalQuality, strNormalQuality, "normal quality" );
@@ -100,11 +110,31 @@ namespace ShaderForge {
 			showPixelSnap = UndoableToggle( r, showPixelSnap, "Show 2D sprite pixel snap option in material", "show pixel snap", null );
 			r.y += 20;
 
-			
-
 			r.y += prevYpos;
 
 			return (int)r.yMax;
+		}
+
+
+
+		// TODO: Double sided support
+		public string GetNormalSign() {
+			if( cullMode == CullMode.BackfaceCulling )
+				return "";
+			if( cullMode == CullMode.FrontfaceCulling )
+				return "-";
+			//if( cullMode == CullMode.DoubleSided )
+			return "";
+		}
+
+		public bool UseCulling() {
+			return ( cullMode != CullMode.BackfaceCulling );
+		}
+		public string GetCullString() {
+			return "Cull " + strCullMode[(int)cullMode];
+		}
+		public bool IsDoubleSided() {
+			return ( cullMode == CullMode.DoubleSided );
 		}
 
 

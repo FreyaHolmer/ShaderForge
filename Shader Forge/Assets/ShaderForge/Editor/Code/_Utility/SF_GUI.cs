@@ -121,6 +121,106 @@ namespace ShaderForge {
 			}
 		}
 
+
+
+
+
+
+		private static Texture2D shader_preset_icon_custom;
+		public static Texture2D Shader_preset_icon_custom {
+			get {
+				if( shader_preset_icon_custom == null )
+					shader_preset_icon_custom = SF_Resources.LoadInterfaceIcon( "preset_custom" );
+				return shader_preset_icon_custom;
+			}
+		}
+
+		private static Texture2D shader_preset_icon_litbasic;
+		public static Texture2D Shader_preset_icon_litbasic {
+			get {
+				if( shader_preset_icon_litbasic == null )
+					shader_preset_icon_litbasic = SF_Resources.LoadInterfaceIcon( "preset_litbasic" );
+				return shader_preset_icon_litbasic;
+			}
+		}
+
+		private static Texture2D shader_preset_icon_litpbr;
+		public static Texture2D Shader_preset_icon_litpbr {
+			get {
+				if( shader_preset_icon_litpbr == null )
+					shader_preset_icon_litpbr = SF_Resources.LoadInterfaceIcon( "preset_litpbr" );
+				return shader_preset_icon_litpbr;
+			}
+		}
+
+		private static Texture2D shader_preset_icon_particleadditive;
+		public static Texture2D Shader_preset_icon_particleadditive {
+			get {
+				if( shader_preset_icon_particleadditive == null )
+					shader_preset_icon_particleadditive = SF_Resources.LoadInterfaceIcon( SkinSuffix("preset_particleadditive") );
+				return shader_preset_icon_particleadditive;
+			}
+		}
+
+		private static Texture2D shader_preset_icon_particlealphablended;
+		public static Texture2D Shader_preset_icon_particlealphablended {
+			get {
+				if( shader_preset_icon_particlealphablended == null )
+					shader_preset_icon_particlealphablended = SF_Resources.LoadInterfaceIcon( SkinSuffix("preset_particlealphablended") );
+				return shader_preset_icon_particlealphablended;
+			}
+		}
+
+		private static Texture2D shader_preset_icon_particlemultiplicative;
+		public static Texture2D Shader_preset_icon_particlemultiplicative {
+			get {
+				if( shader_preset_icon_particlemultiplicative == null )
+					shader_preset_icon_particlemultiplicative = SF_Resources.LoadInterfaceIcon( SkinSuffix("preset_particlemultiplicative") );
+				return shader_preset_icon_particlemultiplicative;
+			}
+		}
+
+		private static Texture2D shader_preset_icon_sky;
+		public static Texture2D Shader_preset_icon_sky {
+			get {
+				if( shader_preset_icon_sky == null )
+					shader_preset_icon_sky = SF_Resources.LoadInterfaceIcon( "preset_sky" );
+				return shader_preset_icon_sky;
+			}
+		}
+
+		private static Texture2D shader_preset_icon_sprite;
+		public static Texture2D Shader_preset_icon_sprite {
+			get {
+				if( shader_preset_icon_sprite == null )
+					shader_preset_icon_sprite = SF_Resources.LoadInterfaceIcon( "preset_sprite" );
+				return shader_preset_icon_sprite;
+			}
+		}
+
+		private static Texture2D shader_preset_icon_unlit;
+		public static Texture2D Shader_preset_icon_unlit {
+			get {
+				if( shader_preset_icon_unlit == null )
+					shader_preset_icon_unlit = SF_Resources.LoadInterfaceIcon( "preset_unlit" );
+				return shader_preset_icon_unlit;
+			}
+		}
+
+		private static Texture2D shader_preset_icon_highlight;
+		public static Texture2D Shader_preset_icon_highlight {
+			get {
+				if( shader_preset_icon_highlight == null )
+					shader_preset_icon_highlight = SF_Resources.LoadInterfaceIcon( "preset_highlight" );
+				return shader_preset_icon_highlight;
+			}
+		}
+
+		
+
+
+
+
 		private static Texture2D inst_vert;
 		public static Texture2D Inst_vert {
 			get {

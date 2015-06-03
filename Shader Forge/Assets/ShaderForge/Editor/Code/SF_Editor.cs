@@ -1464,7 +1464,7 @@ namespace ShaderForge {
 		}
 
 
-		private enum MainMenuState{Main, Credits}
+		private enum MainMenuState{Main, Credits, PresetPick}
 
 		private MainMenuState menuState = MainMenuState.Main;
 
@@ -1497,6 +1497,9 @@ namespace ShaderForge {
 				if(menuState == MainMenuState.Main){
 					minSize = new Vector2(500,400);
 					DrawPrimaryMainMenuGUI();
+				} else if( menuState == MainMenuState.PresetPick ) {
+					minSize = new Vector2( 128*(shaderPresetNames.Length + 1), 560 );
+					DrawPresetPickGUI();
 				} else if(menuState == MainMenuState.Credits){
 
 					//Vector2 centerPrev = position.center;
@@ -1574,6 +1577,177 @@ namespace ShaderForge {
 			},400f);
 		}
 
+		public enum ShaderPresets { Unlit, LitPBR, LitBasic, Custom, Sprite, ParticleAdditive, ParticleAlphaBlended, ParticleMultiplicative, Sky }
+		public string[] shaderPresetNames = new string[] {
+			"Unlit",
+			"Lit\n(PBR)",
+			"Lit\n(Basic)",
+			"Custom Lighting",
+			"Sprite",
+			"Particle\n(Additive)",
+			"Particle\n(Alpha-Blended)",
+			"Particle\n(Multiplicative)",
+			"Sky"
+		};
+
+		public string[] shaderPresetShaders = new string[] {
+			"Unlit",
+			"PBR",
+			"Basic",
+			"CustomLighting",
+			"Sprite",
+			"ParticleAdditive",
+			"ParticleAlphaBlended",
+			"ParticleMultiplicative",
+			"Sky"
+		};
+
+		public string GetShaderPresetPath(ShaderPresets preset) {
+			int i = (int)preset;
+			string file = "preset" + shaderPresetShaders[i] + ".shader";
+			return SF_Resources.InternalResourcesPath + "Shader Presets/" + file;
+		}
+
+
+		public string[] shaderPresetDescriptions = new string[] { 
+			"Unlit means that light sources will not affect this shader, it will simply have the color you give it, regardless of the scene setup.",
+			"Lit (PBR) is set up to match Unity's Physically Based shader, affected by lightmaps, light probes, reflection probes etc.",
+			"Lit (Basic) is the old-school Blinn-Phong lighting model. Direct lighting only, no lightmap or probe data.",
+			"Custom Lighting is set up with a simple example of how you can create your own lighting models. The initial setup is a Blinn-Phong shader.",
+			"Sprite is for creating 2D shaders to be used on sprites. These will have the pixel-perfect option and sort properly with other 2D sprites.",
+			"Particle (Additive) is generally for glow effects, lightshafts, sparks etc. Primarily used in particle systems.",
+			"Particle (Alpha-Blended) is generally for debris effects, dusty smoke etc. Primarily used in particle systems.",
+			"Particle (Multiplicative) is generally for darkening effects, black smoke, evil-looking anti-glow etc. Primarily used in particle systems.",
+			"Sky is for creating shaders to be used with a sky material in your scene. It will render behind everything else."
+		};
+
+		string desc = "";
+
+		public void DrawPresetPickGUI() {
+
+			GUIStyle centerLabel = new GUIStyle( EditorStyles.boldLabel );
+			GUIStyle centerLabelSmall = new GUIStyle( EditorStyles.miniLabel );
+			centerLabel.alignment = centerLabelSmall.alignment = TextAnchor.MiddleCenter;
+
+
+			EditorGUILayout.Separator();
+			FlexHorizontal( () => {
+				GUILayout.BeginVertical();
+				GUILayout.Label( "What kind of shader do you want to forge?", centerLabel );
+				GUI.color = new Color(1f,1f,1f,0.4f);
+				GUILayout.Label( "This will simply affect the initial configuration of the shader. It will not \"lock-in\" any features", centerLabelSmall );
+				GUI.color = Color.white;
+				GUILayout.EndVertical();
+			} );
+			EditorGUILayout.Separator();
+
+			
+
+			FlexHorizontal( () => {
+
+				GUILayoutOption[] btnLayout = new GUILayoutOption[2] { GUILayout.Width( 128 ), GUILayout.Height( 128 ) };
+
+				GUIStyle style = new GUIStyle( EditorStyles.boldLabel );
+				style.alignment = TextAnchor.UpperCenter;
+
+				//if( Event.current.type == EventType.mouseMove)
+					//desc = "";
+
+				//GUILayout.BeginVertical();
+				for(int i=0;i<shaderPresetNames.Length;i++){
+					
+					GUILayout.Label( GetShaderPresetIcon( (ShaderPresets)i ), btnLayout );
+
+					Rect r = GUILayoutUtility.GetLastRect();
+
+					GUI.Label( r.MovedDown(), shaderPresetNames[i], style );
+
+					if(r.Contains(Event.current.mousePosition) ){
+						GUI.DrawTexture(r, SF_GUI.Shader_preset_icon_highlight, ScaleMode.ScaleToFit, true);
+						desc = shaderPresetDescriptions[i];
+					}
+
+					
+
+
+
+					GUI.color = Color.clear;
+					
+
+
+					if( GUI.Button( r, "" ) ) {
+						
+						bool created = TryCreateNewShader( (ShaderPresets)i );
+						if( created )
+							return;
+					}
+					GUI.color = Color.white;
+				}
+				//GUILayout.EndVertical();
+
+			});
+		
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+
+			FlexHorizontal( () => {
+				GUILayout.Label( desc, centerLabelSmall );
+			});
+
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+
+			FlexHorizontal( () => {
+				if( GUILayout.Button( "Back" ) ) {
+					menuState = MainMenuState.Main;
+				}
+			} );
+
+
+
+			
+		}
+
+
+		public Texture2D GetShaderPresetIcon(ShaderPresets preset) {
+
+			switch( preset ) {
+
+				case ShaderPresets.Custom:
+					return SF_GUI.Shader_preset_icon_custom;
+				case ShaderPresets.LitBasic:
+					return SF_GUI.Shader_preset_icon_litbasic;
+				case ShaderPresets.LitPBR:
+					return SF_GUI.Shader_preset_icon_litpbr;
+				case ShaderPresets.ParticleAdditive:
+					return SF_GUI.Shader_preset_icon_particleadditive;
+				case ShaderPresets.ParticleAlphaBlended:
+					return SF_GUI.Shader_preset_icon_particlealphablended;
+				case ShaderPresets.ParticleMultiplicative:
+					return SF_GUI.Shader_preset_icon_particlemultiplicative;
+				case ShaderPresets.Sky:
+					return SF_GUI.Shader_preset_icon_sky;
+				case ShaderPresets.Sprite:
+					return SF_GUI.Shader_preset_icon_sprite;
+				case ShaderPresets.Unlit:
+					return SF_GUI.Shader_preset_icon_unlit;
+
+			}
+
+			Debug.LogError("No preset icon found");
+
+			return null;
+
+
+		}
+
+
 		public void DrawPrimaryMainMenuGUI(){
 
 			
@@ -1596,15 +1770,13 @@ namespace ShaderForge {
 						Application.OpenURL( SF_Tools.manualURL );
 					}
 				});
-				*/
+			*/
 			
 			FlexHorizontal(()=>{
 				
 				if(SF_Tools.CanRunShaderForge()){
 					if( GUILayout.Button( "New Shader", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
-						bool created = TryCreateNewShader();
-						if( created )
-							return;
+						menuState = MainMenuState.PresetPick;
 					}
 					if( GUILayout.Button( "Load Shader", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
 						OpenLoadDialog();
@@ -1718,7 +1890,17 @@ namespace ShaderForge {
 
 
 
-		public bool TryCreateNewShader() {
+		public bool TryCreateNewShader(SF_Editor.ShaderPresets preset) {
+
+
+			
+			
+
+			//Shader s = (Shader)AssetDatabase.LoadAssetAtPath( presetPath, typeof(Shader) );
+			//Debug.Log( s);
+
+	
+
 			string savePath = EditorUtility.SaveFilePanel(
 				"Save new shader",
 				"Assets",
@@ -1730,27 +1912,49 @@ namespace ShaderForge {
 				return false;
 			}
 
-			//Debug.Log( "savePath:" + savePath );
-
+			string presetPath = GetShaderPresetPath( preset );
+			StreamReader presetReader = new StreamReader( Application.dataPath + presetPath.Substring( 6 ) );
 
 			// So we now have the path to save it, let's save
-			//StreamWriter sw;
+			StreamWriter sw;
 			if( !File.Exists( savePath ) ) {
-				StreamWriter sw = File.CreateText( savePath );
-				sw.Write("Shader \"\" { SubShader { Pass { } } }");
-				sw.Flush();
-				sw.Close();
-				AssetDatabase.Refresh();
+				sw = File.CreateText( savePath );
+			} else {
+				sw = new StreamWriter(savePath);
 			}
+
+			// Read from preset
+			string[] presetLines = presetReader.ReadToEnd().Split( '\n' );
+			for( int i=0; i < presetLines.Length; i++ ) {
+				if( presetLines[i].StartsWith( "Shader \"Hidden/" ) ) {
+
+					// Extract name of the file to put in the shader path
+					string[] split = savePath.Split( '/' );
+					currentShaderPath = split[split.Length - 1].Split( '.' )[0];
+					currentShaderPath = "Shader Forge/" + currentShaderPath;
+
+					// Write to the line
+					presetLines[i] = "Shader \"" + currentShaderPath + "\" {";
+
+					break;
+				}
+			}
+
+			// Read from the preset
+			for( int i=0; i < presetLines.Length; i++ ) {
+				sw.WriteLine( presetLines[i] );
+			}
+
+			sw.Flush();
+			sw.Close();
+			presetReader.Close();
+			AssetDatabase.Refresh();
 
 			// Shorten it to a relative path
 			string dataPath = Application.dataPath;
-			//Debug.Log( "dataPath = " + dataPath );
 			string assetPath = "Assets/" + savePath.Substring( dataPath.Length + 1 );
-			//Debug.Log( "assetPath = " + assetPath );
 
 			// Assign a reference to the file
-			//AssetDatabase.Refresh();
 			currentShaderAsset = (Shader)AssetDatabase.LoadAssetAtPath( assetPath, typeof( Shader ) );
 
 			if( currentShaderAsset == null ) {
@@ -1759,24 +1963,17 @@ namespace ShaderForge {
 				return false;
 			}
 
-			// Extract name of the file to put in the shader path
-			string[] split = savePath.Split( '/' );
-			currentShaderPath = split[split.Length - 1].Split( '.' )[0];
-			currentShaderPath = "Shader Forge/" + currentShaderPath;
-
-			//Debug.Log( "Shader path = " + currentShaderPath );
-
-			//EditorUtility.DisplayDialog( "Inconvenient, right?", "Later, you'll be able to create new\nshaders without saving them first", "Ok" );
-
+			
 
 			// Make sure the preview material is using the shader
 			preview.InternalMaterial.shader = currentShaderAsset;
 
 			// That's about it for the file/asset management.
-			CreateOutputNode();
-			shaderEvaluator.Evaluate(); // And we're off!
+			//CreateOutputNode();
+			SF_Editor.Init( currentShaderAsset );
+			//shaderEvaluator.Evaluate(); // And we're off!
 
-			nodeView.CenterCamera();
+			//nodeView.CenterCamera();
 
 			return true;
 		}

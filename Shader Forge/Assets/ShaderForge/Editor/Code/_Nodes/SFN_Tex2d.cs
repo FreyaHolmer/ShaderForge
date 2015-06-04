@@ -483,7 +483,7 @@ namespace ShaderForge {
 
 		public override string SerializeSpecialData() {
 
-			string s = "";
+			string s = property.Serialize() + ",";
 
 			if( TextureAsset != null )
 				s += "tex:" + SF_Tools.AssetToGUID( TextureAsset ) + ",";
@@ -495,6 +495,7 @@ namespace ShaderForge {
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
+			property.Deserialize( key, value );
 			switch( key ) {
 			case "tex":
 				TextureAsset = (Texture)SF_Tools.GUIDToAsset( value, typeof( Texture ) );

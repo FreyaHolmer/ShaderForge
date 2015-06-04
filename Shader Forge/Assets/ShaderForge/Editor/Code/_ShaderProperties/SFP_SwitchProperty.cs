@@ -14,7 +14,7 @@ namespace ShaderForge {
 
 		public override string GetInitializationLine() {
 			string defaultValue = base.node.texture.dataUniform.r.ToString();
-			return "[MaterialToggle] " + GetVariable() + " (\"" + nameDisplay + "\", Float ) = " + defaultValue;
+			return GetTagString() + "[MaterialToggle] " + GetVariable() + " (\"" + nameDisplay + "\", Float ) = " + defaultValue;
 		}
 
 		public override string GetVariableLine() {

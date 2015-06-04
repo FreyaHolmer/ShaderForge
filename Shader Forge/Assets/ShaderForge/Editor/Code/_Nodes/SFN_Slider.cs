@@ -135,7 +135,7 @@ namespace ShaderForge {
 
 
 		public override string SerializeSpecialData() {
-			string s = "";
+			string s = property.Serialize() + ",";
 			s += "min:" + min + ",";
 			s += "cur:" + current + ",";
 			s += "max:" + max;
@@ -143,6 +143,7 @@ namespace ShaderForge {
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
+			property.Deserialize( key, value );
 			switch( key ) {
 				case "min":
 					min = float.Parse( value );

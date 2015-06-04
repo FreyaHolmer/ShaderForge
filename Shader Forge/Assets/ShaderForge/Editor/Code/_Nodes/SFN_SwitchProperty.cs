@@ -131,10 +131,13 @@ namespace ShaderForge {
 
 
 		public override string SerializeSpecialData() {
-			return "on:" + on;
+			string s = property.Serialize() + ",";
+			s += "on:" + on;
+			return s;
 		}
 		
 		public override void DeserializeSpecialData( string key, string value ) {
+			property.Deserialize( key, value );
 			switch( key ) {
 			case "on":
 				on = bool.Parse( value );

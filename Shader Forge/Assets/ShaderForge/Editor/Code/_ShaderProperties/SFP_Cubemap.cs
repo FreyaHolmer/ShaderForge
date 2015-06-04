@@ -15,7 +15,7 @@ namespace ShaderForge {
 
 		public override string GetInitializationLine() {
 			string defaultValue = "\"_Skybox\"";
-			return GetVariable() + " (\"" + nameDisplay + "\", Cube) = " + defaultValue + " {}";
+			return GetTagString() + GetVariable() + " (\"" + nameDisplay + "\", Cube) = " + defaultValue + " {}";
 		}
 
 		public override string GetVariableLine() {

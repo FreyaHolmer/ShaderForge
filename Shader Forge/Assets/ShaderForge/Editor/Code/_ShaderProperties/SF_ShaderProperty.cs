@@ -9,6 +9,12 @@ namespace ShaderForge {
 	[System.Serializable]
 	public class SF_ShaderProperty : ScriptableObject {
 
+		public bool tagHideInInspector = false;
+		public bool tagHDR = false;
+		public bool tagPerRendererData = false;
+		public bool tagNoScaleOffset = false;
+		public bool tagNormal = false;
+
 		public string nameDisplay = "";	// The displayed name in the material inspector
 		public string nameType;		// Used for labeling in the editor
 		public string nameInternal = "_";	// The internal shader code name		
@@ -19,6 +25,21 @@ namespace ShaderForge {
 
 		public void OnEnable() {
 			base.hideFlags = HideFlags.HideAndDontSave;
+		}
+
+		public string GetTagString() {
+			string s = "";
+			if( tagHideInInspector )
+				s += "[HideInInspector]";
+			if( tagNoScaleOffset )
+				s += "[NoScaleOffset]";
+			if( tagNormal )
+				s += "[Normal]";
+			if( tagHDR )
+				s += "[HDR]";
+			if( tagPerRendererData )
+				s += "[PerRendererData]";
+			return s;
 		}
 
 		public void Initialize(SF_Node node){
@@ -220,6 +241,11 @@ namespace ShaderForge {
 		public string Serialize(){
 			string s = "";
 			s += "glob:" + global.ToString();
+			s += ",taghide:" + tagHideInInspector.ToString();
+			s += ",taghdr:" + tagHDR.ToString();
+			s += ",tagprd:" + tagPerRendererData.ToString();
+			s += ",tagnsco:" + tagNoScaleOffset.ToString();
+			s += ",tagnrm:" + tagNormal.ToString();
 			return s;
 		}
 
@@ -227,6 +253,21 @@ namespace ShaderForge {
 			switch( key ) {
 			case "glob":
 				global = bool.Parse( value );
+				break;
+			case "taghide":
+				tagHideInInspector = bool.Parse( value );
+				break;
+			case "taghdr":
+				tagHDR = bool.Parse( value );
+				break;
+			case "tagprd":
+				tagPerRendererData = bool.Parse( value );
+				break;
+			case "tagnsco":
+				tagNoScaleOffset = bool.Parse( value );
+				break;
+			case "tagnrm":
+				tagNormal = bool.Parse( value );
 				break;
 			}
 		}

@@ -1017,6 +1017,7 @@ namespace ShaderForge {
 			switch(picked){
 			case "prop_global_toggle":
 				property.ToggleGlobal();
+				editor.ShaderOutdated = UpToDateState.OutdatedHard;
 				break;
 			case "doc_open":
 				SF_Web.OpenDocumentationForNode(this);
@@ -1026,10 +1027,33 @@ namespace ShaderForge {
 				GUI.FocusControl("node_comment_" + id);
 				isEditingNodeTextField = true;
 				SF_Node.isEditingAnyNodeTextField = true;
+				editor.ShaderOutdated = UpToDateState.OutdatedSoft;
+				break;
+			case "taghide":
+				property.tagHideInInspector = !property.tagHideInInspector;
+				editor.ShaderOutdated = UpToDateState.OutdatedHard;
+				break;
+			case "tagnsco":
+				property.tagNoScaleOffset = !property.tagNoScaleOffset;
+				editor.ShaderOutdated = UpToDateState.OutdatedHard;
+				break;
+			case "tagnrm":
+				property.tagNormal = !property.tagNormal;
+				editor.ShaderOutdated = UpToDateState.OutdatedHard;
+				break;
+			case "taghdr":
+				property.tagHDR = !property.tagHDR;
+				editor.ShaderOutdated = UpToDateState.OutdatedHard;
+				break;
+			case "tagprd":
+				property.tagPerRendererData = !property.tagPerRendererData;
+				editor.ShaderOutdated = UpToDateState.OutdatedHard;
 				break;
 			}
+			
 		}
-
+		
+		
 		public bool HasComment(){
 			return !string.IsNullOrEmpty(comment);
 		}
@@ -1096,6 +1120,19 @@ namespace ShaderForge {
 					}
 					menu.AddItem( new GUIContent("Edit Comment"), false, ContextClick, "cmt_edit" );
 					menu.AddItem( new GUIContent("What does " + nodeName + " do?"), false, ContextClick, "doc_open" );
+					if( IsProperty() && property.global == false ) {
+						menu.AddSeparator( "" );
+						menu.AddItem( new GUIContent( "[Hide in inspector]" ), property.tagHideInInspector, ContextClick, "taghide" );
+						if( property is SFP_Tex2d ) {
+							menu.AddItem( new GUIContent( "[Hide scale and offset]" ), property.tagNoScaleOffset, ContextClick, "tagnsco" );
+							menu.AddItem( new GUIContent( "[Accept normals only]" ), property.tagNormal, ContextClick, "tagnrm" );
+							menu.AddItem( new GUIContent( "[Accept HDR only]" ), property.tagHDR, ContextClick, "taghdr" );
+							menu.AddItem( new GUIContent( "[Per-renderer data]" ), property.tagPerRendererData, ContextClick, "tagprd" );
+						}
+						// taghide tagnsco tagnrm taghdr tagprd
+					}
+					
+
 					Matrix4x4 prevMatrix = GUI.matrix;
 					GUI.matrix = Matrix4x4.identity; // Odd hack, but, works
 					menu.ShowAsContext();
@@ -1259,6 +1296,36 @@ namespace ShaderForge {
 			}
 
 
+			// Tags
+			if(IsProperty() && !property.global){
+				
+				
+				cr.y = BoundsTop() - 18;
+				if( mouseOver || selected ) {
+					cr.y -= 8;
+				}
+				cr.height = 15;
+				Color c = colorExposed;
+				c.a = 0.6f;
+				GUI.color = c;
+				
+
+				TagLabel( ref cr, "Hidden", property.tagHideInInspector );
+				TagLabel( ref cr, "No scale/offset", property.tagNoScaleOffset );
+				TagLabel( ref cr, "Normal", property.tagNormal );
+				TagLabel( ref cr, "HDR", property.tagHDR );
+				TagLabel( ref cr, "Per-renderer", property.tagPerRendererData );
+
+				GUI.color = Color.white;
+
+			}
+
+
+			
+
+
+
+
 
 			Rect ur = rect;
 
@@ -1338,6 +1405,14 @@ namespace ShaderForge {
 
 			//GUI.Label( nameRect, "Test", EditorStyles.toolbarTextField );
 
+		}
+
+
+		void TagLabel( ref Rect r, string tag, bool tagOn ) {
+			if( tagOn ) {
+				GUI.Label( r, "[" + tag + "]", EditorStyles.miniLabel );
+				r = r.MovedUp();
+			}
 		}
 
 

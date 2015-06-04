@@ -16,7 +16,7 @@ namespace ShaderForge {
 		}
 
 		public override string GetInitializationLine() {
-			return GetVariable() + " (\"" + nameDisplay + "\", Color) = (" + GetValue().r + "," + GetValue().g + "," + GetValue().b + "," + GetValue().a + ")";
+			return GetTagString() + GetVariable() + " (\"" + nameDisplay + "\", Color) = (" + GetValue().r + "," + GetValue().g + "," + GetValue().b + "," + GetValue().a + ")";
 		}
 
 		Color GetValue() {

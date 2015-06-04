@@ -20,7 +20,7 @@ namespace ShaderForge {
 		public override string GetInitializationLine() {
 			string defaultValue = GetCurrent().ToString();
 			// name ("display name", Range (min, max)) = number
-			return GetVariable() + " (\"" + nameDisplay + "\", Range(" + GetMin() + ", " + GetMax() + ")) = " + defaultValue;
+			return GetTagString() + GetVariable() + " (\"" + nameDisplay + "\", Range(" + GetMin() + ", " + GetMax() + ")) = " + defaultValue;
 		}
 
 		float GetMin() {

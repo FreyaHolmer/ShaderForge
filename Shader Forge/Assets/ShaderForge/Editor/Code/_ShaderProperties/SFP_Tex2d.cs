@@ -26,7 +26,7 @@ namespace ShaderForge {
 			else if(base.node is SFN_Tex2dAsset)
 				noTexValue = (base.node as SFN_Tex2dAsset).noTexValue;
 
-			return GetVariable() + " (\"" + nameDisplay + "\", 2D) = \"" + noTexValue.ToString().ToLower() + "\" {}";
+			return GetTagString() + GetVariable() + " (\"" + nameDisplay + "\", 2D) = \"" + noTexValue.ToString().ToLower() + "\" {}";
 		}
 
 		public override string GetVariableLine() {

@@ -171,15 +171,15 @@ namespace ShaderForge {
 		}
 
 		public override string SerializeSpecialData() {
-			string s = "";
-			if( cubemapAsset == null )
-				return null;
-			s += "cube:" + SF_Tools.AssetToGUID( cubemapAsset ) + ",";
+			string s = property.Serialize() + ",";
+			if( cubemapAsset != null )
+				s += "cube:" + SF_Tools.AssetToGUID( cubemapAsset ) + ",";
 			s += "pvfc:" + (int)previewFace;
 			return s;
 		}
 
 		public override void DeserializeSpecialData( string key, string value ) {
+			property.Deserialize( key, value );
 			switch( key ) {
 				case "cube":
 					cubemapAsset = (Cubemap)SF_Tools.GUIDToAsset( value, typeof( Cubemap ) );

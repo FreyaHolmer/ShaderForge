@@ -1096,7 +1096,10 @@ namespace ShaderForge {
 					}
 					menu.AddItem( new GUIContent("Edit Comment"), false, ContextClick, "cmt_edit" );
 					menu.AddItem( new GUIContent("What does " + nodeName + " do?"), false, ContextClick, "doc_open" );
+					Matrix4x4 prevMatrix = GUI.matrix;
+					GUI.matrix = Matrix4x4.identity; // Odd hack, but, works
 					menu.ShowAsContext();
+					GUI.matrix = prevMatrix;
 					Event.current.Use();
 				}
 			}

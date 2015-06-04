@@ -39,12 +39,12 @@ namespace ShaderForge {
 
 			string UV = "";
 
-			if(AutoUV())
-				UV = "sceneUVs";
-			else
+			if(AutoUV()){
+				return "sceneColor";
+			} else {
 				UV = GetInputCon( "UVIN" ).Evaluate();
-
-			return "tex2D(_GrabTexture, " + UV + ")";
+				return "tex2D( "+editor.ps.catBlending.GetGrabTextureName()+", " + UV + ")";
+			}
 		}
 
 	}

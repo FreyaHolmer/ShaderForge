@@ -43,7 +43,15 @@ namespace ShaderForge {
 		}
 
 		public override bool IsUniformOutput() {
-			return ( GetInputData( "UVIN" ).uniform && GetInputData( "PIV" ).uniform && GetInputData( "ANG" ).uniform && GetInputData( "SPD" ).uniform );
+			if( GetInputIsConnected( "UVIN" ) && !GetInputData( "UVIN" ).uniform )
+				return false;
+			if( GetInputIsConnected( "PIV" ) && !GetInputData( "PIV" ).uniform )
+				return false;
+			if( GetInputIsConnected( "ANG" ) && !GetInputData( "ANG" ).uniform )
+				return false;
+			if( GetInputIsConnected( "SPD" ) && !GetInputData( "SPD" ).uniform )
+				return false;
+			return false;
 		}
 
 		public override int GetEvaluatedComponentCount() {

@@ -64,8 +64,8 @@ namespace ShaderForge {
 		}
 
 		public override Color NodeOperator( int x, int y ) {
-
-			Vector2 p = GetInputData( "XY" )[x, y];
+			
+			Vector2 p = GetInputIsConnected( "XY" ) ? GetInputData( "XY" )[x, y] : Vector4.one;
 
 			float tmp = 0.2127f+p.x*0.3713f*p.y;
 			Vector2 s = p + new Vector2(tmp,tmp);

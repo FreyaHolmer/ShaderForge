@@ -2651,7 +2651,7 @@ namespace ShaderForge {
 		void TessellationHullConstant() {
 			App( "OutputPatchConstant hullconst (InputPatch<TessVertex,3> v) {" );
 			scope++;
-			App( "OutputPatchConstant o;" );
+			App( "OutputPatchConstant o = (OutputPatchConstant)0;" );
 			App( "float4 ts = Tessellation( v[0], v[1], v[2] );" );
 			App( "o.edge[0] = ts.x;" );
 			App( "o.edge[1] = ts.y;" );

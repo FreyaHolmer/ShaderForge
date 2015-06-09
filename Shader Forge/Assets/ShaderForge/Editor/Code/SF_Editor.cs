@@ -93,7 +93,11 @@ namespace ShaderForge {
 			if(SF_Debug.window)
 				Debug.Log( "[SF_LOG] - SF_Editor CONSTRUCTOR SF_Editor()" );
 			SF_Editor.instance = this;
+#if UNITY_5_0
 			HOPanelUtils.SetWindowTitle( this, (Texture)SF_GUI.Icon, "Shader Forge" );
+#else
+			titleContent = new GUIContent( "Shader Forge", (Texture)SF_GUI.Icon );
+#endif
 		}
 
 		[MenuItem( "Window/Shader Forge" )]

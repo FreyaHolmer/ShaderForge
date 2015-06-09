@@ -582,7 +582,7 @@ namespace ShaderForge {
 				App( "#pragma multi_compile_shadowcaster" );
 			}
 
-			if( currentPass == PassType.Deferred && ( LightmappedAndLit() || ps.HasEmissive() ) ) {
+			if( currentPass == PassType.Deferred ) {
 				App( "#pragma multi_compile ___ UNITY_HDR_ON" );
 			}
 

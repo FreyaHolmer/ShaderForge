@@ -3,7 +3,7 @@
 // Created: 2012/09/26 12:25
 //--------------------------
 // Original author above
-// Slightly modified by Joachim Holmér
+// Slightly modified by Joachim HolmÃ©r
 
 using System.Collections.Generic;
 using System.Reflection;
@@ -19,13 +19,21 @@ namespace Holoville.HOEditorUtils {
 				if( createIfMissing ) CreateScriptableAsset<T>( adbFilePath );
 				else return null;
 			}
-			T source = (T)Resources.LoadAssetAtPath( adbFilePath, typeof( T ) );
+			T source = Load<T>( adbFilePath );
 			if( source == null ) {
 				// Source changed (or editor file was moved from outside of Unity): overwrite it
 				CreateScriptableAsset<T>( adbFilePath );
-				source = (T)Resources.LoadAssetAtPath( adbFilePath, typeof( T ) );
+				source = Load<T>( adbFilePath );
 			}
 			return source;
+		}
+
+		static T Load<T>( string path ) where T : ScriptableObject {
+#if UNITY_5_0
+			return (T)Resources.LoadAssetAtPath( path, typeof( T ) );
+#else
+			return (T)AssetDatabase.LoadAssetAtPath( path, typeof( T ) );
+#endif
 		}
 
 		public static void SetWindowTitle( EditorWindow editor, Texture icon, string title ) {

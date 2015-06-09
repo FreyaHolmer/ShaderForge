@@ -266,7 +266,12 @@ namespace ShaderForge {
 			bool ogl = editor.ps.catMeta.usedRenderers[2];
 			bool dx9 = editor.ps.catMeta.usedRenderers[0];
 			bool dx11 = editor.ps.catMeta.usedRenderers[1];
+
+#if UNITY_5_0
 			bool inDx11Mode = UnityEditor.PlayerSettings.useDirect3D11;
+#else
+			bool inDx11Mode = true;
+#endif
 
 			if( osx && !ogl ) {
 				SF_ErrorEntry error = SF_ErrorEntry.Create( "Your shader will not render properly on your workstation - you need to have OpenGL enabled when working in OSX. Click the icon to enable OpenGL!", true );

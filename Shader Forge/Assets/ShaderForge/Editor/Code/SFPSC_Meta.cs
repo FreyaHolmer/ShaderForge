@@ -227,7 +227,7 @@ namespace ShaderForge {
 		private void DisplayShaderContext(Rect r) {
 			if( mc == null )
 				mc = new MenuCommand( this, 0 );
-			Material temp = new Material( "Shader \"Hidden/tmp_shdr\"{SubShader{Pass{}}}" ); // This dummy material will make it highlight none of the shaders inside.
+			Material temp = new Material( Shader.Find("Hidden/Shader Forge/PresetUnlit") ); // This will make it highlight none of the shaders inside.
 			UnityEditorInternal.InternalEditorUtility.SetupShaderMenu( temp ); // Rebuild shader menu
 			DestroyImmediate( temp.shader, true ); DestroyImmediate( temp, true ); // Destroy temporary shader and material
 			EditorUtility.DisplayPopupMenu( r, "CONTEXT/ShaderPopup", mc ); // Display shader popup

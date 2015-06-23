@@ -75,7 +75,12 @@ namespace ShaderForge {
 			}
 
 			Texture2D tex = new Texture2D( cubemapAsset.width, cubemapAsset.height, TextureFormat.ARGB32, false );
-			tex.SetPixels( cubemapAsset.GetPixels( previewFace ) );
+			try{
+				tex.SetPixels( cubemapAsset.GetPixels( previewFace ) );
+			} catch( Exception e ) {
+				Debug.LogWarning("Cubemap texture preview failed: " + e.ToString());
+			}
+			
 			tex.Apply();
 
 

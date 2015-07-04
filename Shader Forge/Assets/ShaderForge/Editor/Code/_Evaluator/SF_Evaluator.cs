@@ -2276,8 +2276,10 @@ namespace ShaderForge {
 				InitViewDirVert();
 			}
 
+			InitObjectScale();
+
 			if( editor.mainNode.vertexOffset.IsConnectedAndEnabled() ) {
-				InitObjectScale(); // Vertex shader only needs this here if it's used in this input
+				
 				if( ps.catGeometry.vertexOffsetMode == SFPSC_Geometry.VertexOffsetMode.Relative  )
 					App( "v.vertex.xyz += " + ps.n_vertexOffset + ";" );
 				else

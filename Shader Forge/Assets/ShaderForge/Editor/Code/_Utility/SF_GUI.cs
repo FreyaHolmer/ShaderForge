@@ -698,21 +698,11 @@ namespace ShaderForge {
 				} else if( i > 0 ) {
 					style = EditorStyles.miniButtonMid;
 				}
-				
-				if( GUI.Button(rTemp, labels[i], style ) )
+
+				bool prev = selected == i;
+				bool newVal = GUI.Toggle( rTemp, prev, labels[i], style );
+				if( newVal != prev ) {
 					retval = i;
-				
-				if( selected == i && GUI.enabled ) {
-					if( EditorGUIUtility.isProSkin ) {
-						GUI.Box( rTemp, "" );
-						GUI.Box( rTemp, "" );
-						GUI.Box( rTemp, "" );
-					} else {
-						GUI.color = new Color( 0f, 0f, 0f, 0.3f );
-						GUI.Box( rTemp, "" );
-						GUI.color = Color.white;
-					}
-					
 				}
 				
 				rTemp.x += rTemp.width;

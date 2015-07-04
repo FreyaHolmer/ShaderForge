@@ -106,7 +106,9 @@ namespace ShaderForge {
 		}
 
 		public override bool IsUniformOutput() {
-			return ( GetInputData( "IN" ).uniform );
+			if( GetInputIsConnected("IN") && !GetInputData( "IN" ).uniform )
+				return false;
+			return true;
 		}
 
 

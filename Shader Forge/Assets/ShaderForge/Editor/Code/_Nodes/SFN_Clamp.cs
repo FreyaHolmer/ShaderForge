@@ -38,7 +38,9 @@ namespace ShaderForge {
 		}
 
 		public override bool IsUniformOutput() {
-			return ( GetInputData( "IN" ).uniform && GetInputData( "MIN" ).uniform && GetInputData( "MAX" ).uniform );
+			if( InputsConnected() )
+				return ( GetInputData( "IN" ).uniform && GetInputData( "MIN" ).uniform && GetInputData( "MAX" ).uniform );
+			return true;
 		}
 
 		public override int GetEvaluatedComponentCount() {

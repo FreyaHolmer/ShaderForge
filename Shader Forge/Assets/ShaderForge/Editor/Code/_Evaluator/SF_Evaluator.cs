@@ -145,6 +145,10 @@ namespace ShaderForge {
 
 			}
 
+			if( editor.nodeView.treeStatus.viewDirectionInVertOffset ) {
+				dependencies.vert_viewDirection = true;
+			}
+
 			if( currentPass == PassType.Deferred ) {
 				dependencies.NeedFragNormals();
 			}
@@ -2268,6 +2272,9 @@ namespace ShaderForge {
 
 			InitObjectPos();
 
+			if( editor.nodeView.treeStatus.viewDirectionInVertOffset ) {
+				InitViewDirVert();
+			}
 
 			if( editor.mainNode.vertexOffset.IsConnectedAndEnabled() ) {
 				InitObjectScale(); // Vertex shader only needs this here if it's used in this input
@@ -2284,7 +2291,11 @@ namespace ShaderForge {
 
 
 			InitTangentTransformFrag();
-			InitViewDirVert();
+
+			if( !editor.nodeView.treeStatus.viewDirectionInVertOffset ) {
+				InitViewDirVert();
+			}
+			
 			InitReflectionDir();
 			if( dependencies.frag_lightDirection ) {
 				InitLightDir();

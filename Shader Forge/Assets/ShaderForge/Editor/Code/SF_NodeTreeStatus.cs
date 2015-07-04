@@ -27,6 +27,7 @@ namespace ShaderForge {
 
 		public bool mipInputUsed = false; // If this is true, only DX is allowed :< OR: Enable glsl pragma
 		public bool texturesInVertShader = false;
+		public bool viewDirectionInVertOffset = false;
 		public bool usesSceneData = false;
 		// public bool lightNodesUsed = false; // Used to re-enable light settings when shader is set to unlit
 
@@ -370,8 +371,8 @@ namespace ShaderForge {
 
 
 			// Check if there are any textures in the vertex input
-			texturesInVertShader = HasTextureInput( editor.mainNode.vertexOffset ) || HasTextureInput( editor.mainNode.outlineWidth );
-
+			texturesInVertShader = HasNodeInput<SFN_Tex2d>( editor.mainNode.vertexOffset ) || HasNodeInput<SFN_Tex2d>( editor.mainNode.outlineWidth );
+			viewDirectionInVertOffset = HasNodeInput<SFN_ViewVector>( editor.mainNode.vertexOffset );
 
 
 
@@ -406,11 +407,11 @@ namespace ShaderForge {
 
 
 
-		public bool HasTextureInput( SF_NodeConnector con ) {
+		public bool HasNodeInput<T>( SF_NodeConnector con ) {
 
 			if( con.IsConnectedEnabledAndAvailable() ) {
 
-				if( con.inputCon.node is SFN_Tex2d ) {
+				if( con.inputCon.node is T ) {
 					return true;
 				}
 
@@ -420,7 +421,7 @@ namespace ShaderForge {
 						continue;
 					if( !c.IsConnected() )
 						continue;
-					if( HasTextureInput( c ) ) {
+					if( HasNodeInput<T>( c ) ) {
 						return true;
 					}
 				}

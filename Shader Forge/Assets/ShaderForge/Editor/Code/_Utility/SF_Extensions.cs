@@ -13,6 +13,36 @@ namespace ShaderForge{
 
 	public static class SF_Extensions {
 
+
+		public static bool GetBit( this int value, int bit ){
+			return ( ( 1 << bit ) & value ) == ( 1 << bit );
+		}
+
+		public static int SetBit( this int value, int bit, bool bitValue ) {
+			if(bitValue)
+				return value | ( 1 << bit );
+			else
+				return value & ~( 1 << bit );
+		}
+
+		public static string ToColorMaskString( this int value ) {
+			// Indexed in reverse order
+			// A = 0, B = 1, G = 2, R = 3
+			string s = "";
+			if( value.GetBit( 0 ) )
+				s = "A";
+			if( value.GetBit( 1 ) )
+				s = "B" + s;
+			if( value.GetBit( 2 ) )
+				s = "G" + s;
+			if( value.GetBit( 3 ) )
+				s = "R" + s;
+			if( s == "" )
+				s = "0";
+			return s;
+		}
+
+
 		public static float Average(this float[] floats){
 
 			if(floats == null)

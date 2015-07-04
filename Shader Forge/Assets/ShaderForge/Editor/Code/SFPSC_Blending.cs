@@ -65,6 +65,25 @@ namespace ShaderForge {
 		public int offsetFactor = 0;
 		public int offsetUnits = 0;
 
+		// colorMask is a bitmask
+		// 0 =	____
+		// 1 =	___A
+		// 2 =	__B_
+		// 3 =	__BA
+		// 4 =	_G__
+		// 5 =	_G_A
+		// 6 =	_GB_
+		// 7 =	_GBA
+		// 8 =	R___
+		// 9 =	R__A
+		// 10 = R_B_
+		// 11 = R_BA
+		// 12 = RG__
+		// 13 = RG_A
+		// 14 = RGB_
+		// 15 = RGBA
+		public int colorMask = 15;
+
 		public Dithering dithering = Dithering.Off;
 		
 		public bool writeDepth = true;
@@ -101,7 +120,7 @@ namespace ShaderForge {
 
 		public override string Serialize(){
 			string s = "";
-
+			
 			//s += Serialize( "blpr", ( (int)blendModePreset ).ToString() );
 			s += Serialize( "bsrc", ( (int)blendSrc ).ToString() );
 			s += Serialize( "bdst", ( (int)blendDst ).ToString() );
@@ -112,7 +131,8 @@ namespace ShaderForge {
 
 			s += Serialize( "rfrpo", perObjectRefraction.ToString() );
 			s += Serialize( "rfrpn", refractionPassName );
-			
+
+			s += Serialize( "coma", colorMask.ToString() );
 			
 			s += Serialize( "ufog", useFog.ToString() );
 			s += Serialize( "aust", autoSort.ToString() );
@@ -208,6 +228,9 @@ namespace ShaderForge {
 				break;
 			case "rfrpn":
 				refractionPassName = value;
+				break;
+			case "coma":
+				colorMask = int.Parse( value );
 				break;
 			case "ufog":
 				useFog = bool.Parse( value );
@@ -376,7 +399,9 @@ namespace ShaderForge {
 			r.y += 20;
 			//}
 
-			
+
+			UndoableColorMask( r, "Color Mask", ref colorMask );
+			r.y += 20;
 			
 			bool canEditDithering = editor.mainNode.alphaClip.IsConnectedAndEnabled();
 			EditorGUI.BeginDisabledGroup( !canEditDithering );
@@ -408,7 +433,52 @@ namespace ShaderForge {
 			return (int)r.yMax;
 		}
 
-		public void SetQueuePreset(Queue in_queue) {
+		static string[] rgba = new string[]{"R","G","B","A"};
+
+		public void UndoableColorMask(Rect r, string label, ref int mask) {
+
+			GUIStyle[] rgbaStyles = new GUIStyle[] {
+				EditorStyles.miniButtonLeft,
+				EditorStyles.miniButtonMid,
+				EditorStyles.miniButtonMid,
+				EditorStyles.miniButtonRight
+			};
+
+			Rect[] rects = r.SplitFromLeft( 65 );
+
+			GUI.Label( rects[0], label, EditorStyles.miniLabel );
+
+
+			Rect buttonRect = rects[1];
+			buttonRect.width = 23;// Mathf.FloorToInt( buttonRect.width / 4 );
+			buttonRect.height = 17;
+
+			for( int i = 0; i < 4; i++ ) {
+				//GUI.color = rgbaCols[i];
+				bool bitVal = mask.GetBit( 3 - i );
+				bool newBit = GUI.Toggle( buttonRect, bitVal, rgba[i], rgbaStyles[i] );
+				if( newBit != bitVal ) {
+					Undo.RecordObject( this, "edit Color Mask" );
+					mask = mask.SetBit( 3 - i, newBit );
+				}
+				buttonRect = buttonRect.MovedRight();
+			}
+
+			buttonRect.width *= 4;
+			buttonRect.x += 6;
+			GUI.color = Color.gray;
+			GUI.Label( buttonRect, mask.ToColorMaskString(), EditorStyles.miniLabel );
+			GUI.color = Color.white;
+			
+			
+
+
+		}
+
+
+
+
+		public void SetQueuePreset( Queue in_queue ) {
 			queuePreset = in_queue;
 		}
 

@@ -733,6 +733,10 @@ namespace ShaderForge {
 				App( ps.catBlending.GetZWriteString() );
 			}
 
+			if( ps.catBlending.colorMask != 15 ) { // 15 means RGBA, which is default
+				App("ColorMask " + ps.catBlending.colorMask.ToColorMaskString());
+			}
+
 			App( ps.catBlending.GetOffsetString() );
 
 

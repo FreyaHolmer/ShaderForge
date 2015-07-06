@@ -247,8 +247,8 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_ComponentMask ),	catVecOps + "Component Mask", KeyCode.C );
 			AddTemplate( typeof( SFN_Cross ), 			catVecOps + "Cross Product" );
 			AddTemplate( typeof( SFN_Desaturate ), 		catVecOps + "Desaturate" );
-			AddTemplate( typeof( SFN_DDX ), catVecOps + "DDX" ).MarkAsNewNode(); ;
-			AddTemplate( typeof( SFN_DDY ), catVecOps + "DDY" ).MarkAsNewNode(); ;
+			AddTemplate( typeof( SFN_DDX ),				catVecOps + "DDX" );
+			AddTemplate( typeof( SFN_DDY ),				catVecOps + "DDY" );
 			AddTemplate( typeof( SFN_Distance ), 		catVecOps + "Distance" );
 			AddTemplate( typeof( SFN_Dot ), 			catVecOps + "Dot Product" );
 			AddTemplate( typeof( SFN_Length ), 			catVecOps + "Length" );
@@ -296,7 +296,7 @@ namespace ShaderForge {
 
 			string catSceneData = "Scene Data/";
 			AddTemplate( typeof(SFN_DepthBlend), catSceneData + "Depth Blend" );
-			AddTemplate( typeof( SFN_FogColor ), catSceneData + "Fog Color" ).MarkAsNewNode(); ;
+			AddTemplate( typeof( SFN_FogColor ), catSceneData + "Fog Color" );
 			AddTemplate( typeof(SFN_SceneColor), catSceneData + "Scene Color" );
 			AddTemplate( typeof(SFN_SceneDepth), catSceneData + "Scene Depth" );
 

@@ -372,8 +372,92 @@ namespace ShaderForge{
 
 
 
+		public static string ToCgMatrix( this Matrix4x4 mtx ) {
+			string s = "{\n";
+			s += "    {" + mtx[0, 0] + "," + mtx[0, 1] + "," + mtx[0, 2] + "," + mtx[0, 3] + "},\n";
+			s += "    {" + mtx[1, 0] + "," + mtx[1, 1] + "," + mtx[1, 2] + "," + mtx[1, 3] + "},\n";
+			s += "    {" + mtx[2, 0] + "," + mtx[2, 1] + "," + mtx[2, 2] + "," + mtx[2, 3] + "},\n";
+			s += "    {" + mtx[3, 0] + "," + mtx[3, 1] + "," + mtx[3, 2] + "," + mtx[3, 3] + "}\n}";
+			return s;
+		}
 
+		public static string SerializeToCSV( this Matrix4x4 mtx ) {
+			string s = "";
+			s += "m00:" + mtx[0, 0] + ",";
+			s += "m01:" + mtx[0, 1] + ",";
+			s += "m02:" + mtx[0, 2] + ",";
+			s += "m03:" + mtx[0, 3] + ",";
+			s += "m10:" + mtx[1, 0] + ",";
+			s += "m11:" + mtx[1, 1] + ",";
+			s += "m12:" + mtx[1, 2] + ",";
+			s += "m13:" + mtx[1, 3] + ",";
+			s += "m20:" + mtx[2, 0] + ",";
+			s += "m21:" + mtx[2, 1] + ",";
+			s += "m22:" + mtx[2, 2] + ",";
+			s += "m23:" + mtx[2, 3] + ",";
+			s += "m30:" + mtx[3, 0] + ",";
+			s += "m31:" + mtx[3, 1] + ",";
+			s += "m32:" + mtx[3, 2] + ",";
+			s += "m33:" + mtx[3, 3];
+			return s;
+		}
 
+		public static Matrix4x4 DeserializeKeyValue( this Matrix4x4 mtx, string key, string value ) {
+			switch( key ) {
+				case "m00":
+					mtx[0, 0] = float.Parse( value );
+					break;
+				case "m01":
+					mtx[0, 1] = float.Parse( value );
+					break;
+				case "m02":
+					mtx[0, 2] = float.Parse( value );
+					break;
+				case "m03":
+					mtx[0, 3] = float.Parse( value );
+					break;
+
+				case "m10":
+					mtx[1, 0] = float.Parse( value );
+					break;
+				case "m11":
+					mtx[1, 1] = float.Parse( value );
+					break;
+				case "m12":
+					mtx[1, 2] = float.Parse( value );
+					break;
+				case "m13":
+					mtx[1, 3] = float.Parse( value );
+					break;
+
+				case "m20":
+					mtx[2, 0] = float.Parse( value );
+					break;
+				case "m21":
+					mtx[2, 1] = float.Parse( value );
+					break;
+				case "m22":
+					mtx[2, 2] = float.Parse( value );
+					break;
+				case "m23":
+					mtx[2, 3] = float.Parse( value );
+					break;
+
+				case "m30":
+					mtx[3, 0] = float.Parse( value );
+					break;
+				case "m31":
+					mtx[3, 1] = float.Parse( value );
+					break;
+				case "m32":
+					mtx[3, 2] = float.Parse( value );
+					break;
+				case "m33":
+					mtx[3, 3] = float.Parse( value );
+					break;
+			}
+			return mtx;
+		}
 
 
 

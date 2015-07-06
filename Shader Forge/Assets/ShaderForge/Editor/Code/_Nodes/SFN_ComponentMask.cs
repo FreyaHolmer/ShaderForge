@@ -144,6 +144,8 @@ namespace ShaderForge {
 				GUI.enabled = false;
 			} else {
 				inCompCount = connectors[1].GetCompCount();
+				if( inCompCount > 4 )
+					inCompCount = 4;
 			}
 
 			Rect r = lowerRect;

@@ -58,7 +58,8 @@ namespace ShaderForge {
 				if(compCount == value)
 					return;
 				if( value > 4 || value < 1 ) {
-					Debug.LogError( "Component count out of range: " + value + " on " + node.nodeName + " " + node.id );
+					//Debug.LogError( "Component count out of range: " + value + " on " + node.nodeName + " " + node.id );
+					compCount = 4;
 				} else {
 					compCount = value;
 					UpdateColorPreview("CompCountChange");

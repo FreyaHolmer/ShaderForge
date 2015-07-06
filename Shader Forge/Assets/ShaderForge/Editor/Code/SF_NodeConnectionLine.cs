@@ -164,6 +164,10 @@ namespace ShaderForge{
 			//Vector2 a = connector.GetConnectionPoint();
 			//Vector2 b = connector.inputCon.GetConnectionPoint();
 			int cc = connector.GetCompCount();
+			bool isMatrix4x4 = ( cc == 16 );
+			if( isMatrix4x4 ) {
+				cc = 1;
+			}
 
 			Color color = DeleteImminent() ? new Color(1f,0f,0f,0.7f) : connector.GetConnectionLineColor();
 
@@ -175,9 +179,17 @@ namespace ShaderForge{
 
 			switch(SF_Settings.ConnectionLineStyle){
 			case ConnectionLineStyle.Bezier:
-				for(int i=0;i<cc;i++){
-					GUILines.DrawLines(editor, this[ConnectionLineStyle.Bezier,i], color,GetConnectionWidth(), true);
+				if( isMatrix4x4 ) {
+					//GUILines.DrawMatrixConnection( editor, connector.GetConnectionPoint(), connector.inputCon.GetConnectionPoint(), color );
+					GUILines.DrawLines( editor, this[ConnectionLineStyle.Bezier, 0], color, GetConnectionWidth(), true );
+					GUILines.DrawLines( editor, this[ConnectionLineStyle.Bezier, 1], color, GetConnectionWidth(), true, true );
+					GUILines.DrawLines( editor, this[ConnectionLineStyle.Bezier, 2], color, GetConnectionWidth(), true );
+				} else {
+					for( int i=0; i < cc; i++ ) {
+						GUILines.DrawLines( editor, this[ConnectionLineStyle.Bezier, i], color, GetConnectionWidth(), true );
+					}
 				}
+				
 				break;
 			}
 
@@ -199,6 +211,8 @@ namespace ShaderForge{
 			//Debug.Log("Reconstructing + " + Event.current.rawType);
 
 			float cc = connector.GetCompCount();
+			if( cc == 16 )
+				cc = 3;
 
 			float partOffset = partOffsetFactor / cc;
 			float mainOffset = -( cc - 1 ) * 0.5f * partOffset;
@@ -208,7 +222,7 @@ namespace ShaderForge{
 			for(int i=0;i<cc;i++){
 				offset = mainOffset + partOffset * i;
 
-
+				
 				// TODO: Style branching
 				ReconstructBezier(offset, i);
 
@@ -241,6 +255,8 @@ namespace ShaderForge{
 			p1 = editor.nodeView.ZoomSpaceToScreenSpace(p1); // Double, for whatever reason
 
 			float cc = connector.GetCompCount();
+			if( cc == 16 || cc == 0 ) // Matrices
+				cc = 1;
 
 			if(cc == 1){
 				if(SF_Tools.LineIntersection(p0, p1, this[SF_Settings.ConnectionLineStyle, 0], out intersection)){

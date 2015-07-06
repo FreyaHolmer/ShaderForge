@@ -48,9 +48,7 @@ namespace ShaderForge {
 					else
 						SetOutputValueType(baseInType);
 				} else {
-				//	Debug.Log("SEARCHING:");
 					ValueType vtDom = GetDominantInputType();
-					//Debug.Log("Dominant = " + vtDom);
 					SetOutputValueType(vtDom);
 
 					UpdateTypecasts();
@@ -262,6 +260,9 @@ namespace ShaderForge {
 				return true;
 			// Check multi-type for v1/v4
 			if( tInput == ValueType.VTv1v4 && ( tOutput == ValueType.VTv1 || tOutput == ValueType.VTv4 ) )
+				return true;
+			// Matrices
+			if( tInput == ValueType.VTv4m4x4 && ( tOutput == ValueType.VTv4 || tOutput == ValueType.VTm4x4 ) )
 				return true;
 			// Didn't find any allowed link, return false
 			return false;

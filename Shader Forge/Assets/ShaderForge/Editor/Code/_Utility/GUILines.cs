@@ -38,7 +38,7 @@ namespace ShaderForge {
 
 
 
-		public static void DrawLines( SF_Editor editor, Vector2[] points, Color color, float width, bool antiAlias ) {
+		public static void DrawLines( SF_Editor editor, Vector2[] points, Color color, float width, bool antiAlias, bool railway = false ) {
 			Handles.BeginGUI();
 			Handles.color = color;
 		
@@ -49,13 +49,34 @@ namespace ShaderForge {
 				v3Pts[i] = new Vector3(points[i].x, points[i].y);
 			}
 
-			if( antiAlias )
-				Handles.DrawAAPolyLine( width, v3Pts );
-			else
+			if( antiAlias ){
+				if( railway ) {
+					DrawPolyLineWithRail( width, v3Pts );
+				} else {
+					Handles.DrawAAPolyLine( width, v3Pts );
+				}
+			} else {
 				Handles.DrawPolyLine( v3Pts );
+			}
 			Handles.EndGUI();
 		}
 
+
+		static void DrawPolyLineWithRail( float width, Vector3[] v3pts ) {
+
+			Vector3[] pair = new Vector3[] { Vector3.zero, Vector3.zero };
+			for( int i = 0; i < v3pts.Length - 1; i++ ) {
+
+				Vector3 dir = (v3pts[i] - v3pts[i+1] ).normalized;
+				dir = new Vector3(-dir.y, dir.x);
+				Vector3 center = (v3pts[i] + v3pts[i+1] )*0.5f;
+				pair[0] = center + dir * 3;
+				pair[1] = center - dir * 3;
+				Handles.DrawAAPolyLine( pair );
+			}
+
+			Handles.DrawAAPolyLine( width, v3pts );
+		}
 
 		
 
@@ -111,12 +132,21 @@ namespace ShaderForge {
 
 		
 
-		public static void DrawCubicBezier( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Color color, float width, bool antiAlias, int segments ) {
+		public static void DrawCubicBezier( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Color color, float width, bool antiAlias, int segments, bool railway = false ) {
 			Initialize();
 			Vector2 lastV = CubicBezier( p0, p1, p2, p3, 0 );
 			for( int i = 1; i <= segments; i++ ) {
 				Vector2 v = CubicBezier( p0, p1, p2, p3, i / (float)segments );
-				DrawLine( lastV, v, color, width, antiAlias );
+
+				if( railway ) {
+					Vector2 dir = ( lastV - v ).normalized;
+					dir = new Vector2(-dir.y, dir.x)*2;
+					Vector2 center = ( v + lastV ) * 0.5f;
+					DrawLine( center + dir, center - dir, color, width, antiAlias );
+				} else {
+					DrawLine( lastV, v, color, width, antiAlias );
+				}
+
 				lastV = v;
 			}
 		}
@@ -289,6 +319,10 @@ namespace ShaderForge {
 
 
 
+		public static void DrawMatrixConnection( SF_Editor editor, Vector2 a, Vector2 b, Color col ) {
+			DrawMultiBezierConnection( editor, a, b, 2, col, true );
+		}
+
 
 		public static void DrawStyledConnection( SF_Editor editor, Vector2 a, Vector2 b, int cc, Color col ) {
 			switch( SF_Settings.ConnectionLineStyle ) {
@@ -328,13 +362,17 @@ namespace ShaderForge {
 		}
 
 
-		public static void DrawMultiBezierConnection( SF_Editor editor, Vector2 p0, Vector2 p1, int count, Color col ) {
+		public static void DrawMultiBezierConnection( SF_Editor editor, Vector2 p0, Vector2 p1, int count, Color col, bool railway = false ) {
 			float partOffset = partOffsetFactor / count;
 			float mainOffset = -( count - 1 ) * 0.5f * partOffset;
 
 			for( int i = 0; i < count; i++ ) {
 				float offset = mainOffset + partOffset * i;
 				DrawBezierConnection( editor, p0, p1, offset, col );
+			}
+
+			if( railway ) {
+				DrawBezierConnection( editor, p0, p1, 0, col, true );
 			}
 		}
 
@@ -385,7 +423,7 @@ namespace ShaderForge {
 
 		}
 
-		public static void DrawBezierConnection( SF_Editor editor, Vector2 p0, Vector2 p1, float offset, Color col ) {
+		public static void DrawBezierConnection( SF_Editor editor, Vector2 p0, Vector2 p1, float offset, Color col, bool railway = false) {
 
 			p0 = editor.nodeView.ZoomSpaceToScreenSpace( p0 );
 			p1 = editor.nodeView.ZoomSpaceToScreenSpace( p1 );
@@ -404,7 +442,7 @@ namespace ShaderForge {
 
 			if( !reversed ) {
 				if( offset == 0 )
-					GUILines.DrawCubicBezier( p0, p0t, p1t, p1, col, connectionWidth, true, segments );
+					GUILines.DrawCubicBezier( p0, p0t, p1t, p1, col, connectionWidth, true, segments, railway );
 				else
 					GUILines.DrawCubicBezierOffset( offset, p0, p0t, p1t, p1, col, connectionWidth, true, segments );
 			} else {
@@ -412,8 +450,8 @@ namespace ShaderForge {
 				Vector2 mid0t = new Vector2( p0t.x, mid.y );
 				Vector2 mid1t = new Vector2( p1t.x, mid.y );
 				if( offset == 0 ) {
-					GUILines.DrawCubicBezier( p0, p0t, mid0t, mid, col, connectionWidth, true, segments );
-					GUILines.DrawCubicBezier( mid, mid1t, p1t, p1, col, connectionWidth, true, segments );
+					GUILines.DrawCubicBezier( p0, p0t, mid0t, mid, col, connectionWidth, true, segments, railway );
+					GUILines.DrawCubicBezier( mid, mid1t, p1t, p1, col, connectionWidth, true, segments, railway );
 				} else {
 					GUILines.DrawCubicBezierOffset( offset, p0, p0t, mid0t, mid, col, connectionWidth, true, segments );
 					GUILines.DrawCubicBezierOffset( offset, mid, mid1t, p1t, p1, col, connectionWidth, true, segments );

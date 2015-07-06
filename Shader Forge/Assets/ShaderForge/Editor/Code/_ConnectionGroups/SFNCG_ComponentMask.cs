@@ -33,13 +33,18 @@ namespace ShaderForge {
 			 * v2 v2 = v4
 			 * v3 v1 = v4 
 			 */
+
 			if( NoInputsConnected() )
 				ResetValueTypes();
 
+			// If a matrix is plugged in here, disconnect it immediately
+			if( inputs[0].inputCon.valueType == ValueType.VTm4x4 || inputs[0].inputCon.valueType == ValueType.VTv4m4x4 ) {
+				inputs[0].Disconnect();
+				return;
+			}
+
 			if( !inputs[0].node.InputsConnected() )
 				return;
-
-
 
 			int inCompSum = GetOutputComponentCount();
 

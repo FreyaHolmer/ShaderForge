@@ -211,6 +211,8 @@ namespace ShaderForge {
 				return true;
 			if(this is SFP_Vector4Property)
 				return true;
+			//if( this is SFP_Matrix4x4Property )
+			//	return true;
 			return false;
 		}
 

@@ -18,7 +18,8 @@ namespace ShaderForge {
 		Fixed2,
 		Fixed3,
 		Fixed4,
-		Sampler2D
+		Sampler2D,
+		Matrix4x4
 		/*, Texture*/ };
 
 	[System.Serializable]

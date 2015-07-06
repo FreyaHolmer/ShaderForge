@@ -254,13 +254,36 @@ namespace ShaderForge {
 
 
 		// TODO: Matrices & Samplers?
-		// TODO: Precision
 		public string GetVariableType() {
 
-			int cc = GetEvaluatedComponentCount();
-			if(cc == 0)
-				cc = texture.CompCount;
 
+			// HACK
+			if( this is SFN_Transpose ) {
+				return precision.ToCode() + "4x4";
+			}
+
+			if( this is SFN_Matrix4x4 ) {
+				return precision.ToCode() + "4x4";
+			}
+
+			if( this is SFN_Matrix4x4Property ) {
+				return precision.ToCode() + "4x4";
+			}
+
+			if( this is SFN_MultiplyMatrix ) {
+				if( GetConnectorByStringID( "OUT" ).IsConnected() ) {
+					if( GetConnectorByStringID( "OUT" ).valueType == ValueType.VTm4x4)
+						return precision.ToCode() + "4x4";
+					else
+						return precision.ToCode() + "4";
+
+				}
+			}
+
+
+			int cc = GetEvaluatedComponentCount();
+			if( cc == 0 )
+				cc = texture.CompCount;
 
 			string precisionStr = precision.ToCode();
 
@@ -1692,6 +1715,16 @@ namespace ShaderForge {
 
 
 
+		public void DrawGrabHandle(Rect r) {
+			Rect texCoords = new Rect( r );
+			texCoords.width /= 7;
+			texCoords.height /= 3;
+			texCoords.x = texCoords.y = 0;
+			GUI.DrawTextureWithTexCoords( r, SF_GUI.Handle_drag, texCoords, alphaBlend: true );
+		}
+
+
+
 		public virtual void NeatWindow( ) {
 			GUI.BeginGroup( rect );
 
@@ -1706,6 +1739,7 @@ namespace ShaderForge {
 				texture.Draw( rectInner, UnavailableInThisRenderPath() );
 				GUI.color = Color.white;
 
+				/*
 				if( SF_Debug.nodes ) {
 					Rect r = new Rect( 0, 16, 96, 20 );
 					GUI.color = Color.white;
@@ -1716,7 +1750,7 @@ namespace ShaderForge {
 					//r.y += r.height;
 					//GUI.Box( r, "Unif: " + texture.dataUniform );
 
-				}
+				}*/
 
 
 			}

@@ -440,6 +440,11 @@ namespace ShaderForge {
 				cc = 1;
 			if(vt == ValueType.VTv1v2 || vt == ValueType.VTv1v3 || vt == ValueType.VTv1v4 || vt == ValueType.VTvPending)
 				cc = 1;
+			if( vt == ValueType.VTm4x4 || vt == ValueType.VTv4m4x4 ) {
+				cc = 16;
+				return true;
+			}
+				
 
 			return cc > 0;
 

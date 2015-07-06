@@ -16,7 +16,7 @@ namespace ShaderForge {
 
 	public enum LinkingMethod { Default, NoUpdate };
 
-	public enum ValueType { VTvPending, VTv1, VTv2, VTv3, VTv4, VTv1v2, VTv1v3, VTv1v4, TexAsset };
+	public enum ValueType { VTvPending, VTv1, VTv2, VTv3, VTv4, VTv1v2, VTv1v3, VTv1v4, TexAsset, VTm4x4, VTv4m4x4 };
 
 	[System.Serializable]
 	public class SF_NodeConnector : ScriptableObject {
@@ -81,6 +81,9 @@ namespace ShaderForge {
 						break;
 					case CustomValueType.Sampler2D:
 						this.TypecastTo(0).WithColor(SF_Node.colorExposed).SetValueType(this.valueTypeDefault = ValueType.TexAsset);
+						break;
+					case CustomValueType.Matrix4x4:
+						this.TypecastTo(0).WithColor(SF_NodeConnector.colorEnabledDefault).SetValueType(this.valueTypeDefault = ValueType.VTm4x4);
 						break;
 					}
 					
@@ -534,11 +537,16 @@ namespace ShaderForge {
 
 			Color c = hovering ? Color.green : GetConnectionLineColor();
 
+			bool input = ( conType == ConType.cInput );
+			Vector2 start = input ? GetConnectionPoint() : MousePos();
+			Vector2 end = input ? MousePos() : GetConnectionPoint(); ;
 
-			if( conType == ConType.cInput )
-				GUILines.DrawStyledConnection( editor, GetConnectionPoint(), MousePos(), GetCompCount(), c );
-			else
-				GUILines.DrawStyledConnection( editor, MousePos(), GetConnectionPoint(), GetCompCount(), c );
+			if( valueType == ValueType.VTm4x4 || valueType == ValueType.VTv4m4x4 ) {
+				GUILines.DrawMatrixConnection( editor, start, end, c );
+			} else {
+				GUILines.DrawStyledConnection( editor, start, end, GetCompCount(), c );
+			}
+			
 
 			//Drawing.DrawLine(rect.center,MousePos(),Color.white,2,true);
 
@@ -912,6 +920,12 @@ namespace ShaderForge {
 					}
 				}
 			}
+		}
+
+		public void SetValueTypeAndDefault( ValueType vt ) {
+			SetValueType( vt );
+			valueType = vt;
+			valueTypeDefault = vt;
 		}
 
 		public bool IsConnectionHovering(bool world = true){

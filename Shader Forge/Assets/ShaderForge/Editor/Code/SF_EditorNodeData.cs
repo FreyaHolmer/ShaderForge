@@ -69,7 +69,8 @@ namespace ShaderForge {
 				type.Contains( "SFN_Vector4Property" ) ||
 				type.Contains( "SFN_ValueProperty" ) ||
 			   	type.Contains( "SFN_ToggleProperty" ) ||
-			   	type.Contains( "SFN_SwitchProperty" )
+			   	type.Contains( "SFN_SwitchProperty" ) ||
+				type.Contains( "SFN_Matrix4x4Property" )
 				)
 					isProperty = true;
 

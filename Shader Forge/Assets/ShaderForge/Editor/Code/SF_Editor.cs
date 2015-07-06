@@ -200,18 +200,21 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Floor ), 			catArithmetic + "Floor" );
 			AddTemplate( typeof( SFN_Fmod ), 			catArithmetic + "Fmod" );
 			AddTemplate( typeof( SFN_Frac ), 			catArithmetic + "Frac" );
+			AddTemplate( typeof( SFN_Hue ),				catArithmetic + "Hue" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_If ), 				catArithmetic + "If", KeyCode.I );
 			AddTemplate( typeof( SFN_Lerp ), 			catArithmetic + "Lerp", KeyCode.L );
-			AddTemplate( typeof( SFN_ConstantLerp ), 	catArithmetic + "Lerp (Simple)",KeyCode.None, "Lerp Simple" );
+			AddTemplate( typeof( SFN_ConstantLerp ), 	catArithmetic + "Lerp (Simple)", KeyCode.None, "Lerp Simple" );
 			AddTemplate( typeof( SFN_Log ), 			catArithmetic + "Log" );
 			AddTemplate( typeof( SFN_Max ), 			catArithmetic + "Max" );
 			AddTemplate( typeof( SFN_Min ), 			catArithmetic + "Min" );
 			AddTemplate( typeof( SFN_Multiply ), 		catArithmetic + "Multiply", KeyCode.M );
+			AddTemplate( typeof( SFN_MultiplyMatrix ),  catArithmetic + "Multiply Matrix" );
 			AddTemplate( typeof( SFN_Negate ), 			catArithmetic + "Negate" );
 			AddTemplate( typeof( SFN_Noise ), 			catArithmetic + "Noise" );
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Posterize ), 		catArithmetic + "Posterize" );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
+			AddTemplate( typeof( SFN_Reciprocal ),		catArithmetic + "Reciprocal" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_RemapRangeAdvanced),catArithmetic+ "Remap" );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
 			AddTemplate( typeof( SFN_Round ), 			catArithmetic + "Round" );
@@ -222,21 +225,23 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Trunc ), 			catArithmetic + "Trunc" );
 
 			string catConstVecs = "Constant Vectors/";
-			AddTemplate( typeof( SFN_Vector1 ), catConstVecs + "Value", KeyCode.Alpha1 );
-			AddTemplate( typeof( SFN_Vector2 ), catConstVecs + "Vector 2", KeyCode.Alpha2 );
-			AddTemplate( typeof( SFN_Vector3 ), catConstVecs + "Vector 3", KeyCode.Alpha3 );
-			AddTemplate( typeof( SFN_Vector4 ), catConstVecs + "Vector 4", KeyCode.Alpha4 );
+			AddTemplate( typeof( SFN_Vector1 ),		catConstVecs + "Value", KeyCode.Alpha1 );
+			AddTemplate( typeof( SFN_Vector2 ),		catConstVecs + "Vector 2", KeyCode.Alpha2 );
+			AddTemplate( typeof( SFN_Vector3 ),		catConstVecs + "Vector 3", KeyCode.Alpha3 );
+			AddTemplate( typeof( SFN_Vector4 ),		catConstVecs + "Vector 4", KeyCode.Alpha4 );
+			AddTemplate( typeof( SFN_Matrix4x4 ),	catConstVecs + "Matrix 4x4" ).MarkAsNewNode(); ;
 
 			string catProps = "Properties/";
-			AddTemplate( typeof( SFN_Color ), 			catProps + "Color" );
-			AddTemplate( typeof( SFN_Cubemap ), 		catProps + "Cubemap" );
-			AddTemplate( typeof( SFN_Slider ), 			catProps + "Slider" );
-			AddTemplate( typeof( SFN_SwitchProperty ), catProps + "Switch" );
-			AddTemplate( typeof( SFN_Tex2d ), 			catProps + "Texture 2D", KeyCode.T );
-			AddTemplate( typeof( SFN_Tex2dAsset ), 		catProps + "Texture Asset" );
-			AddTemplate( typeof( SFN_ToggleProperty ), catProps + "Toggle" );
-			AddTemplate( typeof( SFN_ValueProperty ), 	catProps + "Value" );
-			AddTemplate( typeof( SFN_Vector4Property ), catProps + "Vector 4" );
+			AddTemplate( typeof( SFN_Color ), 				catProps + "Color" );
+			AddTemplate( typeof( SFN_Cubemap ), 			catProps + "Cubemap" );
+			AddTemplate( typeof( SFN_Matrix4x4Property ),	catProps + "Matrix 4x4" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Slider ), 				catProps + "Slider" );
+			AddTemplate( typeof( SFN_SwitchProperty ),		catProps + "Switch" );
+			AddTemplate( typeof( SFN_Tex2d ), 				catProps + "Texture 2D", KeyCode.T );
+			AddTemplate( typeof( SFN_Tex2dAsset ), 			catProps + "Texture Asset" );
+			AddTemplate( typeof( SFN_ToggleProperty ),		catProps + "Toggle" );
+			AddTemplate( typeof( SFN_ValueProperty ), 		catProps + "Value" );
+			AddTemplate( typeof( SFN_Vector4Property ),		catProps + "Vector 4" );
 
 			//string catBranching = "Branching/"; 
 			//AddTemplate( typeof( SFN_StaticBranch ), catBranching + "Static Branch" );
@@ -256,6 +261,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_NormalBlend ), 	catVecOps + "Normal Blend" );
 			AddTemplate( typeof( SFN_Reflect ), 		catVecOps + "Reflect" );
 			AddTemplate( typeof( SFN_Transform ), 		catVecOps + "Transform" );
+			AddTemplate( typeof( SFN_Transpose ),		catVecOps + "Transpose" ).MarkAsNewNode(); ;
 			AddTemplate( typeof( SFN_VectorProjection ),catVecOps + "Vector Projection" );
 			AddTemplate( typeof( SFN_VectorRejection ),	catVecOps + "Vector Rejection" );
 

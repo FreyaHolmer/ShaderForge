@@ -460,10 +460,65 @@ namespace ShaderForge{
 		}
 
 
+		
+	
 
-
-
-
+		public static Vector2 xx( this Vector4 v ) {
+			return new Vector2( v.x, v.x );
+		}
+		public static Vector2 xy( this Vector4 v ) {
+			return new Vector2( v.x, v.y );
+		}
+		public static Vector2 xz( this Vector4 v ) {
+			return new Vector2( v.x, v.z );
+		}
+		public static Vector2 xw( this Vector4 v ) {
+			return new Vector2( v.x, v.w );
+		}
+		public static Vector2 yx( this Vector4 v ) {
+			return new Vector2( v.y, v.x );
+		}
+		public static Vector2 yy( this Vector4 v ) {
+			return new Vector2( v.y, v.y );
+		}
+		public static Vector2 yz( this Vector4 v ) {
+			return new Vector2( v.y, v.z );
+		}
+		public static Vector2 yw( this Vector4 v ) {
+			return new Vector2( v.y, v.w );
+		}
+		public static Vector2 zx( this Vector4 v ) {
+			return new Vector2( v.z, v.x );
+		}
+		public static Vector2 zy( this Vector4 v ) {
+			return new Vector2( v.z, v.y );
+		}
+		public static Vector2 zz( this Vector4 v ) {
+			return new Vector2( v.z, v.z );
+		}
+		public static Vector2 zw( this Vector4 v ) {
+			return new Vector2( v.z, v.w );
+		}
+		public static Vector2 wx( this Vector4 v ) {
+			return new Vector2( v.w, v.x );
+		}
+		public static Vector2 wy( this Vector4 v ) {
+			return new Vector2( v.w, v.y );
+		}
+		public static Vector2 wz( this Vector4 v ) {
+			return new Vector2( v.w, v.z );
+		}
+		public static Vector2 ww( this Vector4 v ) {
+			return new Vector2( v.w, v.w );
+		}
+		
+		// Do the rest as needed
+		public static Vector3 xyw( this Vector4 v ) {
+			return new Vector3( v.x, v.y, v.w );
+		}
+		public static Vector3 yzx( this Vector4 v ) {
+			return new Vector3( v.y, v.z, v.x );
+		}
 
 
 

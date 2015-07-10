@@ -200,6 +200,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Floor ), 			catArithmetic + "Floor" );
 			AddTemplate( typeof( SFN_Fmod ), 			catArithmetic + "Fmod" );
 			AddTemplate( typeof( SFN_Frac ), 			catArithmetic + "Frac" );
+			AddTemplate( typeof( SFN_HsvToRgb ),		catArithmetic + "HSV to RGB" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Hue ),				catArithmetic + "Hue" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_If ), 				catArithmetic + "If", KeyCode.I );
 			AddTemplate( typeof( SFN_Lerp ), 			catArithmetic + "Lerp", KeyCode.L );
@@ -217,6 +218,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Reciprocal ),		catArithmetic + "Reciprocal" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_RemapRangeAdvanced),catArithmetic+ "Remap" );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
+			AddTemplate( typeof( SFN_RgbToHsv ),		catArithmetic + "RGB to HSV" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Round ), 			catArithmetic + "Round" );
 			AddTemplate( typeof( SFN_Sign ), 			catArithmetic + "Sign" );
 			AddTemplate( typeof( SFN_Sqrt ), 			catArithmetic + "Sqrt" );

@@ -31,10 +31,10 @@ namespace ShaderForge {
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			string v = GetConnectorByStringID( "IN" ).TryEvaluate();
-			return "saturate(3.0*abs(1.0-2.0*frac("+v+"+float3(1.0,-1.0/3.0,1.0/3.0)))-1)";
+			return "saturate(3.0*abs(1.0-2.0*frac("+v+"+float3(0.0,-1.0/3.0,1.0/3.0)))-1)";
 		}
 
-		static Vector3 offsets = new Vector3(1f,-1f/3f, 1f/3f);
+		static Vector3 offsets = new Vector3(0f,-1f/3f, 1f/3f);
 
 		public override float NodeOperator( int x, int y, int c ) {
 			if(c == 3)
@@ -49,8 +49,10 @@ namespace ShaderForge {
 			
 		}
 
-		public override void RefreshValue() {
-			RefreshValue( 1, 1 );
+		public override void OnUpdateNode( NodeUpdateType updType, bool cascade = true ) {
+			if( InputsConnected() )
+				RefreshValue( 1, 1 );
+			base.OnUpdateNode( updType );
 		}
 
 	}

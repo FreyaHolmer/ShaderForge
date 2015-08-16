@@ -644,7 +644,7 @@ namespace ShaderForge {
 		}
 
 		bool UseUnity5FogInThisPass() {
-			return ps.catBlending.useFog && ( currentPass == PassType.FwdBase || currentPass == PassType.Outline );
+			return ps.catBlending.useFog && ( currentPass == PassType.FwdAdd || currentPass == PassType.FwdBase || currentPass == PassType.Outline );
 		}
 
 

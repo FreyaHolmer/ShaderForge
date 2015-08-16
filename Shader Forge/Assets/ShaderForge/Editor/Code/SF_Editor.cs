@@ -270,9 +270,10 @@ namespace ShaderForge {
 
 
 			string catUvOps = "UV Operations/";
-			AddTemplate( typeof( SFN_Panner ), 		catUvOps + "Panner", KeyCode.P );
-			AddTemplate( typeof( SFN_Parallax ), 	catUvOps + "Parallax" );
-			AddTemplate( typeof( SFN_Rotator ), 	catUvOps + "Rotator" );
+			AddTemplate( typeof( SFN_Panner ), 			catUvOps + "Panner", KeyCode.P );
+			AddTemplate( typeof( SFN_Parallax ), 		catUvOps + "Parallax" );
+			AddTemplate( typeof( SFN_Rotator ), 		catUvOps + "Rotator" );
+			AddTemplate( typeof( SFN_UVTile ),			catUvOps + "UV Tile" );
 
 			string catGeoData = "Geometry Data/";
 			AddTemplate( typeof( SFN_Bitangent ), 				catGeoData + "Bitangent Dir.");

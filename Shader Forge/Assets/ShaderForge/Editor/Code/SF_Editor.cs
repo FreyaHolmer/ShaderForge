@@ -203,6 +203,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_HsvToRgb ),		catArithmetic + "HSV to RGB" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Hue ),				catArithmetic + "Hue" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_If ), 				catArithmetic + "If", KeyCode.I );
+			AddTemplate( typeof( SFN_InverseLerp ),		catArithmetic + "Inverse Lerp" );
 			AddTemplate( typeof( SFN_Lerp ), 			catArithmetic + "Lerp", KeyCode.L );
 			AddTemplate( typeof( SFN_ConstantLerp ), 	catArithmetic + "Lerp (Simple)", KeyCode.None, "Lerp Simple" );
 			AddTemplate( typeof( SFN_Log ), 			catArithmetic + "Log" );

@@ -2228,9 +2228,11 @@ namespace ShaderForge {
 				scope++;
 				App( "o.ambientOrLightmapUV.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;" );
 				App( "o.ambientOrLightmapUV.zw = 0;" );
+
 				scope--;
 				if(sh){
 					App("#elif UNITY_SHOULD_SAMPLE_SH");
+					scope++;
 				} else {
 					App("#endif");
 				}

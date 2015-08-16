@@ -1151,6 +1151,8 @@ namespace ShaderForge {
 							menu.AddItem( new GUIContent( "[Accept normals only]" ), property.tagNormal, ContextClick, "tagnrm" );
 							menu.AddItem( new GUIContent( "[Accept HDR only]" ), property.tagHDR, ContextClick, "taghdr" );
 							menu.AddItem( new GUIContent( "[Per-renderer data]" ), property.tagPerRendererData, ContextClick, "tagprd" );
+						} else if( property is SFP_Color ) {
+							menu.AddItem( new GUIContent( "[HDR color picker]" ), property.tagHDR, ContextClick, "taghdr" );
 						}
 						// taghide tagnsco tagnrm taghdr tagprd
 					}
@@ -1811,7 +1813,7 @@ namespace ShaderForge {
 			GUI.color = borderColor;
 			GUI.DrawTexture( pickBorder, EditorGUIUtility.whiteTexture );
 			GUI.color = Color.white;
-
+			
 			
 			
 			Color pickedColor = EditorGUI.ColorField( pickRect, texture.ConvertToDisplayColor( texture.dataUniform ) );

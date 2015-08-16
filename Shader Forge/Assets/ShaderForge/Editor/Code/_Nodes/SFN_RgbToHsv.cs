@@ -78,8 +78,6 @@ namespace ShaderForge {
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			string k = K();
-			string p = P();
 			string q = Q();
 			string d = D();
 			string e = E();

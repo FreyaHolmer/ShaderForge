@@ -743,6 +743,15 @@ namespace ShaderForge {
 
 			App( ps.catBlending.GetOffsetString() );
 
+			if(ps.catBlending.useStencilBuffer && currentPass == PassType.FwdBase){
+				App("Stencil {");
+				scope++;
+				App( ps.catBlending.GetStencilContent() );
+				scope--;
+				App("}");
+			}
+			
+
 
 
 

@@ -164,7 +164,7 @@ namespace ShaderForge {
 			s += Serialize ( "stcp", ((int)stencilComparison).ToString());
 			s += Serialize ( "stps", ((int)stencilPass).ToString());
 			s += Serialize ( "stfa", ((int)stencilFail).ToString());
-			s += Serialize ( "stfz", ((int)stencilFailZ).ToString(), true);
+			s += Serialize ( "stfz", ((int)stencilFailZ).ToString());
 			
 			
 			// Offset
@@ -538,7 +538,7 @@ namespace ShaderForge {
 			}
 		}
 		
-		/*
+		
 		public string GetStencilContent(){
 			string s = "";
 			
@@ -557,9 +557,9 @@ namespace ShaderForge {
 			if(stencilFailZ != StencilOp.Keep)
 				s += "ZFail " + stencilFailZ + "\n";
 			
-			return s;
+			return s.Substring(0,s.Length-1);
 			
-		}*/
+		}
 
 		public void RefractionBlock( ref Rect r ) {
 

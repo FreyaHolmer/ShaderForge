@@ -54,13 +54,13 @@ namespace ShaderForge {
 		public DepthTest depthTest = DepthTest.LEqual;
 
 
-		/*public byte stencilValue = 128;
+		public byte stencilValue = 128;
 		public byte stencilMaskRead = 255;
 		public byte stencilMaskWrite = 255;
 		public DepthTestStencil stencilComparison = DepthTestStencil.Always;
 		public StencilOp stencilPass = StencilOp.Keep;
 		public StencilOp stencilFail = StencilOp.Keep;
-		public StencilOp stencilFailZ = StencilOp.Keep;*/
+		public StencilOp stencilFailZ = StencilOp.Keep;
 		
 		public int offsetFactor = 0;
 		public int offsetUnits = 0;
@@ -115,7 +115,7 @@ namespace ShaderForge {
 		public Vector2 fogRange = new Vector2(RenderSettings.fogStartDistance, RenderSettings.fogEndDistance);
 
 
-		//public bool useStencilBuffer = false;
+		public bool useStencilBuffer = false;
 
 
 		public override string Serialize(){
@@ -157,7 +157,6 @@ namespace ShaderForge {
 			
 			
 			// Stencil buffer:
-			/*
 			s += Serialize ( "stcl", useStencilBuffer.ToString());
 			s += Serialize ( "stva", stencilValue.ToString());
 			s += Serialize ( "stmr", stencilMaskRead.ToString());
@@ -166,7 +165,6 @@ namespace ShaderForge {
 			s += Serialize ( "stps", ((int)stencilPass).ToString());
 			s += Serialize ( "stfa", ((int)stencilFail).ToString());
 			s += Serialize ( "stfz", ((int)stencilFailZ).ToString(), true);
-*/
 			
 			
 			// Offset
@@ -292,7 +290,6 @@ namespace ShaderForge {
 				fogRange.y = float.Parse( value );
 				break;
 				// Stencil buffer:
-				/*
 			case "stcl":
 				useStencilBuffer = bool.Parse(value);
 				break;
@@ -316,7 +313,7 @@ namespace ShaderForge {
 				break;
 			case "stfz":
 				stencilFailZ = (StencilOp)int.Parse(value);
-				break;*/
+				break;
 				
 				// Offset
 			case "ofsf":
@@ -426,7 +423,7 @@ namespace ShaderForge {
 			
 			
 			
-			//StencilBlock(ref r); // TODO
+			StencilBlock(ref r);
 
 			r.y += prevYpos;
 			
@@ -615,7 +612,7 @@ namespace ShaderForge {
 			ps.EndIgnoreChangeCheck();
 		}
 
-		/*
+		
 		public void StencilBlock(ref Rect r){
 			
 			bool prevUseStencilBuffer = useStencilBuffer;
@@ -655,18 +652,18 @@ namespace ShaderForge {
 		
 		
 		public void StencilBitfield( Rect r, string label, ref byte b ){
-			StartIgnoreChangeCheck();
+			ps.StartIgnoreChangeCheck();
 			Rect tmp = r;
-			tmp.width = 57;
+			tmp.width = 62;
 			
-			GUI.Label(tmp.PadRight(2),label, SF_Styles.MiniLabelRight);
+			GUI.Label(tmp,label, SF_Styles.MiniLabelRight);
 			
 			tmp = tmp.MovedRight();
 			tmp.width = 36;
 			b = (byte)EditorGUI.IntField(tmp.PadTop(1).PadBottom(2).PadRight(2).PadLeft(2),b);
 			
 			Rect bitField = r;
-			bitField.xMin += 57+36 + 4;
+			bitField.xMin += 57+36 + 4 + 8;
 			bitField.xMax -= 4;
 			
 			
@@ -695,9 +692,9 @@ namespace ShaderForge {
 			}
 			GUI.color = Color.white;
 			
-			EndIgnoreChangeCheck();
+			ps.EndIgnoreChangeCheck();
 			
-		}*/
+		}
 		
 		
 		public void SortingBlock(ref Rect r) {

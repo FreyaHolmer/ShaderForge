@@ -360,7 +360,7 @@ namespace ShaderForge {
 
 
 		static Assembly editorAssembly;
-		static Assembly EditorAssembly {
+		public static Assembly EditorAssembly {
 			get {
 				if( editorAssembly == null ) {
 

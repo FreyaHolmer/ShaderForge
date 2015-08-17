@@ -9,7 +9,7 @@ Shader Forge is currently owned by Neat Corporation, and it has to remain that w
 In addition, the rights to Shader Forge might be sold to Unity in the future, which means we at Neat Corp and Unity, don't want to deal with all the legal hassles of what could happen if every contribution retained ownership.
 Basically, to sound extra legal:
 
-**[X] I, contributor of the Shader Forge project, hereby acknowledge that by contributing to this project and reading this, I surrender all rights and ownership of the code and assets I contribute to Neat Corporation. In addition, I will not contribute copyrighted code or assets, nor will I distribute the code or assets in the project to anyone else**
+**[X] I, contributor of the Shader Forge project, hereby acknowledge that by contributing to this project and reading this, I surrender all rights and ownership of the code and assets I alter or add to this project, to Neat Corporation (NeCo Software AB). In addition, I will not contribute copyrighted code or assets, nor will I distribute the code or assets from this project to anyone else**
 
 (Look, I even checked the box for you!)
 

@@ -278,6 +278,7 @@ namespace ShaderForge {
 			string catGeoData = "Geometry Data/";
 			AddTemplate( typeof( SFN_Bitangent ), 				catGeoData + "Bitangent Dir.");
 			AddTemplate( typeof( SFN_Depth ), 					catGeoData + "Depth");
+			AddTemplate( typeof( SFN_FaceSign ),				catGeoData + "Face Sign" );
 			AddTemplate( typeof( SFN_Fresnel ), 				catGeoData + "Fresnel", KeyCode.F );
 			AddTemplate( typeof( SFN_NormalVector ), 			catGeoData + "Normal Dir." );
 			AddTemplate( typeof( SFN_ObjectPosition ), 			catGeoData + "Object Position");

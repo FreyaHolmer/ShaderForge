@@ -99,6 +99,7 @@ namespace ShaderForge {
 					if( GUI.Button( iconRect.Pad( -2 ).PadHorizontal(-3), "" ) ) {
 						if( hasAction ) {
 							treeStatus.Errors[i].OnPress();
+							break;
 						} else if( isNode ) {
 							editor.nodeView.selection.DeselectAll( true );
 							treeStatus.Errors[i].node.Select( true );

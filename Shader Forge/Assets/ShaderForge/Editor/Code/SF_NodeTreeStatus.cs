@@ -128,6 +128,9 @@ namespace ShaderForge {
 			bool foundMipUsed = false;
 			//SF_Node mipNode = null;
 			usesSceneData = false;
+
+			bool hasFacingNode = false;
+
 			foreach( SF_Node n in cNodes ) {
 
 				// Refresh property list
@@ -147,6 +150,10 @@ namespace ShaderForge {
 
 				if( n is SFN_SceneColor ) {
 					usesSceneData = true;
+				}
+
+				if( n is SFN_FaceSign ) {
+					hasFacingNode = true;
 				}
 
 
@@ -363,7 +370,16 @@ namespace ShaderForge {
 			}
 
 			
-
+			// Make sure you set the shader to double sided
+			if( !editor.ps.catGeometry.IsDoubleSided() && hasFacingNode ) {
+				SF_ErrorEntry error = SF_ErrorEntry.Create( "You are using the Face Sign node, but your shader isn't double-sided. Click the icon to fix", false );
+				error.action = () => {
+					UnityEditor.Undo.RecordObject( editor.ps.catGeometry, "error correction - fix double sided" );
+					editor.ps.catGeometry.cullMode = SFPSC_Geometry.CullMode.DoubleSided;
+					editor.OnShaderModified( NodeUpdateType.Hard );
+				};
+				Errors.Add( error );
+			}
 			
 
 

@@ -439,6 +439,14 @@ namespace ShaderForge {
 					}
 				}
 
+				if( n is SFN_FaceSign ) {
+					dependencies.frag_facing = true;
+				}
+
+				if( ps.catGeometry.IsDoubleSided() ) {
+					dependencies.frag_facing = true;
+				}
+
 
 				// This has to be done afterwards
 				if( dependencies.frag_normalDirection && ps.catGeometry.IsDoubleSided() ) {
@@ -1216,15 +1224,6 @@ namespace ShaderForge {
 				} else {
 					App( "float3 normalDirection = i.normalDir;" );
 				}
-			}
-
-
-			if( ps.catGeometry.IsDoubleSided() ) {
-				App( "" );
-				App( "float nSign = sign( dot( viewDirection, i.normalDir ) ); // Reverse normal if this is a backface" );
-				App( "i.normalDir *= nSign;" );
-				App( "normalDirection *= nSign;" );
-				App( "" );
 			}
 
 
@@ -2408,10 +2407,19 @@ namespace ShaderForge {
 				scope--;
 				App( "{" );
 			} else {
-				App( "float4 frag(VertexOutput i) : COLOR {" );
+				string vface = "";
+				if( dependencies.frag_facing ) {
+					vface = ", float facing : VFACE";
+				}
+				App( "float4 frag(VertexOutput i" + vface + ") : COLOR {" );
 			}
 			
 			scope++;
+
+			if( dependencies.frag_facing ) {
+				App( "float isFrontFace = ( facing >= 0 ? 1 : 0 );" );
+				App( "float faceSign = ( facing >= 0 ? 1 : -1 );" );
+			}
 
 			InitObjectPos();
 			InitObjectScale();
@@ -2420,6 +2428,9 @@ namespace ShaderForge {
 
 			if( ps.catGeometry.normalQuality == SFPSC_Geometry.NormalQuality.Normalized && dependencies.frag_normalDirection ) {
 				App( "i.normalDir = normalize(i.normalDir);" );
+				if( dependencies.frag_facing ) {
+					App( "i.normalDir *= faceSign;" );
+				}
 			}
 
 			if( dependencies.vert_out_screenPos && ps.catGeometry.highQualityScreenCoords ) {

@@ -29,7 +29,8 @@ namespace ShaderForge {
 		public bool scene_uvs = false;
 		public bool tessellation = false;
 		public bool displacement = false;
-		
+
+		public bool frag_facing = false;
 
 		public bool vert_out_worldPos = false;
 		public bool vert_out_screenPos = false;

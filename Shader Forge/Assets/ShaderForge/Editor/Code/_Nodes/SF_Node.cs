@@ -460,13 +460,22 @@ namespace ShaderForge {
 			}
 		}
 
-
-		public Enum UndoableEnumPopup(Rect r, Enum enumValue, string undoPrefix){
+		public Enum UndoableEnumPopup( Rect r, Enum enumValue, string undoPrefix ) {
 			Enum nextEnum = EditorGUI.EnumPopup( r, enumValue );
-			if(nextEnum.ToString() != enumValue.ToString()){
+			if( nextEnum.ToString() != enumValue.ToString() ) {
+				string undoName = undoPrefix + " to " + nextEnum;
+				UndoRecord( undoName );
+				enumValue = nextEnum;
+			}
+			return enumValue;
+		}
+
+		public int UndoableEnumPopupNamed(Rect r, int enumValue, string[] names, string undoPrefix){
+			int nextEnum = EditorGUI.Popup( r, enumValue, names );
+			if(nextEnum != enumValue){
 				string undoName = undoPrefix + " to " + nextEnum;
 				UndoRecord(undoName);
-				enumValue = nextEnum;
+				return nextEnum;
 			}
 			return enumValue;
 		}

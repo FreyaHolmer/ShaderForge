@@ -625,25 +625,25 @@ namespace ShaderForge {
 			r.xMin += 20;
 			
 			Rect rTmp = r;
-			rTmp.width = 84;
+			rTmp.width = 88;
 			GUI.Label(rTmp,"Reference Value", EditorStyles.miniLabel);
 			rTmp = rTmp.MovedRight();
-			rTmp.width -= 40;
-			stencilValue = (byte)EditorGUI.IntField(rTmp.PadRight(4).PadTop(1).PadBottom(2),stencilValue);
+			rTmp.width -= 48;
+			stencilValue = (byte)UndoableIntField( rTmp.PadRight( 4 ).PadTop( 1 ).PadBottom( 2 ), stencilValue, "reference value" );
 			rTmp = rTmp.MovedRight();
 			rTmp.width = r.width-128;
-			stencilComparison = (DepthTestStencil)SF_GUI.LabeledEnumFieldNamed(rTmp.PadRight(4).ClampWidth(32,140),strDepthTestStencil, new GUIContent("Comparison"), (int)stencilComparison, EditorStyles.miniLabel);
+			stencilComparison = (DepthTestStencil)UndoableLabeledEnumPopupNamed( rTmp.PadRight( 4 ).ClampWidth( 32, 140 ), "Comparison", stencilComparison, strDepthTestStencil, "stencil comparison" );
 			r.y += 20;
 			
 			StencilBitfield(r, "Read Mask", ref stencilMaskRead);
 			r.y += 20;
 			StencilBitfield(r, "Write Mask", ref stencilMaskWrite);
 			r.y += 23;
-			stencilPass = (StencilOp)SF_GUI.LabeledEnumFieldNamed(r.PadRight(4),strStencilOp, new GUIContent("Pass"), (int)stencilPass, EditorStyles.miniLabel);
+			stencilPass = (StencilOp)UndoableLabeledEnumPopupNamed( r.PadRight( 4 ), "Pass", stencilPass, strStencilOp, "stencil pass" );
 			r.y += 20;
-			stencilFail = (StencilOp)SF_GUI.LabeledEnumFieldNamed(r.PadRight(4),strStencilOp, new GUIContent("Fail"), (int)stencilFail, EditorStyles.miniLabel);
+			stencilFail = (StencilOp)UndoableLabeledEnumPopupNamed( r.PadRight( 4 ), "Fail", stencilFail, strStencilOp, "stencil fail" );
 			r.y += 20;
-			stencilFailZ = (StencilOp)SF_GUI.LabeledEnumFieldNamed(r.PadRight(4),strStencilOp, new GUIContent("Fail Z"), (int)stencilFailZ, EditorStyles.miniLabel);
+			stencilFailZ = (StencilOp)UndoableLabeledEnumPopupNamed( r.PadRight( 4 ), "Fail Z", stencilFailZ, strStencilOp, "stencil fail Z" );
 			r.y += 20;
 			r.xMin -= 20;
 			r.y += 20;
@@ -684,7 +684,8 @@ namespace ShaderForge {
 				
 				GUI.color = bit ? Color.white : Color.gray;
 				
-				if(GUI.Button(bitField.PadTop(2).PadBottom(2),iBit.ToString(),btnStyle)){
+				if( GUI.Button( bitField.PadTop(2).PadBottom(2), iBit.ToString(), btnStyle ) ){
+					Undo.RecordObject( this, label + " bit flip" );
 					editor.Defocus();
 					b = (byte)( (1<<i) ^ b );
 				}

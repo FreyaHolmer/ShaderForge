@@ -71,7 +71,7 @@ namespace ShaderForge {
 
 		public override void DrawLowerPropertyBox() {
 			EditorGUI.BeginChangeCheck();
-			dotType = (DotType)EditorGUI.EnumPopup( lowerRect, dotType );
+			dotType = (DotType)UndoableEnumPopup( lowerRect, dotType, "dot product type" );
 			if( EditorGUI.EndChangeCheck() )
 				OnUpdateNode();
 		}

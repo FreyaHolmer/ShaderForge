@@ -2395,7 +2395,11 @@ namespace ShaderForge {
 			currentProgram = ShaderProgram.Frag;
 
 			if( currentPass == PassType.Meta ) {
-				App( "float4 frag(VertexOutput i) : SV_Target {" );
+				string vface = "";
+				if( dependencies.frag_facing ) {
+					vface = ", float facing : VFACE";
+				}
+				App( "float4 frag(VertexOutput i" + vface + ") : SV_Target {" );
 			} else if(currentPass == PassType.Deferred) {
 				App( "void frag(" );
 				scope++;
@@ -2403,7 +2407,12 @@ namespace ShaderForge {
 				App( "out half4 outDiffuse : SV_Target0," );
 				App( "out half4 outSpecSmoothness : SV_Target1," );
 				App( "out half4 outNormal : SV_Target2," );
-				App( "out half4 outEmission : SV_Target3 )" );
+				if( dependencies.frag_facing ) {
+					App( "out half4 outEmission : SV_Target3 )," );
+					App( "float facing : VFACE" );
+				} else {
+					App( "out half4 outEmission : SV_Target3 )" );
+				}
 				scope--;
 				App( "{" );
 			} else {

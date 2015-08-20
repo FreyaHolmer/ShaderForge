@@ -34,7 +34,7 @@ namespace ShaderForge {
 			string h = GetConnectorByStringID( "H" ).TryEvaluate();
 			string s = GetConnectorByStringID( "S" ).TryEvaluate();
 			string v = GetConnectorByStringID( "V" ).TryEvaluate();
-			return "(lerp(1,saturate(3.0*abs(1.0-2.0*frac("+h+"+float3(0.0,-1.0/3.0,1.0/3.0)))-1),"+s+")*" + v + ")";
+			return "(lerp(float3(1,1,1),saturate(3.0*abs(1.0-2.0*frac("+h+"+float3(0.0,-1.0/3.0,1.0/3.0)))-1),"+s+")*" + v + ")";
 		}
 
 		static Vector3 offsets = new Vector3(0f,-1f/3f, 1f/3f);

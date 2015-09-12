@@ -219,7 +219,7 @@ namespace ShaderForge {
 
 
 				txtEditor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-				savedCaretPosition = txtEditor.pos;
+				savedCaretPosition = txtEditor.cursorIndex;
 				//txtEditor.selectPos = 4;
 
 
@@ -231,9 +231,9 @@ namespace ShaderForge {
 				if(Event.current.keyCode == KeyCode.Tab && Event.current.type == EventType.keyDown){
 					//Debug.Log("Tab");
 					UndoRecord("insert tab in " + functionName + " code");
-					code = code.Insert(txtEditor.pos,"\t");
+					code = code.Insert( txtEditor.cursorIndex, "\t" );
 					//Debug.Log("Caret position = " + txtEditor.pos);
-					savedCaretPosition = txtEditor.pos;
+					savedCaretPosition = txtEditor.cursorIndex;
 					pressedTabLastFrameCounter = 5; // Force it for five GUI frames
 					Event.current.Use();
 					GUI.FocusControl(controlName);
@@ -242,8 +242,8 @@ namespace ShaderForge {
 				if(pressedTabLastFrameCounter > 0 /*&& GUI.GetNameOfFocusedControl() != controlName*/){
 					GUI.FocusControl(controlName);
 					txtEditor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-					txtEditor.pos = savedCaretPosition+1;
-					txtEditor.selectPos = savedCaretPosition+1;
+					txtEditor.cursorIndex = savedCaretPosition + 1;
+					txtEditor.selectIndex = savedCaretPosition+1;
 					pressedTabLastFrameCounter--;
 				}
 

@@ -109,7 +109,7 @@ namespace UnityEditor {
 			sutilGetRenderQueue = sutil.GetMethod( "GetRenderQueue", privStatic );
 			sutilGetLOD = sutil.GetMethod( "GetLOD", privStatic );
 			sutilDoesIgnoreProjector = sutil.GetMethod( "DoesIgnoreProjector", privStatic );
-			sutilGetErrorCount = sutil.GetMethod( "GetErrorCount", privStatic );
+			sutilGetErrorCount = sutil.GetMethod( "GetShaderErrorCount", privStatic );
 			sutilGetShaderErrorMessage = sutil.GetMethod( "GetShaderErrorMessage", privStatic );
 			sutilGetShaderErrorPlatform = sutil.GetMethod( "GetShaderErrorPlatform", privStatic );
 			sutilGetShaderErrorWarning = sutil.GetMethod( "GetShaderErrorWarning", privStatic );

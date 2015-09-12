@@ -3,19 +3,17 @@
 --- !u!129 &1
 PlayerSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 6
+  serializedVersion: 7
   AndroidProfiler: 0
   defaultScreenOrientation: 0
   targetDevice: 2
-  targetGlesGraphics: -1
-  targetIOSGraphics: -1
   targetResolution: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
   productName: _2D v3
-  cloudProjectId: 
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
+  m_ShowUnitySplashScreen: 1
   defaultScreenWidth: 1024
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 960
@@ -25,7 +23,6 @@ PlayerSettings:
   m_ActiveColorSpace: 0
   m_MTRendering: 1
   m_MobileMTRendering: 0
-  m_UseDX11: 1
   m_Stereoscopic3D: 0
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
@@ -80,6 +77,7 @@ PlayerSettings:
   metroEnableIndependentInputSource: 0
   metroEnableLowLatencyPresentationAPI: 0
   xboxOneDisableKinectGpuReservation: 0
+  virtualRealitySupported: 0
   productGUID: 3a8984573b6d44decadf1ac29eacc6ec
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 9
@@ -118,9 +116,11 @@ PlayerSettings:
     serializedVersion: 2
     rgba: 2795137446
   iOSLaunchScreenFillPct: 100
+  iOSLaunchScreenSize: 100
   iOSLaunchScreenCustomXibPath: 
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
+  androidSplashScreen: {fileID: 0}
   AndroidKeystoreName: 
   AndroidKeyaliasName: 
   AndroidTVCompatibility: 1
@@ -130,6 +130,7 @@ PlayerSettings:
   - width: 320
     height: 180
     banner: {fileID: 0}
+  androidGamepadSupportLevel: 0
   resolutionDialogBanner: {fileID: 0}
   m_BuildTargetIcons:
   - m_BuildTarget: 
@@ -137,6 +138,7 @@ PlayerSettings:
     - m_Icon: {fileID: 0}
       m_Size: 128
   m_BuildTargetBatching: []
+  m_BuildTargetGraphicsAPIs: []
   webPlayerTemplate: APPLICATION:Default
   m_TemplateCustomTags: {}
   actionOnDotNetUnhandledException: 1
@@ -198,6 +200,7 @@ PlayerSettings:
   ps4ApplicationParam2: 0
   ps4ApplicationParam3: 0
   ps4ApplicationParam4: 0
+  ps4GarlicHeapSize: 2048
   ps4Passcode: 1O8YFOGKjxRrJBdT3hVOfoaMeAjSWfch
   ps4pnSessions: 1
   ps4pnPresence: 1
@@ -209,6 +212,7 @@ PlayerSettings:
   psp2NPTrophyPackPath: 
   psp2NPSupportGBMorGJP: 0
   psp2NPAgeRating: 12
+  psp2NPTitleDatPath: 
   psp2NPCommsID: 
   psp2NPCommunicationsID: 
   psp2NPCommsPassphrase: 
@@ -223,6 +227,7 @@ PlayerSettings:
   psp2PatchOriginalPackage: 
   psp2PackagePassword: oZYFYZ5B6kzMCk8R6BEuZMrF6cI6NX8D
   psp2KeystoneFile: 
+  psp2MemoryExpansionMode: 0
   psp2DRMType: 0
   psp2StorageType: 0
   psp2MediaCapacity: 0
@@ -338,8 +343,7 @@ PlayerSettings:
   blackberrySquareSplashScreen: {fileID: 0}
   tizenProductDescription: 
   tizenProductURL: 
-  tizenCertificatePath: 
-  tizenCertificatePassword: 
+  tizenSigningProfileName: 
   tizenGPSPermissions: 0
   tizenMicrophonePermissions: 0
   stvDeviceAddress: 
@@ -358,6 +362,7 @@ PlayerSettings:
   XboxOnePackagingOverridePath: 
   XboxOneAppManifestOverridePath: 
   XboxOnePackageEncryption: 0
+  XboxOnePackageUpdateGranularity: 2
   XboxOneDescription: 
   XboxOneIsContentPackage: 0
   XboxOneEnableGPUVariability: 0
@@ -367,6 +372,7 @@ PlayerSettings:
   XboxOnePersistentLocalStorageSize: 0
   intPropertyNames:
   - Metro::ScriptingBackend
+  - Standalone::ScriptingBackend
   - WP8::ScriptingBackend
   - WebGL::ScriptingBackend
   - WebGL::audioCompressionFormat
@@ -375,6 +381,7 @@ PlayerSettings:
   - iOS::Architecture
   - iOS::ScriptingBackend
   Metro::ScriptingBackend: 2
+  Standalone::ScriptingBackend: 0
   WP8::ScriptingBackend: 2
   WebGL::ScriptingBackend: 1
   WebGL::audioCompressionFormat: 4
@@ -385,11 +392,20 @@ PlayerSettings:
   boolPropertyNames:
   - WebGL::analyzeBuildSize
   - WebGL::dataCaching
+  - WebGL::useEmbeddedResources
   WebGL::analyzeBuildSize: 0
   WebGL::dataCaching: 0
+  WebGL::useEmbeddedResources: 0
   stringPropertyNames:
   - WebGL::emscriptenArgs
   - WebGL::template
+  - additionalIl2CppArgs::additionalIl2CppArgs
   WebGL::emscriptenArgs: 
   WebGL::template: APPLICATION:Default
-  firstStreamedLevelWithResources: 0
+  additionalIl2CppArgs::additionalIl2CppArgs: 
+  firstStreamedSceneWithResources: 0
+  cloudProjectId: 
+  projectId: 
+  projectName: 
+  organizationId: 
+  cloudEnabled: 0

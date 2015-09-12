@@ -109,7 +109,9 @@ namespace ShaderForge {
 			return new Color( uv.x, uv.y, 0f, 0f );
 		}
 
-
+		float Frac( float x ) {
+			return x - Mathf.Floor( x );
+		}
 
 
 	}

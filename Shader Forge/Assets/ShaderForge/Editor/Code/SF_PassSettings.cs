@@ -310,6 +310,9 @@ namespace ShaderForge {
 		public bool HasTessellation() {
 			return mOut.tessellation.IsConnectedEnabledAndAvailable();
 		}
+		public bool HasOutline() {
+			return mOut.outlineWidth.IsConnectedEnabledAndAvailable();
+		}
 
 		public bool HasDisplacement() {
 			return mOut.displacement.IsConnectedEnabledAndAvailable();

@@ -17,6 +17,8 @@ namespace ShaderForge {
 		public string[] tessModeStr = new string[] { "Regular", "Edge length based"/*, "Edge length based with frustrum culling"*/};
 		public enum VertexOffsetMode { Relative, Absolute }
 		public string[] vertexOffsetModeStr = new string[] { "Relative", "Absolute" };
+		public enum OutlineMode { FromOrigin, VertexNormals, VertexColors };
+		public string[] outlineModeStr = new string[] { "From origin", "Vertex normals", "Vertex colors" };
 		public enum CullMode { BackfaceCulling, FrontfaceCulling, DoubleSided };
 		public static string[] strCullMode = new string[] { "Back", "Front", "Off" };
 
@@ -26,6 +28,7 @@ namespace ShaderForge {
 		public bool showPixelSnap = false;
 		public bool highQualityScreenCoords = true;
 		public TessellationMode tessellationMode = TessellationMode.Regular;
+		public OutlineMode outlineMode = OutlineMode.VertexNormals;
 		public CullMode cullMode = CullMode.BackfaceCulling;
 
 		
@@ -40,6 +43,7 @@ namespace ShaderForge {
 			s += Serialize( "vomd", ( (int)vertexOffsetMode ).ToString() );
 			s += Serialize( "spxs",	showPixelSnap.ToString());
 			s += Serialize( "tesm", ((int)tessellationMode).ToString());
+			s += Serialize( "olmd", ( (int)outlineMode ).ToString() );
 			s += Serialize( "culm", ( (int)cullMode ).ToString() );
 			return s;
 		}
@@ -64,6 +68,9 @@ namespace ShaderForge {
 				break;
 			case "tesm":
 				tessellationMode = (TessellationMode)int.Parse( value );
+				break;
+			case "olmd":
+				outlineMode = (OutlineMode)int.Parse( value );
 				break;
 			case "culm":
 				cullMode = (CullMode)int.Parse( value );
@@ -101,6 +108,11 @@ namespace ShaderForge {
 
 			GUI.enabled = ps.HasTessellation();
 			tessellationMode = (TessellationMode)UndoableLabeledEnumPopupNamed( r, "Tessellation Mode", tessellationMode, tessModeStr, "tessellation mode" );
+			GUI.enabled = true;
+			r.y += 20;
+
+			GUI.enabled = ps.HasOutline();
+			outlineMode = (OutlineMode)UndoableLabeledEnumPopupNamed( r, "Outline Extrude Direction", outlineMode, outlineModeStr, "outline mode" );
 			GUI.enabled = true;
 			r.y += 20;
 

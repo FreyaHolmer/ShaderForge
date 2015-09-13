@@ -168,6 +168,9 @@ namespace ShaderForge {
 
 			if( ps.IsOutlined() && currentPass == PassType.Outline ) {
 				dependencies.vert_in_normals = true;
+				if( ps.catGeometry.outlineMode == SFPSC_Geometry.OutlineMode.VertexColors ) {
+					dependencies.vert_in_vertexColor = true;
+				}
 			}
 
 			if( ps.catLighting.IsVertexLit() && ps.catLighting.IsLit() && !IsShadowOrOutlineOrMetaPass() ) {
@@ -2317,7 +2320,16 @@ namespace ShaderForge {
 			InitHalfVector();
 
 			if( currentPass == PassType.Outline ) {
-				App( "o.pos = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz + v.normal*" + ps.n_outlineWidth + ",1));" );
+				string dir = "";
+				if( ps.catGeometry.outlineMode == SFPSC_Geometry.OutlineMode.VertexNormals ) {
+					dir = "v.normal";
+				} else if( ps.catGeometry.outlineMode == SFPSC_Geometry.OutlineMode.VertexColors ) {
+					dir = "v.vertexColor";
+				} else if( ps.catGeometry.outlineMode == SFPSC_Geometry.OutlineMode.FromOrigin ) {
+					dir = "normalize(v.vertex)";
+				}
+				App( "o.pos = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz + "+dir+"*" + ps.n_outlineWidth + ",1));" );
+
 			} else if(currentPass == PassType.Meta ){
 				App( "o.pos = UnityMetaVertexPosition(v.vertex, v.texcoord1.xy, v.texcoord2.xy, unity_LightmapST, unity_DynamicLightmapST );" );
 			} else {

@@ -216,6 +216,15 @@ namespace ShaderForge {
 			}
 		}
 
+		private static Texture2D shader_preset_icon_posteffect;
+		public static Texture2D Shader_preset_icon_posteffect {
+			get {
+				if( shader_preset_icon_posteffect == null )
+					shader_preset_icon_posteffect = SF_Resources.LoadInterfaceIcon( "preset_posteffect" );
+				return shader_preset_icon_posteffect;
+			}
+		}
+
 		
 
 

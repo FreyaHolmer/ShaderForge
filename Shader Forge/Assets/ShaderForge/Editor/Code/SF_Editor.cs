@@ -1592,7 +1592,7 @@ namespace ShaderForge {
 			},400f);
 		}
 
-		public enum ShaderPresets { Unlit, LitPBR, LitBasic, Custom, Sprite, ParticleAdditive, ParticleAlphaBlended, ParticleMultiplicative, Sky }
+		public enum ShaderPresets { Unlit, LitPBR, LitBasic, Custom, Sprite, ParticleAdditive, ParticleAlphaBlended, ParticleMultiplicative, Sky, PostEffect }
 		public string[] shaderPresetNames = new string[] {
 			"Unlit",
 			"Lit\n(PBR)",
@@ -1602,7 +1602,8 @@ namespace ShaderForge {
 			"Particle\n(Additive)",
 			"Particle\n(Alpha-Blended)",
 			"Particle\n(Multiplicative)",
-			"Sky"
+			"Sky",
+			"Post-Effect"
 		};
 
 		public string[] shaderPresetShaders = new string[] {
@@ -1614,7 +1615,8 @@ namespace ShaderForge {
 			"ParticleAdditive",
 			"ParticleAlphaBlended",
 			"ParticleMultiplicative",
-			"Sky"
+			"Sky",
+			"PostEffect"
 		};
 
 		public string GetShaderPresetPath(ShaderPresets preset) {
@@ -1633,7 +1635,8 @@ namespace ShaderForge {
 			"Particle (Additive) is generally for glow effects, lightshafts, sparks etc. Primarily used in particle systems.",
 			"Particle (Alpha-Blended) is generally for debris effects, dusty smoke etc. Primarily used in particle systems.",
 			"Particle (Multiplicative) is generally for darkening effects, black smoke, evil-looking anti-glow etc. Primarily used in particle systems.",
-			"Sky is for creating shaders to be used with a sky material in your scene. It will render behind everything else."
+			"Sky is for creating shaders to be used with a sky material in your scene. It will render behind everything else.",
+			"Post-Effect is for creating shaders meant to render full-screen rather than at a position in the world, commonly used for post-process effects"
 		};
 
 		string desc = "";
@@ -1752,6 +1755,8 @@ namespace ShaderForge {
 					return SF_GUI.Shader_preset_icon_sprite;
 				case ShaderPresets.Unlit:
 					return SF_GUI.Shader_preset_icon_unlit;
+				case ShaderPresets.PostEffect:
+					return SF_GUI.Shader_preset_icon_posteffect;
 
 			}
 

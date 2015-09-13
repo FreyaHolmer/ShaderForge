@@ -2319,6 +2319,32 @@ namespace ShaderForge {
 				InitLightColor();
 			InitHalfVector();
 
+			string positioningPrefix = "mul(UNITY_MATRIX_MVP, "; // World space
+			string positioningSuffix = " );";
+			if( ps.catGeometry.vertexPositioning == SFPSC_Geometry.VertexPositioning.ClipSpace ) {
+				positioningPrefix = "";
+				positioningSuffix = ";";
+			}
+			if( ps.catGeometry.vertexPositioning == SFPSC_Geometry.VertexPositioning.Billboard ) {
+
+
+				App("float4x4 bbmv = UNITY_MATRIX_MV;");
+				App( "bbmv._m00 = 1.0f;" );
+				App( "bbmv._m10 = 0.0f;" );
+				App( "bbmv._m20 = 0.0f;" );
+				App( "bbmv._m01 = 0.0f;" );
+				App( "bbmv._m11 = 1.0f;" );
+				App( "bbmv._m21 = 0.0f;" );
+				App( "bbmv._m02 = 0.0f;" );
+				App( "bbmv._m12 = 0.0f;" );
+				App( "bbmv._m22 = 1.0f;" );
+
+
+				positioningPrefix = "mul( UNITY_MATRIX_P, mul( bbmv, ";
+				positioningSuffix = " ));";
+			}
+
+
 			if( currentPass == PassType.Outline ) {
 				string dir = "";
 				if( ps.catGeometry.outlineMode == SFPSC_Geometry.OutlineMode.VertexNormals ) {
@@ -2328,12 +2354,12 @@ namespace ShaderForge {
 				} else if( ps.catGeometry.outlineMode == SFPSC_Geometry.OutlineMode.FromOrigin ) {
 					dir = "normalize(v.vertex)";
 				}
-				App( "o.pos = mul(UNITY_MATRIX_MVP, float4(v.vertex.xyz + "+dir+"*" + ps.n_outlineWidth + ",1));" );
+				App( "o.pos = "+ positioningPrefix +"float4(v.vertex.xyz + "+dir+"*" + ps.n_outlineWidth + ",1)" + positioningSuffix );
 
 			} else if(currentPass == PassType.Meta ){
 				App( "o.pos = UnityMetaVertexPosition(v.vertex, v.texcoord1.xy, v.texcoord2.xy, unity_LightmapST, unity_DynamicLightmapST );" );
 			} else {
-				App( "o.pos = mul(UNITY_MATRIX_MVP, v.vertex);" );
+				App( "o.pos = " + positioningPrefix + "v.vertex" + positioningSuffix );
 			}
 
 			if( ps.catGeometry.showPixelSnap ) {

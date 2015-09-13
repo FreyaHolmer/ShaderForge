@@ -8,7 +8,8 @@ namespace ShaderForge {
 	[System.Serializable]
 	public class SFPSC_Geometry : SFPS_Category {
 
-
+		public enum VertexPositioning { WorldSpace, ClipSpace, Billboard };
+		public string[] strVertexPositioning = new string[] { "World space", "Clip space", "Billboard" };
 		public enum NormalQuality { Interpolated, Normalized };
 		public string[] strNormalQuality = new string[] { "Interpolated", "Normalized" };
 		public enum NormalSpace { Tangent, Object, World };
@@ -22,6 +23,7 @@ namespace ShaderForge {
 		public enum CullMode { BackfaceCulling, FrontfaceCulling, DoubleSided };
 		public static string[] strCullMode = new string[] { "Back", "Front", "Off" };
 
+		public VertexPositioning vertexPositioning = VertexPositioning.WorldSpace;
 		public NormalQuality normalQuality = NormalQuality.Normalized;
 		public NormalSpace normalSpace = NormalSpace.Tangent;
 		public VertexOffsetMode vertexOffsetMode = VertexOffsetMode.Relative;
@@ -31,12 +33,11 @@ namespace ShaderForge {
 		public OutlineMode outlineMode = OutlineMode.VertexNormals;
 		public CullMode cullMode = CullMode.BackfaceCulling;
 
-		
-		
-		
+
 
 		public override string Serialize(){
 			string s = "";
+			s += Serialize( "vtps", ( (int)vertexPositioning ).ToString() );
 			s += Serialize( "hqsc", highQualityScreenCoords.ToString());
 			s += Serialize( "nrmq", ( (int)normalQuality ).ToString() );
 			s += Serialize( "nrsp", ( (int)normalSpace ).ToString() );
@@ -51,6 +52,9 @@ namespace ShaderForge {
 		public override void Deserialize(string key, string value){
 
 			switch( key ) {
+			case "vtps":
+				vertexPositioning = (VertexPositioning)int.Parse( value );
+				break;
 			case "nrmq":
 				normalQuality = (NormalQuality)int.Parse( value );
 				break;
@@ -96,6 +100,9 @@ namespace ShaderForge {
 			GUI.enabled = ps.catLighting.renderPath == SFPSC_Lighting.RenderPath.Forward;
 			normalQuality = (NormalQuality)UndoableContentScaledToolbar( r, "Normal Quality", (int)normalQuality, strNormalQuality, "normal quality" );
 			GUI.enabled = true;
+			r.y += 20;
+
+			vertexPositioning = (VertexPositioning)UndoableContentScaledToolbar( r, "Vertex Positioning", (int)vertexPositioning, strVertexPositioning, "vertex positioning" );
 			r.y += 20;
 
 			GUI.enabled = ps.mOut.normal.IsConnectedEnabledAndAvailable();

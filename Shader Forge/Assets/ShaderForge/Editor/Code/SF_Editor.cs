@@ -222,6 +222,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_RgbToHsv ),		catArithmetic + "RGB to HSV" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Round ), 			catArithmetic + "Round" );
 			AddTemplate( typeof( SFN_Sign ), 			catArithmetic + "Sign" );
+			AddTemplate( typeof( SFN_Smoothstep ),		catArithmetic + "Smoothstep" );
 			AddTemplate( typeof( SFN_Sqrt ), 			catArithmetic + "Sqrt" );
 			AddTemplate( typeof( SFN_Step ), 			catArithmetic + "Step (A <= B)", KeyCode.None, "Step"  );
 			AddTemplate( typeof( SFN_Subtract ), 		catArithmetic + "Subtract", KeyCode.S );

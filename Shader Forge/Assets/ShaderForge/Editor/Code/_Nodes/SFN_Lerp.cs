@@ -24,7 +24,7 @@ namespace ShaderForge {
 				SF_NodeConnector.Create(this,"T","T",ConType.cInput,ValueType.VTvPending,false).SetRequired(true)
 			};
 
-			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2] );
+			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2], connectors[3] );
 		}
 
 		public override void OnUpdateNode( NodeUpdateType updType, bool cascade = true ) {
@@ -38,7 +38,7 @@ namespace ShaderForge {
 		}
 
 		public override int GetEvaluatedComponentCount() {
-			return Mathf.Max( this["A"].GetCompCount(), this["B"].GetCompCount() );
+			return Mathf.Max( this["A"].GetCompCount(), this["B"].GetCompCount(), this["T"].GetCompCount() );
 		}
 		
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {

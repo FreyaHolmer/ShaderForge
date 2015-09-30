@@ -2334,15 +2334,15 @@ namespace ShaderForge {
 
 
 				App("float4x4 bbmv = UNITY_MATRIX_MV;");
-				App( "bbmv._m00 = 1.0f;" );
+				App( "bbmv._m00 = -1.0/length(_World2Object[0].xyz);" );
 				App( "bbmv._m10 = 0.0f;" );
 				App( "bbmv._m20 = 0.0f;" );
 				App( "bbmv._m01 = 0.0f;" );
-				App( "bbmv._m11 = 1.0f;" );
+				App( "bbmv._m11 = -1.0/length(_World2Object[1].xyz);" );
 				App( "bbmv._m21 = 0.0f;" );
 				App( "bbmv._m02 = 0.0f;" );
 				App( "bbmv._m12 = 0.0f;" );
-				App( "bbmv._m22 = 1.0f;" );
+				App( "bbmv._m22 = -1.0/length(_World2Object[2].xyz);" );
 
 
 				positioningPrefix = "mul( UNITY_MATRIX_P, mul( bbmv, ";

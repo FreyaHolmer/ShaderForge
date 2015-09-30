@@ -3196,10 +3196,38 @@ namespace ShaderForge {
 				UnityEditor.VersionControl.Provider.Checkout( shaderAsset, CheckoutMode.Both );
 			}
 
-			StreamWriter sw = new StreamWriter( editor.GetShaderFilePath() );
+			string path = editor.GetShaderFilePath();
+			StreamWriter sw = new StreamWriter( path );
 			sw.Write( fileContent );
 			sw.Flush();
 			sw.Close();
+
+			// Shader written, set default textures in import settings
+			List<string> texNames = new List<string>();
+			List<Texture> textures = new List<Texture>();
+
+			// Collect all texture names and references
+			for( int i = 0; i < editor.nodes.Count; i++ ) {
+				if( editor.nodes[i] is SFN_Tex2d ) {
+					SFN_Tex2d t2d = editor.nodes[i] as SFN_Tex2d;
+					if( !t2d.TexAssetConnected() && t2d.textureAsset != null) {
+						texNames.Add( t2d.property.nameInternal );
+						textures.Add( t2d.textureAsset );
+					}
+				} else if( editor.nodes[i] is SFN_Tex2dAsset ) {
+					SFN_Tex2dAsset t2dAsset = editor.nodes[i] as SFN_Tex2dAsset;
+					if( t2dAsset.textureAsset != null ) {
+						texNames.Add( t2dAsset.property.nameInternal );
+						textures.Add( t2dAsset.textureAsset );
+					}
+				}
+			}
+
+			// Apply default textures to the shader importer
+			ShaderImporter sImporter = ShaderImporter.GetAtPath( path ) as ShaderImporter;
+			sImporter.SetDefaultTextures( texNames.ToArray(), textures.ToArray() );
+
+
 			try {
 				AssetDatabase.Refresh( ImportAssetOptions.DontDownloadFromCacheServer );
 			} catch( Exception e ) {

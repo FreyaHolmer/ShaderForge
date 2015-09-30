@@ -29,7 +29,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 1;
-		public static int versionNumSecondary = 19;
+		public static int versionNumSecondary = 20;
 		public static string versionStage = "";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge v" + version;

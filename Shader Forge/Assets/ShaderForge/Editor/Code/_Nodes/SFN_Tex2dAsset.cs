@@ -134,17 +134,14 @@ namespace ShaderForge {
 
 			SF_GUI.AllowIndieRenderTextures();
 
-			RenderTexture rt = new RenderTexture( textureAsset.width, textureAsset.height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default );
+			RenderTexture rt = new RenderTexture( SF_Node.NODE_SIZE, SF_Node.NODE_SIZE, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default );
 			rt.wrapMode = textureAsset.wrapMode;
 			rt.Create();
 			Graphics.Blit( textureAsset, rt );
 			RenderTexture.active = rt;
-			// The data is now in the RT, in an arbitrary res
-			// TODO: Sample it with normalized coords down into a 128x128
-			// Save it temporarily in a texture
-			Texture2D temp = new Texture2D( textureAsset.width, textureAsset.height, TextureFormat.ARGB32, false );
+			Texture2D temp = new Texture2D( SF_Node.NODE_SIZE, SF_Node.NODE_SIZE, TextureFormat.ARGB32, false );
 			temp.wrapMode = textureAsset.wrapMode;
-			temp.ReadPixels( new Rect( 0, 0, textureAsset.width, textureAsset.height ), 0, 0 );
+			temp.ReadPixels( new Rect( 0, 0, SF_Node.NODE_SIZE, SF_Node.NODE_SIZE ), 0, 0 );
 
 			if( IsAssetNormalMap() ) {
 				UnpackNormals( ref temp );

@@ -791,7 +791,7 @@ namespace ShaderForge {
 			bool insideNodeView = MouseInsideNodeView( true );
 			bool dragging = ( Event.current.type == EventType.MouseDrag && panCamera );
 			bool connecting = SF_NodeConnector.IsConnecting();
-			bool rotatingPreview = editor.preview.isDragging;
+			bool rotatingPreview = editor.preview.isDraggingLMB;
 			bool placingNode = editor.nodeBrowser.IsPlacing();
 			bool draggingSeparators = editor.DraggingAnySeparator();
 

@@ -37,18 +37,24 @@ namespace ShaderForge {
 		[SerializeField]
 		public Texture2D backgroundTexture;
 
+		bool previewIsSetUp = false; // Intentionally non-serialized
+
 
 		// Input/Rotation
 		[SerializeField]
-		public bool isDragging = false;
+		public bool isDraggingLMB = false;
 		[SerializeField]
-		Vector2 dragStartPos = Vector2.zero;
+		Vector2 dragStartPosLMB = Vector2.zero;
 		[SerializeField]
 		Vector2 rotMeshStart = new Vector2(-30f,0f);
 		[SerializeField]
 		Vector2 rotMesh = new Vector2(30f,0f);
 		[SerializeField]
 		Vector2 rotMeshSmooth = new Vector2(-30f,0f);
+
+		// Light Input/Rotation
+		[SerializeField]
+		public bool isDraggingRMB = false;
 
 		// Used for Reflection to get the preview render
 		[SerializeField]
@@ -73,8 +79,6 @@ namespace ShaderForge {
 		//public bool drawBgColor = true;
 
 
-
-
 		public SF_PreviewWindow( SF_Editor editor ) {
 
 			settings = new SF_PreviewSettings( this );
@@ -85,7 +89,11 @@ namespace ShaderForge {
 			//this.InternalMaterial = (Material)Resources.Load("ShaderForgeInternal",typeof(Material));
 			this.mesh = GetSFMesh( "sf_sphere" );
 
+			previewIsSetUp = false;
+
 			SetupPreview();
+
+			
 
 		}
 
@@ -111,6 +119,7 @@ namespace ShaderForge {
 
 
 		public void SetupPreview() {
+			previewIsSetUp = false;
 			// Reflection of PreviewRenderUtility
 			Type pruType = Type.GetType( "UnityEditor.PreviewRenderUtility,UnityEditor" );
 			BindingFlags bfs = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -278,22 +287,45 @@ namespace ShaderForge {
 			rotMeshSmooth = Vector2.Lerp(rotMeshSmooth,rotMesh,0.5f);
 		}
 
-		public void StartDrag() {
-			isDragging = true;
+		public void StartDragLMB() {
+			isDraggingLMB = true;
 			if(settings.previewAutoRotate == true){
 				settings.previewAutoRotate = false;
 			}
-			dragStartPos = Event.current.mousePosition;
+			dragStartPosLMB = Event.current.mousePosition;
 			rotMeshStart = rotMesh;
 		}
 
-		public void UpdateDrag() {
-			rotMesh.y = rotMeshStart.y + ( -(dragStartPos.x - Event.current.mousePosition.x) ) * 0.4f;
-			rotMesh.x = Mathf.Clamp( rotMeshStart.x + ( -(dragStartPos.y - Event.current.mousePosition.y) ) * 0.4f, -90f, 90f );
+		public void UpdateDragLMB() {
+			rotMesh.y = rotMeshStart.y + ( -(dragStartPosLMB.x - Event.current.mousePosition.x) ) * 0.4f;
+			rotMesh.x = Mathf.Clamp( rotMeshStart.x + ( -(dragStartPosLMB.y - Event.current.mousePosition.y) ) * 0.4f, -90f, 90f );
 		}
 
-		public void StopDrag() {
-			isDragging = false;
+		public void StopDragLMB() {
+			isDraggingLMB = false;
+		}
+
+
+		public void StartDragRMB() {
+			isDraggingRMB = true;
+		}
+
+		public void UpdateDragRMB() {
+
+			if( Event.current.isMouse && Event.current.type == EventType.mouseDrag ) {
+				float x = ( -( Event.current.delta.x ) ) * 0.4f;
+				float y = ( -( Event.current.delta.y ) ) * 0.4f;
+				for( int i = 0; i < pruLights.Length; i++ ) {
+					pruLights[i].transform.RotateAround( Vector3.zero, pruCam.transform.right, y );
+					pruLights[i].transform.RotateAround( Vector3.zero, pruCam.transform.up, x );
+				}
+			}
+			
+
+		}
+
+		public void StopDragRMB() {
+			isDraggingRMB = false;
 		}
 
 
@@ -308,15 +340,24 @@ namespace ShaderForge {
 				this.previewRect = previewRect;
 
 			if( Event.current.rawType == EventType.mouseUp ) {
-				StopDrag();
+				if( Event.current.button == 0 ) 
+					StopDragLMB();
+				else if( Event.current.button == 1 ) 
+					StopDragRMB();
 			}
 
 			if( Event.current.type == EventType.mouseDown && MouseOverPreview() ) {
-				StartDrag();
+				if( Event.current.button == 0 )
+					StartDragLMB();
+				else if( Event.current.button == 1 )
+					StartDragRMB();
+
 			}
 
-			if( isDragging )
-				UpdateDrag();
+			if( isDraggingLMB )
+				UpdateDragLMB();
+			if( isDraggingRMB )
+				UpdateDragRMB();
 
 
 			if( mesh == null || InternalMaterial == null || Event.current.type != EventType.repaint )
@@ -430,7 +471,8 @@ namespace ShaderForge {
 			//		if (this.m_LightMode == 0)
 			//		{
 			pruLights[0].intensity = 1f; // Directional
-			pruLights[0].transform.rotation = Quaternion.Euler( 30f, 30f, 0f );
+			if( !previewIsSetUp )
+				pruLights[0].transform.rotation = Quaternion.Euler( 30f, 30f, 0f );
 			pruLights[1].intensity = 0.75f;
 			pruLights[1].color = new Color(1f,0.5f,0.25f);
 			ambient = RenderSettings.ambientLight;
@@ -443,6 +485,7 @@ namespace ShaderForge {
 			//			ambient = new Color(0.2f, 0.2f, 0.2f, 0f);
 			//		}
 			ieuSetCustomLighting.Invoke( null, new object[] { pruLights, ambient } );
+			previewIsSetUp = true;
 		}
 
 

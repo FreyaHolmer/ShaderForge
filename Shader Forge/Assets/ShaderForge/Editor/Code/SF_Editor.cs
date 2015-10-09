@@ -1809,6 +1809,8 @@ namespace ShaderForge {
 					GUILayout.EndVertical();
 				}
 			});
+
+			
 			
 			FlexHorizontal(()=>{
 				if( GUILayout.Button( "Polycount thread" ) ) {
@@ -1827,12 +1829,20 @@ namespace ShaderForge {
 					menuState = MainMenuState.Credits;
 				}
 			});
+
 			
-			FlexHorizontal(()=>{
-				if( GUILayout.Button( SF_Tools.bugReportLabel, GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
+			FlexHorizontal( () => {
+				if( GUILayout.Button( SF_Tools.bugReportLabel, GUILayout.Height( 32f ), GUILayout.Width( 180f ) ) ) {
 					Application.OpenURL( SF_Tools.bugReportURL );
 				}
-			});
+			} );
+
+			FlexHorizontal( () => {
+				if( GUILayout.Button( "Forums", GUILayout.Height( 32f ), GUILayout.Width( 120f ) ) ) {
+					Application.OpenURL( "http://neatcorporation.com/forums/viewforum.php?f=1" );
+				}
+			} );
+			
 			EditorGUILayout.Separator();
 			FlexHorizontal(()=>{
 				GUILayout.Label(updateCheck);

@@ -1941,11 +1941,11 @@ namespace ShaderForge {
 				
 				string glossStr = DoPassSpecular() ? "gloss" : "0";
 
-				App( "Unity_GlossyEnvironmentData gl_en_data;" );
-				App( "gl_en_data.roughness = 1.0 - "+glossStr+";" );
-				App( "gl_en_data.reflUVW = viewReflectDirection;" );
+				App( "Unity_GlossyEnvironmentData ugls_en_data;" );
+				App( "ugls_en_data.roughness = 1.0 - " + glossStr + ";" );
+				App( "ugls_en_data.reflUVW = viewReflectDirection;" );
 
-				App( "UnityGI gi = UnityGlobalIllumination(d, 1, normalDirection, gl_en_data );" );
+				App( "UnityGI gi = UnityGlobalIllumination(d, 1, normalDirection, ugls_en_data );" );
 
 
 				if( !InDeferredPass() ) {

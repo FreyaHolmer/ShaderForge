@@ -18,8 +18,50 @@ namespace ShaderForge {
 			base.Initialize( "ArcTan2" );
 			base.UseLowerPropertyBox( true, true );
 			base.PrepareArithmetic(2);
+			base.shaderGenMode = ShaderGenerationMode.Modal;
 			connectors[1].label = "y";
 			connectors[2].label = "x";
+		}
+
+		public override string[] GetModalModes() {
+			return new string[]{
+				"NPTP",
+				"NOTO",
+				"ZTO",
+				"ZTOW"
+			};
+		}
+
+		public override string GetCurrentModalMode() {
+			switch( arcTanType ) {
+				case ArcTan2Type.NegOneToOne:
+					return "NOTO";
+				case ArcTan2Type.ZeroToOne:
+					return "ZTO";
+				case ArcTan2Type.ZeroToOneWrapped:
+					return "ZTOW";
+				default:
+					return "NPTP";
+			}
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+
+
+			string s = "atan2(_a,_b)";
+
+			switch( mode ) {
+				case "NOTO":
+					s = "(" + s + "/3.14159265359)";
+					break;
+				case "ZTO":
+					s = "(" + s + "/6.28318530718)+0.5";
+					break;
+				case "ZTOW":
+					s = "(1-abs(" + s + ")/3.14159265359)";
+					break;
+			}
+			return new string[] { s };
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -38,10 +80,10 @@ namespace ShaderForge {
 			return "atan2(" + aStr + "," + bStr + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 
-			float a = GetInputData( "A", x, y, c );
-			float b = GetInputData( "B", x, y, c );
+			float a = GetInputData( "A", c );
+			float b = GetInputData( "B", c );
 
 			if( arcTanType == ArcTan2Type.NegOneToOne )
 				return Mathf.Atan2( a, b ) / Mathf.PI;

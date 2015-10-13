@@ -11,6 +11,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "HSV to RGB" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			UseLowerReadonlyValues( true );
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create( this, "OUT", "", ConType.cOutput, ValueType.VTv3, false ),
@@ -30,6 +31,12 @@ namespace ShaderForge {
 			return true;
 		}
 
+		public override string[] GetBlitOutputLines() {
+			return new string[] { 
+				"float4((lerp(float3(1,1,1),saturate(3.0*abs(1.0-2.0*frac(_h.x+float3(0.0,-1.0/3.0,1.0/3.0)))-1),_s.x)*_v.x),0)"
+			};
+		}
+
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			string h = GetConnectorByStringID( "H" ).TryEvaluate();
 			string s = GetConnectorByStringID( "S" ).TryEvaluate();
@@ -39,12 +46,12 @@ namespace ShaderForge {
 
 		static Vector3 offsets = new Vector3(0f,-1f/3f, 1f/3f);
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			if(c == 3)
 				return 1f;
-			float h = GetInputData( "H", x, y, c );
-			float s = GetInputData( "S", x, y, c );
-			float v = GetInputData( "V", x, y, c );
+			float h = GetInputData( "H", c );
+			float s = GetInputData( "S", c );
+			float v = GetInputData( "V", c );
 			float o = offsets[c];
 			return Mathf.Lerp(1,Mathf.Clamp01(3 * Mathf.Abs(1-2*Frac(h+o)) - 1),s)*v;
 		}

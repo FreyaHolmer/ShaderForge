@@ -39,7 +39,7 @@ namespace ShaderForge {
 			return evalStr;
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
 			return Color.black;
 			/*

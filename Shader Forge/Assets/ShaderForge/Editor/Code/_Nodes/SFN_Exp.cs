@@ -35,9 +35,26 @@ namespace ShaderForge {
 			return inner;
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override string[] GetModalModes() {
+			return new string[]{
+				"EXP",
+				"EXP2"
+			};
+		}
 
-			float inpDt = GetInputData( "IN", x, y, c );
+		public override string GetCurrentModalMode() {
+			if( expType == ExpType.Exp2)
+				return "EXP2";
+			return "EXP";
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+			return new string[]{ mode.ToLower() + "(_in)" };
+		}
+
+		public override float EvalCPU( int c ) {
+
+			float inpDt = GetInputData( "IN", c );
 
 			switch( expType ) {
 				case ExpType.Exp:

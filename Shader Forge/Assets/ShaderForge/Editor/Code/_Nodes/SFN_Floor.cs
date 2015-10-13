@@ -10,15 +10,16 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Floor" );
-			base.PrepareArithmetic(1);
+			base.PrepareArithmetic( 1 );
+			base.shaderGenMode = ShaderGenerationMode.SimpleFunction;
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return "floor(" + GetConnectorByStringID( "IN" ).TryEvaluate() + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			return Mathf.Floor( GetInputData( "IN", x, y, c ) );
+		public override float EvalCPU( int c ) {
+			return Mathf.Floor( GetInputData( "IN", c ) );
 		}
 
 	}

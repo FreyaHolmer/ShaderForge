@@ -11,6 +11,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Smoothstep" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.SimpleFunction;
 			UseLowerReadonlyValues( true );
 
 			//SF_NodeConnection lerpCon;
@@ -47,11 +48,11 @@ namespace ShaderForge {
 			return string.Format( "smoothstep( {0}, {1}, {2} )", a, b, v );
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 
-			float a = GetInputData( "A", x, y, c );
-			float b = GetInputData( "B", x, y, c );
-			float v = GetInputData( "V", x, y, c );
+			float a = GetInputData( "A", c );
+			float b = GetInputData( "B", c );
+			float v = GetInputData( "V", c );
 
 			if( ( b - a ) == 0f )
 				return 0;

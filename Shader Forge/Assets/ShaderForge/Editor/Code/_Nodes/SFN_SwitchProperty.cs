@@ -21,7 +21,7 @@ namespace ShaderForge {
 			base.node_height -= 20;
 			//base.lowerRect.height += 4;
 			base.showColor = true;
-
+			base.shaderGenMode = ShaderGenerationMode.ValuePassing;
 
 			base.UseLowerPropertyBox( true, true );
 
@@ -45,6 +45,19 @@ namespace ShaderForge {
 		Color conLineFg = Color.white;
 	//	Color conLineBgTrns = new Color(0f,0f,0f,0.3f);
 	//	Color conLineFgTrns = new Color(1f,1f,1f,0.3f);
+
+		public override string[] ExtraPassedFloatProperties(){
+			return new string[] { "On" };
+		}
+
+		public override void PrepareRendering( Material mat ) {
+			mat.SetFloat( "_on", on ? 1.0f : 0.0f );
+		}
+
+		public override string[] GetBlitOutputLines() {
+			return new string[] { "lerp(_a,_b,_on)" };
+		}
+
 		
 		public override void DrawLowerPropertyBox() {
 			EditorGUI.BeginChangeCheck();
@@ -121,11 +134,11 @@ namespace ShaderForge {
 			return "lerp( " + GetConnectorByStringID( "A" ).TryEvaluate() + ", " + GetConnectorByStringID( "B" ).TryEvaluate() + ", "+ property.GetVariable() + " )";
 		}
 		
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			if(on){
-				return GetInputData("B",x,y,c);
+				return GetInputData("B", c);
 			} else {
-				return GetInputData("A",x,y,c);
+				return GetInputData("A", c);
 			}
 		}
 

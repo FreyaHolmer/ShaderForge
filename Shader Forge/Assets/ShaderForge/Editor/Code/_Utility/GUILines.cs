@@ -279,9 +279,13 @@ namespace ShaderForge {
 		}
 
 		public static Vector2 CubicBezier( Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t ) {
-			Vector2 a = QuadBezier( p0, p1, p2, t );
-			Vector2 b = QuadBezier( p1, p2, p3, t );
-			return Lerp( a, b, t );
+			float omt = 1f - t;
+			float omt2 = omt * omt;
+			float t2 = t * t;
+			return p0 * ( omt2 * omt ) +
+					p1 * ( 3f * omt2 * t ) +
+					p2 * ( 3f * omt * t2 ) +
+					p3 * ( t2 * t );
 		}
 
 		public static Vector2 QuadBezier( Vector2 p0, Vector2 p1, Vector2 p2, float t ) {

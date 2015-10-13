@@ -28,6 +28,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( false );
 			base.texture.uniform = true;
 			base.texture.CompCount = 1;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 			property = ScriptableObject.CreateInstance<SFP_Slider>().Initialize( this );
 
 			centerFloatField = new GUIStyle( EditorStyles.numberField );
@@ -46,8 +47,12 @@ namespace ShaderForge {
 			return property.GetVariable();
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			return current;
+		}
+
+		public override bool IsUniformOutput() {
+			return true;
 		}
 
 
@@ -128,7 +133,7 @@ namespace ShaderForge {
 
 		// TODO: Refresh node thumbs
 		public void OnValueChanged() {
-			texture.dataUniform[0] = current;
+			texture.dataUniform = current * Vector4.one;
 			editor.shaderEvaluator.ApplyProperty( this );
 			OnUpdateNode( NodeUpdateType.Soft );
 		}

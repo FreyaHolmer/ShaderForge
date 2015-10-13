@@ -260,7 +260,7 @@ namespace ShaderForge {
 			//				GUI.DrawTexture(GUILayoutUtility.GetLastRect(),EditorGUIUtility.whiteTexture);
 			//				GUI.color = Color.white;
 			UpdateCameraZoom();
-			DrawMesh( previewRect );
+			DrawMeshGUI( previewRect );
 			if(SF_Debug.renderDataNodes)
 				GUI.Label(previewRect, "rotMesh.x = " + rotMesh.x + "  rotMesh.y = " + rotMesh.y);
 			//GUI.Box( previewRect, string.Empty/*, EditorStyles.textField*/ );
@@ -335,7 +335,12 @@ namespace ShaderForge {
 	
 		[SerializeField]
 		Rect previewRect = new Rect(0f,0f,1f,1f);
-		public void DrawMesh( Rect previewRect ) {
+		public void DrawMeshGUI( Rect previewRect ) {
+
+			if( previewRect == default( Rect ) ) {
+				previewRect = this.previewRect;
+			}
+
 			if( previewRect.width > 1 )
 				this.previewRect = previewRect;
 
@@ -363,22 +368,40 @@ namespace ShaderForge {
 			if( mesh == null || InternalMaterial == null || Event.current.type != EventType.repaint )
 				return;
 
+			
+
 			if( previewStyle == null ) {
 				previewStyle = new GUIStyle( EditorStyles.textField );
 			}
+			previewStyle.normal.background = backgroundTexture;
+
+
+			DrawMesh();
+
+
+			GUI.DrawTexture( previewRect, render, ScaleMode.StretchToFill, false );
+
+		}
+
+
+
+		public void DrawMesh( RenderTexture overrideRT = null, Material overrideMaterial = null ) {
 			if( backgroundTexture == null )
 				UpdatePreviewBackgroundColor();
 
-			previewStyle.normal.background = backgroundTexture;
 			if( pruRef == null ) {
 				SetupPreview();
 			}
 			UpdateRenderPath();
 			pruBegin.Invoke( pruRef, new object[] { previewRect, previewStyle } );
+
+			if( overrideRT != null ) {
+				pruCam.targetTexture = overrideRT;
+				pruCam.clearFlags = CameraClearFlags.SolidColor;
+			}
+				
+
 			PreparePreviewLight();
-
-
-			// Get rotation
 
 
 
@@ -391,43 +414,33 @@ namespace ShaderForge {
 			float meshExtents = mesh.bounds.extents.magnitude;
 
 
-			//Event.current.
-
-			//Matrix4x4 meshPos = Matrix4x4.TRS()
-
-			Vector3 pos = new Vector3( -mesh.bounds.center.x, -mesh.bounds.center.y, -mesh.bounds.center.z);
-			pruCam.transform.localPosition = new Vector3( 0f,0f, -3f * meshExtents );
+			Vector3 pos = new Vector3( -mesh.bounds.center.x, -mesh.bounds.center.y, -mesh.bounds.center.z );
+			pruCam.transform.localPosition = new Vector3( 0f, 0f, -3f * meshExtents );
 
 			int smCount = mesh.subMeshCount;
 
-			if(SF_Debug.renderDataNodes){
+			if( SF_Debug.renderDataNodes ) {
 				pruCam.clearFlags = CameraClearFlags.Depth;
 
-				pruCam.backgroundColor = new Color(0f,0f,0f,0f);
+				pruCam.backgroundColor = new Color( 0f, 0f, 0f, 0f );
 			}
 
-
-			for(int i=0;i<smCount;i++){
-				Graphics.DrawMesh( mesh, Quaternion.identity*pos, Quaternion.identity, InternalMaterial, 0, pruCam, i );
+			Material mat = (overrideMaterial == null) ? InternalMaterial : overrideMaterial;
+			for( int i=0; i < smCount; i++ ) {
+				Graphics.DrawMesh( mesh, Quaternion.identity * pos, Quaternion.identity, mat, 0, pruCam, i );
 			}
-
-
-
 
 			pruCam.farClipPlane = 3f * meshExtents * 2f;
 			pruCam.nearClipPlane = 0.1f;
 			pruCam.fieldOfView = smoothFOV;
-			//Debug.Log( targetFOV );
-			//pruCam.transform.position = , pruCam.transform.position.z );
 			pruCam.Render();
-			
+
 			ieuRemoveCustomLighting.Invoke( null, new object[0] );
 			render = (Texture)pruEnd.Invoke( pruRef, new object[0] );
-			//Debug.Log(((RenderTexture)render).format);
-			//((RenderTexture)render).format = RenderTextureFormat.ARGB32;
-			GUI.DrawTexture( previewRect, render, ScaleMode.StretchToFill, false );
-			//GUI.Label(previewRect, pruCam.actualRenderingPath.ToString());
 		}
+
+
+
 
 		[SerializeField]
 		const float minFOV = 1f;

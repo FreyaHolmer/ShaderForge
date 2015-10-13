@@ -693,7 +693,7 @@ namespace ShaderForge {
 			prevFrameTime = now;
 
 			preview.UpdateRot();
-			
+
 			
 			
 			for (int i = nodes.Count - 1; i >= 0; i--) {
@@ -702,6 +702,26 @@ namespace ShaderForge {
 				else
 					nodes[i].Update();
 			}
+
+
+			// Refresh node previews
+			int maxUpdatesPerFrame = 80;
+			int updatedNodes = 0;
+
+			while( updatedNodes < maxUpdatesPerFrame ) {
+				bool anyUpdated = false;
+				for( int i = 0; i < nodes.Count; i++ ) {
+					if( nodes[i].CheckIfDirty() ) {
+						anyUpdated = true;
+						updatedNodes++;
+					}
+				}
+				if( !anyUpdated ) {
+					break;
+				}
+			}
+
+			
 			
 
 				
@@ -734,13 +754,20 @@ namespace ShaderForge {
 	
 
 		MethodInfo isDockedMethod;
+		const float dockedCheckInterval = 1f;
+		public float dockedLastUpdate = -100f;
+		public bool _docked = false;
 		public bool Docked{
 			get{
-				if(isDockedMethod == null){
-					BindingFlags fullBinding = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
-					isDockedMethod = typeof( EditorWindow ).GetProperty( "docked", fullBinding ).GetGetMethod( true );
+				if( EditorApplication.timeSinceStartup - dockedLastUpdate > dockedCheckInterval ) {
+					dockedLastUpdate = (float)EditorApplication.timeSinceStartup;
+					if( isDockedMethod == null ) {
+						BindingFlags fullBinding = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+						isDockedMethod = typeof( EditorWindow ).GetProperty( "docked", fullBinding ).GetGetMethod( true );
+					}
+					_docked = ( bool ) isDockedMethod.Invoke(this, null);
 				}
-				return ( bool ) isDockedMethod.Invoke(this, null);
+				return _docked;
 			}
 		}
 
@@ -1113,7 +1140,7 @@ namespace ShaderForge {
 						//previewLabelRect.y += 2;
 
 						GUI.Box( previewRect.Margin(2).PadTop(-16), string.Empty, SF_Styles.NodeStyle );
-						preview.DrawMesh(previewRect);
+						preview.DrawMeshGUI(previewRect);
 
 						if(shaderTitle != string.Empty){
 							Rect previewLabelRect = previewRect;

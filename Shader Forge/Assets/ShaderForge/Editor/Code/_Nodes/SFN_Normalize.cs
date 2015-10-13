@@ -11,6 +11,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Normalize" );
 			base.PrepareArithmetic( 1 );
+			base.shaderGenMode = ShaderGenerationMode.SimpleFunction;
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -18,13 +19,13 @@ namespace ShaderForge {
 		}
 
 		/*
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float NodeOperator( int c ) {
 			return Mathf.Abs( GetInputData( 1, x, y, c ) );
 		}*/
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
-			Vector4 v = GetInputData( "IN" )[x, y];
+			Vector4 v = GetInputData( "IN" ).dataUniform;
 
 			switch( GetInputData( "IN" ).CompCount ) {
 				case 1:

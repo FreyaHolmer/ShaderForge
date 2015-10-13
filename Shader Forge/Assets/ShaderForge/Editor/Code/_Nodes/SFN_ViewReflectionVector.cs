@@ -13,7 +13,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "View Refl.", vectorDataTexture:true  );
+			base.Initialize( "View Refl.", InitialPreviewRenderMode.BlitSphere );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 3;

@@ -59,8 +59,8 @@ namespace ShaderForge {
 			return GetVariableName();
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			return on ? GetInputData( "B", x, y, c ) : GetInputData( "A", x, y, c );
+		public override float EvalCPU( int c ) {
+			return on ? GetInputData( "B", c ) : GetInputData( "B", c );
 		}
 
 		public override string SerializeSpecialData() {

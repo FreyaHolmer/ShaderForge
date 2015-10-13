@@ -12,6 +12,7 @@ namespace ShaderForge {
 			base.Initialize( "If" );
 			base.PrepareArithmetic(0);
 			base.showLowerReadonlyValues = false;
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 
 
 			connectors = new SF_NodeConnector[]{
@@ -40,6 +41,19 @@ namespace ShaderForge {
 			};
 		}
 
+		public override string[] GetBlitOutputLines() {
+
+			string less = "(sta*_lt)";
+			string larger = "(stb*_gt)";
+			string lela = less + "+" + larger;
+
+			return new string[]{
+				"float sta = step(_a,_b);",
+				"float stb = step(_b,_a);",
+				"lerp(" + lela + ",_eq,sta*stb)"
+			};
+		}
+
 		public override bool IsUniformOutput() {
 			foreach(SF_NodeConnector con in connectors){
 				if(con.conType == ConType.cOutput)
@@ -63,18 +77,18 @@ namespace ShaderForge {
 			return "lerp(" + lela + "," + GetInputCon( "EQ" ).Evaluate() + "," + StA() + "*" + StB() + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			float a = GetInputData( "A", x, y, c );
-			float b = GetInputData( "B", x, y, c );
+		public override float EvalCPU( int c ) {
+			float a = GetInputData( "A", c );
+			float b = GetInputData( "B", c );
 
 			float sta = ( ( a <= b ) ? 1.0f : 0.0f );
 			float stb = ( ( b <= a ) ? 1.0f : 0.0f );
 
-			float less = sta * GetInputData( "LT", x, y, c );
-			float larger = stb * GetInputData( "GT", x, y, c );
+			float less = sta * GetInputData( "LT", c );
+			float larger = stb * GetInputData( "GT", c );
 			float lela = ( less + larger );
 
-			return Mathf.Lerp( lela, GetInputData( "EQ", x, y, c ), sta * stb );
+			return Mathf.Lerp( lela, GetInputData( "EQ", c ), sta * stb );
 		}
 
 	}

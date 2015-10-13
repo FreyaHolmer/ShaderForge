@@ -10,15 +10,16 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Ceil" );
-			base.PrepareArithmetic(1);
+			base.PrepareArithmetic( 1 );
+			base.shaderGenMode = ShaderGenerationMode.SimpleFunction;
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return "ceil(" + GetConnectorByStringID( "IN" ).TryEvaluate() + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			return Mathf.Ceil( GetInputData( "IN", x, y, c ) );
+		public override float EvalCPU( int c ) {
+			return Mathf.Ceil( GetInputData( "IN", c ) );
 		}
 
 	}

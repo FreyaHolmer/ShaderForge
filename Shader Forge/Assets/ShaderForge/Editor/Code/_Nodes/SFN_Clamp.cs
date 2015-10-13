@@ -18,6 +18,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Clamp" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.SimpleFunction;
 			UseLowerReadonlyValues( true );
 
 			//SF_NodeConnection lerpCon;
@@ -53,10 +54,10 @@ namespace ShaderForge {
 		}
 
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			//if( c + 1 > GetEvaluatedComponentCount() && GetEvaluatedComponentCount() > 1 ) // Why was this needed before?
 			//	return 0f;
-			return Mathf.Clamp( GetInputData( "IN", x, y, c ), GetInputData( "MIN", x, y, c ), GetInputData( "MAX", x, y, c ) );
+			return Mathf.Clamp( GetInputData( "IN", c ), GetInputData( "MIN", c ), GetInputData( "MAX", c ) );
 		}
 
 

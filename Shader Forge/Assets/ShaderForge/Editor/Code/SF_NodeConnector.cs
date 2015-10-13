@@ -492,7 +492,7 @@ namespace ShaderForge {
 
 			
 
-			if( conType == ConType.cInput ) {
+			if( conType == ConType.cInput && Event.current.type == EventType.repaint ) {
 				DrawConnection( editor );
 			}
 
@@ -502,6 +502,11 @@ namespace ShaderForge {
 			if( Clicked() ) {
 				SF_NodeConnector.pendingConnectionSource = this;
 				editor.nodeView.selection.DeselectAll(registerUndo:false);
+				foreach( SF_Node iNode in editor.nodes ) {
+					foreach( SF_NodeConnector con in iNode.connectors ) {
+						con.UpdateCanValidlyConnectToPending();
+					}
+				}
 				Event.current.Use();
 			}
 
@@ -520,7 +525,8 @@ namespace ShaderForge {
 
 			editor.ResetRunningOutdatedTimer();
 
-			node.Repaint();
+			//if(Event.current.type == EventType.repaint)
+				//node.Repaint();
 
 		
 			bool hovering = false;
@@ -535,17 +541,21 @@ namespace ShaderForge {
 					break;
 			}
 
-			Color c = hovering ? Color.green : GetConnectionLineColor();
+			if( Event.current.type == EventType.repaint ) {
+				Color c = hovering ? Color.green : GetConnectionLineColor();
 
-			bool input = ( conType == ConType.cInput );
-			Vector2 start = input ? GetConnectionPoint() : MousePos();
-			Vector2 end = input ? MousePos() : GetConnectionPoint(); ;
+				bool input = ( conType == ConType.cInput );
+				Vector2 start = input ? GetConnectionPoint() : MousePos();
+				Vector2 end = input ? MousePos() : GetConnectionPoint(); ;
 
-			if( valueType == ValueType.VTm4x4 || valueType == ValueType.VTv4m4x4 ) {
-				GUILines.DrawMatrixConnection( editor, start, end, c );
-			} else {
-				GUILines.DrawStyledConnection( editor, start, end, GetCompCount(), c );
+				if( valueType == ValueType.VTm4x4 || valueType == ValueType.VTv4m4x4 ) {
+					GUILines.DrawMatrixConnection( editor, start, end, c );
+				} else {
+					GUILines.DrawStyledConnection( editor, start, end, GetCompCount(), c );
+				}
 			}
+
+			
 			
 
 			//Drawing.DrawLine(rect.center,MousePos(),Color.white,2,true);
@@ -1005,7 +1015,12 @@ namespace ShaderForge {
 			return enableState == EnableState.Enabled && availableState == AvailableState.Available && (!UnconnectableToPending() || this == SF_NodeConnector.pendingConnectionSource);
 		}
 
+		bool canValidlyConnectToPending = false;
 
+		public void UpdateCanValidlyConnectToPending() {
+			canValidlyConnectToPending = CanValidlyConnectTo( SF_NodeConnector.pendingConnectionSource );
+		}
+		
 		public bool UnconnectableToPending() {
 			if(enableState != EnableState.Enabled || availableState == AvailableState.Unavailable)
 				return true;
@@ -1013,7 +1028,7 @@ namespace ShaderForge {
 				return true;
 			if( SF_NodeConnector.pendingConnectionSource != null ) {
 				if( SF_NodeConnector.pendingConnectionSource != this )
-					if( !CanValidlyConnectTo( SF_NodeConnector.pendingConnectionSource ) )
+					if( !canValidlyConnectToPending )
 						return true;
 			}
 			return false;
@@ -1106,7 +1121,7 @@ namespace ShaderForge {
 				GUI.color = DisplayAsValid() ? Color.white : new Color(1f,1f,1f,0.25f);
 			}
 
-			bool showConditionA = !(Hovering(true) && CanValidlyConnectTo(SF_NodeConnector.pendingConnectionSource));
+			bool showConditionA = !(Hovering(true) && canValidlyConnectToPending);
 			bool showConditionB = !(SF_NodeConnector.pendingConnectionSource == this);
 
 			if( HasErrors() && (showConditionA && showConditionB) ) {

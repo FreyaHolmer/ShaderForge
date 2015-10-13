@@ -18,6 +18,7 @@ namespace ShaderForge {
 			base.neverDefineVariable = true;
 			base.texture.uniform = true;
 			base.texture.CompCount = 4;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 			lowerRect.width /= 4;
 
 			property = ScriptableObject.CreateInstance<SFP_Vector4Property>().Initialize( this );
@@ -42,7 +43,7 @@ namespace ShaderForge {
 
 		public override void DrawLowerPropertyBox() {
 
-			Color vecPrev = texture.dataUniform;
+			Vector4 vecPrev = texture.dataUniform;
 
 			if( !IsGlobalProperty() && selected && !SF_GUI.MultiSelectModifierHeld() )
 				ColorPickerCorner( lowerRect );

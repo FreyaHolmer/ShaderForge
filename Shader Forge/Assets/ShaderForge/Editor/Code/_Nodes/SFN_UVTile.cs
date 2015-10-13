@@ -19,6 +19,7 @@ namespace ShaderForge {
 			base.showColor = true;
 			UseLowerReadonlyValues( false );
 			base.alwaysDefineVariable = true;
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			texture.CompCount = 2;
 			//SF_NodeConnection lerpCon;
 			connectors = new SF_NodeConnector[]{
@@ -69,6 +70,15 @@ namespace ShaderForge {
 			return GetVariableName() + "_ty";
 		}
 
+		public override string[] GetBlitOutputLines() {
+			return new string[] {
+				"float2 tcrcp = float2(1.0,1.0)/float2( _wdt.x, _hgt.x );",
+				"float ty = floor(_tile.x * tcrcp.x);",
+				"float tx = _tile.x - _wdt.x * ty;",
+				"float4((_uvin.xy + float2(tx, ty)) * tcrcp,0,0)"
+			};
+		}
+
 		public override string[] GetPreDefineRows() {
 			return new string[] {
 				"float2 " + TileCountRecip() + " = float2(1.0,1.0)/float2( " + this["WDT"].TryEvaluate() + ", "  + this["HGT"].TryEvaluate() + " );",
@@ -82,19 +92,19 @@ namespace ShaderForge {
 		}
 
 		// TODO Expose more out here!
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
 			// GetInputData( "ANG", x, y, 0 )
 
-			Vector2 uv;
+			Vector2 uv = Vector2.one;
 			if( GetInputIsConnected( "UVIN" ) ) {
-				uv = new Vector2( GetInputData( "UVIN", x, y, 0 ), GetInputData( "UVIN", x, y, 1 ) );
+				uv = new Vector2( GetInputData( "UVIN", 0 ), GetInputData( "UVIN", 1 ) );
 			} else {
-				uv = new Vector2( x / SF_NodeData.RESf, y / SF_NodeData.RESf ); // TODO: should use ghost nodes... 
+				//uv = new Vector2( x / SF_NodeData.RESf, y / SF_NodeData.RESf ); // TODO: should use ghost nodes... 
 			}
-			float tile = GetInputData( "TILE", x, y, 0 );
-			float w = GetInputData( "WDT", x, y, 0 );
-			float h = GetInputData( "HGT", x, y, 0 );
+			float tile = GetInputData( "TILE", 0 );
+			float w = GetInputData( "WDT", 0 );
+			float h = GetInputData( "HGT", 0 );
 
 			float ty = Mathf.Floor( tile / w );
 			float tx = tile - w * ty;

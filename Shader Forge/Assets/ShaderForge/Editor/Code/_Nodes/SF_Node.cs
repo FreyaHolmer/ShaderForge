@@ -10,6 +10,18 @@ using System;
 namespace ShaderForge {
 
 	public enum NodeUpdateType { Soft, Hard };
+	public enum ShaderGenerationMode {
+		OffUniform, 	// No shader written
+		Modal,			// Requires modes or C# intervention, Array of suffixes & Array of custom outputs
+		Manual,			// Fully manually written
+		ValuePassing,	// Floats are sent from the node to the material before render
+		SimpleFunction, // Generates a name(inputs)
+		CustomFunction,	// Generates a custom output line
+		ModularInput 	// Generates 5 shaders for different input counts
+	};
+
+	public enum InitialPreviewRenderMode { Off, BlitQuad, BlitSphere };
+
 
 	[System.Serializable]
 	public class SF_Node : ScriptableObject, IDependable<SF_Node> {
@@ -20,6 +32,8 @@ namespace ShaderForge {
 
 		public int node_width = NODE_WIDTH;
 		public int node_height = NODE_HEIGHT;
+
+		public ShaderGenerationMode shaderGenMode = ShaderGenerationMode.Manual;
 
 		public int depth = 0; // Used when deserializing and updating
 
@@ -282,8 +296,10 @@ namespace ShaderForge {
 
 
 			int cc = GetEvaluatedComponentCount();
+			Debug.Log( "Get eval cc for " + nodeName + " = " + cc );
 			if( cc == 0 )
 				cc = texture.CompCount;
+			Debug.Log("Getting var cc for " + nodeName +" = " + cc);
 
 			string precisionStr = precision.ToCode();
 
@@ -345,7 +361,7 @@ namespace ShaderForge {
 		}
 
 
-		public void Initialize( string name, bool vectorDataTexture = false) {
+		public void Initialize( string name, InitialPreviewRenderMode initialPreviewMode = InitialPreviewRenderMode.Off ) {
 			editor = SF_Editor.instance; // TODO, pass in a better way
 			status = ScriptableObject.CreateInstance<SF_NodeStatus>().Initialize(this);
 			Vector2 pos = editor.mousePosition; // TODO: check where to spawn first
@@ -357,15 +373,22 @@ namespace ShaderForge {
 			texture.Fill( Color.black );
 
 
+
+			if( initialPreviewMode == InitialPreviewRenderMode.BlitQuad ){
+				texture.GenerateBaseData( render3D: false );
+			} else if( initialPreviewMode == InitialPreviewRenderMode.BlitSphere ) {
+				texture.GenerateBaseData( render3D: true );
+			}
+			
+			texture.LoadAndInitializeIcons(this.GetType());
+
+			/*
 			// Try to find icon
-
-			texture.LoadAndInitializeIcons(this.GetType()); 
-
 			if(vectorDataTexture){
 				vectorDataNode = true;
 				displayVectorDataMask = true;
 				texture.LoadDataTexture(this.GetType());
-			}
+			}*/
 
 
 			pos = editor.nodeView.ScreenSpaceToZoomSpace( pos );
@@ -386,6 +409,10 @@ namespace ShaderForge {
 		
 
 		public virtual void Update() {
+
+			// TODO: REALTIME
+			// dirtyState = UpToDateState.OutdatedHard;
+			// texture.GenerateBaseData();
 			// Override
 		}
 
@@ -623,8 +650,23 @@ namespace ShaderForge {
 		//		Debug.Log("OnConnectedNode " + name);
 		//	}
 
+		public void MakeChildrenOutdated( UpToDateState state ) {
+			foreach( SF_NodeConnector mCon in connectors ) {
+				if( mCon == null )
+					continue;
+				if( mCon.conType == ConType.cOutput ) {
+					for( int i = 0; i < mCon.outputCons.Count; i++ ) {
+						SF_NodeConnector mConOut = mCon.outputCons[i];
+						mConOut.node.dirtyState = state;
+						//mConOut.node.MakeChildrenOutdated( state ); // Recursive is super expensive
+					}
+				}
+			}
+		}
+
 		public virtual void OnUpdateNode( NodeUpdateType updType = NodeUpdateType.Hard, bool cascade = true ) {
-			//Debug.Log("Updating " + name);
+
+			//Debug.Log("Updating " + nodeName);
 
 			
 
@@ -634,6 +676,13 @@ namespace ShaderForge {
 			if( !InputsConnected() ) {
 				//Debug.Log("Detected missing input on obj " + name);
 				texture.OnLostConnection();
+			}
+
+			// Update texture if it's uniform for things like Color/Value etc.
+			if( texture.uniform ) {
+				//Debug.Log("Blitting uniform " + texture.dataUniform);
+				PrepareRendering( SF_Blit.mat );
+				texture.BlitUniform();
 			}
 
 			RefreshValue(); // Refresh this value
@@ -649,7 +698,10 @@ namespace ShaderForge {
 						if( mCon.conType == ConType.cOutput ) {
 							for (int i = 0; i < mCon.outputCons.Count; i++) {
 								SF_NodeConnector mConOut = mCon.outputCons [i];
-								mConOut.node.OnUpdateNode (updType);
+								UpToDateState state = (updType == NodeUpdateType.Soft) ? UpToDateState.OutdatedSoft : UpToDateState.OutdatedHard;
+								mConOut.node.dirtyState = state;
+								mConOut.node.MakeChildrenOutdated( state );
+								//mConOut.node.OnUpdateNode (updType);
 								// TODO Null ref
 							}
 						}
@@ -658,8 +710,8 @@ namespace ShaderForge {
 			UpdateDisplayVectorDataMask();
 
 			editor.OnShaderModified( NodeUpdateType.Soft );
-			if(!SF_Parser.quickLoad && !isGhost)
-				Repaint();
+			//if(!SF_Parser.quickLoad && !isGhost)
+				//Repaint();
 
 		}
 
@@ -683,6 +735,110 @@ namespace ShaderForge {
 			
 		}
 
+		string BlitShaderBasePath() {
+			return GetType().Name;
+		}
+
+		public string GetBlitShaderPath() {
+			string suffix = GetBlitShaderSuffix();
+			if( !string.IsNullOrEmpty( suffix ) ) {
+				return BlitShaderBasePath() + "_" + suffix;
+			} else {
+				string modalMode = "";
+				if( shaderGenMode == ShaderGenerationMode.Modal )
+					modalMode = GetCurrentModalMode();
+				if( string.IsNullOrEmpty( modalMode ) ) {
+					return BlitShaderBasePath();
+				} else {
+					return BlitShaderBasePath() + "_" + modalMode;
+				}
+			}
+		}
+
+		public virtual string GetCurrentModalMode() {
+			if( shaderGenMode == ShaderGenerationMode.Modal ) {
+				Debug.LogError( "Missing GetCurrentModalMode() override on " + nodeName );
+			} else {
+				Debug.LogError( "Calling GetCurrentModalMode() on " + nodeName + " which isn't supposed to call GetCurrentModalMode" );
+			}
+			return "";
+		}
+
+		public virtual string[] GetModalModes() {
+			if( shaderGenMode == ShaderGenerationMode.Modal ) {
+				Debug.LogError( "Missing GetModalModes() override on " + nodeName );
+			} else {
+				Debug.LogError( "Calling GetModalModes() on " + nodeName + " which isn't supposed to call GetModalModes" );
+			}
+			return null;
+		}
+
+		public virtual string[] GetBlitOutputLines( string mode ) {
+			if( shaderGenMode == ShaderGenerationMode.Modal ) {
+				Debug.LogError( "Missing GetBlitOutputLines(mode) override on " + nodeName );
+			} else {
+				Debug.LogError( "Calling GetBlitOutputLines(mode) on " + nodeName + " which isn't supposed to call GetBlitOutputLines" );
+			}
+			return null;
+		}
+
+		public virtual string[] GetBlitOutputLines() {
+			if( shaderGenMode == ShaderGenerationMode.CustomFunction || shaderGenMode == ShaderGenerationMode.ValuePassing ) {
+				Debug.LogError( "Missing GetBlitOutputLines() override on " + nodeName );
+			} else {
+				Debug.LogError( "Calling GetBlitOutputLines() on " + nodeName + " which isn't supposed to read a custom output line" );
+			}
+			return null;
+		}
+
+		public virtual string[] ExtraPassedFloatProperties() {
+			return null;
+		}
+
+		public virtual string GetBlitShaderSuffix() {
+			if( shaderGenMode == ShaderGenerationMode.ModularInput ) {
+				return GetComboInputSuffix();
+			}
+			return string.Empty;
+		}
+
+		public virtual void GetModularShaderFixes( out string prefix, out string infix, out string suffix ) {
+			if( shaderGenMode == ShaderGenerationMode.ModularInput ) {
+				Debug.LogError( "Failed to get modular input fixes shader for " + nodeName );
+			} else {
+				Debug.LogError( "Tried to run GetModularShaderFixes() for the non-modular " + nodeName);
+			}
+			prefix = infix = suffix = string.Empty;
+		}
+
+		public string GetComboInputSuffix() {
+
+			int conCount = 0;
+
+			if( GetInputIsConnected( "A" ) )
+				conCount++;
+			else
+				return string.Empty;
+
+			if( GetInputIsConnected( "B" ) )
+				conCount++;
+			else
+				return string.Empty; 
+
+			if( GetInputIsConnected( "C" ) )
+				conCount++;
+			if( GetInputIsConnected( "D" ) )
+				conCount++;
+			if( GetInputIsConnected( "E" ) )
+				conCount++;
+
+			return conCount.ToString();
+		}
+
+
+		public virtual void PrepareRendering( Material mat ) {
+			// Override
+		}
 
 		public float[] VectorCopy( float[] original ) {
 			float[] retVec = new float[original.Length];
@@ -728,17 +884,17 @@ namespace ShaderForge {
 		public virtual bool ExhaustedOptionalInputs() {
 			return false;
 		}
-
-		public virtual Color NodeOperator( int x, int y ) {
-			return new Color(
-				NodeOperator(x,y,0),
-				NodeOperator(x,y,1),
-				NodeOperator(x,y,2),
-				NodeOperator(x,y,3)
+		 
+		public virtual Vector4 EvalCPU() {
+			return new Vector4(
+				EvalCPU(0),
+				EvalCPU(1),
+				EvalCPU(2),
+				EvalCPU(3)
 			);
 		}
 
-		public virtual float NodeOperator( int x, int y, int c ) {
+		public virtual float EvalCPU( int c ) {
 			return 0f; // Override this
 		}
 
@@ -748,7 +904,7 @@ namespace ShaderForge {
 
 		public void RefreshValue( int ia, int ib ) {
 
-			//Debug.Log("Refreshing value of " + name);
+		//	Debug.Log("Refreshing value of " + nodeName);
 
 			if( connectors == null ) {
 				Debug.LogError( "Refreshing node with null connector list on " + this.nodeName );
@@ -771,8 +927,8 @@ namespace ShaderForge {
 		
 			
 			texture.Combine();
-			if(!SF_Parser.quickLoad && !isGhost)
-				SF_Editor.instance.Repaint();
+			//if(!SF_Parser.quickLoad && !isGhost)
+				//SF_Editor.instance.Repaint();
 		}
 
 		public virtual bool IsUniformOutput() {
@@ -788,7 +944,8 @@ namespace ShaderForge {
 			varPreDefined = false;
 		}
 
-		public float GetInputData( string id, int x, int y, int c ) {
+		public float GetInputData( string id, int c ) {
+
 
 			SF_NodeConnector con = GetConnectorByStringID(id);
 
@@ -827,7 +984,7 @@ namespace ShaderForge {
 
 
 			//return GetInputData( id, x, y, c );
-			return GetInputData( id ) [ x, y, c ];
+			return GetInputData( id ).dataUniform[c];
 		}
 
 		/*
@@ -875,6 +1032,16 @@ namespace ShaderForge {
 			}
 			return connectors[id].inputCon;
 		}*/
+
+		public int ReadComponentCountFromFirstOutput() {
+			for( int i = 0; i < connectors.Length; i++ ) {
+				if( connectors[i].conType == ConType.cOutput ) {
+					return connectors[i].GetCompCount();
+				}
+			}
+			Debug.LogWarning("No component count could be read from " + nodeName + " (" + variableName + ")");
+			return 0;
+		}
 
 		public SF_NodeConnector GetInputCon( string id ) {
 			SF_NodeConnector con = GetConnectorByStringID( id );
@@ -1099,6 +1266,8 @@ namespace ShaderForge {
 
 
 		public void DrawWindow() {
+
+
 
 
 			
@@ -1702,8 +1871,13 @@ namespace ShaderForge {
 			DrawHighlight();
 
 			//if(status != null)
-			
-			
+
+			if( SF_Debug.nodePreviews ) {
+				Rect tmp = rect;
+				tmp.y -= 20;
+				tmp.height = 20;
+				GUI.Label( tmp, "State: " + dirtyState );
+			}
 
 			
 
@@ -1816,7 +1990,7 @@ namespace ShaderForge {
 			//pickBorder.yMax += 1;
 			//pickBorder.yMin -= 1;
 
-			float grayscale = texture.dataUniform.grayscale;
+			float grayscale = ((Color)texture.dataUniform).grayscale;
 			Color borderColor = Color.white - new Color( grayscale, grayscale, grayscale );
 			borderColor.a = GUI.enabled ? 1f : 0.25f;
 			GUI.color = borderColor;
@@ -1831,7 +2005,7 @@ namespace ShaderForge {
 		}
 
 		public void SetColor(Color c, bool registerUndo = false) {
-			if( c != texture.dataUniform ) {
+			if( (Vector4)c != texture.dataUniform ) {
 				Color newColor = texture.ConvertToDisplayColor( c );
 				if(registerUndo){
 					if(IsProperty()){
@@ -1908,24 +2082,26 @@ namespace ShaderForge {
 		[SerializeField]
 		public UpToDateState dirtyState = UpToDateState.UpToDate;
 
-		public void CheckIfDirty(){
+		public bool CheckIfDirty(){
 
 			if(dirtyState == UpToDateState.UpToDate)
-				return;
+				return false;
 
-
-
-			//Debug.Log("Cleaning up " + nodeName);
+			foreach( SF_NodeConnector con in ConnectedInputs ) {
+				if( con.inputCon.node.dirtyState != UpToDateState.UpToDate ) {
+					return false;
+				}
+			}
 
 			NodeUpdateType updType = NodeUpdateType.Hard;
-			if(dirtyState == UpToDateState.OutdatedHard)
+			if( dirtyState == UpToDateState.OutdatedHard )
 				updType = NodeUpdateType.Hard;
-			if(dirtyState == UpToDateState.OutdatedSoft)
+			if( dirtyState == UpToDateState.OutdatedSoft )
 				updType = NodeUpdateType.Soft;
-
 
 			OnUpdateNode(updType, true);
 			dirtyState = UpToDateState.UpToDate;
+			return true;
 		}
 
 		public void SetDirty(UpToDateState dirtyState){

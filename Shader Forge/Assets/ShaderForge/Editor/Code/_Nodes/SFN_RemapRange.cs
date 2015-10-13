@@ -31,12 +31,32 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true, true );
 			base.PrepareArithmetic(1);
 			base.node_height += 15;
+			base.shaderGenMode = ShaderGenerationMode.ValuePassing;
 			UpdateMultOffset();
 
 		}
 
 
 		// n-p*m = x
+
+		public override string[] ExtraPassedFloatProperties() {
+			return new string[]{
+				"Multiplier",
+				"Offset"
+			};
+		}
+
+		public override void PrepareRendering( Material mat ) {
+			UpdateMultOffset();
+			mat.SetFloat( "_multiplier", multiplier );
+			mat.SetFloat( "_offset", offset );
+		}
+
+		public override string[] GetBlitOutputLines() {
+			return new string[]{
+				"_in*_multiplier+_offset"
+			};
+		}
 
 
 		public override void DrawLowerPropertyBox() {
@@ -92,8 +112,8 @@ namespace ShaderForge {
 		}
 
 		// TODO Expose more out here!
-		public override float NodeOperator( int x, int y, int c ) {
-			return GetInputData( "IN", x, y, c ) * multiplier + offset;
+		public override float EvalCPU( int c ) {
+			return GetInputData( "IN", c ) * multiplier + offset;
 		}
 
 

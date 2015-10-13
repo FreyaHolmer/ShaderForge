@@ -16,10 +16,10 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			perturbed = false;
-			base.Initialize( "Normal Dir.", vectorDataTexture:true );
+			base.Initialize( "Normal Dir.", InitialPreviewRenderMode.BlitSphere );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
-			UpdateIcon();
+			//UpdateIcon();
 			base.texture.CompCount = 3;
 			base.neverDefineVariable = true;
 			connectors = new SF_NodeConnector[]{
@@ -28,7 +28,7 @@ namespace ShaderForge {
 			base.lockedVariableName = true;
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 			return new Color( 0, 0, 1, 0 );
 		}
 
@@ -37,7 +37,7 @@ namespace ShaderForge {
 				return "v.normal";
 			return perturbed ? "normalDirection" : "i.normalDir";
 		}
-
+		/*
 		public void UpdateIcon() {
 			if(perturbed){
 				texture.LoadDataTexture(this.GetType(), "2");
@@ -45,7 +45,7 @@ namespace ShaderForge {
 				texture.LoadDataTexture(this.GetType());
 			}
 			base.texture.SetIconId( perturbed ? 1 : 0 );
-		}
+		}*/
 
 		public override void DrawLowerPropertyBox() {
 			EditorGUI.BeginChangeCheck();
@@ -55,7 +55,7 @@ namespace ShaderForge {
 			r.xMin += 17;
 			GUI.Label(r,"Perturbed");
 			if( EditorGUI.EndChangeCheck() ) {
-				UpdateIcon();
+				//UpdateIcon();
 				OnUpdateNode();
 			}
 				
@@ -69,7 +69,7 @@ namespace ShaderForge {
 			switch( key ) {
 				case "pt":
 					perturbed = bool.Parse( value );
-					UpdateIcon();
+					//UpdateIcon();
 					break;
 			}
 		}

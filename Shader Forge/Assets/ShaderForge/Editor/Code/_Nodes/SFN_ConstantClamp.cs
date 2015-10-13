@@ -25,6 +25,7 @@ namespace ShaderForge {
 			base.showColor = true;
 			UseLowerReadonlyValues( true );
 			base.UseLowerPropertyBox( true, true );
+			base.shaderGenMode = ShaderGenerationMode.ValuePassing;
 
 			//SF_NodeConnection lerpCon;
 			connectors = new SF_NodeConnector[]{
@@ -49,7 +50,21 @@ namespace ShaderForge {
 			return Mathf.Max( this["IN"].GetCompCount() );
 		}
 
+		public override string[] ExtraPassedFloatProperties() {
+			return new string[]{
+				"ClampMin",
+				"ClampMax"
+			};
+		}
 
+		public override void PrepareRendering( Material mat ) {
+			mat.SetFloat( "_clampmin", min );
+			mat.SetFloat( "_clampmax", max );
+		}
+
+		public override string[] GetBlitOutputLines( ) {
+			return new string[] { "clamp( _in, _clampmin, _clampmax )" };
+		}
 
 		/*
 		public void UndoableEnterableFloatField(Rect r, ref float value, string undoMessage, GUIStyle style){
@@ -82,11 +97,11 @@ namespace ShaderForge {
 		}
 
 		// TODO Expose more out here!
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			if( GetEvaluatedComponentCount() != 1 )
 				if( c + 1 > GetEvaluatedComponentCount() )
 					return 0f;
-			return Mathf.Clamp( GetInputData( "IN", x, y, c ), min, max );
+			return Mathf.Clamp( GetInputData( "IN", c ), min, max );
 		}
 
 		public override string SerializeSpecialData() {

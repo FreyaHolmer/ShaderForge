@@ -238,7 +238,7 @@ namespace ShaderForge {
 			Color prev = GUI.color;
 			if( textureAsset ) {
 				GUI.color = Color.white;
-				GUI.DrawTexture( rectInner, texture.Texture );
+				GUI.DrawTexture( rectInner, texture.texture );
 			} //else {
 			//GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b,0.5f);
 			//GUI.Label( rectInner, "Empty");

@@ -12,14 +12,19 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Subtract" );
 			base.PrepareArithmetic();
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
+		}
+
+		public override string[] GetBlitOutputLines() {
+			return new string[] { "_a - _b" };
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return "(" + GetConnectorByStringID( "A" ).TryEvaluate() + "-" + GetConnectorByStringID( "B" ).TryEvaluate() + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			return GetInputData( "A", x, y, c ) - GetInputData( "B", x, y, c );
+		public override float EvalCPU( int c ) {
+			return GetInputData( "A", c ) - GetInputData( "B", c );
 		}
 
 	}

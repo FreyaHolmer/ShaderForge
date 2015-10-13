@@ -10,15 +10,20 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "ArcTan" );
-			base.PrepareArithmetic(1);
+			base.PrepareArithmetic( 1 );
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
+		}
+
+		public override string[] GetBlitOutputLines() {
+			return new string[] { "atan(_in)" };
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return "atan(" + GetConnectorByStringID( "IN" ).TryEvaluate() + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			return Mathf.Atan( GetInputData( "IN", x, y, c ) );
+		public override float EvalCPU( int c ) {
+			return Mathf.Atan( GetInputData( "IN", c ) );
 		}
 
 	}

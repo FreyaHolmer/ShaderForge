@@ -13,6 +13,7 @@ namespace ShaderForge {
 			base.Initialize( "Add" );
 			//base.PrepareArithmetic(5);
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.ModularInput;
 			UseLowerReadonlyValues( true );
 
 			connectors = new SF_NodeConnector[]{
@@ -31,7 +32,11 @@ namespace ShaderForge {
 
 		}
 
-
+		public override void GetModularShaderFixes( out string prefix, out string infix, out string suffix ) {
+			prefix = "";
+			infix  = " + ";
+			suffix = "";
+		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 
@@ -46,20 +51,18 @@ namespace ShaderForge {
 		}
 
 
+		public override float EvalCPU( int c ) {
 
-
-		public override float NodeOperator( int x, int y, int c ) {
-
-			float result = GetInputData( "A", x, y, c ) + GetInputData( "B", x, y, c );
+			float result = GetInputData( "A", c ) + GetInputData( "B", c );
 
 			if(GetInputIsConnected("C")){
-				result += GetInputData( "C", x, y, c );
+				result += GetInputData( "C", c );
 			}
 			if(GetInputIsConnected("D")){
-				result += GetInputData( "D", x, y, c );
+				result += GetInputData( "D", c );
 			}
 			if(GetInputIsConnected("E")){
-				result += GetInputData( "E", x, y, c );
+				result += GetInputData( "E", c );
 			}
 
 			return result;

@@ -258,6 +258,17 @@ namespace ShaderForge {
 			return retVal;
 		}
 
+		public static float Dot( Vector4 a, Vector4 b, int compCount ) {
+
+			float retVal = 0f;
+
+			for( int i=0; i < compCount; i++ ) {
+				retVal += a[i] * b[i];
+			}
+
+			return retVal;
+		}
+
 		public static Color Cross( Color a, Color b ) {
 			return ToColor( Vector3.Cross( ToVector3( a ), ToVector3( b ) ) );
 		}

@@ -10,15 +10,20 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Negate" );
-			base.PrepareArithmetic(1);
+			base.PrepareArithmetic( 1 );
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
+		}
+
+		public override string[] GetBlitOutputLines() {
+			return new string[] { "(-1*_in)" };
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return "(-1*" + GetConnectorByStringID( "IN" ).TryEvaluate() + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			return -GetInputData( "IN", x, y, c );
+		public override float EvalCPU( int c ) {
+			return -GetInputData( "IN", c );
 		}
 
 	}

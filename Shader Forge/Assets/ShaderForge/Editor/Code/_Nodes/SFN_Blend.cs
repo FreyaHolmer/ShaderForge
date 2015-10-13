@@ -44,7 +44,7 @@ namespace ShaderForge{
 		public SFN_Blend() {
 			
 		}
-		
+
 		public override void Initialize() {
 			base.Initialize( "Blend" );
 			base.UseLowerPropertyBox( true, true );
@@ -52,6 +52,7 @@ namespace ShaderForge{
 			base.texture.uniform = false;
 			base.texture.CompCount = 3;
 			base.node_height += 15;
+			base.shaderGenMode = ShaderGenerationMode.Modal;
 			
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTvPending,false),
@@ -163,10 +164,10 @@ namespace ShaderForge{
 		}
 
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 
-			float a = GetInputData( "SRC", x, y, c );
-			float b = GetInputData( "DST", x, y, c );
+			float a = GetInputData( "SRC", c );
+			float b = GetInputData( "DST", c );
 
 			float blended = Blend(a,b);
 
@@ -188,7 +189,7 @@ namespace ShaderForge{
 
 
 
-			string blend = Blend (a, b);
+			string blend = Blend (a, b, currentBlendMode);
 
 			if(clamp){
 				return "saturate(" + blend + ")";
@@ -229,11 +230,27 @@ namespace ShaderForge{
 		}
 
 
+
+		public override string[] GetModalModes() {
+			return Enum.GetNames( typeof( BlendMode ) );
+		}
+
+		public override string GetCurrentModalMode() {
+			return currentBlendMode.ToString();
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+			string s = Blend( "_src", "_dst", (BlendMode)Enum.Parse( typeof( BlendMode ), mode ) );
+			return new string[] { s };
+		}
+
+
+
 		// lerp( 2.0*a*b, 1.0-(1.0-2.0*(a-0.5))*(1.0-b), round(a) ) 
 
 
-		public string Blend(string a, string b){
-			switch(currentBlendMode){
+		public string Blend(string a, string b, BlendMode mode){
+			switch( mode ) {
 			case BlendMode.Darken:
 				return "min(" + a + "," + b + ")";
 			case BlendMode.Multiply:

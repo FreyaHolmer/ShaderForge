@@ -43,7 +43,7 @@ namespace ShaderForge {
 		}
 
 		public override void Update() {
-			if( texture.dataUniform != RenderSettings.ambientLight ) {
+			if( ((Color)texture.dataUniform) != RenderSettings.ambientLight ) {
 				texture.dataUniform = RenderSettings.ambientLight;
 				texture.iconColor = GetIconTint();
 				OnUpdateNode(NodeUpdateType.Soft, true);

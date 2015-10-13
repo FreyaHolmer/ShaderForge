@@ -14,6 +14,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Inverse Lerp" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			UseLowerReadonlyValues( true );
 
 			//SF_NodeConnection lerpCon;
@@ -33,6 +34,10 @@ namespace ShaderForge {
 			base.OnUpdateNode( updType );
 		}
 
+		public override string[] GetBlitOutputLines() {
+			return new string[] { "((_v-_a)/(_b-_a))" };
+		}
+
 		public override bool IsUniformOutput() {
 			return ( GetInputData( "A" ).uniform && GetInputData( "B" ).uniform && GetInputData( "V" ).uniform );
 		}
@@ -50,11 +55,11 @@ namespace ShaderForge {
 			return "((" + v + "-" + a + ")/(" + b + "-" + a + "))";
 		}
 		
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 
-			float a = GetInputData( "A", x, y, c );
-			float b = GetInputData( "B", x, y, c );
-			float v = GetInputData( "V", x, y, c );
+			float a = GetInputData( "A", c );
+			float b = GetInputData( "B", c );
+			float v = GetInputData( "V", c );
 
 			if( (b - a) == 0f )
 				return 0;

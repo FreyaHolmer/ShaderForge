@@ -23,6 +23,7 @@ namespace ShaderForge {
 			base.PrepareArithmetic(6);
 			base.extraWidthInput = 3;
 			base.UseLowerPropertyBox( true, true );
+			base.shaderGenMode = ShaderGenerationMode.Manual;
 
 			//SF_NodeConnection lerpCon;
 			connectors = new SF_NodeConnector[]{
@@ -160,22 +161,22 @@ namespace ShaderForge {
 		}
 
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
 			int cc = this["M"].GetCompCount();
-			Color m = GetInputData("M")[x,y];
+			Color m = GetInputData("M").dataUniform;
 			string[] chStr = new string[]{"R","G","B","A"};
 			Color retCol = Color.black;
 
 			if(channelBlendType == ChannelBlendType.Summed){
 				for(int i=0;i<cc;i++){
-					Color col = GetInputData(chStr[i])[x,y];
+					Color col = GetInputData( chStr[i] ).dataUniform;
 					retCol += m[i] * col;
 				}
 			} else if(channelBlendType == ChannelBlendType.Layered){
-				retCol = GetInputData("BTM")[x,y];
+				retCol = GetInputData( "BTM" ).dataUniform;
 				for(int i=0;i<cc;i++){
-					Color col = GetInputData(chStr[i])[x,y];
+					Color col = GetInputData( chStr[i] ).dataUniform;
 					retCol = Color.Lerp(retCol, col, m[i]);
 				}
 			}

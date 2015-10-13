@@ -20,8 +20,9 @@ namespace ShaderForge {
 			base.property = ScriptableObject.CreateInstance<SFP_Color>().Initialize( this );
 			base.texture.uniform = true;
 			base.neverDefineVariable = true;
-			base.texture.dataUniform = new Color(0.5f,0.5f,0.5f,1.0f);
+			base.texture.dataUniform = new Color( 0.5f, 0.5f, 0.5f, 1.0f );
 			base.texture.CompCount = 4;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 			lowerRect.width /= 4;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"RGB","RGB",ConType.cOutput,ValueType.VTv3)							.Outputting(OutChannel.RGB),
@@ -50,7 +51,7 @@ namespace ShaderForge {
 			if(selected && !SF_GUI.MultiSelectModifierHeld() && !IsGlobalProperty())
 				ColorPickerCorner( lowerRect );
 
-			Color vecPrev = texture.dataUniform;
+			Vector4 vecPrev = texture.dataUniform;
 			PrepareWindowColor();
 			Rect tRect = lowerRect;
 

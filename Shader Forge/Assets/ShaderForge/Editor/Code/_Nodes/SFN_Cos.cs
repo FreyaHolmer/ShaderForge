@@ -10,15 +10,16 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Cos" );
-			base.PrepareArithmetic(1);
+			base.PrepareArithmetic( 1 );
+			base.shaderGenMode = ShaderGenerationMode.SimpleFunction;
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return "cos(" + GetConnectorByStringID( "IN" ).TryEvaluate() + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			return Mathf.Cos( GetInputData( "IN", x, y, c ) );
+		public override float EvalCPU( int c ) {
+			return Mathf.Cos( GetInputData( "IN", c ) );
 		}
 
 	}

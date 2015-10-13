@@ -20,6 +20,7 @@ namespace ShaderForge {
 			base.showColor = true;
 			UseLowerReadonlyValues( false );
 			base.alwaysDefineVariable = true;
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			texture.CompCount = 3;
 
 			connectors = new SF_NodeConnector[]{
@@ -63,6 +64,14 @@ namespace ShaderForge {
 			float3 rnm = t*dot(t, u)/t.z - u;
 		*/
 
+		public override string[] GetBlitOutputLines() {
+			return new string[] { 
+				"float3 bse = _bse.xyz + float3(0,0,1);",
+				"float3 dtl = _dtl.xyz * float3(-1,-1,1);",
+				"float4(bse*dot(bse, dtl)/bse.z - dtl,0)"
+			};
+		}
+
 		public override string[] GetPreDefineRows() {
 			return new string[] {
 				"float3 " + BaseNrm() + 	" = " + this["BSE"].TryEvaluate() + " + float3(0,0,1);",
@@ -75,14 +84,14 @@ namespace ShaderForge {
 			return CombinedNrm();
 		}
 		
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
-			Vector3 bse = (Vector3)GetInputData( "BSE" )[x, y] + new Vector3(0,0,1);
-			Vector3 dtl = Vector3.Scale( (Vector3)GetInputData( "DTL" )[x, y], new Vector3(-1,-1,1));
+			Vector3 bse = (Vector3)GetInputData( "BSE" ).dataUniform + new Vector3(0,0,1);
+			Vector3 dtl = Vector3.Scale( (Vector3)GetInputData( "DTL" ).dataUniform, new Vector3(-1,-1,1));
 
 			Vector3 cmb = bse*Vector3.Dot(bse, dtl)/bse.z - dtl;
 
-			return SF_Tools.VectorToColor(cmb);
+			return cmb;
 		}
 
 

@@ -15,7 +15,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Object Scale" );
+			base.Initialize( "Object Scale", InitialPreviewRenderMode.BlitQuad );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
 			base.texture.CompCount = 3;
@@ -28,12 +28,18 @@ namespace ShaderForge {
 			};
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 			return new Color( 1f, 1f, 1f, 1f );
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return reciprocal ? "recipObjScale" : "objScale";
+		}
+
+		public override string GetBlitShaderSuffix() {
+			if( reciprocal )
+				return "Reciprocal";
+			return "Default";
 		}
 
 		public override void DrawLowerPropertyBox() {

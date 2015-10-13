@@ -17,7 +17,8 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Remap" );
 			base.SearchName = "Remap";
-			base.PrepareArithmetic(5);
+			base.PrepareArithmetic( 5 );
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 
 
 
@@ -55,6 +56,13 @@ namespace ShaderForge {
 			base.OnUpdateNode( updType );
 		}
 
+
+		public override string[] GetBlitOutputLines() {
+			return new string[] {
+				"(_omin + ( (_in - _imin) * (_omax - _omin) ) / (_imax - _imin))"
+			};
+		}
+
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 
 			string val = GetInputCon( "IN" ).Evaluate();
@@ -67,12 +75,12 @@ namespace ShaderForge {
 		}
 
 		// TODO Expose more out here!
-		public override float NodeOperator( int x, int y, int c ) {
-			float val = GetInputData( "IN", x, y, c );
-			float iMin = GetInputData( "IMIN", x, y, c );
-			float iMax = GetInputData( "IMAX", x, y, c );
-			float oMin = GetInputData( "OMIN", x, y, c );
-			float oMax = GetInputData( "OMAX", x, y, c );
+		public override float EvalCPU( int c ) {
+			float val = GetInputData( "IN", c );
+			float iMin = GetInputData( "IMIN", c );
+			float iMax = GetInputData( "IMAX", c );
+			float oMin = GetInputData( "OMIN", c );
+			float oMax = GetInputData( "OMAX", c );
 
 			return oMin + ( (val - iMin) * (oMax - oMin) ) / (iMax - iMin);
 		}

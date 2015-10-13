@@ -14,9 +14,17 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Vector Reject." );
-			base.PrepareArithmetic(2);
+			base.PrepareArithmetic( 2 );
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			GetConnectorByStringID("A").usageCount = 2;
 			GetConnectorByStringID("B").usageCount = 4;
+		}
+
+		public override string[] GetBlitOutputLines() {
+			string dotLeft = "_b * dot(_a,_b)";
+			string dotRight = "dot(_b,_b)";
+			string retStr = "(_a - (" + dotLeft + "/" + dotRight + "))";
+			return new string[] { retStr };
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -27,15 +35,15 @@ namespace ShaderForge {
 			string dotLeft = b + " * dot(" + a + "," + b + ")";
 			string dotRight = "dot(" + b + "," + b + ")";
 
-			string retStr = "(" + a + " - " + "(" + dotLeft + "/" + dotRight + "))";
+			string retStr = "(" + a + " - (" + dotLeft + "/" + dotRight + "))";
 			
 			return retStr;
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
-			Vector4 a = GetInputData( "A" )[x, y];
-			Vector4 b = GetInputData( "B" )[x, y];
+			Vector4 a = GetInputData( "A" ).dataUniform;
+			Vector4 b = GetInputData( "B" ).dataUniform;
 
 			int cc = Mathf.Max(GetInputCon( "A" ).GetCompCount(), GetInputCon( "B" ).GetCompCount());
 

@@ -15,6 +15,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Max" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.ModularInput;
 			UseLowerReadonlyValues( true );
 			
 			connectors = new SF_NodeConnector[]{
@@ -31,6 +32,12 @@ namespace ShaderForge {
 			
 			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2], connectors[3], connectors[4], connectors[5] );
 
+		}
+
+		public override void GetModularShaderFixes( out string prefix, out string infix, out string suffix ) {
+			prefix = "max(";
+			infix  = ", ";
+			suffix = ")";
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -50,14 +57,14 @@ namespace ShaderForge {
 			return GetConnectorByStringID(s).TryEvaluate();
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 
-			float maximum = Mathf.Max( GetInputData( "A" , x, y, c ), GetInputData( "B" , x, y, c ) );
+			float maximum = Mathf.Max( GetInputData( "A", c ), GetInputData( "B", c ) );
 			
 			// Loop through all chain childs
 			foreach(SF_NodeConnector con in connectors){
 				if(con.IsConnected() && con.IsChild()){
-					maximum = Mathf.Max(maximum, GetInputData( con.strID , x, y, c ) );
+					maximum = Mathf.Max(maximum, GetInputData( con.strID, c ) );
 				}
 			}
 			

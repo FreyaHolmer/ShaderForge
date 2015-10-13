@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 //using System;
 
 namespace ShaderForge {
@@ -20,6 +21,7 @@ namespace ShaderForge {
 			base.showColor = true;
 			UseLowerReadonlyValues( false );
 			base.alwaysDefineVariable = true;
+			base.shaderGenMode = ShaderGenerationMode.Modal;
 			texture.CompCount = 2;
 			//SF_NodeConnection lerpCon;
 			connectors = new SF_NodeConnector[]{
@@ -77,6 +79,53 @@ namespace ShaderForge {
 			return "float2x2( " + Cos() + ", -" + Sin() + ", " + Sin() + ", " + Cos() + ")";
 		}
 
+
+		public override string[] GetModalModes() {
+			return new string[]{
+				"REQONLY",
+				"PIV",
+				"SPD",
+				"ANG",
+				"PIV_SPD",
+				"PIV_ANG",
+				"SPD_ANG",
+				"PIV_SPD_ANG"
+			};
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+
+
+			string pivStr = mode.Contains( "PIV" ) ? "_piv.xy" : "float2(0.5,0.5)";
+			string spdStr = mode.Contains( "SPD" ) ? "_spd.x" : "1.0";
+			string angStr = mode.Contains( "ANG" ) ? "_ang.x" : (Mathf.PI / 8f).ToString();
+
+
+			return new string[] {
+				"float ang = "+angStr+";",
+				"float spd = " + spdStr + ";",
+				"float cosVal = cos("+ spdStr + "*ang);",
+				"float sinVal = sin("+ spdStr + "*ang);",
+				"float2 piv = " + pivStr + ";",
+				"float4((mul(_uvin.xy-piv,float2x2( cosVal, -sinVal, sinVal, cosVal))+piv),0,0)"
+			};
+		}
+
+		public override string GetCurrentModalMode() {
+			List<string> all = new List<string>();
+			if( GetInputIsConnected( "PIV" ) )
+				all.Add("PIV");
+			if( GetInputIsConnected( "SPD" ) )
+				all.Add( "SPD" );
+			if( GetInputIsConnected( "ANG" ) )
+				all.Add( "ANG" );
+
+			if( all.Count == 0 ) {
+				return "REQONLY";
+			}
+
+			return string.Join( "_", all.ToArray() );
+		}
 		
 
 		public override string[] GetPreDefineRows() {
@@ -94,18 +143,18 @@ namespace ShaderForge {
 		}
 
 		// TODO Expose more out here!
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
 			//return GetInputData( 1 )[x, y];
 
-			float angle = connectors[3].IsConnected() ? GetInputData( "ANG", x, y, 0 ) : Mathf.PI / 8f;
-			Vector2 pivot = connectors[2].IsConnected() ? new Vector2( GetInputData( "PIV", x, y, 0 ), GetInputData( "PIV", x, y, 1 ) ) : new Vector2( 0.5f, 0.5f );
-			Vector2 vec;
+			float angle = connectors[3].IsConnected() ? GetInputData( "ANG", 0 ) : Mathf.PI / 8f;
+			Vector2 pivot = connectors[2].IsConnected() ? new Vector2( GetInputData( "PIV", 0 ), GetInputData( "PIV", 1 ) ) : new Vector2( 0.5f, 0.5f );
+			Vector2 vec = Vector2.one;
 
 			if(GetInputIsConnected("UVIN")){
-				vec = new Vector2( GetInputData( "UVIN", x, y, 0 ), GetInputData( "UVIN", x, y, 1 ) );
+				vec = new Vector2( GetInputData( "UVIN", 0 ), GetInputData( "UVIN", 1 ) );
 			} else {
-				vec = new Vector2( x/SF_NodeData.RESf, y/SF_NodeData.RESf ); // TODO: should use ghost nodes... 
+				//vec = new Vector2( x/SF_NodeData.RESf, y/SF_NodeData.RESf ); // TODO: should use ghost nodes... 
 			}
 			vec -= pivot;
 		

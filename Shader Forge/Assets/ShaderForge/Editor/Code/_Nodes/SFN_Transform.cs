@@ -171,8 +171,8 @@ namespace ShaderForge {
 		}
 
 		// Pass through
-		public override Color NodeOperator( int x, int y ) {
-			return GetInputData( "IN" ).node.NodeOperator( x, y );
+		public override Vector4 EvalCPU() {
+			return GetInputData( "IN" ).node.EvalCPU();
 		}
 
 		const float dirLabelWidth = 28;

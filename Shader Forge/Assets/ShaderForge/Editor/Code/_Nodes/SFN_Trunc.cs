@@ -11,14 +11,15 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Trunc" );
 			base.PrepareArithmetic(1);
+			base.shaderGenMode = ShaderGenerationMode.SimpleFunction;
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return "trunc(" + GetConnectorByStringID( "IN" ).TryEvaluate() + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			float val = GetInputData( "IN", x, y, c );
+		public override float EvalCPU( int c ) {
+			float val = GetInputData( "IN", c );
 			return val < 0 ? -Mathf.Floor( -val ) : Mathf.Floor( val );
 		}
 

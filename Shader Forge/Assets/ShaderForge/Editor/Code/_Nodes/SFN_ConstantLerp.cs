@@ -25,6 +25,7 @@ namespace ShaderForge {
 			base.showColor = true;
 			UseLowerReadonlyValues( true );
 			base.UseLowerPropertyBox( true, true );
+			base.shaderGenMode = ShaderGenerationMode.ValuePassing;
 
 			//SF_NodeConnection lerpCon;
 			connectors = new SF_NodeConnector[]{
@@ -51,7 +52,23 @@ namespace ShaderForge {
 
 
 
-		
+		public override string[] ExtraPassedFloatProperties() {
+			return new string[]{
+				"LerpA",
+				"LerpB"
+			};
+		}
+
+		public override void PrepareRendering( Material mat ) {
+			mat.SetFloat( "_lerpa", lerp_a );
+			mat.SetFloat( "_lerpb", lerp_b );
+		}
+
+		public override string[] GetBlitOutputLines( ) {
+			return new string[] { "lerp(_lerpa, _lerpb, _in)" };
+		}
+
+
 
 		public override void DrawLowerPropertyBox() {
 
@@ -78,9 +95,8 @@ namespace ShaderForge {
 			return "lerp(" + lerp_a + "," + lerp_b + "," + GetConnectorByStringID( "IN" ).TryEvaluate() + ")";
 		}
 
-		// TODO Expose more out here!
-		public override float NodeOperator( int x, int y, int c ) {
-			return Lerp( lerp_a, lerp_b, GetInputData( "IN", x, y, c ) );
+		public override float EvalCPU( int c ) {
+			return Lerp( lerp_a, lerp_b, GetInputData( "IN", c ) );
 		}
 
 		public float Lerp( float a, float b, float t ) {

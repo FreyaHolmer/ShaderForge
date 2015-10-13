@@ -21,6 +21,7 @@ namespace ShaderForge {
 			base.showColor = false;
 			base.discreteTitle = true;
 			base.UseLowerPropertyBox( true, true );
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			extraWidthInput = -9;
 			extraWidthOutput = -9;
 			//base.texture.uniform = true;
@@ -34,14 +35,17 @@ namespace ShaderForge {
 			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1]);
 
 		}
-		
+
+		public override string[] GetBlitOutputLines() {
+			return new string[] { "_in" };
+		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return GetConnectorByStringID( "IN" ).TryEvaluate();
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			return GetInputData( "IN", x, y, c );
+		public override float EvalCPU( int c ) {
+			return GetInputData( "IN", c );
 		}
 
 

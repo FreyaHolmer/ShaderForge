@@ -17,6 +17,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox(false);
 			base.showColor = true;
 			base.alwaysDefineVariable = true;
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","Rnd",ConType.cOutput,ValueType.VTv1,false),
 				SF_NodeConnector.Create(this,"XY","XY",ConType.cInput,ValueType.VTv2,false).SetRequired(false).TypecastTo(2).WithUseCount(3).SetGhostNodeLink(typeof(SFN_TexCoord),"UVOUT")
@@ -44,6 +45,13 @@ namespace ShaderForge {
 			return GetVariableName() + "_rnd";
 		}
 
+		public override string[] GetBlitOutputLines() {
+			return new string[] { 
+				"float2 s = _xy + 0.2127+_xy.x*0.3713*_xy.y;",
+				"float2 r = 4.789*sin(489.123*s);",
+				"frac(r.x*r.y*(1+s.x))"
+			};
+		}
 
 		public override string[] GetPreDefineRows (){
 
@@ -63,16 +71,16 @@ namespace ShaderForge {
 			return "frac("+r+".x*"+r+".y*(1+"+s+".x))";
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 			
-			Vector2 p = GetInputIsConnected( "XY" ) ? GetInputData( "XY" )[x, y] : Vector4.one;
+			Vector2 p = GetInputIsConnected( "XY" ) ? GetInputData( "XY" ).dataUniform : Vector4.one;
 
 			float tmp = 0.2127f+p.x*0.3713f*p.y;
 			Vector2 s = p + new Vector2(tmp,tmp);
 
 			Vector2 r = Vector2.Scale (new Vector2(4.789f,4.789f), new Vector2(Mathf.Sin(489.123f*s.x),Mathf.Sin(489.123f*s.y)));
 
-			return SF_Tools.VectorToColor(SF_Tools.Frac(r.x*r.y*(1f+s.x)));
+			return SF_Tools.Frac(r.x*r.y*(1f+s.x)) * Vector4.one;
 		}
 
 	}

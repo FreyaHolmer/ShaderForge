@@ -290,9 +290,11 @@ namespace ShaderForge {
 						}
 					}
 
-
-					for(int i=0;i<editor.nodes.Count;i++)
-						editor.nodes[i].DrawConnectors();
+					if( Event.current.type == EventType.repaint ) {
+						for( int i=0; i < editor.nodes.Count; i++ )
+							editor.nodes[i].DrawConnectors();
+					}
+					
 				}
 
 

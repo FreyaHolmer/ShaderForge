@@ -21,11 +21,54 @@ namespace ShaderForge {
 			base.texture.CompCount = 1;
 			base.UseLowerPropertyBox( true, true );
 			base.PrepareArithmetic(2, ValueType.VTvPending, ValueType.VTv1);
+			base.shaderGenMode = ShaderGenerationMode.Modal;
 			( base.conGroup as SFNCG_Arithmetic ).LockOutType();
 		}
 
 		public override int GetEvaluatedComponentCount() {
 			return 1;
+		}
+
+		public override string[] GetModalModes() {
+			return new string[]{
+				"STD",
+				"POS",
+				"NEG",
+				"ABS",
+				"NRM"
+			};
+		}
+
+		public override string GetCurrentModalMode() {
+			if( dotType == DotType.Positive )
+				return "POS";
+			if( dotType == DotType.Negative )
+				return "NEG";
+			if( dotType == DotType.Abs )
+				return "ABS";
+			if( dotType == DotType.Normalized )
+				return "NRM";
+			//if( dotType == DotType.Standard )
+			return "STD";
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+			string dotStr = "dot(_a, _b)";
+			switch( mode ) {
+				case "POS":
+					dotStr = "max(0," + dotStr + ")";
+					break;
+				case "NEG":
+					dotStr = "min(0," + dotStr + ")";
+					break;
+				case "ABS":
+					dotStr = "abs(" + dotStr + ")";
+					break;
+				case "NRM":
+					dotStr = "0.5*" + dotStr + "+0.5";
+					break;
+			}
+			return new string[]{dotStr};
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -44,12 +87,12 @@ namespace ShaderForge {
 			return dotStr;
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
 
 			int cc = Mathf.Max(GetInputCon("A").GetCompCount(), GetInputCon("B").GetCompCount());
 
-			float dot = SF_Tools.Dot( GetInputData( "A" )[x, y], GetInputData( "B" )[x, y],  cc);
+			float dot = SF_Tools.Dot( GetInputData( "A" ).dataUniform, GetInputData( "B" ).dataUniform,  cc );
 
 			switch( dotType ) {
 				case DotType.Positive:
@@ -66,7 +109,7 @@ namespace ShaderForge {
 					break;
 			}
 
-			return SF_Tools.FloatToColor(dot);
+			return dot * Vector4.one;
 		}
 
 		public override void DrawLowerPropertyBox() {

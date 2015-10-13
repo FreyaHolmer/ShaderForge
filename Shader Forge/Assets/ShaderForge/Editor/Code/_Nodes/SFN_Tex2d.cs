@@ -104,6 +104,31 @@ namespace ShaderForge {
 		}
 
 
+		public override string GetBlitShaderSuffix() {
+
+			bool uv = GetInputIsConnected( "UVIN" );
+			bool mip = GetInputIsConnected( "MIP" );
+
+			if( uv && mip ) {
+				return "UV_MIP";
+			} else if( mip ) {
+				return "MIP";
+			} else if( uv ){
+				return "UV";
+			} else {
+				return "NoInputs";
+			}
+
+		}
+
+		public override void PrepareRendering( Material mat ) {
+			if( textureAsset != null ) {
+				mat.mainTexture = textureAsset;
+				mat.SetFloat( "_IsNormal", IsNormalMap() ? 1 : 0 );
+			}
+		}
+
+
 
 		public override void DrawLowerPropertyBox() {
 			GUI.color = Color.white;
@@ -136,6 +161,11 @@ namespace ShaderForge {
 			}
 		}
 
+		public override int GetEvaluatedComponentCount() {
+			if( IsNormalMap() )
+				return 3;
+			return 4;
+		}
 
 		public bool HasAlpha() {
 			if( TextureAsset == null ) return false;
@@ -145,7 +175,9 @@ namespace ShaderForge {
 		}
 
 		private void UpdateCompCount(){
+			
 			texture.CompCount = IsNormalMap() ? 3 : 4; // TODO: This doesn't work when opening shaders. Why?
+			Debug.Log("Updated component count to " + texture.CompCount);
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -279,7 +311,7 @@ namespace ShaderForge {
 
 				if( refresh ) {
 					this.TextureAsset = inTex.textureAsset;
-					RenderToTexture();
+					//RenderToTexture();
 				}
 			}
 
@@ -349,7 +381,7 @@ namespace ShaderForge {
 			Color prev = GUI.color;
 			if( TextureAsset ) {
 				GUI.color = Color.white;
-				GUI.DrawTexture( rectInner, texture.Texture, ScaleMode.StretchToFill, texture.Texture.alphaIsTransparency ); // TODO: Doesn't seem to work
+				GUI.DrawTexture( rectInner, texture.texture, ScaleMode.StretchToFill, false ); // TODO: Doesn't seem to work
 				if(displayVectorDataMask){
 					GUI.DrawTexture( rectInner, SF_GUI.VectorIconOverlay, ScaleMode.ScaleAndCrop, true);
 				}
@@ -421,7 +453,8 @@ namespace ShaderForge {
 
 		public override void RefreshValue() {
 			CheckPropertyInput();
-			RenderToTexture();
+			base.RefreshValue(0,0);
+			//RenderToTexture();
 		}
 
 		public void OnAssignedTexture() {
@@ -442,7 +475,7 @@ namespace ShaderForge {
 
 
 			UpdateNormalMapAlphaState();
-			RenderToTexture();
+			//RenderToTexture();
 			editor.shaderEvaluator.ApplyProperty( this );
 			OnUpdateNode(NodeUpdateType.Soft);
 		}
@@ -504,6 +537,7 @@ namespace ShaderForge {
 				break;
 			case "isnm":
 				markedAsNormalMap = bool.Parse(value);
+				Debug.Log( "Deserializing, marked: " + markedAsNormalMap );
 				UpdateNormalMapAlphaState();
 				UpdateCompCount();
 				break;

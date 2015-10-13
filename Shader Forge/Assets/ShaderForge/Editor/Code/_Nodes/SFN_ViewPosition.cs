@@ -13,7 +13,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "View Pos." );
+			base.Initialize( "View Pos.", InitialPreviewRenderMode.BlitQuad );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 3;
@@ -26,7 +26,7 @@ namespace ShaderForge {
 			};
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 			return new Color( 0f, 0.7071068f, 0.7071068f, 0f );
 		}
 

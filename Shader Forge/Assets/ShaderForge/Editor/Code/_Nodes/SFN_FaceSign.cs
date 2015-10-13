@@ -23,6 +23,7 @@ namespace ShaderForge {
 			UpdateIcon();
 			base.texture.CompCount = 1;
 			base.neverDefineVariable = true;
+			base.shaderGenMode = ShaderGenerationMode.Manual;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"VFACE","",ConType.cOutput,ValueType.VTv1,false)
 			};
@@ -37,15 +38,14 @@ namespace ShaderForge {
 			base.texture.SetIconId( (int)currentType );
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 			float v = 1;
 			return new Color( v, v, v );
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			return 1f;
 		}
-
 
 		public override void DrawLowerPropertyBox() {
 			GUI.color = Color.white;

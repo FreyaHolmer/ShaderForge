@@ -22,7 +22,7 @@ namespace ShaderForge {
 			};
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 			return new Color( 0.3f, 0.6f, 0.3f, 1f );
 		}
 

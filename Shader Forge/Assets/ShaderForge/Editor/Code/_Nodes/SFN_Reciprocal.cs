@@ -15,6 +15,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Reciprocal" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			UseLowerReadonlyValues( true );
 
 			connectors = new SF_NodeConnector[]{
@@ -33,6 +34,9 @@ namespace ShaderForge {
 			return GetInputData( "IN" ).uniform;
 		}
 
+		public override string[] GetBlitOutputLines() {
+			return new string[] { "(1.0 / _in)" };
+		}
 
 		// New system
 		public override void RefreshValue() {
@@ -43,8 +47,8 @@ namespace ShaderForge {
 			return "(1.0 / " + GetConnectorByStringID( "IN" ).TryEvaluate() + ")";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			float val = GetInputData( "IN", x, y, c );
+		public override float EvalCPU( int c ) {
+			float val = GetInputData( "IN", c );
 			if(val == 0)
 				val = float.MaxValue;
 			return 1f / val;

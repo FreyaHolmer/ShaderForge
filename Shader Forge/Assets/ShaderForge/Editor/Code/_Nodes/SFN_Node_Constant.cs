@@ -21,6 +21,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true, true );
 			base.showLowerReadonlyValues = true;
 			base.texture.uniform = true;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 			constStr = constant;
 			constFloat = float.Parse( constant );
 
@@ -39,7 +40,7 @@ namespace ShaderForge {
 			return constStr;
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			return constFloat;
 		}
 

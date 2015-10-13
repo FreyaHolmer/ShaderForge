@@ -106,7 +106,7 @@ namespace ShaderForge {
 			return 0;
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 
 			int conCount = GetAmountOfConnectedInputs();
 
@@ -114,7 +114,7 @@ namespace ShaderForge {
 			for( int i = 0; i < conCount; i++ ) {
 				int cc = connectors[i+1].GetCompCount();
 				if(c < cc + cSub){
-					return GetInputData( connectors[i+1].strID, x, y, c - cSub );
+					return GetInputData( connectors[i+1].strID, c - cSub );
 				} else {
 					cSub += cc;
 					continue;
@@ -125,6 +125,40 @@ namespace ShaderForge {
 
 
 		static Color[] channelColors = new Color[4] { Color.red, Color.green, Color.blue, SF_NodeConnector.colorEnabledDefault };
+
+		public override void PrepareRendering( Material mat ) {
+
+			Vector4[] masks = new Vector4[] {
+				Vector4.zero,
+				Vector4.zero,
+				Vector4.zero,
+				Vector4.zero
+			};
+			Vector4 offsets = Vector4.zero;
+			int head = 0;
+			for( int i = 0; i < GetAmountOfConnectedInputs(); i++ ) {
+				SF_NodeConnector con = connectors[i + 1];
+				if( GetInputIsConnected( con.strID ) ) {
+					int cc = con.GetCompCount();
+					for( int j = head; j < cc + head; j++ ) {
+						masks[i][j] = 1f;
+					}
+					offsets[i] = head;
+					head += cc;
+				}
+			}
+
+			//for( int i = 0; i < 4; i++ ) {
+			//	Debug.Log("Masks: " + masks[i]);
+			//}
+
+			mat.SetVector( "_A_mask", masks[0] );
+			mat.SetVector( "_B_mask", masks[1] );
+			mat.SetVector( "_C_mask", masks[2] );
+			mat.SetVector( "_D_mask", masks[3] );
+			mat.SetVector( "_offsets", offsets );
+
+		}
 
 		public void UpdateInputLabels() {
 			

@@ -16,7 +16,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Screen Pos." );
+			base.Initialize( "Screen Pos.", InitialPreviewRenderMode.BlitQuad );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
 			UpdateIcon();
@@ -33,10 +33,11 @@ namespace ShaderForge {
 			base.texture.SetIconId( (int)currentType );
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		/*
+		public override Vector4 NodeOperator() {
 			return new Color( Screen.width - base.rect.x + x * 0.66666f, Screen.height - base.rect.y + y * 0.66666f, 0, 0 );
 		}
-
+		*/
 
 		public override void DrawLowerPropertyBox() {
 			GUI.color = Color.white;

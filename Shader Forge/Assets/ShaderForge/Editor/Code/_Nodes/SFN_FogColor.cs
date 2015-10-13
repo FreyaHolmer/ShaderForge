@@ -34,7 +34,7 @@ namespace ShaderForge {
 		}
 
 		public override void Update() {
-			if( texture.dataUniform != RenderSettings.fogColor ) {
+			if( texture.dataUniformColor != RenderSettings.fogColor ) {
 				texture.dataUniform = RenderSettings.fogColor;
 				OnUpdateNode(NodeUpdateType.Soft, true);
 			}		

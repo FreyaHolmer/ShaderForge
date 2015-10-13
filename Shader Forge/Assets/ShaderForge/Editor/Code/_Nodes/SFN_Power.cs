@@ -15,6 +15,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Power" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			UseLowerReadonlyValues( true );
 
 			connectors = new SF_NodeConnector[]{
@@ -35,6 +36,10 @@ namespace ShaderForge {
 			return ( GetInputData( "VAL" ).uniform && GetInputData( "EXP" ).uniform );
 		}
 
+		public override string[] GetBlitOutputLines() {
+			return new string[] { "pow(_val,_exp)" };
+		}
+
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return "pow(" + GetInputCon( "VAL" ).Evaluate() + "," + GetInputCon( "EXP" ).Evaluate() + ")";
 		}
@@ -44,8 +49,8 @@ namespace ShaderForge {
 			RefreshValue( 1, 2 );
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			return Mathf.Pow( GetInputData( "VAL", x, y, c ), GetInputData( "EXP", x, y, c ) );
+		public override float EvalCPU( int c ) {
+			return Mathf.Pow( GetInputData( "VAL", c ), GetInputData( "EXP", c ) );
 		}
 	}
 }

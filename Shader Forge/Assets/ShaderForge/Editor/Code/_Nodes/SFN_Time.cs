@@ -20,6 +20,7 @@ namespace ShaderForge {
 			base.texture.CompCount = 4;
 
 			base.alwaysDefineVariable = true;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"TSL","t/20",ConType.cOutput,ValueType.VTv1,false).Outputting(OutChannel.R),
@@ -38,7 +39,7 @@ namespace ShaderForge {
 			return "_Time + _TimeEditor";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			return 1f;
 		}
 

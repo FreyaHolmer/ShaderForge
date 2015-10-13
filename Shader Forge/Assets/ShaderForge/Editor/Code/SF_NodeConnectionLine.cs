@@ -206,28 +206,65 @@ namespace ShaderForge{
 			return DeleteImminent() ? 4f : connectionWidth;
 		}
 
+
+
+		//Vector2 lastUpdatePosStart = Vector2.zero;
+		//Vector2 lastUpdatePosEnd = Vector2.zero;
+		//float lastUpdateCC = 0;
+
+
 		public void ReconstructShapes(){
 
-			//Debug.Log("Reconstructing + " + Event.current.rawType);
+
+	
+			//if( Event.current.type != EventType.repaint ) // To trigger it before painting!
+			//	return;
+
 
 			float cc = connector.GetCompCount();
 			if( cc == 16 )
 				cc = 3;
+			
 
-			float partOffset = partOffsetFactor / cc;
-			float mainOffset = -( cc - 1 ) * 0.5f * partOffset;
+			
 
-			float offset = 0;
+			//if( cc != lastUpdateCC ) {
+			//	lastUpdateCC = cc;
+			//	needsUpdate = true;
+			//}
 
-			for(int i=0;i<cc;i++){
-				offset = mainOffset + partOffset * i;
+			//Vector2 curPosStart = connector.inputCon.node.rect.position;
+			//Vector2 curPosEnd = connector.node.rect.position;
 
-				
-				// TODO: Style branching
-				ReconstructBezier(offset, i);
+			//if( lastUpdatePosStart != curPosStart ) {
+			//	lastUpdatePosStart = curPosStart;
+			//	needsUpdate = true;
+			//}
+
+			//if( lastUpdatePosEnd != curPosEnd ) {
+			//	lastUpdatePosEnd = curPosEnd;
+			//	needsUpdate = true;
+			//}
 
 
-			}
+			//if( needsUpdate ) {
+				//Debug.Log("Updating");
+				float partOffset = partOffsetFactor / cc;
+				float mainOffset = -( cc - 1 ) * 0.5f * partOffset;
+
+				float offset = 0;
+
+				for( int i=0; i < cc; i++ ) {
+					offset = mainOffset + partOffset * i;
+
+
+					// TODO: Style branching
+					ReconstructBezier( offset, i );
+
+
+				}
+			//}
+			
 
 			//Debug.Log(this[ConnectionLineStyle.Bezier,0][0].ToString());
 
@@ -235,6 +272,7 @@ namespace ShaderForge{
 
 
 		}
+
 
 
 		private void ReconstructBezier(float offset, int id){

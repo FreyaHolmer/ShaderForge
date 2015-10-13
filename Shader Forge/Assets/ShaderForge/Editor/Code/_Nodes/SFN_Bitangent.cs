@@ -13,7 +13,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Bitangent Dir.", vectorDataTexture:true  );
+			base.Initialize( "Bitangent Dir.", InitialPreviewRenderMode.BlitSphere  );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 3;
@@ -23,7 +23,7 @@ namespace ShaderForge {
 			};
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 			return new Color( 0f, 1f, 0f, 0f );
 		}
 

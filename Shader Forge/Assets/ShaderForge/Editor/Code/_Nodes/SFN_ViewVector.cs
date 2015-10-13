@@ -13,7 +13,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "View Dir.", vectorDataTexture:true  );
+			base.Initialize( "View Dir.", InitialPreviewRenderMode.BlitSphere );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 3;
@@ -28,4 +28,5 @@ namespace ShaderForge {
 		}
 
 	}
+
 }

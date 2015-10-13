@@ -9,6 +9,7 @@ namespace ShaderForge{
 		public const string pInterface = "Interface/";
 		public const string pFonts = pInterface + "Fonts/";
 		public const string pMeshes = "Meshes/";
+		public const string pGpuRendering = "GPU Rendering/";
 
 
 		public static T Load<T>(string name) where T : UnityEngine.Object {

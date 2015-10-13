@@ -18,6 +18,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Parallax" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.Manual;
 			UseLowerReadonlyValues( false );
 			texture.CompCount = 2;
 			//SF_NodeConnection lerpCon;
@@ -48,6 +49,60 @@ namespace ShaderForge {
 			return 2;
 		}
 
+		public override string GetCurrentModalMode() {
+
+			
+			bool uvCon = GetInputIsConnected( "UVIN" );
+			bool refCon = GetInputIsConnected( "REF" );
+			bool depCon = GetInputIsConnected( "DEP" );
+
+			if( !uvCon && !refCon && !depCon ) {
+				return "REQONLY";
+			}
+
+			string s = "";
+			if( refCon && depCon ) {
+				s = "DEP_REF";
+			} else {
+				if( refCon )
+					s = "REF";
+				else
+					s = "DEP";
+			}
+
+
+			if( GetInputIsConnected( "UVIN" ) ) {
+				s = "UV_" + s;
+			}
+
+			return s;
+			
+		}
+
+		public override string[] GetModalModes() {
+			return new string[] {
+				"REQONLY",
+				"DEP",
+				"REF",
+				"DEP_REF",
+				"UV_DEP",
+				"UV_REF",
+				"UV_DEP_REF",
+			};
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+
+			string uvStr = mode.Contains( "UV" ) ? "_uv.xy" : "i.uv0.xy";
+			string depStr = mode.Contains( "DEP" ) ? "_dep.x" : "0.05";
+			string refStr = mode.Contains( "REF" ) ? "_ref.x" : "0.5";
+			string vDir = "mul(tangentTransform, viewDirection).xy";
+
+			string line = string.Format( "({0}*({1} - {2})*{3} + {4})", depStr, "_hei", refStr, vDir, uvStr );
+			return new string[] { line };
+
+		}
+
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 
@@ -61,16 +116,16 @@ namespace ShaderForge {
 		}
 
 		// TODO Expose more out here!
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 
 			//return 1f;
 
 
 			if( GetInputIsConnected( "UVIN" ) && GetInputIsConnected( "HEI" ) ) { // UV and height connected ?
-				float hei = GetInputData( "HEI", x, y, c );
-				float dep = GetInputIsConnected( "DEP" ) ? GetInputData( "DEP", x, y, c ) : 0.05f;
-				float href = GetInputIsConnected( "REF" ) ? GetInputData( "REF", x, y, c ) : 0.5f;
-				return GetInputData( "UVIN", x, y, c ) - ( dep * ( hei - href ) );
+				float hei = GetInputData( "HEI", c );
+				float dep = GetInputIsConnected( "DEP" ) ? GetInputData( "DEP", c ) : 0.05f;
+				float href = GetInputIsConnected( "REF" ) ? GetInputData( "REF", c ) : 0.5f;
+				return GetInputData( "UVIN", c ) - ( dep * ( hei - href ) );
 			}
 			else
 				return 0;

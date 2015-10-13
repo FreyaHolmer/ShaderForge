@@ -13,7 +13,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Vertex Color" );
+			base.Initialize( "Vertex Color", InitialPreviewRenderMode.BlitSphere );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 4;

@@ -19,6 +19,7 @@ namespace ShaderForge {
 			base.texture.uniform = true;
 			base.texture.CompCount = 4;
 			base.canAlwaysSetPrecision = true;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 			lowerRect.width /= 4;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv4,false)
@@ -41,13 +42,13 @@ namespace ShaderForge {
 
 			//Color vecPrev = texture.dataUniform;
 			Rect tRect = lowerRect;
-			UndoableEnterableFloatField( tRect, ref texture.dataUniform.r, "R channel", null);
+			UndoableEnterableFloatField( tRect, ref texture.dataUniform.x, "R channel", null);
 			tRect.x += tRect.width;
-			UndoableEnterableFloatField( tRect, ref texture.dataUniform.g, "G channel", null);
+			UndoableEnterableFloatField( tRect, ref texture.dataUniform.y, "G channel", null);
 			tRect.x += tRect.width;
-			UndoableEnterableFloatField( tRect, ref texture.dataUniform.b, "B channel", null);
+			UndoableEnterableFloatField( tRect, ref texture.dataUniform.z, "B channel", null);
 			tRect.x += tRect.width;
-			UndoableEnterableFloatField( tRect, ref texture.dataUniform.a, "A channel", null);
+			UndoableEnterableFloatField( tRect, ref texture.dataUniform.w, "A channel", null);
 
 		}
 

@@ -22,6 +22,7 @@ namespace ShaderForge {
 			base.Initialize( "Panner" );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
+			base.shaderGenMode = ShaderGenerationMode.Modal;
 			texture.CompCount = 2;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2,false),
@@ -57,7 +58,31 @@ namespace ShaderForge {
 
 		}
 
+		public override string[] ExtraPassedFloatProperties() {
+			return new string[]{
+				"Uspeed",
+				"Vspeed"
+			};
+		}
 
+		public override string[] GetModalModes() {
+			return new string[]{
+				"REQONLY",
+				"DIST"
+			};
+		}
+
+		public override void PrepareRendering( Material mat ) {
+			mat.SetFloat( "_uspeed", speed.x );
+			mat.SetFloat( "_vspeed", speed.y );
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+			string distStr = mode == "DIST" ? "_dist.x" : "0";
+			return new string[]{
+				"float4((_uvin.xy+" + distStr + "*float2(_uspeed,_vspeed)),0,0)"
+			};
+		}
 
 		public override void OnUpdateNode( NodeUpdateType updType = NodeUpdateType.Hard, bool cascade = true ) {
 			if( InputsConnected() )
@@ -83,18 +108,18 @@ namespace ShaderForge {
 		}
 
 		// TODO Expose more out here!
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
-			Vector2 inputVec;
+			Vector2 inputVec = Vector2.one;
 
 			if(GetInputIsConnected("UVIN")){
-				inputVec = new Vector2( GetInputData( "UVIN", x, y, 0 ), GetInputData( "UVIN", x, y, 1 ) );
+				inputVec = new Vector2( GetInputData( "UVIN", 0 ), GetInputData( "UVIN", 1 ) );
 			} else {
-				inputVec = new Vector2( x/SF_NodeData.RESf, y/SF_NodeData.RESf ); // TODO: should use ghost nodes... 
+				//inputVec = new Vector2( x/((float)SF_Node.NODE_SIZE), y/SF_NodeData.RESf ); // TODO: should use ghost nodes... 
 			}
 
 
-			float distance = GetInputIsConnected( "DIST" ) ? GetInputData( "DIST", x, y, 0 ) : 0f;
+			float distance = GetInputIsConnected( "DIST" ) ? GetInputData( "DIST", 0 ) : 0f;
 			return (Vector4)( inputVec + speed * distance );
 		}
 

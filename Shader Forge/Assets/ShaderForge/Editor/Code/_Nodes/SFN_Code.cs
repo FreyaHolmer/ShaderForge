@@ -99,7 +99,7 @@ namespace ShaderForge {
 			return s;
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			return 1f;
 		}
 

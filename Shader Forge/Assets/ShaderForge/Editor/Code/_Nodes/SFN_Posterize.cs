@@ -11,6 +11,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Posterize" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.CustomFunction;
 			UseLowerReadonlyValues( true );
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create( this, "OUT", "", ConType.cOutput, ValueType.VTvPending, false ),
@@ -25,6 +26,10 @@ namespace ShaderForge {
 			return ( GetInputData( "IN" ).uniform && GetInputData( "STPS" ).uniform );
 		}
 
+		public override string[] GetBlitOutputLines() {
+			return new string[] { "floor(_in * _stps) / (_stps - 1)" };
+		}
+
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 
 			string mainInput = GetConnectorByStringID( "IN" ).TryEvaluate();
@@ -34,9 +39,9 @@ namespace ShaderForge {
 			return "floor(" + mainInput + " * " + steps + ") / (" + steps + " - 1)";
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
-			float steps = GetInputData( "STPS", x, y, c );
-			return Mathf.Floor( GetInputData( "IN", x, y, c ) * steps ) / (steps - 1);
+		public override float EvalCPU( int c ) {
+			float steps = GetInputData( "STPS", c );
+			return Mathf.Floor( GetInputData( "IN", c ) * steps ) / (steps - 1);
 		}
 
 	}

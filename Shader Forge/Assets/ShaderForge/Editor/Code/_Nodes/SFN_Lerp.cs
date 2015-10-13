@@ -45,8 +45,8 @@ namespace ShaderForge {
 			return "lerp(" + GetConnectorByStringID( "A" ).TryEvaluateAs(GetEvaluatedComponentCount()) + "," + GetConnectorByStringID( "B" ).TryEvaluateAs(GetEvaluatedComponentCount()) + "," + GetInputCon( "T" ).Evaluate() + ")";
 		}
 		
-		public override float NodeOperator( int x, int y, int c ) {
-			return Lerp( GetInputData( "A", x, y, c ), GetInputData( "B", x, y, c ), GetInputData( "T", x, y, c ) );
+		public override float EvalCPU( int c ) {
+			return Lerp( GetInputData( "B", c ), GetInputData( "B", c ), GetInputData( "T", c ) );
 		}
 
 		public float Lerp( float a, float b, float t ) {

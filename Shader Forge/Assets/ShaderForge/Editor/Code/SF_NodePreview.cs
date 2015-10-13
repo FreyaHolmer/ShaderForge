@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using System;
+using System.Linq;
 
 namespace ShaderForge {
 	[System.Serializable]
@@ -14,14 +15,8 @@ namespace ShaderForge {
 		public static int A = 3;
 
 		// The color representation 
-		private Texture2D texture;
-		public Texture2D Texture {
-			get {
-				if( texture == null )
-					UpdateColorPreview("TexInit");
-				return texture;
-			}
-		}
+		public RenderTexture texture;			// RGBA combined
+		public RenderTexture[] textureChannels; // RGBA separated, created on-demand
 
 		// Icons, if any
 		public Texture2D[] icons;
@@ -34,22 +29,21 @@ namespace ShaderForge {
 
 		public Color iconColor = Color.white;
 
-		// The actual data
-		public SF_NodeData data;
-
 		// Whether or not it's uniform
 		// Vectors (Uniform = Same color regardless of position)
 		// Textures (Non-Uniform = Different color based on position))
 		public bool uniform = false;
 		public bool coloredAlphaOverlay = false; // Used to render two images on top of eachother, as in the fog node
 		//public float[] dataUniform;
-		public Color dataUniform;
+		public Vector4 dataUniform;
+		public Color dataUniformColor{
+			get { return (Color)dataUniform; }
+		}
 
 		// My material node, used to get operators
 		public SF_Node node;
 
 		// The amount of components used (1-4) // THIS SHOUDLN'T BE USED. USE CONNECTOR COMP COUNT INSTEAD
-
 		[SerializeField]
 		private int compCount = 1;
 		public int CompCount {
@@ -62,36 +56,7 @@ namespace ShaderForge {
 					compCount = 4;
 				} else {
 					compCount = value;
-					UpdateColorPreview("CompCountChange");
 				}
-			}
-		}
-
-
-
-		// Accessor
-		public float this[int a, int b, int c] {
-			get {
-				node.OnPreGetPreviewData();
-				if( uniform ) {
-					return ( compCount == 1 ) ? dataUniform[0] : dataUniform[c];
-				}
-				return data[a, b, c];
-			}
-			set {
-				Debug.LogWarning( "Access violation" );
-			}
-		}
-
-		public Vector4 this[int a, int b] {
-			get {
-				if( uniform ) {
-					return new Vector4( dataUniform[0], dataUniform[1], dataUniform[2], dataUniform[3] );
-				}
-				return new Vector4( data[a, b, 0], data[a, b, 1], data[a, b, 2], data[a, b, 3] );
-			}
-			set {
-				Debug.LogWarning( "Access violation" );
 			}
 		}
 
@@ -107,24 +72,19 @@ namespace ShaderForge {
 			if( texture == null ) {
 				InitializeTexture();
 				node.RefreshValue();
-				ReadData( texture );
 			}
 
 		}
 
-
+		public RenderTexture CreateNewNodeRT() {
+			RenderTexture rt = new RenderTexture( SF_Node.NODE_SIZE, SF_Node.NODE_SIZE, 0, RenderTextureFormat.ARGBFloat, RenderTextureReadWrite.Linear ); // TODO: Gamma/Linear?
+			rt.wrapMode = TextureWrapMode.Clamp;
+			rt.hideFlags = HideFlags.HideAndDontSave;
+			return rt;
+		}
 
 		public SF_NodePreview Initialize( SF_Node node ) {
-
-			// Parent
-			this.node = node;
-
-			// The color representation
-			//InitializeTexture();
-
-			// The actual data
-			data = ScriptableObject.CreateInstance<SF_NodeData>().Initialize( this.node );
-			dataUniform = new Color(0f,0f,0f,0f);
+			this.node = node; // Parent
 			return this;
 		}
 
@@ -132,16 +92,29 @@ namespace ShaderForge {
 		public ColorSpace textureColorSpace = ColorSpace.Uninitialized;
 
 		public void InitializeTexture() {
-			texture = new Texture2D( SF_NodeData.RES, SF_NodeData.RES, TextureFormat.ARGB32, false, QualitySettings.activeColorSpace == ColorSpace.Linear); // TODO: Gamma/Linear?
+			texture = CreateNewNodeRT();
 			textureColorSpace = QualitySettings.activeColorSpace;
-			texture.wrapMode = TextureWrapMode.Clamp;
-			texture.hideFlags = HideFlags.HideAndDontSave;
 		}
 
 
 
 		public void DestroyTexture() {
+			if( RenderTexture.active == texture )
+				RenderTexture.active = null;
+			texture.Release();
 			DestroyImmediate( texture );
+
+			if( textureChannels != null ) {
+				for( int i = 0; i < textureChannels.Length; i++ ) {
+					if( textureChannels[i] != null ) {
+						if( RenderTexture.active == textureChannels[i] )
+							RenderTexture.active = null;
+						textureChannels[i].Release();
+						DestroyImmediate( textureChannels[i] );
+					}
+				}
+			}
+
 			iconActive = null;
 			texture = null;
 		}
@@ -187,72 +160,24 @@ namespace ShaderForge {
 		}
 
 		public void LoadDataTexture(string path){
-
 			Texture2D nodeIcon = SF_Resources.LoadNodeIcon(path);
-			
-			Color[] pixels = nodeIcon.GetPixels();
-			Vector4 subCol = new Vector4(1f,1f,1f,0f);
-			Vector4 mulCol = new Vector4(2f,2f,2f,1f);
-			
-			for( int y = 0; y < SF_NodeData.RES; y++ ) {
-				for( int x = 0; x < SF_NodeData.RES; x++ ) {
-					Color c = pixels[y*SF_NodeData.RES + x];
-					Vector4 vec = Vector4.Scale(new Vector4(c.r, c.g, c.b, c.a), mulCol) - subCol;
-					data[x, y] = (Color)vec;
-				}
-			}
-			
-			UpdateColorPreview("", force:true);
-
+			SF_Blit.Render( texture, "ReadPackedData", nodeIcon );
 		}
 
-		public void GenerateTexcoord() {
-			//		Color[] colors = new Color[16384];
-
-			//Debug.Log("Generated texcoords");
-
-			for( int y = 0; y < SF_NodeData.RES; y++ ) {
-				for( int x = 0; x < SF_NodeData.RES; x++ ) {
-					data[x, y, 0] = x / SF_NodeData.RESf;
-					data[x, y, 1] = y / SF_NodeData.RESf;
-					data[x, y, 2] = 0f;
-					data[x, y, 3] = 0f;
-				}
-			}
-			UpdateColorPreview("Texcoord", force:true); // TODO: Might not want to force this here
+		public void GenerateBaseData( bool render3D = true ) {
+			SF_Blit.mat.SetVector( "_OutputMask", Vector4.one );
+			if( render3D )
+				SF_Blit.RenderUsingViewport( texture, node.GetBlitShaderPath() );
+			else
+				SF_Blit.Render( texture, node.GetBlitShaderPath() );
 		}
 
-
+		public void BlitUniform() {
+			SF_Blit.Render(texture, dataUniformColor );
+		}
 
 		public void ReadData( Texture2D tex, SF_NodePreview uvTex = null ) {
-
-			for( int y = 0; y < SF_NodeData.RES; y++ ) {
-				for( int x = 0; x < SF_NodeData.RES; x++ ) {
-
-					Color col;
-					float U;
-					float V;
-
-					if( uvTex ) {
-						Color c = uvTex[x, y];
-						U = c.r;
-						V = c.g;
-					} else {
-						U = x / SF_NodeData.RESf;
-						V = y / SF_NodeData.RESf;
-					}
-
-					col = tex.GetPixelBilinear( U, V );
-
-					data[x, y, 0] = col.r;
-					data[x, y, 1] = col.g;
-					data[x, y, 2] = col.b;
-					data[x, y, 3] = col.a;
-				}
-			}
-
-			UpdateColorPreview("ReadData");
-
+			Graphics.Blit( tex, texture );
 		}
 
 
@@ -263,43 +188,34 @@ namespace ShaderForge {
 		}
 
 		public void Fill( Color col ) {
-
-			//if(data == null)
-			//data = new float[128, 128, 4]; // DEBUG
-
-			for( int y = 0; y < SF_NodeData.RES; y++ ) {
-				for( int x = 0; x < SF_NodeData.RES; x++ ) {
-					for( int c = 0; c < 4; c++ ) { // Channels
-						data[x, y, c] = col[c];
-					}
-				}
-			}
-			UpdateColorPreview("fill");
+			SF_Blit.Render( texture, col );
 		}
 
-
-
-		public void UpdateColorPreview(string msg = "", bool force = false) {
-
-			if(texture != null && SF_Parser.quickLoad && !force)
-				return;
-
-			if(SF_Debug.nodePreviews)
-				Debug.Log("UpdateColorPreview[" + msg + "] = " + node.nodeName);
-
-			Color[] texCols = new Color[SF_NodeData.RES * SF_NodeData.RES];
-			for( int y = 0; y < SF_NodeData.RES; y++ ) {
-				for( int x = 0; x < SF_NodeData.RES; x++ ) {
-					texCols[y * SF_NodeData.RES + x] = new Color( data[x, y, 0], data[x, y, 1], data[x, y, 2], data[x, y, 3] );
-				}
+		public Texture RenderAndGetChannel(int ch){
+			if(textureChannels == null)
+				textureChannels = new RenderTexture[4];
+			if( ch < 0 || ch > 3 ) {
+				Debug.LogError( "RenderAndGetChannel() got invalid channel " + ch + " of node " + node.nodeName + ". Please report this!" );
 			}
-			if( texture == null )
-				InitializeTexture();
-			else if(texture.width != SF_NodeData.RES)
-				InitializeTexture();
+			if( textureChannels[ch] == null ) {
+				textureChannels[ch] = CreateNewNodeRT();
+			}
+			SF_Blit.matExtractChannel.SetFloat("_Channel", ch);
+			Graphics.Blit( texture, textureChannels[ch], SF_Blit.matExtractChannel );
+			return textureChannels[ch];
+		}
 
-			texture.SetPixels( texCols );
-			texture.Apply();
+		public Texture GetTextureByOutputType( OutChannel ch ) {
+			if( ch == OutChannel.R ) {
+				return RenderAndGetChannel( 0 );
+			} else if( ch == OutChannel.G ) {
+				return RenderAndGetChannel( 1 );
+			} else if( ch == OutChannel.B ) {
+				return RenderAndGetChannel( 2 );
+			} else if( ch == OutChannel.A ) {
+				return RenderAndGetChannel( 3 );
+			}
+			return texture;			
 		}
 
 
@@ -320,39 +236,52 @@ namespace ShaderForge {
 			// It can combine! Since this node is dynamic, adapt its component count
 			//CompCount = Mathf.Max( a.CompCount, b.CompCount );
 
+			
 			uniform = node.IsUniformOutput();
 
 			// Combine the node textures, unless we're quickloading or don't want to load them
-			if(!SF_Parser.quickLoad && SF_Settings.DrawNodePreviews){
+
+			dataUniform = node.EvalCPU();
+
+			SF_Blit.currentNode = node;
+
+			if( uniform ) {
+				BlitUniform();
+			} else {
+				string shaderPath = node.GetBlitShaderPath();
+				Texture[] inputTextures = node.ConnectedInputs.Select( x => x.inputCon.node.texture.GetTextureByOutputType( x.inputCon.outputChannel ) ).ToArray();
+				string[] inputNames = node.ConnectedInputs.Select( x => x.strID ).ToArray();
+				//OutChannel[] inputChannels = node.ConnectedInputs.Select( x => x.inputCon.outputChannel ).ToArray();
+				SF_Blit.Render( texture, shaderPath, inputNames, inputTextures );
+			}
+
+			
+			
+
+
+
+			/*
+			if(!SF_Parser.quickLoad && SF_Settings.DrawNodePreviews) {
 				for( int y = 0; y < SF_NodeData.RES; y++ ) {
 					for( int x = 0; x < SF_NodeData.RES; x++ ) {
 						Color retVector = node.NodeOperator( x, y );
 						for( int c = 0; c < 4; c++ ) {
 							data[x, y, c] = retVector[c];
 						}
-					} 
+					}
 				}
-			}
+			}*
 
 			// Combine uniform
 			/*for( int i = 0; i < 4; i++ ) {
 				dataUniform[i] = node.NodeOperator( 0, 0, i );
 			}*/
-			dataUniform = node.NodeOperator( 0, 0 );
+			
 
-
-
-			// After assigning data, update the visible preview
-			UpdateColorPreview("Node Operator");
 
 
 		}
 
-		//public void CombineUniform( SF_NodePreview a, SF_NodePreview b ) {
-
-
-		//}
-		 
 
 
 		public void Draw( Rect r , bool dim = false) {
@@ -378,7 +307,7 @@ namespace ShaderForge {
 				GUI.DrawTexture( r, EditorGUIUtility.whiteTexture );
 				GUI.color = Color.white;
 			} else {
-				GUI.DrawTexture( r, Texture, ScaleMode.ScaleAndCrop, false );
+				GUI.DrawTexture( r, texture, ScaleMode.ScaleAndCrop, false );
 				if(node.displayVectorDataMask){
 					GUI.DrawTexture( r, SF_GUI.VectorIconOverlay, ScaleMode.ScaleAndCrop, true);
 				}
@@ -400,26 +329,6 @@ namespace ShaderForge {
 			}
 			return new Color( fa[0], fa[1], fa[2], forceVisible ? 1f : fa[3] );
 		}
-
-
-		//	public void EvaluateUniform(MaterialNode a, MaterialNode b){
-		//		uniform = true;
-		//		vector = new float[Mathf.Max(a.vector.Length,b.vector.Length)];
-		//		if(a.vector.Length == b.vector.Length){
-		//			vector = OperatorSameLength(a.vector,b.vector); // SAMPLE
-		//		} else if(a.vector.Length == 1 || b.vector.Length == 1){
-		//			if(a.vector.Length == 1)
-		//				vector = OperatorSingleScalarLength(b.vector,a.vector[0]); // SAMPLE
-		//			else
-		//				vector = OperatorSingleScalarLength(a.vector,b.vector[0]); // SAMPLE
-		//		} else {
-		//			// Invalid!
-		//			Debug.LogWarning("Invalid cast between vector" + a.vector.Length + " and vector" + b.vector.Length + " on " + name + " node");
-		//			vector = new float[4]{0,0,0,0};
-		//			texture = null;
-		//		}
-		//	}
-
 
 
 

@@ -18,6 +18,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Desaturate" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.Modal;
 			UseLowerReadonlyValues( true );
 
 			//SF_NodeConnection lerpCon;
@@ -53,6 +54,30 @@ namespace ShaderForge {
 			return this["DES"].IsConnected() ? 3 : 1;
 		}
 
+		public override string[] GetModalModes() {
+			return new string[]{
+				"REQONLY",
+				"DES"
+			};
+		}
+
+		public override string GetCurrentModalMode() {
+			if( GetInputIsConnected( "DES" ) ) {
+				return "DES";
+			}
+			return "REQONLY";
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+
+			string dotStr = "dot(_col,float3(0.3,0.59,0.11))";
+
+			if( mode == "DES" ) {
+				dotStr = "lerp(_col, " + dotStr + ".xxxx, _des)";
+			}
+
+			return new string[]{ dotStr };
+		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 
@@ -68,19 +93,18 @@ namespace ShaderForge {
 			}
 		}
 
-		// TODO Expose more out here!
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
-			Color col = GetInputData( "COL" )[x,y];
-			Color lum = new Color( 0.3f, 0.59f, 0.11f );
-			Color dot = SF_Tools.FloatToColor(SF_Tools.Dot( col, lum, 3 ));
+			Vector4 col = GetInputData( "COL" ).dataUniform;
+			Vector4 lum = new Color( 0.3f, 0.59f, 0.11f, 1f );
+			Vector4 dot = Vector4.Dot( col, lum ) * Vector4.one;
 
 			float desat = 1f;
 			if( this["DES"].IsConnected() ) {
-				desat = GetInputData( "DES" )[x, y, 0];
+				desat = GetInputData( "DES" ).dataUniform[0];
 			}
 
-			return Color.Lerp(col, dot, desat);
+			return Vector4.Lerp( col, dot, desat );
 		}
 
 

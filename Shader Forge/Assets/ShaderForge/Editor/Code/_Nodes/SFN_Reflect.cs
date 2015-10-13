@@ -14,15 +14,16 @@ namespace ShaderForge {
 			base.PrepareArithmetic( 2 );
 			connectors[1].label = "I";
 			connectors[2].label = "N";
+			base.shaderGenMode = ShaderGenerationMode.SimpleFunction;
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
 			return "reflect(" + GetConnectorByStringID( "A" ).TryEvaluate() + "," + GetConnectorByStringID( "B" ).TryEvaluate() + ")";
 		}
 
-		public override Color NodeOperator( int x, int y ) {
-			Color i = GetInputData( "A" )[x, y];
-			Color n = GetInputData( "B" )[x, y];
+		public override Vector4 EvalCPU() {
+			Color i = GetInputData( "A" ).dataUniform;
+			Color n = GetInputData( "B" ).dataUniform;
 			int cc = Mathf.Max(GetInputCon( "A" ).GetCompCount(), GetInputCon( "B" ).GetCompCount());
 			float dot = SF_Tools.Dot(i, n, cc);
 			return i - 2 * n * dot;

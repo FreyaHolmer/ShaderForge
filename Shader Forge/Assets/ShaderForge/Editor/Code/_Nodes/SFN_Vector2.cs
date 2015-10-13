@@ -20,6 +20,7 @@ namespace ShaderForge {
 			base.texture.uniform = true;
 			base.canAlwaysSetPrecision = true;
 			base.texture.CompCount = 2;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 			lowerRect.width /= 2;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv2,false)
@@ -39,13 +40,13 @@ namespace ShaderForge {
 			if( selected && !SF_GUI.MultiSelectModifierHeld() )
 				ColorPickerCorner(lowerRect);
 
-			Color cPrev = texture.dataUniform;
+			Vector4 cPrev = texture.dataUniform;
 			Rect tRect = lowerRect;
 			//SF_GUI.EnterableFloatField( this, tRect, ref texture.dataUniform.r, null );
-			UndoableEnterableFloatField(tRect,ref texture.dataUniform.r, "R channel", null);
+			UndoableEnterableFloatField(tRect,ref texture.dataUniform.x, "R channel", null);
 			tRect.x += tRect.width;
 			//SF_GUI.EnterableFloatField( this, tRect, ref texture.dataUniform.g, null );
-			UndoableEnterableFloatField(tRect,ref texture.dataUniform.g, "G channel", null);
+			UndoableEnterableFloatField(tRect,ref texture.dataUniform.y, "G channel", null);
 			if( texture.dataUniform != cPrev )
 				OnUpdateNode();
 			 

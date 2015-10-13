@@ -23,6 +23,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true );
 			base.texture.uniform = true;
 			base.texture.CompCount = 1;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 
 			property = ScriptableObject.CreateInstance<SFP_ValueProperty>().Initialize( this );
 
@@ -69,7 +70,7 @@ namespace ShaderForge {
 			texCoords.x = texCoords.y = 0;
 			GUI.DrawTextureWithTexCoords( r, SF_GUI.Handle_drag, texCoords, alphaBlend:true );
 
-			texture.dataUniform = new Color( fVal, fVal, fVal, fVal );
+			texture.dataUniform = new Vector4( fVal, fVal, fVal, fVal );
 			if( texture.dataUniform[0] != vecPrev ) {
 				OnUpdateNode( NodeUpdateType.Soft );
 				editor.shaderEvaluator.ApplyProperty( this );

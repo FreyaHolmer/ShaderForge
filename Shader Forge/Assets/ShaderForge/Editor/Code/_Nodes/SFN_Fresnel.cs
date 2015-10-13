@@ -12,11 +12,12 @@ namespace ShaderForge {
 
 		}
 
-		public override void Initialize() { 
-			base.Initialize( "Fresnel" , vectorDataTexture:true );
+		public override void Initialize() {
+			base.Initialize( "Fresnel", InitialPreviewRenderMode.BlitSphere );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 1;
+			base.shaderGenMode = ShaderGenerationMode.Modal;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false),
 				SF_NodeConnector.Create(this,"NRM","Nrm",ConType.cInput,ValueType.VTv3,false),
@@ -25,7 +26,42 @@ namespace ShaderForge {
 
 			this["NRM"].unconnectedEvaluationValue = "normalDirection";
 
+		}
 
+		public override string[] GetModalModes() {
+			return new string[]{
+				"REQONLY",
+				"NRM",
+				"EXP",
+				"NRM_EXP"
+			};
+		}
+
+		public override string GetCurrentModalMode() {
+			bool expCon = GetInputIsConnected( "EXP" );
+			bool nrmCon = GetInputIsConnected( "NRM" );
+
+			if( !expCon && !nrmCon )
+				return "REQONLY";
+			if( !expCon && nrmCon )
+				return "NRM";
+			if( expCon && !nrmCon )
+				return "EXP";
+			// if( expCon && nrmCon )
+				return "NRM_EXP";
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+
+			string nrmStr = mode.Contains( "NRM" ) ? "_nrm.xyz" : "normalDirection";
+
+			string s = string.Format(  "1.0-max(0,dot({0}, viewDirection))", nrmStr );
+
+			if( mode.Contains( "EXP" ) ) {
+				s = string.Format( "pow( {0}, {1} )", s, "_exp.x" );
+			}
+
+			return new string[]{ s };
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {

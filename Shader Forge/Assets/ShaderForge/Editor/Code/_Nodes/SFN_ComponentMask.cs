@@ -79,6 +79,7 @@ namespace ShaderForge {
 			base.Initialize( "Comp. Mask" );
 			base.SearchName = "ComponentMask";
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.Modal;
 			UseLowerReadonlyValues( true );
 			UseLowerPropertyBox( true, true );
 			
@@ -115,6 +116,56 @@ namespace ShaderForge {
 		// New system
 		public override void RefreshValue() {
 			RefreshValue( 1, 1 );
+		}
+
+		public override string[] ExtraPassedFloatProperties() {
+			return new string[]{
+				"ChR",
+				"ChG",
+				"ChB",
+				"ChA"
+			};
+		}
+
+		public override string[] GetModalModes() {
+			return new string[]{
+				"CC1",
+				"CC2",
+				"CC3",
+				"CC4"
+			};
+		}
+
+		public override void PrepareRendering( Material mat ) {
+			mat.SetFloat( "_chr", (int)components[0] );
+			mat.SetFloat( "_chg", (int)components[1] );
+			mat.SetFloat( "_chb", (int)components[2] );
+			mat.SetFloat( "_cha", (int)components[3] );
+		}
+
+		public override string GetCurrentModalMode() {
+			if( components[1] == CompChannel.off )
+				return "CC1";
+			if( components[2] == CompChannel.off )
+				return "CC2";
+			if( components[3] == CompChannel.off )
+				return "CC3";
+			return "CC4";
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+			
+			string s = "";
+			if( mode == "CC1" )
+				s = "_in[_chr].xxxx";
+			if( mode == "CC2" )
+				s = "float4(_in[_chr],_in[_chg],0,0)";
+			if( mode == "CC3" )
+				s = "float4(_in[_chr],_in[_chg],_in[_chb],0)";
+			if( mode == "CC4" )
+				s = "float4(_in[_chr],_in[_chg],_in[_chb],_in[_cha])";
+
+			return new string[]{ s };
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -283,14 +334,14 @@ namespace ShaderForge {
 		}
 
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			CompChannel channel = components[c]; // Get the channel the user selected for component i
 			if( channel == CompChannel.off ) {
 				if(outCompCount > 1)
 					return 0f; // Make remaining channels black if using more than one component
-				return GetInputData( "IN", x, y, (int)components[0] ); // Repeat same value when using one component
+				return GetInputData( "IN", (int)components[0] ); // Repeat same value when using one component
 			}
-			return GetInputData( "IN", x, y, (int)channel);
+			return GetInputData( "IN", (int)channel);
 		}
 
 		public override string SerializeSpecialData() {

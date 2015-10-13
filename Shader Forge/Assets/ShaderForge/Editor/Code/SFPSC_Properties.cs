@@ -283,7 +283,7 @@ namespace ShaderForge {
 					//texRect.width = texRect.height;
 					GUI.Box( SF_Tools.GetExpanded( texRect, 1f ), string.Empty, SF_Styles.NodeStyle );
 					GUI.color = Color.white;
-					GUI.DrawTexture( texRect, prop.texture.Texture );
+					GUI.DrawTexture( texRect, prop.texture.texture );
 					GUI.color = c;
 				}
 				
@@ -371,7 +371,7 @@ namespace ShaderForge {
 					GUI.Label( sR, "X", EditorStyles.miniLabel );
 					sR.x += sR.width;
 					sR.width = 32;
-					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.r, "X channel", EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.x, "X channel", EditorStyles.textField );
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 					sR.x += sR.width + 3;
 					
@@ -380,7 +380,7 @@ namespace ShaderForge {
 					GUI.Label( sR, "Y", EditorStyles.miniLabel );
 					sR.x += sR.width;
 					sR.width = 32;
-					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.g, "Y channel", EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.y, "Y channel", EditorStyles.textField );
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 					sR.x += sR.width+3;
 					
@@ -389,7 +389,7 @@ namespace ShaderForge {
 					GUI.Label( sR, "Z", EditorStyles.miniLabel );
 					sR.x += sR.width;
 					sR.width = 32;
-					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.b, "Z channel", EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.z, "Z channel", EditorStyles.textField );
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 					sR.x += sR.width + 3;
 					
@@ -398,7 +398,7 @@ namespace ShaderForge {
 					GUI.Label( sR, "W", EditorStyles.miniLabel );
 					sR.x += sR.width;
 					sR.width = 32;
-					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.a, "W channel", EditorStyles.textField );
+					prop.UndoableEnterableFloatField(sR, ref vec4.texture.dataUniform.w, "W channel", EditorStyles.textField );
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 
 					
@@ -420,7 +420,7 @@ namespace ShaderForge {
 					sR.x += sR.width;
 					sR.width = 55;
 					//SF_GUI.EnterableFloatField( prop, sR, ref val.texture.dataUniform.r, EditorStyles.textField );
-					prop.UndoableEnterableFloatField(sR, ref val.texture.dataUniform.r, "value", EditorStyles.textField);
+					prop.UndoableEnterableFloatField(sR, ref val.texture.dataUniform.x, "value", EditorStyles.textField);
 					SF_GUI.AssignCursor( sR, MouseCursor.Text );
 					ps.EndIgnoreChangeCheck();
 				} else if (checkboxInput){

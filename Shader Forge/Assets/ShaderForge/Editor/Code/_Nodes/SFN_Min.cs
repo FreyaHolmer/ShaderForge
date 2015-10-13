@@ -15,6 +15,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Min" );
 			base.showColor = true;
+			base.shaderGenMode = ShaderGenerationMode.ModularInput;
 			UseLowerReadonlyValues( true );
 			
 			connectors = new SF_NodeConnector[]{
@@ -31,6 +32,12 @@ namespace ShaderForge {
 			
 			base.conGroup = ScriptableObject.CreateInstance<SFNCG_Arithmetic>().Initialize( connectors[0], connectors[1], connectors[2], connectors[3], connectors[4], connectors[5] );
 			
+		}
+
+		public override void GetModularShaderFixes( out string prefix, out string infix, out string suffix ) {
+			prefix = "min(";
+			infix  = ", ";
+			suffix = ")";
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -52,14 +59,14 @@ namespace ShaderForge {
 		}
 
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 
-			float minimum = Mathf.Min( GetInputData( "A", x, y, c ), GetInputData( "B", x, y, c ) );
+			float minimum = Mathf.Min( GetInputData( "A", c ), GetInputData( "B", c ) );
 
 			// Loop through all chain childs
 			foreach(SF_NodeConnector con in connectors){
 				if(con.IsConnected() && con.IsChild()){
-					minimum = Mathf.Min(minimum, GetInputData( con.strID, x, y, c ) );
+					minimum = Mathf.Min(minimum, GetInputData( con.strID, c ) );
 				}
 			}
 

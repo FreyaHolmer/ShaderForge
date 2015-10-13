@@ -22,6 +22,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true );
 			base.texture.uniform = true;
 			base.texture.CompCount = 1;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false)
@@ -48,7 +49,7 @@ namespace ShaderForge {
 
 
 		public override void DrawLowerPropertyBox() {
-			//float vecPrev = texture.dataUniform[0];
+			float vecPrev = texture.dataUniform[0];
 			//int strWidth = (int)SF_Styles.GetLargeTextField().CalcSize( new GUIContent( texture.dataUniform[0].ToString() ) ).x;
 			//lowerRect.width = Mathf.Max( 32, strWidth );
 			Rect r = new Rect( lowerRect );
@@ -57,7 +58,7 @@ namespace ShaderForge {
 			r.yMax -= 2;
 			r.xMin += 2;
 			//SF_GUI.EnterableFloatField( this, r, ref texture.dataUniform.r, SF_Styles.LargeTextField );
-			UndoableEnterableFloatField(r, ref texture.dataUniform.r, "value", SF_Styles.LargeTextField);
+			UndoableEnterableFloatField(r, ref texture.dataUniform.x, "value", SF_Styles.LargeTextField);
 			r.x += r.width + 6;
 			r.width = r.height;
 			Rect texCoords = new Rect( r );
@@ -66,9 +67,9 @@ namespace ShaderForge {
 			texCoords.x = texCoords.y = 0;
 			GUI.DrawTextureWithTexCoords( r, SF_GUI.Handle_drag, texCoords, alphaBlend:true );
 
-			texture.dataUniform = new Color( texture.dataUniform.r, texture.dataUniform.r, texture.dataUniform.r, texture.dataUniform.r );
-			//if( texture.dataUniform[0] != vecPrev )
-				//OnUpdateNode();
+			texture.dataUniform = new Vector4( texture.dataUniform.x, texture.dataUniform.x, texture.dataUniform.x, texture.dataUniform.x );
+			if( texture.dataUniform[0] != vecPrev )
+				OnUpdateNode();
 		}
 
 		public override string SerializeSpecialData() {

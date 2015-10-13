@@ -10,7 +10,8 @@ namespace ShaderForge {
 
 		public override void Initialize() {
 			base.Initialize( "Length" );
-			base.PrepareArithmetic(1,ValueType.VTvPending,ValueType.VTv1);
+			base.PrepareArithmetic( 1, ValueType.VTvPending, ValueType.VTv1 );
+			base.shaderGenMode = ShaderGenerationMode.SimpleFunction;
 			( base.conGroup as SFNCG_Arithmetic ).LockOutType();
 		}
 
@@ -22,17 +23,17 @@ namespace ShaderForge {
 			return "length(" + GetConnectorByStringID( "IN" ).TryEvaluate() + ")";
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 
 			switch( GetInputData( "IN" ).CompCount ) {
 				case 1:
-					return SF_Tools.FloatToColor( Mathf.Abs( GetInputData( "IN" )[x, y, 0] ) );
+					return Vector4.one * Mathf.Abs( GetInputData( "IN" ).dataUniform[0] );
 				case 2:
-					return SF_Tools.FloatToColor( ( (Vector2)GetInputData( "IN" )[x, y] ).magnitude );
+					return Vector4.one * ( (Vector2)GetInputData( "IN" ).dataUniform ).magnitude;
 				case 3:
-					return SF_Tools.FloatToColor( ( (Vector3)GetInputData( "IN" )[x, y] ).magnitude );
+					return Vector4.one * ( (Vector3)GetInputData( "IN" ).dataUniform ).magnitude;
 				default:
-					return SF_Tools.FloatToColor( GetInputData( "IN" )[x, y].magnitude );
+					return Vector4.one * GetInputData( "IN" ).dataUniform.magnitude;
 			}
 
 		}

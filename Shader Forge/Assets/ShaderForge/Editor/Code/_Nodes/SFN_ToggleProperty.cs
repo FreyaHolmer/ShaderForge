@@ -26,6 +26,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true );
 			base.texture.uniform = true;
 			base.texture.CompCount = 1;
+			base.shaderGenMode = ShaderGenerationMode.OffUniform;
 
 			property = ScriptableObject.CreateInstance<SFP_ToggleProperty>().Initialize( this );
 
@@ -113,7 +114,7 @@ namespace ShaderForge {
 				
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 			if(on){
 				return 1f;
 			} else {

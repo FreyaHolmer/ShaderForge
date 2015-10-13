@@ -20,6 +20,35 @@ namespace ShaderForge {
 			base.Initialize( "Log" );
 			base.UseLowerPropertyBox( true, true );
 			base.PrepareArithmetic( 1, ValueType.VTvPending, ValueType.VTvPending );
+			base.shaderGenMode = ShaderGenerationMode.Modal;
+		}
+
+		
+		public override string[] GetModalModes() {
+			return new string[] {
+				"LOG",
+				"LOG2",
+				"LOG10"
+			};
+		}
+
+		public override string GetCurrentModalMode() {
+			switch( logType ) {
+				case LogType.Base10:
+					return "LOG10";
+				case LogType.Base2:
+					return "LOG2";
+				default:
+					return "LOG";
+			}
+		}
+
+		public override string[] GetBlitOutputLines( string mode ) {
+			if( mode == "LOG2" )
+				return new string[] { "log(_in);" };
+			if( mode == "LOG10" )
+				return new string[] { "log10(_in);" };
+			return new string[] { "log(_in)" };
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -37,9 +66,9 @@ namespace ShaderForge {
 			return inner;
 		}
 
-		public override float NodeOperator( int x, int y, int c ) {
+		public override float EvalCPU( int c ) {
 
-			float inpDt = GetInputData( "IN", x, y, c );
+			float inpDt = GetInputData( "IN", c );
 
 			switch( logType ) {
 				case LogType.Natural:

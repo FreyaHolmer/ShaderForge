@@ -13,7 +13,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Depth", vectorDataTexture:true );
+			base.Initialize( "Depth", InitialPreviewRenderMode.BlitSphere );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 1;
@@ -23,7 +23,7 @@ namespace ShaderForge {
 			};
 		}
 
-		public override Color NodeOperator( int x, int y ) {
+		public override Vector4 EvalCPU() {
 			return new Color( 0.3f, 0.6f, 0.3f, 1f );
 		}
 

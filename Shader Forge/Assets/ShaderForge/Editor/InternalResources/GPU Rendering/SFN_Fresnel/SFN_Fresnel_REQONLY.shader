@@ -21,19 +21,27 @@ Shader "Hidden/Shader Forge/SFN_Fresnel_REQONLY" {
 
             struct VertexInput {
                 float4 vertex : POSITION;
+                float3 normal : NORMAL;
                 float2 texcoord0 : TEXCOORD0;
             };
             struct VertexOutput {
                 float4 pos : SV_POSITION;
                 float2 uv : TEXCOORD0;
+                float4 posWorld : TEXCOORD1;
+                float3 normalDir : TEXCOORD2;
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
                 o.uv = v.texcoord0;
+                o.normalDir = UnityObjectToWorldNormal(v.normal);
+                o.posWorld = mul(_Object2World, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
+                i.normalDir = normalize(i.normalDir);
+                float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
+                float3 normalDirection = i.normalDir;
 
                 // Read inputs
                 float4 _nrm = tex2D( _NRM, i.uv );

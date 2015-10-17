@@ -18,7 +18,7 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Parallax" );
 			base.showColor = true;
-			base.shaderGenMode = ShaderGenerationMode.Manual;
+			base.shaderGenMode = ShaderGenerationMode.ManualModal;
 			UseLowerReadonlyValues( false );
 			texture.CompCount = 2;
 			//SF_NodeConnection lerpCon;
@@ -60,6 +60,10 @@ namespace ShaderForge {
 				return "REQONLY";
 			}
 
+			if( uvCon && !refCon && !depCon ) {
+				return "UV";
+			}
+
 			string s = "";
 			if( refCon && depCon ) {
 				s = "DEP_REF";
@@ -85,6 +89,7 @@ namespace ShaderForge {
 				"DEP",
 				"REF",
 				"DEP_REF",
+				"UV",
 				"UV_DEP",
 				"UV_REF",
 				"UV_DEP_REF",

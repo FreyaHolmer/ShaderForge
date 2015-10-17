@@ -91,16 +91,16 @@ namespace ShaderForge{
 			for( int i = 0; i < types.Count; i++ ) {
 
 				SF_Node node = types[i].CreateInstance();
-				bool manual = node.shaderGenMode == ShaderGenerationMode.Manual;
+				bool manual = node.shaderGenMode == ShaderGenerationMode.Manual || node.shaderGenMode == ShaderGenerationMode.ManualModal;
 				bool offUniform = node.shaderGenMode == ShaderGenerationMode.OffUniform;
-				bool shouldGenerate = !(manual || offUniform);
+				bool shouldGenerate = !(manual || offUniform );
 				if( shouldGenerate ) {
 					
 					if( node.shaderGenMode == ShaderGenerationMode.ModularInput ) {
 						for( int j = 2; j <= 5; j++ ) { // 2 to 5
 							Generate( node, node.GetType().Name, j );
 						}
-					} else if(node.shaderGenMode == ShaderGenerationMode.Modal) {
+					} else if( node.shaderGenMode == ShaderGenerationMode.Modal ) {
 
 						string[] modes = node.GetModalModes();
 						for( int j = 0; j < modes.Length; j++ ) {
@@ -122,6 +122,8 @@ namespace ShaderForge{
 
 		public static void Generate( SF_Node node, string nodeName, int modularInputCount = -1, string modalSuffix = "" ) {
 
+
+			bool modal = node.shaderGenMode == ShaderGenerationMode.Modal || node.shaderGenMode == ShaderGenerationMode.ManualModal;
 			
 
 			string pathRoot = SF_Resources.InternalResourcesPath + SF_Resources.pGpuRendering;
@@ -182,10 +184,10 @@ namespace ShaderForge{
 
 				outputLine = nodeName.Substring( 4 ).ToLower() + "(" + string.Join( ", ", varNames ) + ")";
 
-			} else if( node.shaderGenMode == ShaderGenerationMode.Modal || node.shaderGenMode == ShaderGenerationMode.CustomFunction || node.shaderGenMode == ShaderGenerationMode.ValuePassing ) {
+			} else if( modal || node.shaderGenMode == ShaderGenerationMode.CustomFunction || node.shaderGenMode == ShaderGenerationMode.ValuePassing ) {
 
 				string[] allOutputLines;
-				if( node.shaderGenMode == ShaderGenerationMode.Modal ) {
+				if( modal ) {
 					allOutputLines = node.GetBlitOutputLines( modalSuffix );
 				} else {
 					allOutputLines = node.GetBlitOutputLines();

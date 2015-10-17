@@ -14,6 +14,7 @@ namespace ShaderForge {
 		OffUniform, 	// No shader written
 		Modal,			// Requires modes or C# intervention, Array of suffixes & Array of custom outputs
 		Manual,			// Fully manually written
+		ManualModal,	// Manually written, with modes
 		ValuePassing,	// Floats are sent from the node to the material before render
 		SimpleFunction, // Generates a name(inputs)
 		CustomFunction,	// Generates a custom output line
@@ -296,10 +297,8 @@ namespace ShaderForge {
 
 
 			int cc = GetEvaluatedComponentCount();
-			Debug.Log( "Get eval cc for " + nodeName + " = " + cc );
 			if( cc == 0 )
 				cc = texture.CompCount;
-			Debug.Log("Getting var cc for " + nodeName +" = " + cc);
 
 			string precisionStr = precision.ToCode();
 
@@ -739,13 +738,17 @@ namespace ShaderForge {
 			return GetType().Name;
 		}
 
+		public bool IsModal() {
+			return shaderGenMode == ShaderGenerationMode.ManualModal || shaderGenMode == ShaderGenerationMode.Modal;
+		}
+
 		public string GetBlitShaderPath() {
 			string suffix = GetBlitShaderSuffix();
 			if( !string.IsNullOrEmpty( suffix ) ) {
 				return BlitShaderBasePath() + "_" + suffix;
 			} else {
 				string modalMode = "";
-				if( shaderGenMode == ShaderGenerationMode.Modal )
+				if( IsModal() )
 					modalMode = GetCurrentModalMode();
 				if( string.IsNullOrEmpty( modalMode ) ) {
 					return BlitShaderBasePath();
@@ -756,7 +759,7 @@ namespace ShaderForge {
 		}
 
 		public virtual string GetCurrentModalMode() {
-			if( shaderGenMode == ShaderGenerationMode.Modal ) {
+			if( IsModal() ) {
 				Debug.LogError( "Missing GetCurrentModalMode() override on " + nodeName );
 			} else {
 				Debug.LogError( "Calling GetCurrentModalMode() on " + nodeName + " which isn't supposed to call GetCurrentModalMode" );
@@ -765,7 +768,7 @@ namespace ShaderForge {
 		}
 
 		public virtual string[] GetModalModes() {
-			if( shaderGenMode == ShaderGenerationMode.Modal ) {
+			if( IsModal() ) {
 				Debug.LogError( "Missing GetModalModes() override on " + nodeName );
 			} else {
 				Debug.LogError( "Calling GetModalModes() on " + nodeName + " which isn't supposed to call GetModalModes" );
@@ -774,7 +777,7 @@ namespace ShaderForge {
 		}
 
 		public virtual string[] GetBlitOutputLines( string mode ) {
-			if( shaderGenMode == ShaderGenerationMode.Modal ) {
+			if( IsModal() ) {
 				Debug.LogError( "Missing GetBlitOutputLines(mode) override on " + nodeName );
 			} else {
 				Debug.LogError( "Calling GetBlitOutputLines(mode) on " + nodeName + " which isn't supposed to call GetBlitOutputLines" );

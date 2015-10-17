@@ -1,4 +1,4 @@
-Shader "Hidden/Shader Forge/SFN_Parallax_REF" {
+Shader "Hidden/Shader Forge/SFN_Parallax_UV" {
     Properties {
         _OutputMask ("Output Mask", Vector) = (1,1,1,1)
         _UVIN ("UV", 2D) = "black" {}
@@ -22,6 +22,7 @@ Shader "Hidden/Shader Forge/SFN_Parallax_REF" {
             uniform sampler2D _HEI;
             uniform sampler2D _DEP;
             uniform sampler2D _REF;
+ 
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -50,7 +51,6 @@ Shader "Hidden/Shader Forge/SFN_Parallax_REF" {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                
 
                 // Read inputs
                 float4 _uvin = tex2D( _UVIN, i.uv0 );
@@ -59,7 +59,7 @@ Shader "Hidden/Shader Forge/SFN_Parallax_REF" {
                 float4 _ref = tex2D( _REF, i.uv0 );
 
                 // Operator
-                float4 outputColor = float4((0.05*(_hei - _ref.x)*mul(tangentTransform, viewDirection).xy + i.uv0.xy),0,0);
+                float4 outputColor = float4((0.05*(_hei - 0.5)*mul(tangentTransform, viewDirection).xy + _uvin.xy),0,0);
 
                 // Return
                 return outputColor * _OutputMask;

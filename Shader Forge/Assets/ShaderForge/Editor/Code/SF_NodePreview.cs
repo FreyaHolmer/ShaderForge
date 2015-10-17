@@ -43,7 +43,7 @@ namespace ShaderForge {
 		// My material node, used to get operators
 		public SF_Node node;
 
-		// The amount of components used (1-4) // THIS SHOUDLN'T BE USED. USE CONNECTOR COMP COUNT INSTEAD
+		// The amount of components used (1-4) // THIS SHOULDN'T BE USED. USE CONNECTOR COMP COUNT INSTEAD
 		[SerializeField]
 		private int compCount = 1;
 		public int CompCount {

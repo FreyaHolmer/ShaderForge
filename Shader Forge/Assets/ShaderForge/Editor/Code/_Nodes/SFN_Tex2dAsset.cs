@@ -17,12 +17,14 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Texture Asset" );
+			base.Initialize( "Texture Asset", InitialPreviewRenderMode.BlitQuad );
 			node_height = (int)(rect.height - 6f); // Odd, but alright...
 			base.UseLowerPropertyBox( true, true );
 			base.texture.CompCount = 4;
+			base.showColor = true;
 			neverDefineVariable = true;
 			isFloatPrecisionBasedVariable = false;
+			base.shaderGenMode = ShaderGenerationMode.Manual;
 			//alwaysDefineVariable = true;
 			property = ScriptableObject.CreateInstance<SFP_Tex2d>().Initialize( this );
 
@@ -94,67 +96,6 @@ namespace ShaderForge {
 //			return "";
 		}
 
-		// TODO: EditorUtility.SetTemporarilyAllowIndieRenderTexture(true);
-		public void RenderToTexture() {
-			if( textureAsset == null ) {
-				//Debug.Log("Texture asset missing");
-
-				// TODO: Use a parent class, this looks ridiculous
-				// TODO: Use a parent class, this looks ridiculous
-				texture.uniform = true;
-
-				Color c = new Color(0f,0f,0f,0f);
-				switch(noTexValue){
-				case NoTexValue.Black:
-					c = new Color(0f,0f,0f,1f);
-					break;
-				case NoTexValue.Gray:
-					c = new Color(0.5f,0.5f,0.5f,1f);
-					break;
-				case NoTexValue.White:
-					c = new Color(1f,1f,1f,1f);
-					break;
-				case NoTexValue.Bump:
-					c = new Color(0.5f,0.5f,1f,1f);
-					break;
-				}
-				texture.dataUniform = c;
-				 
-
-
-				return;
-			}
-
-			texture.uniform = false;
-			// TODO: Use a parent class, this looks ridiculous
-			// TODO: Use a parent class, this looks ridiculous
-
-
-
-
-			SF_GUI.AllowIndieRenderTextures();
-
-			RenderTexture rt = new RenderTexture( SF_Node.NODE_SIZE, SF_Node.NODE_SIZE, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default );
-			rt.wrapMode = textureAsset.wrapMode;
-			rt.Create();
-			Graphics.Blit( textureAsset, rt );
-			RenderTexture.active = rt;
-			Texture2D temp = new Texture2D( SF_Node.NODE_SIZE, SF_Node.NODE_SIZE, TextureFormat.ARGB32, false );
-			temp.wrapMode = textureAsset.wrapMode;
-			temp.ReadPixels( new Rect( 0, 0, SF_Node.NODE_SIZE, SF_Node.NODE_SIZE ), 0, 0 );
-
-			if( IsAssetNormalMap() ) {
-				UnpackNormals( ref temp );
-			}
-
-
-
-			RenderTexture.active = null;
-			rt.Release(); // Remove RT
-			texture.ReadData( temp ); // Read Data from temp texture
-			Object.DestroyImmediate( temp ); // Destroy temp texture
-
-		}
 
 		public void UnpackNormals( ref Texture2D t ) {
 			Color[] colors = t.GetPixels();
@@ -238,7 +179,7 @@ namespace ShaderForge {
 			Color prev = GUI.color;
 			if( textureAsset ) {
 				GUI.color = Color.white;
-				GUI.DrawTexture( rectInner, texture.texture );
+				GUI.DrawTexture( rectInner, texture.texture, ScaleMode.StretchToFill, false );
 			} //else {
 			//GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b,0.5f);
 			//GUI.Label( rectInner, "Empty");
@@ -300,6 +241,25 @@ namespace ShaderForge {
 
 		}
 
+		public override void RefreshValue() {
+			base.RefreshValue( 0, 0 );
+			//RenderToTexture();
+		}
+
+		public override int GetEvaluatedComponentCount() {
+			if( IsNormalMap() )
+				return 3;
+			return 4;
+		}
+
+		public override void PrepareRendering( Material mat ) {
+			if( textureAsset != null ) {
+				mat.mainTexture = textureAsset;
+				mat.SetFloat( "_IsNormal", IsNormalMap() ? 1 : 0 );
+			}
+		}
+
+
 		public void OnAssignedTexture() {
 
 			/*
@@ -312,7 +272,6 @@ namespace ShaderForge {
 				base.texture.CompCount = 3;
 			}*/
 			RefreshNoTexValueAndNormalUnpack();
-			RenderToTexture();
 			editor.shaderEvaluator.ApplyProperty( this );
 			OnUpdateNode();
 		}

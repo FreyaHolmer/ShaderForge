@@ -175,9 +175,7 @@ namespace ShaderForge {
 		}
 
 		private void UpdateCompCount(){
-			
 			texture.CompCount = IsNormalMap() ? 3 : 4; // TODO: This doesn't work when opening shaders. Why?
-			Debug.Log("Updated component count to " + texture.CompCount);
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
@@ -537,7 +535,6 @@ namespace ShaderForge {
 				break;
 			case "isnm":
 				markedAsNormalMap = bool.Parse(value);
-				Debug.Log( "Deserializing, marked: " + markedAsNormalMap );
 				UpdateNormalMapAlphaState();
 				UpdateCompCount();
 				break;

@@ -158,6 +158,9 @@ namespace ShaderForge {
 				dependencies.reflection_probes = true;
 			}
 
+			if( (currentPass == PassType.FwdBase || currentPass == PassType.Deferred) && (LightmappedAndLit() || ps.catLighting.reflectprobed) ) {
+				dependencies.NeedFragViewReflection();
+			}
 
 
 			if( LightmappedAndLit() && !IsShadowOrOutlineOrMetaPass() ) {

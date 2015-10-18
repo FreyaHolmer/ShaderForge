@@ -88,7 +88,7 @@ namespace ShaderForge {
 		[NonSerialized]
 		public bool initialized = false;
 
-
+		
 
 
 		public SF_Editor() {
@@ -175,7 +175,7 @@ namespace ShaderForge {
 			return id;
 		}
 
-				
+
 
 
 
@@ -992,7 +992,7 @@ namespace ShaderForge {
 				
 			}
 			GUI.color = Color.white;
-			
+
 			//Rect ssRectIcon = new Rect(0f, 0f, SF_GUI.Screenshot_icon.width, SF_GUI.Screenshot_icon.height);
 			////ssRectIcon.center = ssRect.center;
 			//GUI.DrawTexture(ssRectIcon, SF_GUI.Screenshot_icon);
@@ -2110,7 +2110,9 @@ namespace ShaderForge {
 					SF_Settings.hierarchalNodeMove = GUI.Toggle( btnRect, SF_Settings.hierarchalNodeMove, "Hierarchal Node Move" );
 				}
 				btnRect = btnRect.MovedDown();
-				SF_Settings.DrawNodePreviews = GUI.Toggle( btnRect, SF_Settings.DrawNodePreviews, "Auto-Update Node Previews" );
+				Rect[] splitRects = btnRect.SplitHorizontal( 0.5f, 1 );
+				GUI.Label( splitRects[1], "Node rendering" );
+				SF_Settings.nodeRenderMode = (NodeRenderMode)EditorGUI.EnumPopup( splitRects[0], SF_Settings.nodeRenderMode );
 				btnRect = btnRect.MovedDown();
 				SF_Settings.quickPickScrollWheel = GUI.Toggle( btnRect, SF_Settings.quickPickScrollWheel, "Use scroll in the quickpicker" );
 				btnRect = btnRect.MovedDown();

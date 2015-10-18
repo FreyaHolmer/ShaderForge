@@ -329,17 +329,17 @@ namespace ShaderForge {
 
 
 		public static void DrawStyledConnection( SF_Editor editor, Vector2 a, Vector2 b, int cc, Color col ) {
-			switch( SF_Settings.ConnectionLineStyle ) {
-				case ConnectionLineStyle.Bezier:
+			//switch( SF_Settings.ConnectionLineStyle ) {
+				//case ConnectionLineStyle.Bezier:
 					DrawMultiBezierConnection( editor, a, b, cc, col );
-					break;
-				case ConnectionLineStyle.Linear:
-					DrawMultiLinearConnection( editor, a, b, cc, col );
-					break;
-				case ConnectionLineStyle.Rectilinear:
-					DrawMultiRectilinearConnection( editor, a, b, cc, col );
-					break;
-			}
+				//	break;
+				//case ConnectionLineStyle.Linear:
+				//	DrawMultiLinearConnection( editor, a, b, cc, col );
+				//	break;
+				//case ConnectionLineStyle.Rectilinear:
+				//	DrawMultiRectilinearConnection( editor, a, b, cc, col );
+				//	break;
+			//}
 		}
 
 		const float partOffsetFactor = 10f;

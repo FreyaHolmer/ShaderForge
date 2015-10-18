@@ -89,6 +89,8 @@ namespace ShaderForge {
 		public bool initialized = false;
 
 
+
+
 		public SF_Editor() {
 			if(SF_Debug.window)
 				Debug.Log( "[SF_LOG] - SF_Editor CONSTRUCTOR SF_Editor()" );
@@ -117,6 +119,11 @@ namespace ShaderForge {
 		//
 		//}
 
+		 
+		void OnEnable() {
+			SF_Settings.LoadAllFromDisk();
+		}
+
 		void OnDisable(){
 
 			if(shaderOutdated != UpToDateState.UpToDate){
@@ -126,7 +133,7 @@ namespace ShaderForge {
 				shaderEvaluator.Evaluate();
 			}
 
-			//Debug.Log("OnDisable editor window");
+			SF_Settings.SaveAllToDisk();
 
 		}
 
@@ -168,16 +175,7 @@ namespace ShaderForge {
 			return id;
 		}
 
-		/*
-		void OnEnable() {
-			Debug.Log( "[SF_LOG] - SF_Editor OnEnable() initialized = " + initialized + " SF_Editor.instance = " + SF_Editor.instance );
-			if( !initialized ) {
-				SF_Editor.instance = null;
-				InitEmpty();
-			}
 				
-		}
-		 * */
 
 
 
@@ -726,7 +724,7 @@ namespace ShaderForge {
 
 				
 
-			if( ShaderOutdated == UpToDateState.OutdatedHard && SF_Settings.AutoRecompile && nodeView.GetTimeSinceChanged() >= 1f) {
+			if( ShaderOutdated == UpToDateState.OutdatedHard && SF_Settings.autoCompile && nodeView.GetTimeSinceChanged() >= 1f) {
 				shaderEvaluator.Evaluate();
 			}
 
@@ -921,7 +919,7 @@ namespace ShaderForge {
 			pRect.x = separatorLeft.rect.x + separatorLeft.rect.width;
 
 
-			if(SF_Settings.ShowNodeSidebar)
+			if(SF_Settings.showNodeSidebar)
 				pRect.width = separatorRight.rect.x - separatorLeft.rect.x - separatorLeft.rect.width;
 			else
 				pRect.width = Screen.width - separatorLeft.rect.x - separatorLeft.rect.width;
@@ -954,7 +952,7 @@ namespace ShaderForge {
 			//pRect.x += pRect.width;
 			//pRect.width = wSeparator;
 			//VerticalSeparatorDraggable(ref rightWidth, pRect );
-			if(SF_Settings.ShowNodeSidebar){
+			if(SF_Settings.showNodeSidebar){
 				separatorRight.MinX = (int)fullRect.width - 150;
 				separatorRight.MaxX = (int)fullRect.width - 32;
 				separatorRight.Draw( (int)pRect.y, (int)pRect.height );
@@ -2091,7 +2089,7 @@ namespace ShaderForge {
 			btnRect.x += btnRect.width;
 			btnRect.width *= 0.5f;
 
-			SF_Settings.AutoRecompile = GUI.Toggle( btnRect, SF_Settings.AutoRecompile, "Auto" );
+			SF_Settings.autoCompile = GUI.Toggle( btnRect, SF_Settings.autoCompile, "Auto" );
 
 			btnRect.y += 4;
 
@@ -2106,19 +2104,19 @@ namespace ShaderForge {
 				btnRect.width *= 2.55f;
 				if( SF_GUI.HoldingControl() ) {
 					EditorGUI.BeginDisabledGroup( true );
-					GUI.Toggle( btnRect, !SF_Settings.HierarcyMove, "Hierarchal Node Move" );
+					GUI.Toggle( btnRect, !SF_Settings.hierarchalNodeMove, "Hierarchal Node Move" );
 					EditorGUI.EndDisabledGroup();
 				} else {
-					SF_Settings.HierarcyMove = GUI.Toggle( btnRect, SF_Settings.HierarcyMove, "Hierarchal Node Move" );
+					SF_Settings.hierarchalNodeMove = GUI.Toggle( btnRect, SF_Settings.hierarchalNodeMove, "Hierarchal Node Move" );
 				}
 				btnRect = btnRect.MovedDown();
 				SF_Settings.DrawNodePreviews = GUI.Toggle( btnRect, SF_Settings.DrawNodePreviews, "Auto-Update Node Previews" );
 				btnRect = btnRect.MovedDown();
-				SF_Settings.QuickPickWithWheel = GUI.Toggle( btnRect, SF_Settings.QuickPickWithWheel, "Use scroll in the quickpicker" );
+				SF_Settings.quickPickScrollWheel = GUI.Toggle( btnRect, SF_Settings.quickPickScrollWheel, "Use scroll in the quickpicker" );
 				btnRect = btnRect.MovedDown();
-				SF_Settings.ShowVariableSettings = GUI.Toggle( btnRect, SF_Settings.ShowVariableSettings, "Show variable name & precision" );
+				SF_Settings.showVariableSettings = GUI.Toggle( btnRect, SF_Settings.showVariableSettings, "Show variable name & precision" );
 				btnRect = btnRect.MovedDown();
-				SF_Settings.ShowNodeSidebar = GUI.Toggle( btnRect, SF_Settings.ShowNodeSidebar, "Show node browser panel" );
+				SF_Settings.showNodeSidebar = GUI.Toggle( btnRect, SF_Settings.showNodeSidebar, "Show node browser panel" );
 				btnRect.y += 4;
 			}
 

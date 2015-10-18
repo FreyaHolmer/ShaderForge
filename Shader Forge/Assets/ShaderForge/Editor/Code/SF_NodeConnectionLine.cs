@@ -177,8 +177,8 @@ namespace ShaderForge{
 			//GUILines.DrawStyledConnection( editor, a, b, cc,  color);
 
 
-			switch(SF_Settings.ConnectionLineStyle){
-			case ConnectionLineStyle.Bezier:
+			//switch(SF_Settings.ConnectionLineStyle){
+			//case ConnectionLineStyle.Bezier:
 				if( isMatrix4x4 ) {
 					//GUILines.DrawMatrixConnection( editor, connector.GetConnectionPoint(), connector.inputCon.GetConnectionPoint(), color );
 					GUILines.DrawLines( editor, this[ConnectionLineStyle.Bezier, 0], color, GetConnectionWidth(), true );
@@ -190,8 +190,8 @@ namespace ShaderForge{
 					}
 				}
 				
-				break;
-			}
+				//break;
+			//}
 
 			
 
@@ -297,7 +297,7 @@ namespace ShaderForge{
 				cc = 1;
 
 			if(cc == 1){
-				if(SF_Tools.LineIntersection(p0, p1, this[SF_Settings.ConnectionLineStyle, 0], out intersection)){
+				if(SF_Tools.LineIntersection(p0, p1, this[0, 0], out intersection)){
 					return true;
 				}
 			} else if( cc == 2){
@@ -305,8 +305,8 @@ namespace ShaderForge{
 				Vector2 intA = Vector2.zero;
 				Vector2 intB = Vector2.zero;
 
-				bool hitA = SF_Tools.LineIntersection(p0, p1, this[SF_Settings.ConnectionLineStyle, 0], out intA);
-				bool hitB = SF_Tools.LineIntersection(p0, p1, this[SF_Settings.ConnectionLineStyle, 1], out intB);
+				bool hitA = SF_Tools.LineIntersection(p0, p1, this[0, 0], out intA);
+				bool hitB = SF_Tools.LineIntersection(p0, p1, this[0, 1], out intB);
 
 				if(hitA && hitB){
 					intersection = (intA + intB)/2;
@@ -314,7 +314,7 @@ namespace ShaderForge{
 				}
 
 			} else if(cc == 3){
-				if(SF_Tools.LineIntersection(p0, p1, this[SF_Settings.ConnectionLineStyle, 1], out intersection)){
+				if(SF_Tools.LineIntersection(p0, p1, this[0, 1], out intersection)){
 					return true;
 				}
 			}else if( cc == 4){
@@ -322,8 +322,8 @@ namespace ShaderForge{
 				Vector2 intA = Vector2.zero;
 				Vector2 intB = Vector2.zero;
 				
-				bool hitA = SF_Tools.LineIntersection(p0, p1, this[SF_Settings.ConnectionLineStyle, 1], out intA);
-				bool hitB = SF_Tools.LineIntersection(p0, p1, this[SF_Settings.ConnectionLineStyle, 2], out intB);
+				bool hitA = SF_Tools.LineIntersection(p0, p1, this[0, 1], out intA);
+				bool hitB = SF_Tools.LineIntersection(p0, p1, this[0, 2], out intB);
 				
 				if(hitA && hitB){
 					intersection = (intA + intB)/2;

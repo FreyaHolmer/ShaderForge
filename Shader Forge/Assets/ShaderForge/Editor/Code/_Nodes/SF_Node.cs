@@ -1542,7 +1542,7 @@ namespace ShaderForge {
 			bool showPrecision = ((ShouldDefineVariable() || IsProperty()) && isFloatPrecisionBasedVariable) || canAlwaysSetPrecision;
 			bool showVarname = !IsGlobalProperty() && (ShouldDefineVariable() || IsProperty()) && !lockedVariableName ;
 			bool optionalVarname = IsProperty();
-			bool showPanel = SF_Settings.ShowVariableSettings && (showPrecision || showVarname);
+			bool showPanel = SF_Settings.showVariableSettings && (showPrecision || showVarname);
 
 
 
@@ -1695,7 +1695,7 @@ namespace ShaderForge {
 
 			
 
-			if(!SF_Settings.HierarcyMove) // TODO: Snap toggle + make it work properly with hierarchal on
+			if(!SF_Settings.hierarchalNodeMove) // TODO: Snap toggle + make it work properly with hierarchal on
 				foreach(SF_Node n in editor.nodes){
 					if( n == this )
 						continue;
@@ -1735,7 +1735,7 @@ namespace ShaderForge {
 			
 			editor.nodeView.selection.MoveSelection(finalDelta, ignore:this);
 
-			bool moveAsHierarchy = SF_GUI.HoldingControl() ^ SF_Settings.HierarcyMove;
+			bool moveAsHierarchy = SF_GUI.HoldingControl() ^ SF_Settings.hierarchalNodeMove;
 			if( delta != Vector2.zero && moveAsHierarchy && ( GetType() != typeof( SFN_Final ) ) ) {
 				MoveUnselectedChildren( delta );
 			}

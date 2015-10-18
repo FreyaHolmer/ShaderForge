@@ -759,7 +759,7 @@ namespace ShaderForge {
 		
 		public void DrawRecompileTimer(Rect r){
 
-			if(!SF_Settings.AutoRecompile)
+			if(!SF_Settings.autoCompile)
 				return; // Don't draw recompile timer when autoRecompile is unchecked
 
 			float delta = GetTimeSinceChanged();
@@ -803,7 +803,7 @@ namespace ShaderForge {
 				Vector2 mousePosInNodeViewScreenSpace = ZoomSpaceToScreenSpace(Event.current.mousePosition) - Vector2.right*editor.separatorLeft.rect.xMax;
 
 				float areaWidth;
-				if(SF_Settings.ShowNodeSidebar)
+				if(SF_Settings.showNodeSidebar)
 					areaWidth = editor.separatorRight.rect.xMin - editor.separatorLeft.rect.xMax;
 				else
 					areaWidth = Screen.width - editor.separatorLeft.rect.xMax;

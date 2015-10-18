@@ -11,14 +11,16 @@ namespace ShaderForge {
 		CurveShape,				// int	Bezier/Linear/etc
 		AutoCompile, 			// bool	True/False
 		HierarchalNodeMove, 	// bool	True/False
-		DrawNodePreviews,		// bool	True/False
+		//DrawNodePreviews,		// bool	True/False
 		QuickPickScrollWheel,	// bool	True/False
 		ControlMode,			// int	Shader Forge / Unity / Unreal
 		ShowVariableSettings,	// bool True/False
-		ShowNodeSidebar			// bool True/False
+		ShowNodeSidebar,		// bool True/False
+		NodeRenderMode			// int Mixed / MixedRealtime / Spheres / SpheresRealtime / ViewportRealtime
 	};
 
-	public enum ControlMode{ShaderForge, UnityMaya, Unreal};
+	public enum ControlMode { ShaderForge, UnityMaya, Unreal };
+	public enum NodeRenderMode { Mixed, MixedRealtime, Spheres, SpheresRealtime, ViewportRealtime };
 
 	public class SF_Settings {
 
@@ -31,61 +33,39 @@ namespace ShaderForge {
 
 		public static void InitializeSettings() {
 			// Set up all defaults
-			SetDefaultInt ( SF_Setting.CurveShape, 			 (int)ConnectionLineStyle.Bezier 	);
-			SetDefaultBool( SF_Setting.AutoCompile, 		 true 								);
-			SetDefaultBool( SF_Setting.HierarchalNodeMove, 	 false 								);
-			SetDefaultBool( SF_Setting.DrawNodePreviews, 	 true 								);
-			SetDefaultBool( SF_Setting.QuickPickScrollWheel, true 								);
-			SetDefaultInt ( SF_Setting.ControlMode, 		 (int)ControlMode.ShaderForge 		);
-			SetDefaultBool( SF_Setting.ShowVariableSettings, false								);
-			SetDefaultBool( SF_Setting.ShowNodeSidebar, 	 true								);
+			SetDefaultBool( SF_Setting.HierarchalNodeMove, 		false 									);
+			SetDefaultBool( SF_Setting.QuickPickScrollWheel,	true 									);
+			SetDefaultBool( SF_Setting.ShowVariableSettings,	false									);
+			SetDefaultBool( SF_Setting.ShowNodeSidebar, 		true									);
+			SetDefaultInt ( SF_Setting.NodeRenderMode,			(int)NodeRenderMode.ViewportRealtime	);
 		}
 
 
-		// Settings:
-		public static bool AutoRecompile {
-			get { return LoadBool(SF_Setting.AutoCompile); }
-			set { SetBool(SF_Setting.AutoCompile, value); }
+		// Cached, for speed
+		public static bool autoCompile;
+		public static bool hierarchalNodeMove;
+		public static bool quickPickScrollWheel;
+		public static bool showVariableSettings;
+		public static bool showNodeSidebar;
+		public static NodeRenderMode nodeRenderMode;
+
+		// These two are called in OnEnable and OnDisable in SF_Editor
+		public static void LoadAllFromDisk() {
+			autoCompile				= LoadBool( SF_Setting.AutoCompile );
+			hierarchalNodeMove		= LoadBool( SF_Setting.HierarchalNodeMove );
+			quickPickScrollWheel	= LoadBool( SF_Setting.QuickPickScrollWheel );
+			showVariableSettings	= LoadBool( SF_Setting.ShowVariableSettings );
+			showNodeSidebar			= LoadBool( SF_Setting.ShowNodeSidebar );
+			nodeRenderMode			= (NodeRenderMode)LoadInt( SF_Setting.NodeRenderMode );
 		}
-		
-		public static bool HierarcyMove {
-			get { return LoadBool(SF_Setting.HierarchalNodeMove); }
-			set { SetBool(SF_Setting.HierarchalNodeMove, value); }
+		public static void SaveAllToDisk() {
+			SaveBool( SF_Setting.AutoCompile, autoCompile );
+			SaveBool( SF_Setting.HierarchalNodeMove, hierarchalNodeMove );
+			SaveBool( SF_Setting.QuickPickScrollWheel, quickPickScrollWheel );
+			SaveBool( SF_Setting.ShowVariableSettings, showVariableSettings );
+			SaveBool( SF_Setting.ShowNodeSidebar, showNodeSidebar );
+			SaveInt( SF_Setting.NodeRenderMode, (int)nodeRenderMode );
 		}
-
-		public static bool DrawNodePreviews {
-			get { return LoadBool(SF_Setting.DrawNodePreviews); }
-			set { SetBool(SF_Setting.DrawNodePreviews, value); }
-		}
-
-		public static ConnectionLineStyle ConnectionLineStyle {
-			get { return ConnectionLineStyle.Bezier;/*return (ConnectionLineStyle)SF_Settings.LoadInt(SF_Setting.CurveShape);*/ }
-			set { SF_Settings.SetInt(SF_Setting.CurveShape, (int)value); }
-		}
-
-		public static ControlMode ControlMode {
-			get { return (ControlMode)SF_Settings.LoadInt(SF_Setting.ControlMode);}
-			set { SF_Settings.SetInt(SF_Setting.ControlMode, (int)value); }
-		}
-
-		public static bool QuickPickWithWheel {
-			get { return LoadBool(SF_Setting.QuickPickScrollWheel); }
-			set { SetBool(SF_Setting.QuickPickScrollWheel, value); }
-		}
-
-		public static bool ShowVariableSettings {
-			get { return LoadBool(SF_Setting.ShowVariableSettings); }
-			set { SetBool(SF_Setting.ShowVariableSettings, value); }
-		}
-
-		public static bool ShowNodeSidebar {
-			get { return LoadBool(SF_Setting.ShowNodeSidebar); }
-			set { SetBool(SF_Setting.ShowNodeSidebar, value); }
-		}
-
-
-
-
 
 
 
@@ -115,44 +95,44 @@ namespace ShaderForge {
 			string key = KeyOf(setting);
 			EditorPrefs.SetBool(key + suffixDefault, value);
 			if(!EditorPrefs.HasKey(key)){
-				SetBool(setting, value);
+				SaveBool(setting, value);
 			}
 		}
 		private static void SetDefaultString(SF_Setting setting, string value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetString(key + suffixDefault, value);
 			if(!EditorPrefs.HasKey(key)){
-				SetString(setting, value);
+				SaveString(setting, value);
 			}
 		}
 		private static void SetDefaultInt(SF_Setting setting, int value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetInt(key + suffixDefault, value);
 			if(!EditorPrefs.HasKey(key)){
-				SetInt(setting, value);
+				SaveInt(setting, value);
 			}
 		}
 		private static void SetDefaultFloat(SF_Setting setting, float value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetFloat(key + suffixDefault, value);
 			if(!EditorPrefs.HasKey(key)){
-				SetFloat(setting, value);
+				SaveFloat(setting, value);
 			}
 		}
 		// --------------------------------------------------
-		public static void SetBool( SF_Setting setting, bool value ){
+		public static void SaveBool( SF_Setting setting, bool value ){
 			string key = KeyOf(setting);
 			EditorPrefs.SetBool(key, value);
 		}
-		public static void SetString(SF_Setting setting, string value){
+		public static void SaveString(SF_Setting setting, string value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetString(key, value);
 		}
-		public static void SetInt(SF_Setting setting, int value){
+		public static void SaveInt(SF_Setting setting, int value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetInt(key, value);
 		}
-		public static void SetFloat(SF_Setting setting, float value){
+		public static void SaveFloat(SF_Setting setting, float value){
 			string key = KeyOf(setting);
 			EditorPrefs.SetFloat(key, value);
 		}

@@ -187,7 +187,7 @@ namespace ShaderForge {
 				smoothHotkeySelectorIndex = Mathf.Lerp(smoothHotkeySelectorIndex, hotkeySelectorIndex, 0.5f);
 			}
 
-			bool useScroll = SF_Settings.QuickPickWithWheel;
+			bool useScroll = SF_Settings.quickPickScrollWheel;
 
 			if(holding && Event.current.type == EventType.scrollWheel && HotkeyFriends.Count > 0 && mouseInNodeView){
 

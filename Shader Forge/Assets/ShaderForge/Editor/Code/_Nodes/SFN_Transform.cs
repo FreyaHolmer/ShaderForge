@@ -61,7 +61,9 @@ namespace ShaderForge {
 		public override void Initialize() {
 			base.Initialize( "Transform" );
 			base.showColor = true;
+			base.vectorDataNode = true; // This should really be renamed to "Always draw as 3D"
 			UseLowerPropertyBox( true, true );
+			base.shaderGenMode = ShaderGenerationMode.Manual;
 			//UseLowerReadonlyValues(true,true);
 
 
@@ -80,6 +82,11 @@ namespace ShaderForge {
 
 		public override bool IsUniformOutput() {
 			return GetInputData( "IN" ).uniform;
+		}
+
+		public override void PrepareRendering( Material mat ) {
+			mat.SetFloat( "_FromSpace", (int)spaceSelFrom );
+			mat.SetFloat( "_ToSpace", (int)spaceSelTo );
 		}
 
 

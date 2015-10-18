@@ -17,7 +17,7 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Face Sign" );
+			base.Initialize( "Face Sign", InitialPreviewRenderMode.BlitQuad );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true, true );
 			UpdateIcon();
@@ -57,6 +57,10 @@ namespace ShaderForge {
 				OnUpdateNode();
 			}
 				
+		}
+
+		public override void PrepareRendering( Material mat ) {
+			mat.SetFloat( "_BackfaceValue", currentType == FaceSignType.PlusMinusOne ? -1 : 0 );
 		}
 
 

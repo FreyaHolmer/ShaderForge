@@ -96,7 +96,7 @@ namespace ShaderForge {
 		public override Vector4 EvalCPU() {
 
 			Vector4 col = GetInputData( "COL" ).dataUniform;
-			Vector4 lum = new Color( 0.3f, 0.59f, 0.11f, 1f );
+			Vector4 lum = new Color( 0.3f, 0.59f, 0.11f, 0f );
 			Vector4 dot = Vector4.Dot( col, lum ) * Vector4.one;
 
 			float desat = 1f;

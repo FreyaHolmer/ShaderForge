@@ -243,15 +243,15 @@ namespace ShaderForge {
 
 			SF_Blit.currentNode = node;
 
-			if( uniform ) {
-				BlitUniform();
-			} else {
+			//if( uniform ) {
+				//BlitUniform();
+			//} else {
 				string shaderPath = node.GetBlitShaderPath();
 				Texture[] inputTextures = node.ConnectedInputs.Select( x => x.inputCon.node.texture.GetTextureByOutputType( x.inputCon.outputChannel ) ).ToArray();
 				string[] inputNames = node.ConnectedInputs.Select( x => x.strID ).ToArray();
 				//OutChannel[] inputChannels = node.ConnectedInputs.Select( x => x.inputCon.outputChannel ).ToArray();
 				SF_Blit.Render( texture, shaderPath, inputNames, inputTextures );
-			}
+			//}
 
 			
 			

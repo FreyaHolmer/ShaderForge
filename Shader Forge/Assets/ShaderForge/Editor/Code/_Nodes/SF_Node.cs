@@ -359,8 +359,10 @@ namespace ShaderForge {
 			}
 		}
 
+		public InitialPreviewRenderMode initialPreviewMode;
 
 		public void Initialize( string name, InitialPreviewRenderMode initialPreviewMode = InitialPreviewRenderMode.Off ) {
+			this.initialPreviewMode = initialPreviewMode;
 			editor = SF_Editor.instance; // TODO, pass in a better way
 			status = ScriptableObject.CreateInstance<SF_NodeStatus>().Initialize(this);
 			Vector2 pos = editor.mousePosition; // TODO: check where to spawn first
@@ -373,13 +375,13 @@ namespace ShaderForge {
 
 
 
-			if( initialPreviewMode == InitialPreviewRenderMode.BlitQuad ){
-				texture.GenerateBaseData( render3D: false );
-			} else if( initialPreviewMode == InitialPreviewRenderMode.BlitSphere ) {
-				texture.GenerateBaseData( render3D: true );
-			}
+
+			GenerateBaseData();
+			
 			
 			texture.LoadAndInitializeIcons(this.GetType());
+
+			
 
 			/*
 			// Try to find icon
@@ -392,6 +394,27 @@ namespace ShaderForge {
 
 			pos = editor.nodeView.ScreenSpaceToZoomSpace( pos );
 			InitializeDefaultRect( pos );
+		}
+
+		public void GenerateBaseData() {
+			if( initialPreviewMode != InitialPreviewRenderMode.Off ) {
+				bool preferQuad = initialPreviewMode == InitialPreviewRenderMode.BlitQuad;
+				bool sphereWhen3D = SF_Settings.nodeRenderMode != NodeRenderMode.Viewport;
+				bool canRenderQuads = SF_Settings.nodeRenderMode == NodeRenderMode.Mixed;
+
+				if( preferQuad && canRenderQuads ) {
+					vectorDataNode = false; // ?
+					displayVectorDataMask = false;
+					texture.GenerateBaseData( render3D: false );
+				} else {
+					vectorDataNode = sphereWhen3D;
+					displayVectorDataMask = sphereWhen3D;
+					texture.GenerateBaseData( render3D: true );
+				}
+
+			} else if( texture.uniform && IsUniformOutput() ) {
+				texture.GenerateBaseData( false );
+			}
 		}
 
 		public void AssignID() {
@@ -410,8 +433,14 @@ namespace ShaderForge {
 		public virtual void Update() {
 
 			// TODO: REALTIME
-			// dirtyState = UpToDateState.OutdatedHard;
-			// texture.GenerateBaseData();
+			//
+			if( SF_Settings.RenderNodesInRealtime() ) {
+				if( initialPreviewMode != InitialPreviewRenderMode.Off ) {
+					SetDirty( UpToDateState.OutdatedSoft );
+					GenerateBaseData();
+				}
+					
+			}
 			// Override
 		}
 
@@ -681,7 +710,7 @@ namespace ShaderForge {
 			if( texture.uniform ) {
 				//Debug.Log("Blitting uniform " + texture.dataUniform);
 				PrepareRendering( SF_Blit.mat );
-				texture.BlitUniform();
+				texture.GenerateBaseData();
 			}
 
 			RefreshValue(); // Refresh this value
@@ -1037,6 +1066,8 @@ namespace ShaderForge {
 		}*/
 
 		public int ReadComponentCountFromFirstOutput() {
+			if( connectors == null )
+				return 4;
 			for( int i = 0; i < connectors.Length; i++ ) {
 				if( connectors[i].conType == ConType.cOutput ) {
 					return connectors[i].GetCompCount();
@@ -2087,8 +2118,10 @@ namespace ShaderForge {
 
 		public bool CheckIfDirty(){
 
-			if(dirtyState == UpToDateState.UpToDate)
+			if( dirtyState == UpToDateState.UpToDate )
 				return false;
+		
+				
 
 			foreach( SF_NodeConnector con in ConnectedInputs ) {
 				if( con.inputCon.node.dirtyState != UpToDateState.UpToDate ) {
@@ -2454,6 +2487,9 @@ namespace ShaderForge {
 				foreach( string s in parsedLinks )
 					linkList.Add( new SF_Link( node.id, s ) );
 			}
+
+			// Update image if needed
+			node.GenerateBaseData();
 			
 			
 			return node;

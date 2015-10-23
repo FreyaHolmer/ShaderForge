@@ -72,6 +72,12 @@ namespace ShaderForge {
 			};
 		}
 
+		public override string GetCurrentModalMode() {
+			if( this["DIST"].IsConnectedAndEnabled() )
+				return "DIST";
+			return "REQONLY";
+		}
+
 		public override void PrepareRendering( Material mat ) {
 			mat.SetFloat( "_uspeed", speed.x );
 			mat.SetFloat( "_vspeed", speed.y );

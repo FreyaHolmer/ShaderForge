@@ -22,6 +22,7 @@ Shader "Hidden/Shader Forge/SFN_Rotator_PIV" {
             uniform sampler2D _PIV;
             uniform sampler2D _ANG;
             uniform sampler2D _SPD;
+			uniform float4 _TimeEditor;
 
             struct VertexInput {
                 float4 vertex : POSITION;
@@ -46,7 +47,7 @@ Shader "Hidden/Shader Forge/SFN_Rotator_PIV" {
                 float4 _spd = tex2D( _SPD, i.uv );
 
                 // Operator
-float ang = 0.3926991;
+				float ang = _Time.g + _TimeEditor.g;
                 float spd = 1.0;
                 float cosVal = cos(1.0*ang);
                 float sinVal = sin(1.0*ang);

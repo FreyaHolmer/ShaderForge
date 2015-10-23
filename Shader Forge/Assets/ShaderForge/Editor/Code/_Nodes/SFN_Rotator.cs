@@ -21,7 +21,7 @@ namespace ShaderForge {
 			base.showColor = true;
 			UseLowerReadonlyValues( false );
 			base.alwaysDefineVariable = true;
-			base.shaderGenMode = ShaderGenerationMode.Modal;
+			base.shaderGenMode = ShaderGenerationMode.ManualModal;
 			texture.CompCount = 2;
 			//SF_NodeConnection lerpCon;
 			connectors = new SF_NodeConnector[]{
@@ -98,7 +98,7 @@ namespace ShaderForge {
 
 			string pivStr = mode.Contains( "PIV" ) ? "_piv.xy" : "float2(0.5,0.5)";
 			string spdStr = mode.Contains( "SPD" ) ? "_spd.x" : "1.0";
-			string angStr = mode.Contains( "ANG" ) ? "_ang.x" : (Mathf.PI / 8f).ToString();
+			string angStr = mode.Contains( "ANG" ) ? "_ang.x" : "_Time + _TimeEditor";
 
 
 			return new string[] {

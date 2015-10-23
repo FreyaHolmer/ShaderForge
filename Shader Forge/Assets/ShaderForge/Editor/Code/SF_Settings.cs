@@ -11,7 +11,7 @@ namespace ShaderForge {
 		CurveShape,				// int	Bezier/Linear/etc
 		AutoCompile, 			// bool	True/False
 		HierarchalNodeMove, 	// bool	True/False
-		//DrawNodePreviews,		// bool	True/False
+		RealTimeNodePreviews,	// bool	True/False
 		QuickPickScrollWheel,	// bool	True/False
 		ControlMode,			// int	Shader Forge / Unity / Unreal
 		ShowVariableSettings,	// bool True/False
@@ -20,7 +20,7 @@ namespace ShaderForge {
 	};
 
 	public enum ControlMode { ShaderForge, UnityMaya, Unreal };
-	public enum NodeRenderMode { Mixed, MixedRealtime, Spheres, SpheresRealtime, ViewportRealtime };
+	public enum NodeRenderMode { Mixed, Spheres, Viewport };
 
 	public class SF_Settings {
 
@@ -37,7 +37,8 @@ namespace ShaderForge {
 			SetDefaultBool( SF_Setting.QuickPickScrollWheel,	true 									);
 			SetDefaultBool( SF_Setting.ShowVariableSettings,	false									);
 			SetDefaultBool( SF_Setting.ShowNodeSidebar, 		true									);
-			SetDefaultInt ( SF_Setting.NodeRenderMode,			(int)NodeRenderMode.ViewportRealtime	);
+			SetDefaultBool( SF_Setting.RealTimeNodePreviews,	true									);
+			SetDefaultInt(	SF_Setting.NodeRenderMode,			(int)NodeRenderMode.Mixed				);
 		}
 
 
@@ -47,6 +48,7 @@ namespace ShaderForge {
 		public static bool quickPickScrollWheel;
 		public static bool showVariableSettings;
 		public static bool showNodeSidebar;
+		public static bool realtimeNodePreviews;
 		public static NodeRenderMode nodeRenderMode;
 
 		// These two are called in OnEnable and OnDisable in SF_Editor
@@ -56,7 +58,9 @@ namespace ShaderForge {
 			quickPickScrollWheel	= LoadBool( SF_Setting.QuickPickScrollWheel );
 			showVariableSettings	= LoadBool( SF_Setting.ShowVariableSettings );
 			showNodeSidebar			= LoadBool( SF_Setting.ShowNodeSidebar );
-			nodeRenderMode			= (NodeRenderMode)LoadInt( SF_Setting.NodeRenderMode );
+			realtimeNodePreviews	= LoadBool( SF_Setting.RealTimeNodePreviews );
+			nodeRenderMode = NodeRenderMode.Mixed; // nodeRenderMode			= (NodeRenderMode)LoadInt( SF_Setting.NodeRenderMode );
+			
 		}
 		public static void SaveAllToDisk() {
 			SaveBool( SF_Setting.AutoCompile, autoCompile );
@@ -64,10 +68,18 @@ namespace ShaderForge {
 			SaveBool( SF_Setting.QuickPickScrollWheel, quickPickScrollWheel );
 			SaveBool( SF_Setting.ShowVariableSettings, showVariableSettings );
 			SaveBool( SF_Setting.ShowNodeSidebar, showNodeSidebar );
+			SaveBool( SF_Setting.RealTimeNodePreviews, realtimeNodePreviews );
 			SaveInt( SF_Setting.NodeRenderMode, (int)nodeRenderMode );
 		}
 
 
+
+		// --------------------------------------------------
+		// Special functions
+
+		public static bool RenderNodesInRealtime() {
+			return realtimeNodePreviews || nodeRenderMode == NodeRenderMode.Viewport;
+		}
 
 		// --------------------------------------------------
 		public static bool LoadBool( SF_Setting setting ) {

@@ -166,10 +166,24 @@ namespace ShaderForge {
 
 		public void GenerateBaseData( bool render3D = true ) {
 			SF_Blit.mat.SetVector( "_OutputMask", Vector4.one );
-			if( render3D )
+
+			SF_Blit.currentNode = node;
+
+			if( uniform ) {
+				BlitUniform();
+				return;
+			}
+			
+			if( SF_Settings.nodeRenderMode == NodeRenderMode.Viewport ) {
 				SF_Blit.RenderUsingViewport( texture, node.GetBlitShaderPath() );
-			else
-				SF_Blit.Render( texture, node.GetBlitShaderPath() );
+			} else {
+				if( render3D )
+					SF_Blit.RenderUsingViewport( texture, node.GetBlitShaderPath() );
+				else
+					SF_Blit.Render( texture, node.GetBlitShaderPath() );
+			}
+
+			
 		}
 
 		public void BlitUniform() {
@@ -250,7 +264,12 @@ namespace ShaderForge {
 				Texture[] inputTextures = node.ConnectedInputs.Select( x => x.inputCon.node.texture.GetTextureByOutputType( x.inputCon.outputChannel ) ).ToArray();
 				string[] inputNames = node.ConnectedInputs.Select( x => x.strID ).ToArray();
 				//OutChannel[] inputChannels = node.ConnectedInputs.Select( x => x.inputCon.outputChannel ).ToArray();
-				SF_Blit.Render( texture, shaderPath, inputNames, inputTextures );
+				if( SF_Settings.nodeRenderMode == NodeRenderMode.Viewport ) {
+					SF_Blit.RenderUsingViewport( texture, shaderPath, inputNames, inputTextures );
+				} else if( SF_Settings.nodeRenderMode == NodeRenderMode.Mixed ) {
+					SF_Blit.Render( texture, shaderPath, inputNames, inputTextures );
+				}
+				
 			//}
 
 			

@@ -78,6 +78,15 @@ namespace ShaderForge {
 
 		//public bool drawBgColor = true;
 
+		Mesh _sphereMesh;
+		Mesh sphereMesh {
+			get {
+				if( _sphereMesh == null ) {
+					_sphereMesh = GetSFMesh( "sf_sphere" );
+				}
+				return _sphereMesh;
+			}
+		}
 
 		public SF_PreviewWindow( SF_Editor editor ) {
 
@@ -160,6 +169,8 @@ namespace ShaderForge {
 			}
 		}
 
+		static Vector2 rotMeshSphere = new Vector2( 22, -18 - 90 - 12 );
+		const float fovSphere = 23.4f;
 
 		public void PrepareForDataScreenshot(){
 
@@ -168,9 +179,9 @@ namespace ShaderForge {
 			// Stop auto-rotate
 
 
-			rotMesh.x = rotMeshSmooth.x = 22;
-			rotMesh.y = rotMeshSmooth.y = -18;
-			pruCam.fieldOfView = targetFOV = smoothFOV = 24f;
+			rotMesh.x = rotMeshSmooth.x = rotMeshSphere.x;
+			rotMesh.y = rotMeshSmooth.y = rotMeshSphere.y;
+			pruCam.fieldOfView = targetFOV = smoothFOV = fovSphere;
 
 
 
@@ -356,7 +367,6 @@ namespace ShaderForge {
 					StartDragLMB();
 				else if( Event.current.button == 1 )
 					StartDragRMB();
-
 			}
 
 			if( isDraggingLMB )
@@ -385,7 +395,7 @@ namespace ShaderForge {
 
 
 
-		public void DrawMesh( RenderTexture overrideRT = null, Material overrideMaterial = null ) {
+		public void DrawMesh( RenderTexture overrideRT = null, Material overrideMaterial = null, bool sphere = false ) {
 			if( backgroundTexture == null )
 				UpdatePreviewBackgroundColor();
 
@@ -395,48 +405,52 @@ namespace ShaderForge {
 			UpdateRenderPath();
 			pruBegin.Invoke( pruRef, new object[] { previewRect, previewStyle } );
 
+			CameraClearFlags clearPrev = pruCam.clearFlags;
+			RenderingPath prevPath = pruCam.renderingPath;
 			if( overrideRT != null ) {
 				pruCam.targetTexture = overrideRT;
 				pruCam.clearFlags = CameraClearFlags.SolidColor;
+				pruCam.renderingPath = RenderingPath.Forward;
 			}
-				
+			
 
 			PreparePreviewLight();
 
+			Mesh drawMesh = sphere ? sphereMesh : mesh;
 
-
-			float A = rotMeshSmooth.y;
-			float B = rotMeshSmooth.x;
+			float A = sphere ? rotMeshSphere.y : rotMeshSmooth.y;
+			float B = sphere ? rotMeshSphere.x : rotMeshSmooth.x;
 			Quaternion rotA = Quaternion.Euler( 0f, A, 0f );
 			Quaternion rotB = Quaternion.Euler( B, 0f, 0f );
 			Quaternion finalRot = rotA * rotB;
 			pruCamPivot.rotation = finalRot;
-			float meshExtents = mesh.bounds.extents.magnitude;
+			float meshExtents = drawMesh.bounds.extents.magnitude;
 
 
-			Vector3 pos = new Vector3( -mesh.bounds.center.x, -mesh.bounds.center.y, -mesh.bounds.center.z );
+			Vector3 pos = new Vector3( -drawMesh.bounds.center.x, -drawMesh.bounds.center.y, -drawMesh.bounds.center.z );
 			pruCam.transform.localPosition = new Vector3( 0f, 0f, -3f * meshExtents );
 
-			int smCount = mesh.subMeshCount;
-
-			if( SF_Debug.renderDataNodes ) {
-				pruCam.clearFlags = CameraClearFlags.Depth;
-
-				pruCam.backgroundColor = new Color( 0f, 0f, 0f, 0f );
-			}
+			int smCount = drawMesh.subMeshCount;
 
 			Material mat = (overrideMaterial == null) ? InternalMaterial : overrideMaterial;
 			for( int i=0; i < smCount; i++ ) {
-				Graphics.DrawMesh( mesh, Quaternion.identity * pos, Quaternion.identity, mat, 0, pruCam, i );
+				Graphics.DrawMesh( drawMesh, Quaternion.identity * pos, Quaternion.identity, mat, 0, pruCam, i );
 			}
 
 			pruCam.farClipPlane = 3f * meshExtents * 2f;
 			pruCam.nearClipPlane = 0.1f;
-			pruCam.fieldOfView = smoothFOV;
+			pruCam.fieldOfView = sphere ? fovSphere : smoothFOV;
 			pruCam.Render();
 
 			ieuRemoveCustomLighting.Invoke( null, new object[0] );
 			render = (Texture)pruEnd.Invoke( pruRef, new object[0] );
+
+			if( sphere ) // Reset if needed
+				pruCam.fieldOfView = smoothFOV;
+			if( overrideRT != null ) { // Reset if needed
+				pruCam.clearFlags = clearPrev;
+				pruCam.renderingPath = prevPath;
+			}
 		}
 
 

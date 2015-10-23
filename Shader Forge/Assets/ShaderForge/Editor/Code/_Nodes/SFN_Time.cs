@@ -13,10 +13,10 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
-			base.Initialize( "Time" );
+			base.Initialize( "Time", InitialPreviewRenderMode.BlitQuad );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
-			base.texture.uniform = true;
+			base.texture.uniform = false;
 			base.texture.CompCount = 4;
 
 			base.alwaysDefineVariable = true;

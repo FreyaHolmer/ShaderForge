@@ -158,6 +158,14 @@ namespace ShaderForge {
 			Render( target, mat );
 		}
 
+		public static void RenderUsingViewport( RenderTexture target, string shader, string[] inputNames, Texture[] inputTextures ) {
+			LoadShaderForMaterial( shader );
+			for( int i = 0; i < inputTextures.Length; i++ ) {
+				mat.SetTexture( "_" + inputNames[i], inputTextures[i] );
+			}
+			RenderUsingViewport( target, mat );
+		}
+
 		public static void Render( RenderTexture target, string shader, params Texture[] inputTextures ) {
 			Render( target, shader, defaultInputNames, inputTextures );
 		}
@@ -193,7 +201,8 @@ namespace ShaderForge {
 
 		public static void RenderUsingViewport( RenderTexture target, Material material ) {
 			ApplyComponentCountMask( material );
-			SF_Editor.instance.preview.DrawMesh( target, material );
+			bool sphere = SF_Settings.nodeRenderMode == NodeRenderMode.Spheres || SF_Settings.nodeRenderMode == NodeRenderMode.Mixed;
+			SF_Editor.instance.preview.DrawMesh( target, material, sphere );
 		}
 
 		public static Vector4 CompCountToMask(int cc) {

@@ -2102,6 +2102,34 @@ namespace ShaderForge {
 				btnRect.width = r.width / 4f;
 				btnRect.x += btnRect.width;
 				btnRect.width *= 2.55f;
+				
+				/*Rect[] splitRects = btnRect.SplitHorizontal( 0.5f, 1 ); // Node render mode control
+				GUI.Label( splitRects[1], "Node rendering" );
+				EditorGUI.BeginChangeCheck();
+				SF_Settings.nodeRenderMode = (NodeRenderMode)EditorGUI.EnumPopup( splitRects[0], SF_Settings.nodeRenderMode );
+				if( EditorGUI.EndChangeCheck() ) {
+					RegenerateNodeBaseData();
+				}
+				btnRect = btnRect.MovedDown();*/
+				if( SF_Settings.nodeRenderMode == NodeRenderMode.Viewport ) {
+					EditorGUI.BeginDisabledGroup( true );
+					GUI.Toggle( btnRect, true, "Real-time node rendering" );
+					EditorGUI.EndDisabledGroup();
+				} else {
+					EditorGUI.BeginChangeCheck();
+					SF_Settings.realtimeNodePreviews = GUI.Toggle( btnRect, SF_Settings.realtimeNodePreviews, "Real-time node rendering" );
+					if( EditorGUI.EndChangeCheck() ) {
+						RegenerateNodeBaseData();
+					}
+				}
+				
+				btnRect = btnRect.MovedDown();
+				SF_Settings.quickPickScrollWheel = GUI.Toggle( btnRect, SF_Settings.quickPickScrollWheel, "Use scroll in the quickpicker" );
+				btnRect = btnRect.MovedDown();
+				SF_Settings.showVariableSettings = GUI.Toggle( btnRect, SF_Settings.showVariableSettings, "Show variable name & precision" );
+				btnRect = btnRect.MovedDown();
+				SF_Settings.showNodeSidebar = GUI.Toggle( btnRect, SF_Settings.showNodeSidebar, "Show node browser panel" );
+				btnRect = btnRect.MovedDown();
 				if( SF_GUI.HoldingControl() ) {
 					EditorGUI.BeginDisabledGroup( true );
 					GUI.Toggle( btnRect, !SF_Settings.hierarchalNodeMove, "Hierarchal Node Move" );
@@ -2109,16 +2137,7 @@ namespace ShaderForge {
 				} else {
 					SF_Settings.hierarchalNodeMove = GUI.Toggle( btnRect, SF_Settings.hierarchalNodeMove, "Hierarchal Node Move" );
 				}
-				btnRect = btnRect.MovedDown();
-				Rect[] splitRects = btnRect.SplitHorizontal( 0.5f, 1 );
-				GUI.Label( splitRects[1], "Node rendering" );
-				SF_Settings.nodeRenderMode = (NodeRenderMode)EditorGUI.EnumPopup( splitRects[0], SF_Settings.nodeRenderMode );
-				btnRect = btnRect.MovedDown();
-				SF_Settings.quickPickScrollWheel = GUI.Toggle( btnRect, SF_Settings.quickPickScrollWheel, "Use scroll in the quickpicker" );
-				btnRect = btnRect.MovedDown();
-				SF_Settings.showVariableSettings = GUI.Toggle( btnRect, SF_Settings.showVariableSettings, "Show variable name & precision" );
-				btnRect = btnRect.MovedDown();
-				SF_Settings.showNodeSidebar = GUI.Toggle( btnRect, SF_Settings.showNodeSidebar, "Show node browser panel" );
+				
 				btnRect.y += 4;
 			}
 
@@ -2136,6 +2155,12 @@ namespace ShaderForge {
 				GUILayout.Label( "Node count: " + nodes.Count );
 			}
 
+		}
+
+		void RegenerateNodeBaseData() {
+			for( int i = 0; i < nodes.Count; i++ ) {
+				nodes[i].GenerateBaseData();
+			}
 		}
 
 		int previewButtonHeightOffset;

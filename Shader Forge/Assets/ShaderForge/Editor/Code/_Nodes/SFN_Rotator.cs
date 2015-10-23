@@ -26,7 +26,7 @@ namespace ShaderForge {
 			//SF_NodeConnection lerpCon;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2,false),
-				SF_NodeConnector.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_TexCoord),"UVOUT"),
+				SF_NodeConnector.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2,false).SetRequired(true),
 				SF_NodeConnector.Create(this,"PIV","Piv",ConType.cInput,ValueType.VTv2,false,"float2(0.5,0.5)").SetRequired(false),
 				SF_NodeConnector.Create(this,"ANG","Ang",ConType.cInput,ValueType.VTv1,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_Time),"T"),
 				SF_NodeConnector.Create(this,"SPD","Spd",ConType.cInput,ValueType.VTv1,false,"1.0").SetRequired(false),
@@ -37,7 +37,6 @@ namespace ShaderForge {
 
 
 
-
 		public override void OnUpdateNode( NodeUpdateType updType, bool cascade = true ) {
 			if( InputsConnected() )
 				RefreshValue( 1, 2 );
@@ -45,14 +44,6 @@ namespace ShaderForge {
 		}
 
 		public override bool IsUniformOutput() {
-			if( GetInputIsConnected( "UVIN" ) && !GetInputData( "UVIN" ).uniform )
-				return false;
-			if( GetInputIsConnected( "PIV" ) && !GetInputData( "PIV" ).uniform )
-				return false;
-			if( GetInputIsConnected( "ANG" ) && !GetInputData( "ANG" ).uniform )
-				return false;
-			if( GetInputIsConnected( "SPD" ) && !GetInputData( "SPD" ).uniform )
-				return false;
 			return false;
 		}
 
@@ -100,7 +91,6 @@ namespace ShaderForge {
 			string spdStr = mode.Contains( "SPD" ) ? "_spd.x" : "1.0";
 			string angStr = mode.Contains( "ANG" ) ? "_ang.x" : "_Time + _TimeEditor";
 
-
 			return new string[] {
 				"float ang = "+angStr+";",
 				"float spd = " + spdStr + ";",
@@ -136,6 +126,10 @@ namespace ShaderForge {
 				"float " + Sin() + " = sin("+ Spd() + "*" + Ang() + ");",
 				"float2 " + Piv() + " = " + this["PIV"].TryEvaluate() + ";"
 			};
+		}
+
+		public override bool UpdatesOverTime() {
+			return true; //GetInputIsConnected( "ANG" );
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {

@@ -26,7 +26,7 @@ namespace ShaderForge {
 			texture.CompCount = 2;
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"UVOUT","UV",ConType.cOutput,ValueType.VTv2,false),
-				SF_NodeConnector.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_TexCoord),"UVOUT"),
+				SF_NodeConnector.Create(this,"UVIN","UV",ConType.cInput,ValueType.VTv2,false).SetRequired(true)/*.SetGhostNodeLink(typeof(SFN_TexCoord),"UVOUT")*/,
 				SF_NodeConnector.Create(this,"DIST","Dist",ConType.cInput,ValueType.VTv1,false).SetRequired(false).SetGhostNodeLink(typeof(SFN_Time),"T")
 			};
 
@@ -105,6 +105,10 @@ namespace ShaderForge {
 
 		public override int GetEvaluatedComponentCount() {
 			return 2;
+		}
+
+		public override bool UpdatesOverTime() {
+			return true; //GetInputIsConnected( "DIST" );
 		}
 
 

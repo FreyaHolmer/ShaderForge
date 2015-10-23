@@ -27,16 +27,27 @@ Shader "Hidden/Shader Forge/SFN_Fresnel_NRM_EXP" {
                 float4 pos : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float4 posWorld : TEXCOORD1;
+                float4 screenPos : TEXCOORD2;
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
                 o.uv = v.texcoord0;
                 o.posWorld = mul(_Object2World, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.screenPos = float4( o.pos.xy / o.pos.w, 0, 0 );
+                o.screenPos.y *= _ProjectionParams.x;
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
-                float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
+
+            	#if UNITY_UV_STARTS_AT_TOP
+                    float grabSign = -_ProjectionParams.x;
+                #else
+                    float grabSign = _ProjectionParams.x;
+                #endif
+                float2 sceneUVs = float2(1,grabSign)*i.screenPos.xy*0.5+0.5;
+                
+                float3 viewDirection = tex2D( _NRM, float2(0.5,0.5) );
 
                 // Read inputs
                 float4 _nrm = tex2D( _NRM, i.uv );

@@ -13,11 +13,15 @@ namespace ShaderForge {
 		}
 
 		public override void Initialize() {
+
+			base.shaderGenMode = ShaderGenerationMode.ManualModal;
 			base.Initialize( "Fresnel", InitialPreviewRenderMode.BlitSphere );
 			base.showColor = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 1;
-			base.shaderGenMode = ShaderGenerationMode.ManualModal;
+			base.vectorDataNode = true;
+			
+
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1,false),
 				SF_NodeConnector.Create(this,"NRM","Nrm",ConType.cInput,ValueType.VTv3,false),
@@ -27,6 +31,17 @@ namespace ShaderForge {
 			this["NRM"].unconnectedEvaluationValue = "normalDirection";
 
 		}
+
+		public override void OnUpdateNode( NodeUpdateType updType, bool cascade = true ) {
+			if( InputsConnected() )
+				RefreshValue(0,0);
+			base.OnUpdateNode( updType );
+		}
+
+		public override bool IsUniformOutput() {
+			return false;
+		}
+		
 
 		public override string[] GetModalModes() {
 			return new string[]{
@@ -38,6 +53,9 @@ namespace ShaderForge {
 		}
 
 		public override string GetCurrentModalMode() {
+			if( connectors == null )
+				return "REQONLY";
+
 			bool expCon = GetInputIsConnected( "EXP" );
 			bool nrmCon = GetInputIsConnected( "NRM" );
 

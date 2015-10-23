@@ -40,8 +40,10 @@ Shader "Hidden/Shader Forge/SFN_Fresnel_EXP" {
             }
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
-                float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 normalDirection = i.normalDir;
+                float3 viewDirection = float3(0,0,1);
+                float3 normalDirection = float3( i.uv * 2 - 1, 0 );
+                normalDirection.z = 1 - dot(normalDirection.xy, normalDirection.xy);
+
 
                 // Read inputs
                 float4 _nrm = tex2D( _NRM, i.uv );

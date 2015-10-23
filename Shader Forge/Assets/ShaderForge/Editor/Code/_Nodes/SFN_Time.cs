@@ -31,6 +31,10 @@ namespace ShaderForge {
 		
 		}
 
+		public override bool UpdatesOverTime() {
+			return true;
+		}
+
 		public override bool IsUniformOutput() {
 			return true;
 		}

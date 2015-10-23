@@ -267,6 +267,10 @@ namespace ShaderForge {
 			return IsProperty() ? property.global : false;
 		}
 
+		public virtual bool UpdatesOverTime() {
+			return false; // Override on nodes like Time, Panner and Rotator
+		}
+
 
 		// TODO: Matrices & Samplers?
 		public string GetVariableType() {
@@ -435,11 +439,10 @@ namespace ShaderForge {
 			// TODO: REALTIME
 			//
 			if( SF_Settings.RenderNodesInRealtime() ) {
-				if( initialPreviewMode != InitialPreviewRenderMode.Off ) {
+				if( UpdatesOverTime() || initialPreviewMode != InitialPreviewRenderMode.Off ) {
 					SetDirty( UpToDateState.OutdatedSoft );
 					GenerateBaseData();
 				}
-					
 			}
 			// Override
 		}
@@ -777,8 +780,9 @@ namespace ShaderForge {
 				return BlitShaderBasePath() + "_" + suffix;
 			} else {
 				string modalMode = "";
-				if( IsModal() )
+				if( IsModal() ) {
 					modalMode = GetCurrentModalMode();
+				}
 				if( string.IsNullOrEmpty( modalMode ) ) {
 					return BlitShaderBasePath();
 				} else {

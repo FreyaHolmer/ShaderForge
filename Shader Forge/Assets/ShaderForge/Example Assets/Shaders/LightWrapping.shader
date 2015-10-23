@@ -1,7 +1,7 @@
-// Shader created with Shader Forge v1.18 
+// Shader created with Shader Forge v1.22 
 // Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:1.18;sub:START;pass:START;ps:flbk:,iptp:0,cusa:False,bamd:0,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:True,enco:False,rmgx:True,rpth:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,rfrpo:True,rfrpn:Refraction,coma:15,ufog:False,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:33560,y:32563,varname:node_0,prsc:2|diff-270-RGB,spec-1906-OUT,gloss-8495-OUT,lwrap-272-RGB;n:type:ShaderForge.SFN_Color,id:270,x:33250,y:32393,ptovrint:False,ptlb:Diffuse,ptin:_Diffuse,varname:_Diffuse,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,c1:0.9117647,c2:0.8760425,c3:0.8179066,c4:1;n:type:ShaderForge.SFN_Color,id:272,x:33250,y:32735,ptovrint:False,ptlb:Light Wrapping,ptin:_LightWrapping,varname:_LightWrapping,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,c1:0.9058824,c2:0.4941176,c3:0.4901961,c4:1;n:type:ShaderForge.SFN_Vector1,id:1906,x:33250,y:32541,varname:node_1906,prsc:2,v1:0;n:type:ShaderForge.SFN_Slider,id:8495,x:33093,y:32628,ptovrint:False,ptlb:Gloss,ptin:_Gloss,varname:node_8495,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;proporder:272-270-8495;pass:END;sub:END;*/
+/*SF_DATA;ver:1.22;sub:START;pass:START;ps:flbk:,iptp:0,cusa:False,bamd:0,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:True,enco:False,rmgx:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,rfrpo:True,rfrpn:Refraction,coma:15,ufog:False,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:0,x:33560,y:32563,varname:node_0,prsc:2|diff-270-RGB,spec-1906-OUT,gloss-8495-OUT,lwrap-272-RGB;n:type:ShaderForge.SFN_Color,id:270,x:33250,y:32393,ptovrint:False,ptlb:Diffuse,ptin:_Diffuse,varname:_Diffuse,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,c1:0.9117647,c2:0.8760425,c3:0.8179066,c4:1;n:type:ShaderForge.SFN_Color,id:272,x:33250,y:32735,ptovrint:False,ptlb:Light Wrapping,ptin:_LightWrapping,varname:_LightWrapping,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,c1:0.9058824,c2:0.4941176,c3:0.4901961,c4:1;n:type:ShaderForge.SFN_Vector1,id:1906,x:33250,y:32541,varname:node_1906,prsc:2,v1:0;n:type:ShaderForge.SFN_Slider,id:8495,x:33093,y:32628,ptovrint:False,ptlb:Gloss,ptin:_Gloss,varname:node_8495,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;proporder:272-270-8495;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/LightWrapping" {
     Properties {
@@ -77,7 +77,7 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(_Object2World, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
             }
@@ -129,7 +129,10 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 d.boxMin[1] = unity_SpecCube1_BoxMin;
                 d.probePosition[1] = unity_SpecCube1_ProbePosition;
                 d.probeHDR[1] = unity_SpecCube1_HDR;
-                UnityGI gi = UnityGlobalIllumination (d, 1, gloss, normalDirection);
+                Unity_GlossyEnvironmentData ugls_en_data;
+                ugls_en_data.roughness = 1.0 - gloss;
+                ugls_en_data.reflUVW = viewReflectDirection;
+                UnityGI gi = UnityGlobalIllumination(d, 1, normalDirection, ugls_en_data );
                 lightDirection = gi.light.dir;
                 lightColor = gi.light.color;
 ////// Specular:
@@ -223,7 +226,7 @@ Shader "Shader Forge/Examples/LightWrapping" {
                 o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(_Object2World, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
             }

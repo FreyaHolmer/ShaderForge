@@ -61,6 +61,10 @@ namespace ShaderForge {
 		public override int GetEvaluatedComponentCount() {
 			return this["R"].GetCompCount();
 		}
+
+		public override void PrepareRendering( Material mat ) {
+			mat.SetFloat( "_Type", channelBlendType == ChannelBlendType.Summed ? 0 : 1 );
+		}
 		 
 
 		private void UpdateMaskCompCountInputs(){

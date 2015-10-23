@@ -1,6 +1,7 @@
 Shader "Hidden/Shader Forge/SFN_ChannelBlend" {
     Properties {
         _OutputMask ("Output Mask", Vector) = (1,1,1,1)
+        _Type ("Type", Float) = 0 // 0 = Summed, 1 = Layered
         _M ("Mask", 2D) = "black" {}
         _R ("Rcol", 2D) = "black" {}
         _G ("Gcol", 2D) = "black" {}
@@ -27,6 +28,8 @@ Shader "Hidden/Shader Forge/SFN_ChannelBlend" {
             uniform sampler2D _A;
             uniform sampler2D _BTM;
 
+            uniform float _Type;
+
             struct VertexInput {
                 float4 vertex : POSITION;
                 float2 texcoord0 : TEXCOORD0;
@@ -51,8 +54,24 @@ Shader "Hidden/Shader Forge/SFN_ChannelBlend" {
                 float4 _a = tex2D( _A, i.uv );
                 float4 _btm = tex2D( _BTM, i.uv );
 
-                // Operator
-                float4 outputColor = channelblend(_m, _r, _g, _b, _a, _btm);
+
+				float4 outputColor;
+
+                if(_Type == 0){ // Summed
+                	float4 sum = float4(0,0,0,0);
+                	sum += _m[0] * _r;
+                	sum += _m[1] * _g;
+                	sum += _m[2] * _b;
+                	sum += _m[3] * _a;
+                	outputColor = sum;
+
+                } else { // Layered
+                	outputColor = _btm;
+					outputColor = lerp(outputColor, _r, _m[0] );
+					outputColor = lerp(outputColor, _g, _m[1] );
+					outputColor = lerp(outputColor, _b, _m[2] );
+					outputColor = lerp(outputColor, _a, _m[3] );
+                }
 
                 // Return
                 return outputColor * _OutputMask;

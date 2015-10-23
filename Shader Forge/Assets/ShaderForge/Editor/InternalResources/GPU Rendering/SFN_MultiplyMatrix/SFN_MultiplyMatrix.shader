@@ -40,7 +40,7 @@ Shader "Hidden/Shader Forge/SFN_MultiplyMatrix" {
                 float4 _b = tex2D( _B, i.uv );
 
                 // Operator
-                float4 outputColor = multiplymatrix(_a, _b);
+                float4 outputColor = float4(1,1,1,1);
 
                 // Return
                 return outputColor * _OutputMask;

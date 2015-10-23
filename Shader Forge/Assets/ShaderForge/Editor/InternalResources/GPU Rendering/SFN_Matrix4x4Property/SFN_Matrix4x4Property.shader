@@ -37,7 +37,7 @@ Shader "Hidden/Shader Forge/SFN_Matrix4x4Property" {
 
 
                 // Operator
-                float4 outputColor = matrix4x4property();
+                float4 outputColor = float4(1,1,1,1);
 
                 // Return
                 return outputColor * _OutputMask;

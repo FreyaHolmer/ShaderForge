@@ -33,11 +33,8 @@ Shader "Hidden/Shader Forge/SFN_Code" {
             }
             float4 frag(VertexOutput i) : COLOR {
 
-                // Read inputs
-
-
                 // Operator
-                float4 outputColor = code();
+                float4 outputColor = float4(1,1,1,1);
 
                 // Return
                 return outputColor * _OutputMask;

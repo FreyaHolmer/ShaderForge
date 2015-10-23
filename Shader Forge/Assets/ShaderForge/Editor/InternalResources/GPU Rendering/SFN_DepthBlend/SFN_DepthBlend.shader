@@ -37,7 +37,7 @@ Shader "Hidden/Shader Forge/SFN_DepthBlend" {
                 float4 _dist = tex2D( _DIST, i.uv );
 
                 // Operator
-                float4 outputColor = depthblend(_dist);
+                float4 outputColor = float4(1,1,1,1);
 
                 // Return
                 return outputColor * _OutputMask;

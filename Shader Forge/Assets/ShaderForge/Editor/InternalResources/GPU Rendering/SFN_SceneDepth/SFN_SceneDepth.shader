@@ -37,7 +37,7 @@ Shader "Hidden/Shader Forge/SFN_SceneDepth" {
 
 
                 // Operator
-                float4 outputColor = scenedepth();
+                float4 outputColor = float4(1,1,1,1);
 
                 // Return
                 return outputColor * _OutputMask;

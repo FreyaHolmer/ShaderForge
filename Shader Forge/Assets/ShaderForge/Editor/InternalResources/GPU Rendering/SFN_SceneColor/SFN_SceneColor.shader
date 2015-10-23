@@ -37,7 +37,7 @@ Shader "Hidden/Shader Forge/SFN_SceneColor" {
                 float4 _uvin = tex2D( _UVIN, i.uv );
 
                 // Operator
-                float4 outputColor = scenecolor(_uvin);
+                float4 outputColor = float4(1,1,1,1);
 
                 // Return
                 return outputColor * _OutputMask;

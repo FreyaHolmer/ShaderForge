@@ -40,7 +40,7 @@ Shader "Hidden/Shader Forge/SFN_Cubemap" {
                 float4 _mip = tex2D( _MIP, i.uv );
 
                 // Operator
-                float4 outputColor = cubemap(_dir, _mip);
+                float4 outputColor = float4(1,1,1,1);
 
                 // Return
                 return outputColor * _OutputMask;

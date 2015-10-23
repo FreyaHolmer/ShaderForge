@@ -37,7 +37,7 @@ Shader "Hidden/Shader Forge/SFN_Transpose" {
                 float4 _in = tex2D( _IN, i.uv );
 
                 // Operator
-                float4 outputColor = transpose(_in);
+                float4 outputColor = float4(1,1,1,1);
 
                 // Return
                 return outputColor * _OutputMask;

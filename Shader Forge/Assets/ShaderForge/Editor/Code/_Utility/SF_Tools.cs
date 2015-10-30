@@ -68,7 +68,7 @@ namespace ShaderForge {
 		public static int stationaryCursorRadius = 7;
 		
 		
-		public const float minimumUnityVersion = 5.0f;
+		public const float minimumUnityVersion = 5.2f;
 
 		private static float currentUnityVersion = 0f;
 		public static float CurrentUnityVersion{

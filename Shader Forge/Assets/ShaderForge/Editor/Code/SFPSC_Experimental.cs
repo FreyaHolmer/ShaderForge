@@ -10,11 +10,15 @@ namespace ShaderForge {
 
 
 		public bool force2point0 = false;
+		public bool forceNoShadowPass = false;
+		public bool forceNoFallback = false;
 
 
 		public override string Serialize(){
 			string s = "";
-			s += Serialize( "f2p0", force2point0.ToString());
+			s += Serialize( "f2p0", force2point0.ToString() );
+			s += Serialize( "fnsp", forceNoShadowPass.ToString() );
+			s += Serialize( "fnfb", forceNoFallback.ToString() );
 			return s;
 		}
 
@@ -23,6 +27,12 @@ namespace ShaderForge {
 			switch( key ) {
 			case "f2p0":
 				force2point0 = bool.Parse( value );
+				break;
+			case "fnsp":
+				forceNoShadowPass = bool.Parse( value );
+				break;
+			case "fnfb":
+				forceNoFallback = bool.Parse( value );
 				break;
 			}
 
@@ -44,6 +54,10 @@ namespace ShaderForge {
 			r.xMin -= 20;
 			r.y += 20;
 			force2point0 = UndoableToggle( r, force2point0, "Force Shader Model 2.0", "shader model 2.0 forcing", null );
+			r.y += 20;
+			forceNoShadowPass = UndoableToggle( r, forceNoShadowPass, "Force no custom shadow pass", "force no custom shadow pass", null );
+			r.y += 20;
+			forceNoFallback = UndoableToggle( r, forceNoFallback, "Force no fallback", "force no fallback", null );
 			r.y += 20;
 
 			r.y += prevYpos;

@@ -2895,6 +2895,8 @@ namespace ShaderForge {
 
 
 		void Fallback() {
+			if( ps.catExperimental.forceNoFallback )
+				return;
 			if( !string.IsNullOrEmpty( ps.catMeta.fallback ) )
 				App( "FallBack \"" + ps.catMeta.fallback + "\"" );
 			else
@@ -3023,8 +3025,8 @@ namespace ShaderForge {
 
 		// Only needed when using alpha clip and/or vertex offset (May be needed with Tessellation as well)
 		public void ShadowCasterPass() {
-			bool shouldUse = /*ps.shadowCast &&*/ ( ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled() );
-			if( !shouldUse )
+			bool shouldUse = ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled();
+			if( !shouldUse || ps.catExperimental.forceNoShadowPass )
 				return;
 			currentPass = PassType.ShadCast;
 			UpdateDependencies();

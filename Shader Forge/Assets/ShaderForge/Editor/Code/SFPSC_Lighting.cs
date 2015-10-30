@@ -243,9 +243,9 @@ namespace ShaderForge {
 									undoSuffix: "reflection probe support"
 									);
 			r.y += 20;
-			
-			
-			
+
+
+
 			
 			/*shadowCast = GUI.Toggle( r, shadowCast, "Cast shadows" );
 			r.y += 20;

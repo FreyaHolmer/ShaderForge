@@ -31,7 +31,13 @@ namespace ShaderForge {
 
 		public override string GetVariableLine() {
 			string varName = GetVariable();
-			return "uniform sampler2D " + varName + "; uniform float4 " + varName + "_ST;"; // TODO: Check if texture wants to use offsets or not
+			
+			string s = "uniform sampler2D " + varName + ";";
+			if( !tagNoScaleOffset ) {
+				s += " uniform float4 " + varName + "_ST;";
+			}
+
+			return s;
 		}
 
 

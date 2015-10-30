@@ -1363,7 +1363,7 @@ namespace ShaderForge {
 						menu.AddSeparator( "" );
 						menu.AddItem( new GUIContent( "[Hide in inspector]" ), property.tagHideInInspector, ContextClick, "taghide" );
 						if( property is SFP_Tex2d ) {
-							menu.AddItem( new GUIContent( "[Hide scale and offset]" ), property.tagNoScaleOffset, ContextClick, "tagnsco" );
+							menu.AddItem( new GUIContent( "[No scale and offset]" ), property.tagNoScaleOffset, ContextClick, "tagnsco" );
 							menu.AddItem( new GUIContent( "[Accept normals only]" ), property.tagNormal, ContextClick, "tagnrm" );
 							menu.AddItem( new GUIContent( "[Accept HDR only]" ), property.tagHDR, ContextClick, "taghdr" );
 							menu.AddItem( new GUIContent( "[Per-renderer data]" ), property.tagPerRendererData, ContextClick, "tagprd" );

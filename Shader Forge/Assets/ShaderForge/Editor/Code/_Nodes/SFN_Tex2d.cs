@@ -194,10 +194,9 @@ namespace ShaderForge {
 
 			string variableName = this["TEX"].IsConnected() ? GetInputCon( "TEX" ).node.property.GetVariable() : property.GetVariable();
 
-
-			//if( useTilingOffset ){ // TODO
+			if( !property.tagNoScaleOffset ) {
 				uvStr = "TRANSFORM_TEX(" + uvStr + ", " + variableName + ")";
-			//}
+			}
 
 			if( useLOD ) {
 				uvStr = "float4(" + uvStr + ",0.0," + mip + ")";

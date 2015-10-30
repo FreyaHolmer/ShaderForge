@@ -863,7 +863,7 @@ namespace ShaderForge {
 		}
 
 		public string GetOffsetString(){
-			if(offsetFactor != 0 && offsetUnits != 0){
+			if(offsetFactor != 0 || offsetUnits != 0){
 				return "Offset " + offsetFactor + ", " + offsetUnits;
 			}
 			return "";

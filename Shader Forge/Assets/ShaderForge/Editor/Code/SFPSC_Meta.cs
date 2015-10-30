@@ -229,7 +229,7 @@ namespace ShaderForge {
 				mc = new MenuCommand( this, 0 );
 			Material temp = new Material( Shader.Find("Hidden/Shader Forge/PresetUnlit") ); // This will make it highlight none of the shaders inside.
 			UnityEditorInternal.InternalEditorUtility.SetupShaderMenu( temp ); // Rebuild shader menu
-			DestroyImmediate( temp.shader, true ); DestroyImmediate( temp, true ); // Destroy temporary shader and material
+			DestroyImmediate( temp, true ); // Destroy material
 			EditorUtility.DisplayPopupMenu( r, "CONTEXT/ShaderPopup", mc ); // Display shader popup
 		}
 		private void OnSelectedShaderPopup( string command, Shader shader ) {

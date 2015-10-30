@@ -597,7 +597,8 @@ namespace ShaderForge {
 				App( "#pragma multi_compile_fwdadd" + ps.catBlending.GetShadowPragmaIfUsed() );
 			} else {
 				App( "#pragma fragmentoption ARB_precision_hint_fastest" );
-				App( "#pragma multi_compile_shadowcaster" );
+				if(!ps.catExperimental.forceNoShadowPass)
+					App( "#pragma multi_compile_shadowcaster" );
 			}
 
 			if( currentPass == PassType.Deferred ) {

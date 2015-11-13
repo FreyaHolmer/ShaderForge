@@ -198,8 +198,8 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Floor ), 			catArithmetic + "Floor" );
 			AddTemplate( typeof( SFN_Fmod ), 			catArithmetic + "Fmod" );
 			AddTemplate( typeof( SFN_Frac ), 			catArithmetic + "Frac" );
-			AddTemplate( typeof( SFN_HsvToRgb ),		catArithmetic + "HSV to RGB" ).MarkAsNewNode();
-			AddTemplate( typeof( SFN_Hue ),				catArithmetic + "Hue" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_HsvToRgb ),		catArithmetic + "HSV to RGB" );
+			AddTemplate( typeof( SFN_Hue ),				catArithmetic + "Hue" );
 			AddTemplate( typeof( SFN_If ), 				catArithmetic + "If", KeyCode.I );
 			AddTemplate( typeof( SFN_InverseLerp ),		catArithmetic + "Inverse Lerp" );
 			AddTemplate( typeof( SFN_Lerp ), 			catArithmetic + "Lerp", KeyCode.L );
@@ -214,13 +214,13 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_OneMinus ), 		catArithmetic + "One Minus", KeyCode.O );
 			AddTemplate( typeof( SFN_Posterize ), 		catArithmetic + "Posterize" );
 			AddTemplate( typeof( SFN_Power ), 			catArithmetic + "Power", KeyCode.E );
-			AddTemplate( typeof( SFN_Reciprocal ),		catArithmetic + "Reciprocal" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Reciprocal ),		catArithmetic + "Reciprocal" );
 			AddTemplate( typeof( SFN_RemapRangeAdvanced),catArithmetic+ "Remap" );
 			AddTemplate( typeof( SFN_RemapRange ), 		catArithmetic + "Remap (Simple)", KeyCode.R, "Remap Simple" );
-			AddTemplate( typeof( SFN_RgbToHsv ),		catArithmetic + "RGB to HSV" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_RgbToHsv ),		catArithmetic + "RGB to HSV" );
 			AddTemplate( typeof( SFN_Round ), 			catArithmetic + "Round" );
 			AddTemplate( typeof( SFN_Sign ), 			catArithmetic + "Sign" );
-			AddTemplate( typeof( SFN_Smoothstep ),		catArithmetic + "Smoothstep" );
+			AddTemplate( typeof( SFN_Smoothstep ),		catArithmetic + "Smoothstep" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_Sqrt ), 			catArithmetic + "Sqrt" );
 			AddTemplate( typeof( SFN_Step ), 			catArithmetic + "Step (A <= B)", KeyCode.None, "Step"  );
 			AddTemplate( typeof( SFN_Subtract ), 		catArithmetic + "Subtract", KeyCode.S );
@@ -231,12 +231,12 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Vector2 ),		catConstVecs + "Vector 2", KeyCode.Alpha2 );
 			AddTemplate( typeof( SFN_Vector3 ),		catConstVecs + "Vector 3", KeyCode.Alpha3 );
 			AddTemplate( typeof( SFN_Vector4 ),		catConstVecs + "Vector 4", KeyCode.Alpha4 );
-			AddTemplate( typeof( SFN_Matrix4x4 ),	catConstVecs + "Matrix 4x4" ).MarkAsNewNode(); ;
+			AddTemplate( typeof( SFN_Matrix4x4 ),	catConstVecs + "Matrix 4x4" );
 
 			string catProps = "Properties/";
 			AddTemplate( typeof( SFN_Color ), 				catProps + "Color" );
 			AddTemplate( typeof( SFN_Cubemap ), 			catProps + "Cubemap" );
-			AddTemplate( typeof( SFN_Matrix4x4Property ),	catProps + "Matrix 4x4" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Matrix4x4Property ),	catProps + "Matrix 4x4" );
 			AddTemplate( typeof( SFN_Slider ), 				catProps + "Slider" );
 			AddTemplate( typeof( SFN_SwitchProperty ),		catProps + "Switch" );
 			AddTemplate( typeof( SFN_Tex2d ), 				catProps + "Texture 2D", KeyCode.T );
@@ -255,7 +255,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Cross ), 			catVecOps + "Cross Product" );
 			AddTemplate( typeof( SFN_Desaturate ), 		catVecOps + "Desaturate" );
 			AddTemplate( typeof( SFN_DDX ),				catVecOps + "DDX" );
-			AddTemplate( typeof( SFN_DDXY ),			catVecOps + "DDXY" );
+			AddTemplate( typeof( SFN_DDXY ),			catVecOps + "DDXY" ).MarkAsNewNode();
 			AddTemplate( typeof( SFN_DDY ),				catVecOps + "DDY" );
 			AddTemplate( typeof( SFN_Distance ), 		catVecOps + "Distance" );
 			AddTemplate( typeof( SFN_Dot ), 			catVecOps + "Dot Product" );
@@ -264,7 +264,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_NormalBlend ), 	catVecOps + "Normal Blend" );
 			AddTemplate( typeof( SFN_Reflect ), 		catVecOps + "Reflect" );
 			AddTemplate( typeof( SFN_Transform ), 		catVecOps + "Transform" );
-			AddTemplate( typeof( SFN_Transpose ),		catVecOps + "Transpose" ).MarkAsNewNode(); ;
+			AddTemplate( typeof( SFN_Transpose ),		catVecOps + "Transpose" );
 			AddTemplate( typeof( SFN_VectorProjection ),catVecOps + "Vector Projection" );
 			AddTemplate( typeof( SFN_VectorRejection ),	catVecOps + "Vector Rejection" );
 
@@ -282,7 +282,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Fresnel ), 				catGeoData + "Fresnel", KeyCode.F );
 			AddTemplate( typeof( SFN_NormalVector ), 			catGeoData + "Normal Dir." );
 			AddTemplate( typeof( SFN_ObjectPosition ), 			catGeoData + "Object Position");
-			AddTemplate( typeof( SFN_ObjectScale ),				catGeoData + "Object Scale" ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_ObjectScale ),				catGeoData + "Object Scale" );
 			AddTemplate( typeof( SFN_ScreenPos ), 				catGeoData + "Screen Position" );
 			AddTemplate( typeof( SFN_Tangent ), 				catGeoData + "Tangent Dir." );
 			AddTemplate( typeof( SFN_TexCoord ), 				catGeoData + "UV Coordinates", KeyCode.U );
@@ -331,7 +331,10 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Code ), catCode + "Code" );
 
 			string catUtility = "Utility/";
-			AddTemplate( typeof( SFN_Relay ), catUtility + "Relay" );
+			AddTemplate( typeof( SFN_Relay ),	catUtility + "Relay" );
+			AddTemplate( typeof( SFN_Get ),		catUtility + "Get", KeyCode.G ).MarkAsNewNode();
+			AddTemplate( typeof( SFN_Set ),		catUtility + "Set" ).MarkAsNewNode();
+			
 
 
 			SF_EditorNodeData ssDiff = TryAddTemplateDynamic( "SFN_SkyshopDiff", "Skyshop/" + "Skyshop Diffuse" );

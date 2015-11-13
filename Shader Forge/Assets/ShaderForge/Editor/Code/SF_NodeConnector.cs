@@ -404,11 +404,11 @@ namespace ShaderForge {
 		}
 
 		public bool IsConnectedAndEnabled() {
-			return IsConnected() && enableState == EnableState.Enabled;
+			return IsConnected() && (enableState == EnableState.Enabled || enableState == EnableState.Hidden);
 		}
 
 		public bool IsConnectedEnabledAndAvailable(){
-			return IsConnected() && enableState == EnableState.Enabled && availableState == AvailableState.Available;
+			return IsConnected() && ( enableState == EnableState.Enabled || enableState == EnableState.Hidden ) && availableState == AvailableState.Available;
 		}
 
 		public bool IsConnectedEnabledAndAvailableInThisPass(PassType pass){

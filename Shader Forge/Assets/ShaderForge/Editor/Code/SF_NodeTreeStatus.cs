@@ -98,6 +98,9 @@ namespace ShaderForge {
 
 
 		public bool CheckCanCompile() {
+
+			editor.nodeView.RefreshRelaySources();
+
 			if( Errors == null ){
 				Errors = new List<SF_ErrorEntry>();
 			} else if( Errors.Count > 0 ) {

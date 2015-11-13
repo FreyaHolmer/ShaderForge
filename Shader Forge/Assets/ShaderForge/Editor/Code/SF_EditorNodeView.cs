@@ -4,10 +4,30 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using System.Linq;
 
 namespace ShaderForge {
 
 	public enum ConnectionLineStyle { Bezier, Linear, Rectilinear };
+
+	[System.Serializable]
+	public class SF_SetNodeSource {
+
+		public SF_NodeConnector con;
+
+		public SF_SetNodeSource( SF_Node node ) {
+			con = node.connectors[0];
+		}
+
+		public int NodeID {
+			get { return con.node.id; }
+		}
+
+		public string Name {
+			get { return con.node.variableName; }
+		}
+
+	}
 
 	[System.Serializable]
 	public class SF_EditorNodeView : ScriptableObject {
@@ -26,11 +46,14 @@ namespace ShaderForge {
 		public Rect rect;
 		public GUIStyle toolbarStyle;
 
-
+		public List<SF_SetNodeSource> relayInSources;
+		public string[] relayInNames;
 
 		public SF_SelectionManager selection;
 
 		public SF_NodeTreeStatus treeStatus;
+
+		
 
 	
 
@@ -43,7 +66,29 @@ namespace ShaderForge {
 		}
 
 
+		public void RefreshRelaySources() {
+			relayInSources = new List<SF_SetNodeSource>();
+			for( int i = 0; i < editor.nodes.Count; i++ ) {
+				if( editor.nodes[i] is SFN_Set ) {
+					relayInSources.Add( new SF_SetNodeSource(editor.nodes[i]) );
+				}
+			}
+			relayInSources.Sort( ( a, b ) => a.Name.CompareTo( b.Name ) );
+			relayInNames = relayInSources.Select( x => x.Name ).ToArray();
+		}
 
+		// Only the node ID is serialized - this is used to ensure proper display in the GUI
+		// Returns -1 if the relay ID is missing
+		public int NodeIdToRelayId(int nodeId) {
+			if( relayInSources != null ) {
+				for( int i = 0; i < relayInSources.Count; i++ ) {
+					if( relayInSources[i].NodeID == nodeId ) {
+						return i;
+					}
+				}
+			}
+			return -1;
+		}
 
 		public SF_EditorNodeView Initialize( SF_Editor editor ) {
 			this.editor = editor;
@@ -513,7 +558,7 @@ namespace ShaderForge {
 				
 				foreach(SF_Node n in editor.nodes){
 					foreach(SF_NodeConnector con in n.connectors){
-						if(con.IsConnected() && con.conType == ConType.cInput){
+						if(con.IsConnected() && con.conType == ConType.cInput && con.enableState != EnableState.Hidden){
 							Vector2 intersection = Vector2.zero;
 							if(con.conLine.Intersects(cutStart, cutEnd, out intersection)){
 								

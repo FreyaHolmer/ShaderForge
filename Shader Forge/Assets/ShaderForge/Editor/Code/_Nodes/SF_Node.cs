@@ -1671,7 +1671,7 @@ namespace ShaderForge {
 //		}
 
 
-		public bool CanCustomizeVariable(){
+		public virtual bool CanCustomizeVariable(){
 			return ( ShouldDefineVariable() || IsProperty() ) && !lockedVariableName;
 		}
 

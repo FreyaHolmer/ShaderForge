@@ -175,11 +175,11 @@ namespace ShaderForge {
 				return popupButtonStyle;
 			}
 		}
-
+		 
 		public Vector2 quickpickerStartPosition = Vector2.zero;
 
 		public SF_EditorNodeData CheckHotkeyInput(bool mouseOverSomeNode) {
-
+			
 			bool mouseInNodeView = SF_Editor.instance.nodeView.MouseInsideNodeView(false);
 
 

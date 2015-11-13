@@ -82,6 +82,8 @@ namespace ShaderForge {
 					_blitCamera.orthographicSize = 1f;
 					_blitCamera.nearClipPlane = 3.5f;
 					_blitCamera.farClipPlane = 4.5f;
+					_blitCamera.enabled = false;
+					_blitCamera.cullingMask = ( 1 << 7 );
 				}
 				return _blitCamera;
 			}
@@ -174,7 +176,7 @@ namespace ShaderForge {
 			ApplyComponentCountMask( material );
 
 			blitCamera.targetTexture = target;
-			Graphics.DrawMesh( blitQuad, Vector3.zero, Quaternion.identity, material, 1, blitCamera );
+			Graphics.DrawMesh( blitQuad, Vector3.zero, Quaternion.identity, material, 7, blitCamera );
 			blitCamera.Render();
 			blitCamera.targetTexture = null;
 

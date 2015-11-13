@@ -41,7 +41,10 @@ namespace ShaderForge {
 		public override bool IsUniformOutput() {
 			return false;
 		}
-		
+
+		public override int GetEvaluatedComponentCount() {
+			return 1;
+		}
 
 		public override string[] GetModalModes() {
 			return new string[]{

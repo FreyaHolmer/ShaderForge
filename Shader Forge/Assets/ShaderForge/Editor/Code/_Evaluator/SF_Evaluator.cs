@@ -2494,15 +2494,12 @@ namespace ShaderForge {
 				App( "i.screenPos.y *= _ProjectionParams.x;" );
 			}
 
-			InitSceneColorAndDepth();
-
 			InitTangentTransformFrag();
-
-			AppDebug( "Vectors" );
-
 			InitViewDirFrag();
 			InitNormalDirFrag();
 			InitReflectionDir();
+
+			InitSceneColorAndDepth();
 
 			CheckClip();
 

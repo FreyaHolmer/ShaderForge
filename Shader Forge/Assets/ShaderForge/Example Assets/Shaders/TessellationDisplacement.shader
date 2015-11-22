@@ -125,9 +125,9 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
                     return o;
                 }
                 void displacement (inout VertexInput v){
-                    float4 node_389 = _Time + _TimeEditor;
+                    float4 node_950 = _Time + _TimeEditor;
                     float2 node_6 = (v.texcoord0*2.0);
-                    float2 node_161 = (node_6+node_389.g*float2(0.4,0));
+                    float2 node_161 = (node_6+node_950.g*float2(0.4,0));
                     float node_15 = 1.0;
                     float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
                     float4 node_803 = tex2Dlod(_AORGBHeightA,float4(node_6,0.0,node_15));
@@ -175,14 +175,13 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
-/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float2 node_6 = (i.uv0*2.0);
                 float3 _Normals_var = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_6, _Normals)));
                 float node_15 = 1.0;
                 float4 node_803 = tex2Dlod(_AORGBHeightA,float4(node_6,0.0,node_15));
-                float4 node_389 = _Time + _TimeEditor;
-                float2 node_161 = (node_6+node_389.g*float2(0.4,0));
+                float4 node_950 = _Time + _TimeEditor;
+                float2 node_161 = (node_6+node_950.g*float2(0.4,0));
                 float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
                 float node_156 = saturate((node_803.a-_DisplacementR_var.r));
                 float3 normalLocal = normalize(lerp(float3(0,0,1),_Normals_var.rgb,node_156));
@@ -363,9 +362,9 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
                     return o;
                 }
                 void displacement (inout VertexInput v){
-                    float4 node_9919 = _Time + _TimeEditor;
+                    float4 node_5761 = _Time + _TimeEditor;
                     float2 node_6 = (v.texcoord0*2.0);
-                    float2 node_161 = (node_6+node_9919.g*float2(0.4,0));
+                    float2 node_161 = (node_6+node_5761.g*float2(0.4,0));
                     float node_15 = 1.0;
                     float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
                     float4 node_803 = tex2Dlod(_AORGBHeightA,float4(node_6,0.0,node_15));
@@ -413,14 +412,13 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
-/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float2 node_6 = (i.uv0*2.0);
                 float3 _Normals_var = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_6, _Normals)));
                 float node_15 = 1.0;
                 float4 node_803 = tex2Dlod(_AORGBHeightA,float4(node_6,0.0,node_15));
-                float4 node_9919 = _Time + _TimeEditor;
-                float2 node_161 = (node_6+node_9919.g*float2(0.4,0));
+                float4 node_5761 = _Time + _TimeEditor;
+                float2 node_161 = (node_6+node_5761.g*float2(0.4,0));
                 float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
                 float node_156 = saturate((node_803.a-_DisplacementR_var.r));
                 float3 normalLocal = normalize(lerp(float3(0,0,1),_Normals_var.rgb,node_156));
@@ -550,9 +548,9 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
                     return o;
                 }
                 void displacement (inout VertexInput v){
-                    float4 node_960 = _Time + _TimeEditor;
+                    float4 node_2323 = _Time + _TimeEditor;
                     float2 node_6 = (v.texcoord0*2.0);
-                    float2 node_161 = (node_6+node_960.g*float2(0.4,0));
+                    float2 node_161 = (node_6+node_2323.g*float2(0.4,0));
                     float node_15 = 1.0;
                     float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
                     float4 node_803 = tex2Dlod(_AORGBHeightA,float4(node_6,0.0,node_15));
@@ -599,7 +597,6 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             #endif
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
-/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float3 normalDirection = i.normalDir;
                 SHADOW_CASTER_FRAGMENT(i)
@@ -696,9 +693,9 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
                     return o;
                 }
                 void displacement (inout VertexInput v){
-                    float4 node_8471 = _Time + _TimeEditor;
+                    float4 node_9915 = _Time + _TimeEditor;
                     float2 node_6 = (v.texcoord0*2.0);
-                    float2 node_161 = (node_6+node_8471.g*float2(0.4,0));
+                    float2 node_161 = (node_6+node_9915.g*float2(0.4,0));
                     float node_15 = 1.0;
                     float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
                     float4 node_803 = tex2Dlod(_AORGBHeightA,float4(node_6,0.0,node_15));
@@ -745,7 +742,6 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
             #endif
             float4 frag(VertexOutput i) : SV_Target {
                 i.normalDir = normalize(i.normalDir);
-/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float3 normalDirection = i.normalDir;
                 UnityMetaInput o;
@@ -758,8 +754,8 @@ Shader "Shader Forge/Examples/TessellationDisplacement" {
                 float4 node_798 = tex2D(_AORGBHeightA,node_6);
                 float node_15 = 1.0;
                 float4 node_803 = tex2Dlod(_AORGBHeightA,float4(node_6,0.0,node_15));
-                float4 node_8471 = _Time + _TimeEditor;
-                float2 node_161 = (node_6+node_8471.g*float2(0.4,0));
+                float4 node_9915 = _Time + _TimeEditor;
+                float2 node_161 = (node_6+node_9915.g*float2(0.4,0));
                 float4 _DisplacementR_var = tex2Dlod(_DisplacementR,float4(TRANSFORM_TEX(node_161, _DisplacementR),0.0,node_15));
                 float node_156 = saturate((node_803.a-_DisplacementR_var.r));
                 float3 node_162 = lerp(float3(0.4117647,0.3826572,0.3602941),(_Diffuse_var.rgb*node_798.rgb),node_156);

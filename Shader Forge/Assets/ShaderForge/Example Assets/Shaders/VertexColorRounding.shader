@@ -42,7 +42,6 @@ Shader "Shader Forge/Examples/Vertex Color Rounding" {
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
-/////// Vectors:
 ////// Lighting:
 ////// Emissive:
                 float node_137 = lerp(0.5,12,pow(_Divisions,2.0));
@@ -87,7 +86,6 @@ Shader "Shader Forge/Examples/Vertex Color Rounding" {
                 return o;
             }
             float4 frag(VertexOutput i) : SV_Target {
-/////// Vectors:
                 UnityMetaInput o;
                 UNITY_INITIALIZE_OUTPUT( UnityMetaInput, o );
                 

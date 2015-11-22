@@ -55,7 +55,6 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             }
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
-/////// Vectors:
                 float3 normalDirection = i.normalDir;
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 lightColor = _LightColor0.rgb;
@@ -81,8 +80,8 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float2 node_741_skew = node_744 + 0.2127+node_744.x*0.3713*node_744.y;
                 float2 node_741_rnd = 4.789*sin(489.123*(node_741_skew));
                 float node_741 = frac(node_741_rnd.x*node_741_rnd.y*(1+node_741_skew.x));
-                float4 node_9227 = _Time + _TimeEditor;
-                float node_563_ang = node_9227.g;
+                float4 node_6583 = _Time + _TimeEditor;
+                float node_563_ang = node_6583.g;
                 float node_563_spd = 1.0;
                 float node_563_cos = cos(node_563_spd*node_563_ang);
                 float node_563_sin = sin(node_563_spd*node_563_ang);
@@ -145,7 +144,6 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             }
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
-/////// Vectors:
                 float3 normalDirection = i.normalDir;
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 lightColor = _LightColor0.rgb;
@@ -169,8 +167,8 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float2 node_741_skew = node_744 + 0.2127+node_744.x*0.3713*node_744.y;
                 float2 node_741_rnd = 4.789*sin(489.123*(node_741_skew));
                 float node_741 = frac(node_741_rnd.x*node_741_rnd.y*(1+node_741_skew.x));
-                float4 node_6238 = _Time + _TimeEditor;
-                float node_563_ang = node_6238.g;
+                float4 node_6377 = _Time + _TimeEditor;
+                float node_563_ang = node_6377.g;
                 float node_563_spd = 1.0;
                 float node_563_cos = cos(node_563_spd*node_563_ang);
                 float node_563_sin = sin(node_563_spd*node_563_ang);

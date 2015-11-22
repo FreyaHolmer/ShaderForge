@@ -88,7 +88,6 @@ Shader "Shader Forge/Examples/Parallax" {
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
-/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float2 node_35 = (i.uv0*8.0);
                 float4 node_574 = tex2D(_AORGBHeightA,node_35);
@@ -245,7 +244,6 @@ Shader "Shader Forge/Examples/Parallax" {
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
-/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float2 node_35 = (i.uv0*8.0);
                 float4 node_574 = tex2D(_AORGBHeightA,node_35);
@@ -354,7 +352,6 @@ Shader "Shader Forge/Examples/Parallax" {
             float4 frag(VertexOutput i) : SV_Target {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
-/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float3 normalDirection = i.normalDir;
                 UnityMetaInput o;

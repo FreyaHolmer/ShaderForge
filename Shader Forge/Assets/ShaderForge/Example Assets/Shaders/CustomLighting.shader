@@ -42,7 +42,6 @@ Shader "Shader Forge/Examples/Custom Lighting" {
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
-/////// Vectors:
                 return fixed4(float3(0,0,0),0);
             }
             ENDCG
@@ -99,7 +98,6 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
-/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float3 _Normals_var = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(i.uv0, _Normals)));
                 float3 normalLocal = _Normals_var.rgb;
@@ -168,7 +166,6 @@ Shader "Shader Forge/Examples/Custom Lighting" {
             float4 frag(VertexOutput i) : COLOR {
                 i.normalDir = normalize(i.normalDir);
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
-/////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float3 _Normals_var = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(i.uv0, _Normals)));
                 float3 normalLocal = _Normals_var.rgb;

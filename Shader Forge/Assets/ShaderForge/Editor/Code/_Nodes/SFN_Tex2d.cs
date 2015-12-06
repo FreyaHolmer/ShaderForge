@@ -194,9 +194,10 @@ namespace ShaderForge {
 
 			string variableName = this["TEX"].IsConnected() ? GetInputCon( "TEX" ).node.property.GetVariable() : property.GetVariable();
 
-			if( IsProperty() && !property.tagNoScaleOffset ) {
+			bool useTilingLocally = IsProperty() && !property.tagNoScaleOffset;
+			bool useTilingByAsset = this["TEX"].IsConnected() && !this["TEX"].inputCon.node.property.tagNoScaleOffset;
+			if( useTilingLocally || useTilingByAsset )
 				uvStr = "TRANSFORM_TEX(" + uvStr + ", " + variableName + ")";
-			}
 
 			if( useLOD ) {
 				uvStr = "float4(" + uvStr + ",0.0," + mip + ")";

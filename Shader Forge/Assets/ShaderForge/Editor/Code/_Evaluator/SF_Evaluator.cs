@@ -2858,7 +2858,9 @@ namespace ShaderForge {
 			TessellationVertexStruct();
 			TessellationPatchConstant();
 			TessellationVertexTransfer();
+			ResetDefinedState(); // A bit of a hack
 			FuncDisplacement();
+			ResetDefinedState(); // A bit of a hack
 			FuncTessellation();
 			TessellationHullConstant();
 			TessellationHull();

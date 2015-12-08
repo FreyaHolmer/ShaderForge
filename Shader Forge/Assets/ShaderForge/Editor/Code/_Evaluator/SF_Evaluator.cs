@@ -1509,7 +1509,7 @@ namespace ShaderForge {
 
 
 					specularPBL = specularPBL.Substring( 1 ); // Remove first * symbol
-					specularPBL = "float specularPBL = max(0, (" + specularPBL + ") * unity_LightGammaCorrectionConsts_PIDiv4 );";
+					specularPBL = "float specularPBL = max(0, (" + specularPBL + ") * (UNITY_PI / 4) );";
 
 					App( specularPBL );
 

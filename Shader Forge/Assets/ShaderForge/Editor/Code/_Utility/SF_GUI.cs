@@ -310,22 +310,6 @@ namespace ShaderForge {
 		 * */
 
 
-		static MethodInfo allowIndieMethod;
-		static MethodInfo AllowIndieMethod {
-			get{
-				if( allowIndieMethod == null ) {
-					Type t = typeof( EditorUtility );
-					BindingFlags bfs = BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.NonPublic;
-					allowIndieMethod = t.GetMethod( "SetTemporarilyAllowIndieRenderTexture", bfs, null, new Type[] { typeof( bool ) }, null );
-				}
-				return allowIndieMethod;
-			}
-		}
-		public static void AllowIndieRenderTextures() {
-			AllowIndieMethod.Invoke( null, new object[] { true } );//EditorUtility.SetTemporarilyAllowIndieRenderTexture( true );
-		}
-
-
 		public static bool AcceptedNewShaderReplaceDialog() {
 			return EditorUtility.DisplayDialog( "Delete existing shader?", "This shader was not created in Shader Forge. Are you sure you want to remove all existing shader data and open it in Shader Forge?", "Yes", "Cancel" );
 		}

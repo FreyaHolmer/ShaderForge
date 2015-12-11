@@ -212,64 +212,6 @@ namespace ShaderForge {
 			return s;
 		}
 
-		// TODO: EditorUtility.SetTemporarilyAllowIndieRenderTexture(true);
-		public void RenderToTexture() {
-			if( TextureAsset == null ) {
-				//Debug.Log("Texture asset missing");
-				texture.uniform = true;
-				
-				Color c = new Color(0f,0f,0f,0f);
-				switch(noTexValue){
-				case NoTexValue.Black:
-					c = new Color(0f,0f,0f,1f);
-					break;
-				case NoTexValue.Gray:
-					c = new Color(0.5f,0.5f,0.5f,1f);
-					break;
-				case NoTexValue.White:
-					c = new Color(1f,1f,1f,1f);
-					break;
-				case NoTexValue.Bump:
-					c = new Color(0.5f,0.5f,1f,1f);
-					break;
-				}
-				texture.dataUniform = c;
-				
-				
-				
-				return;
-			}
-			
-			texture.uniform = false;
-
-			SF_GUI.AllowIndieRenderTextures();
-
-			RenderTexture rt = new RenderTexture( SF_Node.NODE_SIZE, SF_Node.NODE_SIZE, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default );
-			rt.wrapMode = TextureAsset.wrapMode;
-			rt.Create();
-			Graphics.Blit( TextureAsset, rt );
-			RenderTexture.active = rt;
-			Texture2D temp = new Texture2D( SF_Node.NODE_SIZE, SF_Node.NODE_SIZE, TextureFormat.ARGB32, false );
-			temp.wrapMode = TextureAsset.wrapMode;
-			temp.ReadPixels( new Rect( 0, 0, SF_Node.NODE_SIZE, SF_Node.NODE_SIZE ), 0, 0 );
-
-			if( IsNormalMap() ) {
-				UnpackNormals( ref temp );
-			}
-
-
-
-			RenderTexture.active = null;
-			rt.Release(); // Remove RT
-			if( GetInputIsConnected( "UVIN" ) ) {
-				// UVs
-				texture.ReadData( temp, GetInputCon( "UVIN" ).node.texture ); // Read Data from temp texture
-			} else
-				texture.ReadData( temp );
-			Object.DestroyImmediate( temp ); // Destroy temp texture
-
-		}
-
 		public void UnpackNormals( ref Texture2D t ) {
 			Color[] colors = t.GetPixels();
 			for( int i = 0; i < colors.Length; i++ ) {

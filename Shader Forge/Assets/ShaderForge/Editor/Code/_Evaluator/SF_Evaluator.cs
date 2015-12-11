@@ -2455,8 +2455,8 @@ namespace ShaderForge {
 				App( "out half4 outSpecSmoothness : SV_Target1," );
 				App( "out half4 outNormal : SV_Target2," );
 				if( dependencies.frag_facing ) {
-					App( "out half4 outEmission : SV_Target3 )," );
-					App( "float facing : VFACE" );
+					App( "out half4 outEmission : SV_Target3," );
+					App( "float facing : VFACE )" );
 				} else {
 					App( "out half4 outEmission : SV_Target3 )" );
 				}

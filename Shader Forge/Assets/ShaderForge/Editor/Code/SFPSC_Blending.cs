@@ -536,6 +536,7 @@ namespace ShaderForge {
 				blendDst = BlendMode.Zero;
 				break;
 			}
+			editor.preview.InternalMaterial.renderQueue = -1;
 		}
 		
 		
@@ -793,6 +794,7 @@ namespace ShaderForge {
 			//	ConformBlendsToPreset();
 			//} // This will now throw a warning
 			UpdateAutoSort();
+			editor.preview.InternalMaterial.renderQueue = -1;
 		}
 
 

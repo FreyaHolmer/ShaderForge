@@ -1046,15 +1046,19 @@ namespace ShaderForge {
 					//if( ps.HasTransmission() || ps.HasLightWrapping() )
 						//App( "NdotL = max(0.0,NdotL);" );
 					App( "half fd90 = 0.5 + 2 * LdotH * LdotH * (1-gloss);" );
-
-						
-
-					string pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotL), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
 					if( ps.HasTransmission() || ps.HasLightWrapping() ) {
 						if( !definedNdotLwrap )
 							App( "float3 NdotLWrap = max(0,NdotL);" );
-						App( "NdotLWrap = max(float3(0,0,0), NdotLWrap);" );
-						pbrStr = "((1 +(fd90 - 1)*pow((1.00001-NdotLWrap), 5)) * (1 + (fd90 - 1)*pow((1.00001-NdotV), 5)) * NdotL)";
+						App( "float nlPow5 = Pow5(1-NdotLWrap);" );
+					} else {
+						App( "float nlPow5 = Pow5(1-NdotL);" );
+					}
+					App( "float nvPow5 = Pow5(1-NdotV);" );
+
+
+					string pbrStr = "((1 +(fd90 - 1)*nlPow5) * (1 + (fd90 - 1)*nvPow5) * NdotL)";
+
+					if( ps.HasTransmission() || ps.HasLightWrapping() ) {
 						lmbStr = "(" + lmbStr + " + " + pbrStr + ")";
 					} else {
 						lmbStr = pbrStr;
@@ -1069,12 +1073,13 @@ namespace ShaderForge {
 
 				//}
 
-				if( ps.catLighting.IsEnergyConserving() ) {
+				if( ps.catLighting.IsEnergyConserving() && !Unity5PBL() ) {
 					if( ps.HasLightWrapping() ) {
 						lmbStr += "*(0.5-max(w.r,max(w.g,w.b))*0.5)";
 					}
 				}
-
+				if(!Unity5PBL())
+					lmbStr = "(" + lmbStr + ") * max(0,NdotL)";
 
 				lmbStr = "float3 directDiffuse = " + lmbStr + " * attenColor";
 				lmbStr += ";";
@@ -1140,8 +1145,8 @@ namespace ShaderForge {
 			//App( "#endif" );
 			//	}
 
-			// This has been defined before specular, in the case of metallic PBL
-			if( !MetallicPBL() ) {
+			// This has been defined before specular, in the case of PBL
+			if( !Unity5PBL() ) {
 				App( "float3 diffuseColor = " + ps.n_diffuse + ";" );
 			}
 
@@ -1381,10 +1386,10 @@ namespace ShaderForge {
 
 			}
 
-			if( !InDeferredPass() ) {
+			if( !InDeferredPass() && !Unity5PBL() ) {
 				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.Phong )
 					directSpecular += " * pow(max(0,dot(reflect(-lightDirection, " + VarNormalDir() + "),viewDirection))";
-				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.BlinnPhong || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) {
+				if( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.BlinnPhong ) {
 					directSpecular += " * pow(max(0,dot(halfDirection," + VarNormalDir() + "))";
 				}
 				directSpecular += ",specPow)";
@@ -1394,25 +1399,27 @@ namespace ShaderForge {
 			bool initialized_NdotH = false;
 			bool initialized_VdotH = false;
 
-			
-			if( MetallicPBL() ) {
-				App( "float3 diffuseColor = " + ps.n_diffuse + "; // Need this for specular when using metallic" );
+
+			App( "float3 specularColor = " + ps.n_specular + ";" );
+			if( Unity5PBL() ) {
 				App( "float specularMonochrome;" );
-				App( "float3 specularColor;" );
-				App( "diffuseColor = DiffuseAndSpecularFromMetallic( diffuseColor, " + ps.n_specular + ", specularColor, specularMonochrome );" );
-				App( "specularMonochrome = 1-specularMonochrome;" );
-			} else {
-				App( "float3 specularColor = " + ps.n_specular + ";" );
-				if( ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.energyConserving ) && DoPassDiffuse() && DoPassSpecular() )
-					App( "float specularMonochrome = max( max(specularColor.r, specularColor.g), specularColor.b);" );
+				App( "float3 diffuseColor = " + ps.n_diffuse + "; // Need this for specular when using metallic" );
+				if( MetallicPBL() ) {
+					App( "diffuseColor = DiffuseAndSpecularFromMetallic( diffuseColor, specularColor, specularColor, specularMonochrome );" );
+				} else {
+					App( "diffuseColor = EnergyConservationBetweenDiffuseAndSpecular(diffuseColor, specularColor, specularMonochrome);" );
+				}
+				App( "specularMonochrome = 1.0-specularMonochrome;" );
+			} else if( ps.catLighting.energyConserving && DoPassDiffuse() && DoPassSpecular() ){
+				App( "float specularMonochrome = max( max(specularColor.r, specularColor.g), specularColor.b);" );
 			}
 			
-			
 
 			
 			
+			
 
-
+			
 			string specularPBL = "";
 
 			// PBL SHADING, normalization term comes after this
@@ -1446,13 +1453,13 @@ namespace ShaderForge {
 					initialized_VdotH = true;
 				}
 
-				App( "float visTerm = SmithBeckmannVisibilityTerm( NdotL, NdotV, 1.0-gloss );" );
+				App( "float visTerm = SmithJointGGXVisibilityTerm( NdotL, NdotV, 1.0-gloss );" );
 
 				specularPBL += "*visTerm";
 
 				
 				
-
+				
 
 
 			} else {
@@ -1475,7 +1482,7 @@ namespace ShaderForge {
 							initialized_NdotH = true;
 						}
 
-						App( "float normTerm = max(0.0, NDFBlinnPhongNormalizedTerm(NdotH, RoughnessToSpecPower(1.0-gloss)));" );
+						App( "float normTerm = max(0.0, GGXTerm(NdotH, 1.0-gloss));" );
 						specularPBL += "*normTerm";
 						
 					} else {
@@ -1505,19 +1512,20 @@ namespace ShaderForge {
 						App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
 						initialized_NdotV = true;
 					}
-
+				
 
 
 					specularPBL = specularPBL.Substring( 1 ); // Remove first * symbol
-					specularPBL = "float specularPBL = max(0, (" + specularPBL + ") * (UNITY_PI / 4) );";
-
+					specularPBL = "float specularPBL = (" + specularPBL + ") * (UNITY_PI / 4);";
+				
 					App( specularPBL );
 
-				}
+					App( "if (IsGammaSpace())" );
+					scope++;
+					App( "specularPBL = sqrt(max(1e-4h, specularPBL));" );
+					scope--;
+					App( "specularPBL = max(0, specularPBL * NdotL);" );
 
-
-
-				if( Unity5PBL() ) {
 					directSpecular += "*specularPBL*lightColor*FresnelTerm(specularColor, LdotH)";
 				} else {
 					directSpecular += "*specularColor";

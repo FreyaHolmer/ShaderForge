@@ -128,11 +128,12 @@ namespace ShaderForge {
 					return new Color( 1f, 1f, 1f );
 			}
 		}
-		public Color color = colorEnabledDefault;
+		public Color color;
 		public string unconnectedEvaluationValue = null;
 
 		public void OnEnable() {
 			base.hideFlags = HideFlags.HideAndDontSave;
+			color = colorEnabledDefault;
 		}
 
 		public SF_NodeConnector() {

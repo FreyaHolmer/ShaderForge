@@ -106,16 +106,23 @@ namespace ShaderForge {
 		public ShaderFogMode fogMode = ShaderFogMode.Global;
 		
 		public bool fogOverrideColor = false;
-		public Color fogColor = RenderSettings.fogColor;
+		public Color fogColor;
 		
 		public bool fogOverrideDensity = false;
-		public float fogDensity = RenderSettings.fogDensity;
+		public float fogDensity;
 		
 		public bool fogOverrideRange = false;
-		public Vector2 fogRange = new Vector2(RenderSettings.fogStartDistance, RenderSettings.fogEndDistance);
+		public Vector2 fogRange;
 
 
 		public bool useStencilBuffer = false;
+
+
+		new void OnEnable() {
+			fogColor = RenderSettings.fogColor;
+			fogDensity = RenderSettings.fogDensity;
+			fogRange = new Vector2( RenderSettings.fogStartDistance, RenderSettings.fogEndDistance );
+		}
 
 
 		public override string Serialize(){

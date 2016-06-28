@@ -63,7 +63,6 @@ namespace ShaderForge {
 
 
 		public SF_NodePreview() {
-			InitializeTexture();
 		}
 
 		public void OnEnable() {
@@ -71,7 +70,8 @@ namespace ShaderForge {
 
 			if( texture == null ) {
 				InitializeTexture();
-				node.RefreshValue();
+				if(node)
+					node.RefreshValue();
 			}
 
 		}
@@ -92,7 +92,8 @@ namespace ShaderForge {
 		public ColorSpace textureColorSpace = ColorSpace.Uninitialized;
 
 		public void InitializeTexture() {
-			texture = CreateNewNodeRT();
+			if(texture == null)
+				texture = CreateNewNodeRT();
 			textureColorSpace = QualitySettings.activeColorSpace;
 		}
 

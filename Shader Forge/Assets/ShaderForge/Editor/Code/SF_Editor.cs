@@ -95,33 +95,24 @@ namespace ShaderForge {
 			if(SF_Debug.window)
 				Debug.Log( "[SF_LOG] - SF_Editor CONSTRUCTOR SF_Editor()" );
 			SF_Editor.instance = this;
+		}
+
+		[MenuItem( "Window/Shader Forge" )]
+		static void InitEmpty() {
+			if( SF_Editor.instance == null )
+				Init( null );
+			else {
+				EditorWindow.GetWindow( typeof( SF_Editor ) ); // Focus
+			}
+		}
+		 
+		void OnEnable() {
+			SF_Settings.LoadAllFromDisk();
 #if UNITY_5_0
 			HOPanelUtils.SetWindowTitle( this, (Texture)SF_GUI.Icon, "Shader Forge" );
 #else
 			titleContent = new GUIContent( "Shader Forge", (Texture)SF_GUI.Icon );
 #endif
-		}
-
-		[MenuItem( "Window/Shader Forge" )]
-		static void InitEmpty() {
-			//Debug.Log( "[SF_LOG] - SF_Editor InitEmpty()" );
-			if( SF_Editor.instance == null )
-				Init( null );
-			else {
-				//Debug.Log( "[SF_LOG] - BEFORE EditorWindow.GetWindow( typeof(SF_Editor) )" );
-				EditorWindow.GetWindow( typeof( SF_Editor ) ); // Focus
-				//Debug.Log( "[SF_LOG] - AFTER EditorWindow.GetWindow( typeof(SF_Editor) )" );
-			}
-		}
-
-		//[MenuItem( "Assets/Create/Shader Forge Shader", false, 90 )]
-		//public static void CreateGO() {
-		//
-		//}
-
-		 
-		void OnEnable() {
-			SF_Settings.LoadAllFromDisk();
 		}
 
 		void OnDisable(){

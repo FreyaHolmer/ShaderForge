@@ -79,8 +79,9 @@ namespace ShaderForge {
 		private string ToCodeType(CustomValueType cvt){
 			if(cvt == CustomValueType.Sampler2D)
 				return "sampler2D"; // Uppercase D
-			else
-				return cvt.ToString().ToLower();
+			if( cvt == CustomValueType.Matrix4x4 )
+				return "float4x4";
+			return cvt.ToString().ToLower();
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {

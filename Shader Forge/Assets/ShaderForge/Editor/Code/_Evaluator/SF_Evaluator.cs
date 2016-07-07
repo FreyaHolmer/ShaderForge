@@ -1078,8 +1078,6 @@ namespace ShaderForge {
 						lmbStr += "*(0.5-max(w.r,max(w.g,w.b))*0.5)";
 					}
 				}
-				if(!Unity5PBL())
-					lmbStr = "(" + lmbStr + ") * max(0,NdotL)";
 
 				lmbStr = "float3 directDiffuse = " + lmbStr + " * attenColor";
 				lmbStr += ";";

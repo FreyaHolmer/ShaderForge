@@ -1524,7 +1524,7 @@ namespace ShaderForge {
 					scope--;
 					App( "specularPBL = max(0, specularPBL * NdotL);" );
 
-					directSpecular += "*specularPBL*lightColor*FresnelTerm(specularColor, LdotH)";
+					directSpecular += "*specularPBL*FresnelTerm(specularColor, LdotH)";
 				} else {
 					directSpecular += "*specularColor";
 				}

@@ -12,6 +12,7 @@ namespace ShaderForge {
 			base.Initialize( "Append" );
 			base.showColor = true;
 			UseLowerReadonlyValues( true );
+			SFN_Append.channelColors[3] = SF_NodeConnector.colorEnabledDefault;
 
 			connectors = new SF_NodeConnector[]{
 				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTvPending,false),
@@ -124,7 +125,7 @@ namespace ShaderForge {
 		}
 
 
-		static Color[] channelColors = new Color[4] { Color.red, Color.green, Color.blue, SF_NodeConnector.colorEnabledDefault };
+		static Color[] channelColors = new Color[4] { Color.red, Color.green, Color.blue, Color.white };
 
 		public override void PrepareRendering( Material mat ) {
 

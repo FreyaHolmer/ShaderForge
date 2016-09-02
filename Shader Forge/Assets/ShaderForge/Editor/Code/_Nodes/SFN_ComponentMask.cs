@@ -41,7 +41,7 @@ namespace ShaderForge {
 			Color.red,
 			Color.green,
 			Color.blue,
-			SF_NodeConnector.colorEnabledDefault
+			Color.white
 		};
 
 
@@ -82,6 +82,7 @@ namespace ShaderForge {
 			base.shaderGenMode = ShaderGenerationMode.Modal;
 			UseLowerReadonlyValues( true );
 			UseLowerPropertyBox( true, true );
+			SFN_ComponentMask.outputChanColors[3] = SF_NodeConnector.colorEnabledDefault;
 			
 
 			popupStyle = new GUIStyle( EditorStyles.miniButton );

@@ -1309,11 +1309,7 @@ namespace ShaderForge {
 							#endif
 			 * */
 
-			if( !( currentPass == PassType.FwdBase && LightmappedAndLit() ) ) {
-				directSpecular += attColStr; /* * " + ps.n_specular;*/ // TODO: Doesn't this double the spec? Removed for now. Shouldn't evaluate spec twice when using PBL
-			} else {
-				directSpecular += "1";
-			}
+			directSpecular += attColStr; /* * " + ps.n_specular;*/ // TODO: Doesn't this double the spec? Removed for now. Shouldn't evaluate spec twice when using PBL
 
 
 

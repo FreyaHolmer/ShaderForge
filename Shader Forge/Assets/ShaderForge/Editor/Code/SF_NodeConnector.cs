@@ -133,7 +133,8 @@ namespace ShaderForge {
 
 		public void OnEnable() {
 			base.hideFlags = HideFlags.HideAndDontSave;
-			color = colorEnabledDefault;
+			if(color == default(Color))
+				color = colorEnabledDefault;
 		}
 
 		public SF_NodeConnector() {

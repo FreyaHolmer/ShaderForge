@@ -122,6 +122,7 @@ namespace ShaderForge {
 			fogColor = RenderSettings.fogColor;
 			fogDensity = RenderSettings.fogDensity;
 			fogRange = new Vector2( RenderSettings.fogStartDistance, RenderSettings.fogEndDistance );
+			base.hideFlags = HideFlags.HideAndDontSave;
 		}
 
 

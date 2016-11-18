@@ -132,7 +132,7 @@ namespace ShaderForge {
 			// Reflection of PreviewRenderUtility
 			Type pruType = Type.GetType( "UnityEditor.PreviewRenderUtility,UnityEditor" );
 			BindingFlags bfs = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-			pruBegin = pruType.GetMethod( "BeginPreview", bfs );
+			pruBegin = pruType.GetMethod( "BeginPreview", new Type[]{ typeof(Rect), typeof(GUIStyle) } );
 			pruEnd = pruType.GetMethod( "EndPreview", bfs );
 			//pruDrawMesh = pruType.GetMethod( "DrawMesh", bfs, null,
 			//new Type[] { typeof( Mesh ), typeof( Vector3 ), typeof( Quaternion ), typeof( Material ), typeof( int ) }, null );
@@ -405,6 +405,7 @@ namespace ShaderForge {
 			UpdateRenderPath();
 			pruBegin.Invoke( pruRef, new object[] { previewRect, previewStyle } );
 
+			RenderTexture prevTexture = pruCam.targetTexture;
 			CameraClearFlags clearPrev = pruCam.clearFlags;
 			RenderingPath prevPath = pruCam.renderingPath;
 			if( overrideRT != null ) {
@@ -448,6 +449,7 @@ namespace ShaderForge {
 			if( sphere ) // Reset if needed
 				pruCam.fieldOfView = smoothFOV;
 			if( overrideRT != null ) { // Reset if needed
+				pruCam.targetTexture = prevTexture;
 				pruCam.clearFlags = clearPrev;
 				pruCam.renderingPath = prevPath;
 			}

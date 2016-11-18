@@ -102,8 +102,10 @@ namespace ShaderForge {
 		public void DestroyTexture() {
 			if( RenderTexture.active == texture )
 				RenderTexture.active = null;
-			texture.Release();
-			DestroyImmediate( texture );
+			if( texture != null ) {
+				texture.Release();
+				DestroyImmediate( texture );
+			}
 
 			if( textureChannels != null ) {
 				for( int i = 0; i < textureChannels.Length; i++ ) {

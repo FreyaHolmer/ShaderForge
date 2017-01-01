@@ -52,7 +52,7 @@ namespace ShaderForge {
 			else{
 				AssetImporter importer = UnityEditor.AssetImporter.GetAtPath( path );
 				if(importer is TextureImporter)
-					return ((TextureImporter)importer).normalmap;
+					return ((TextureImporter)importer).textureType == TextureImporterType.NormalMap;
 				else if(textureAsset is ProceduralTexture && textureAsset.name.EndsWith("_Normal"))
 					return true; // When it's a ProceduralTexture having _Normal as a suffix
 				else
@@ -290,7 +290,7 @@ namespace ShaderForge {
 			else{
 				AssetImporter importer = UnityEditor.AssetImporter.GetAtPath( path );
 				if(importer is TextureImporter)
-					newAssetIsNormalMap = ((TextureImporter)importer).normalmap;
+					newAssetIsNormalMap = ((TextureImporter)importer ).textureType == TextureImporterType.NormalMap;
 				else if(textureAsset is ProceduralTexture && textureAsset.name.EndsWith("_Normal"))
 					newAssetIsNormalMap = true; // When it's a ProceduralTexture having _Normal as a suffix
 				else

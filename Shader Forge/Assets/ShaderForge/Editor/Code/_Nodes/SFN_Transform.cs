@@ -18,8 +18,8 @@ namespace ShaderForge {
 			"UNITY_MATRIX_VP",
 			"UNITY_MATRIX_T_MV",
 			"UNITY_MATRIX_IT_MV",
-			"_Object2World",
-			"_World2Object",
+			"unity_Object2World",
+			"unity_WorldToObject",
 			"tangentTransform"
 		};
 
@@ -111,7 +111,7 @@ namespace ShaderForge {
 
 			// From world space
 			if( FromTo( Space.World, Space.Local) ){
-				return "mul( _World2Object, " + GetInVector() + " ).xyz";
+				return "mul( unity_WorldToObject, " + GetInVector() + " ).xyz";
 			}
 			if( FromTo( Space.World, Space.Tangent) ){
 				return "mul( tangentTransform, "+ GetInVector(tangent:true)+" ).xyz";
@@ -123,10 +123,10 @@ namespace ShaderForge {
 
 			// From local space
 			if( FromTo( Space.Local, Space.World) ){
-				return "mul( _Object2World, " + GetInVector() + " ).xyz";
+				return "mul( unity_Object2World, " + GetInVector() + " ).xyz";
 			}
 			if(FromTo(Space.Local, Space.Tangent)){
-				return "mul( tangentTransform, "+ "mul( _Object2World, " + GetInVector() + " ).xyz"+" ).xyz";
+				return "mul( tangentTransform, " + "mul( unity_Object2World, " + GetInVector() + " ).xyz" + " ).xyz";
 			}
 			if( FromTo(Space.Local, Space.View)){
 				return "mul( UNITY_MATRIX_MV, " + GetInVector() + " ).xyz";
@@ -140,7 +140,7 @@ namespace ShaderForge {
 				return "mul( "+ GetInVector(tangent:true)+", tangentTransform ).xyz";
 			}
 			if( FromTo( Space.Tangent, Space.Local) ){
-				return "mul( _World2Object, " + "float4(mul( "+ GetInVector(tangent:true)+", tangentTransform ),0)" + " ).xyz";
+				return "mul( unity_WorldToObject, " + "float4(mul( "+ GetInVector(tangent:true)+", tangentTransform ),0)" + " ).xyz";
 			}
 			if( FromTo( Space.Tangent, Space.View) ){
 				return "mul( UNITY_MATRIX_V, " + "float4(mul( "+ GetInVector(tangent:true)+", tangentTransform ),0)" + " ).xyz";

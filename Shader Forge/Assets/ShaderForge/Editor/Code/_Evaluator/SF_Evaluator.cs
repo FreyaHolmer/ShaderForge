@@ -871,7 +871,7 @@ namespace ShaderForge {
 
 		void InitViewDirVert() {
 			if( dependencies.vert_viewDirection )
-				App( "float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - mul(_Object2World, v.vertex).xyz);" );
+				App( "float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - mul(unity_ObjectToWorld, v.vertex).xyz);" );
 		}
 		void InitViewDirFrag() {
 			if( dependencies.frag_viewDirection )
@@ -1188,7 +1188,7 @@ namespace ShaderForge {
 		}
 
 		void InitTangentDirVert() {
-			App( "o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );" );
+			App( "o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );" );
 		}
 
 		void InitBitangentDirVert() {
@@ -1197,11 +1197,11 @@ namespace ShaderForge {
 
 		void InitObjectPos() {
 			if( dependencies.frag_objectPos || dependencies.vert_objectPos )
-				App( "float4 objPos = mul ( _Object2World, float4(0,0,0,1) );" );
+				App( "float4 objPos = mul ( unity_ObjectToWorld, float4(0,0,0,1) );" );
 		}
 		void InitObjectScale() {
 			if( dependencies.objectScaleReciprocal || dependencies.objectScale )
-				App( "float3 recipObjScale = float3( length(_World2Object[0].xyz), length(_World2Object[1].xyz), length(_World2Object[2].xyz) );" );
+				App( "float3 recipObjScale = float3( length(unity_WorldToObject[0].xyz), length(unity_WorldToObject[1].xyz), length(unity_WorldToObject[2].xyz) );" );
 			if( dependencies.objectScale )
 				App( "float3 objScale = 1.0/recipObjScale;" );
 		}
@@ -1228,7 +1228,7 @@ namespace ShaderForge {
 					App( "float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals" );
 				} else if( ps.HasObjectSpaceNormalMap() ) {
 					App( "float3 normalLocal = " + ps.n_normals + ";" );
-					App( "float3 normalDirection = mul( _World2Object, float4(normalLocal,0)) / recipObjScale;" );
+					App( "float3 normalDirection = mul( unity_WorldToObject, float4(normalLocal,0)) / recipObjScale;" );
 				} else if( ps.HasWorldSpaceNormalMap() ) {
 					App( "float3 normalDirection = " + ps.n_normals + ";" );
 				} else {
@@ -1932,14 +1932,23 @@ namespace ShaderForge {
 
 
 				if(DoPassSpecular() && ps.catLighting.reflectprobed){
-					App("d.boxMax[0] = unity_SpecCube0_BoxMax;");
+					App( "#if UNITY_SPECCUBE_BLENDING || UNITY_SPECCUBE_BOX_PROJECTION" );
+					scope++;
 					App("d.boxMin[0] = unity_SpecCube0_BoxMin;");
-					App("d.probePosition[0] = unity_SpecCube0_ProbePosition;");
-					App("d.probeHDR[0] = unity_SpecCube0_HDR;");
-					
-					App("d.boxMax[1] = unity_SpecCube1_BoxMax;");
 					App("d.boxMin[1] = unity_SpecCube1_BoxMin;");
+					scope--;
+					App( "#endif" );
+
+					App( "#if UNITY_SPECCUBE_BOX_PROJECTION" );
+					scope++;
+					App("d.boxMax[0] = unity_SpecCube0_BoxMax;");
+					App("d.boxMax[1] = unity_SpecCube1_BoxMax;");
+					App("d.probePosition[0] = unity_SpecCube0_ProbePosition;");
 					App("d.probePosition[1] = unity_SpecCube1_ProbePosition;");
+					scope--;
+					App( "#endif" );
+
+					App("d.probeHDR[0] = unity_SpecCube0_HDR;");
 					App("d.probeHDR[1] = unity_SpecCube1_HDR;");
 
 				}
@@ -2310,7 +2319,7 @@ namespace ShaderForge {
 			}
 
 			if( dependencies.vert_out_worldPos )
-				App( "o.posWorld = mul(_Object2World, v.vertex);" );
+				App( "o.posWorld = mul(unity_ObjectToWorld, v.vertex);" );
 
 
 
@@ -2339,15 +2348,15 @@ namespace ShaderForge {
 
 
 				App("float4x4 bbmv = UNITY_MATRIX_MV;");
-				App( "bbmv._m00 = -1.0/length(_World2Object[0].xyz);" );
+				App( "bbmv._m00 = -1.0/length(unity_WorldToObject[0].xyz);" );
 				App( "bbmv._m10 = 0.0f;" );
 				App( "bbmv._m20 = 0.0f;" );
 				App( "bbmv._m01 = 0.0f;" );
-				App( "bbmv._m11 = -1.0/length(_World2Object[1].xyz);" );
+				App( "bbmv._m11 = -1.0/length(unity_WorldToObject[1].xyz);" );
 				App( "bbmv._m21 = 0.0f;" );
 				App( "bbmv._m02 = 0.0f;" );
 				App( "bbmv._m12 = 0.0f;" );
-				App( "bbmv._m22 = -1.0/length(_World2Object[2].xyz);" );
+				App( "bbmv._m22 = -1.0/length(unity_WorldToObject[2].xyz);" );
 
 
 				positioningPrefix = "mul( UNITY_MATRIX_P, mul( bbmv, ";

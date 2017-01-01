@@ -132,8 +132,8 @@ namespace ShaderForge {
 			case CustomValueType.Sampler2D:
 				return 4;
 			default:
-				Debug.Log("Invalid component count check of custom value type: " + cvt);
-				return 0;
+				// Debug.Log("Invalid component count check of custom value type: " + cvt);
+				return 16;
 			}
 
 

@@ -295,7 +295,13 @@ namespace ShaderForge {
 						return precision.ToCode() + "4x4";
 					else
 						return precision.ToCode() + "4";
+				}
+			}
 
+			if( this is SFN_Code ) {
+				if( GetConnectorByStringID( "OUT" ).IsConnected() ) {
+					if( GetConnectorByStringID( "OUT" ).valueType == ValueType.VTm4x4)
+						return precision.ToCode() + "4x4";
 				}
 			}
 

@@ -31,9 +31,7 @@ namespace ShaderForge{
 			new SFIns_PassPlat(RenderPlatform.gles3),
 			new SFIns_PassPlat(RenderPlatform.metal),
 			new SFIns_PassPlat(RenderPlatform.d3d11_9x),
-			new SFIns_PassPlat(RenderPlatform.xbox360),
 			new SFIns_PassPlat(RenderPlatform.xboxone),
-			new SFIns_PassPlat(RenderPlatform.ps3),
 			new SFIns_PassPlat(RenderPlatform.ps4),
 			new SFIns_PassPlat(RenderPlatform.psp2)
 		};
@@ -55,6 +53,16 @@ namespace ShaderForge{
 
 			if( split[1] == "flash" ) {
 				Debug.LogWarning( "Flash is no longer supported by Unity, and was removed from the shader" );
+				return;
+			}
+
+			if( split[1] == "ps3" ) {
+				Debug.LogWarning( "PS3 is no longer supported by Unity since 5.5, and was removed from the shader" );
+				return;
+			}
+
+			if( split[1] == "xbox360" ) {
+				Debug.LogWarning( "Xbox 360 is no longer supported by Unity since 5.5, and was removed from the shader" );
 				return;
 			}
 

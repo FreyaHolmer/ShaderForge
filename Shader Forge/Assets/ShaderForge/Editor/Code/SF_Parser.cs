@@ -250,11 +250,6 @@ namespace ShaderForge {
 			return !string.IsNullOrEmpty( sfData );
 		}
 		
-
-
-
-
-
 		public static void ParseRenderer( string[] arr, bool only ) {
 			for( int i = 0; i < editor.ps.catMeta.usedRenderers.Length; i++ ) {
 				editor.ps.catMeta.usedRenderers[i] = !only; // Enable or disable all
@@ -263,14 +258,20 @@ namespace ShaderForge {
 				string rndr = arr[i];
 				if( rndr == "flash" ) {
 					Debug.LogWarning( "Flash is no longer supported by Unity, and was removed from the shader" );
-					return;
+					continue;
+				}
+				if( rndr == "ps3" ) {
+					Debug.LogWarning( "PS3 is no longer supported by Unity since 5.5, and was removed from the shader" );
+					continue;
+				}
+				if( rndr == "xbox360" ) {
+					Debug.LogWarning( "Xbox 360 is no longer supported by Unity since 5.5, and was removed from the shader" );
+					continue;
 				}
 				int enm = (int)((RenderPlatform)Enum.Parse( typeof( RenderPlatform ), rndr ));
 				editor.ps.catMeta.usedRenderers[enm] = only; // Disable or enable one
 			}
 		}
-
-
 
 	}
 }

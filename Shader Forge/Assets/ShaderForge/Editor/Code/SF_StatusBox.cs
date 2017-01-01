@@ -292,12 +292,6 @@ namespace ShaderForge {
 			// Let's check our build target!
 			BuildTarget active = EditorUserBuildSettings.activeBuildTarget;
 
-			// Specific ones:
-			if(active == BuildTarget.PS3 && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.ps3])
-				return RenderPlatform.ps3;
-			if(active == BuildTarget.XBOX360 && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.xbox360])
-				return RenderPlatform.xbox360;
-
 			// Mobile platforms
 			// 9 =  BuildTarget.iPhone		// Unity 4.x
 			// 9 =  BuildTarget.iOS			// Unity 5.x

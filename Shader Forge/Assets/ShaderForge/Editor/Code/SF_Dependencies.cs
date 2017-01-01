@@ -86,14 +86,13 @@ namespace ShaderForge {
 
 
 		int shaderTarget = 3; // Shader target: #pragma target 3.0
-		public List<RenderPlatform> excludeRenderers;
+		public List<RenderPlatform> includeRenderers;
 
 		public SF_Dependencies(SF_PassSettings ps) {
-			excludeRenderers = new List<RenderPlatform>();
+			includeRenderers = new List<RenderPlatform>();
 			for( int i = 0; i < ps.catMeta.usedRenderers.Length; i++ ) {
-				if( !ps.catMeta.usedRenderers[i] ) {
-					excludeRenderers.Add( ( RenderPlatform )i );
-					//Debug.Log("Excluding " +( RenderPlatform )i);
+				if( ps.catMeta.usedRenderers[i] ) {
+					includeRenderers.Add( (RenderPlatform)i );
 				}
 			}
 			
@@ -262,23 +261,23 @@ namespace ShaderForge {
 
 
 
-		public void ExcludeRenderPlatform( RenderPlatform plat ) {
-			if( !excludeRenderers.Contains( plat ) ) {
-				excludeRenderers.Add( plat );
+		public void IncludeRenderPlatform( RenderPlatform plat ) {
+			if( includeRenderers.Contains( plat ) == false ) {
+				includeRenderers.Add( plat );
 			}
 		}
 
-		public bool DoesExcludePlatforms() {
-			return excludeRenderers.Count > 0;
+		public bool DoesIncludePlatforms() {
+			return includeRenderers.Count > 0;
 		}
 
 		public bool IsTargetingAboveDefault() {
 			return ( shaderTarget > 2 );
 		}
 
-		public string GetExcludePlatforms() {
+		public string GetIncludedPlatforms() {
 			string s = "";
-			foreach( RenderPlatform plat in excludeRenderers )
+			foreach( RenderPlatform plat in includeRenderers )
 				s += plat.ToString() + " ";
 			//Debug.Log("Exclude Str: " + s);
 			return s;

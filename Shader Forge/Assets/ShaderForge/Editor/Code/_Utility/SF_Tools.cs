@@ -16,11 +16,9 @@ namespace ShaderForge {
 		gles3		= 4,	// - OpenGL ES 3.0
 		metal		= 5,	// - iOS Metal
 		d3d11_9x 	= 6,	// - Direct3D 11 windows RT
-		xbox360 	= 7,	// - Xbox 360
-		xboxone 	= 8,	// - Xbox One
-		ps3 		= 9,	// - PlayStation 3
-		ps4 		= 10,	// - PlayStation 4
-		psp2 		= 11	// - PlayStation Vita
+		xboxone 	= 7,	// - Xbox One
+		ps4 		= 8,	// - PlayStation 4
+		psp2 		= 9	// - PlayStation Vita
 	};
 	
 
@@ -29,7 +27,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 1;
-		public static int versionNumSecondary = 30;
+		public static int versionNumSecondary = 31;
 		public static string versionStage = "";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge v" + version;
@@ -48,9 +46,7 @@ namespace ShaderForge {
 			"OpenGL ES 3.0",
 			"iOS Metal",
 			"Direct3D 11 for Windows RT/Phone",
-			"Xbox 360",
 			"Xbox One",
-			"PlayStation 3",
 			"PlayStation 4",
 			"PlayStation Vita"
 		};

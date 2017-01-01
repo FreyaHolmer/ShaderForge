@@ -635,8 +635,8 @@ namespace ShaderForge {
 
 
 
-			if( dependencies.DoesExcludePlatforms() )
-				App( "#pragma exclude_renderers " + dependencies.GetExcludePlatforms() );
+			if( dependencies.DoesIncludePlatforms() )
+				App( "#pragma only_renderers " + dependencies.GetIncludedPlatforms() );
 			if( dependencies.IsTargetingAboveDefault() ) {
 				if( ps.catExperimental.force2point0 )
 					App( "#pragma target 2.0" );
@@ -1967,7 +1967,6 @@ namespace ShaderForge {
 
 
 		}
-
 
 
 
@@ -3326,8 +3325,10 @@ namespace ShaderForge {
 			if( !string.IsNullOrEmpty( s ) )
 				App( s );
 		}
+		public void AppFormat( string s, params object[] args ) {
+			App( string.Format( s, args ) );
+		}
 		public void App( string s ) {
-
 			if( s.Contains( "\n" ) ) {
 				string[] split = s.Split( '\n' );
 				for( int i = 0; i < split.Length; i++ ) {
@@ -3336,8 +3337,6 @@ namespace ShaderForge {
 			} else {
 				shaderString += GetScopeTabs() + s + "\n";
 			}
-
-
 		}
 		public void AppDebug( string s ) {
 			//if(DEBUG)

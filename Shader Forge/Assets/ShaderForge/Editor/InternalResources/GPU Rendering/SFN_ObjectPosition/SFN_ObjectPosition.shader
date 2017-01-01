@@ -33,7 +33,7 @@ Shader "Hidden/Shader Forge/SFN_ObjectPosition" {
             }
             float4 frag(VertexOutput i) : COLOR {
                 // Operator
-                float4 outputColor = mul ( _Object2World, float4(0,0,0,1) );
+                float4 outputColor = mul ( unity_ObjectToWorld, float4(0,0,0,1) );
                 return outputColor * _OutputMask;
             }
             ENDCG

@@ -30,7 +30,7 @@ Shader "Hidden/Shader Forge/SFN_FragmentPosition" {
                 VertexOutput o = (VertexOutput)0;
                 o.uv = v.texcoord0;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
-                o.posWorld = mul(_Object2World, v.vertex);
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {

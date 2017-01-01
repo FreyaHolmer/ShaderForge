@@ -38,7 +38,7 @@ Shader "Hidden/Shader Forge/SFN_Transform" {
                 VertexOutput o = (VertexOutput)0;
                 o.uv0 = v.texcoord0;
                 o.normalDir = UnityObjectToWorldNormal(v.normal);
-                o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
+                o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
                 return o;
@@ -64,7 +64,7 @@ Shader "Hidden/Shader Forge/SFN_Transform" {
 
                 if(_FromSpace == 0){
                 	if(_ToSpace == 1){ 
-                		outputColor = mul( _World2Object, _in );		// World To Local
+                		outputColor = mul( unity_WorldToObject, _in );		// World To Local
                 	} else if(_ToSpace == 2){ 
                 		outputColor.xyz = mul( tangentTransform, _in.xyz );	// World To Tangent
                 	} else if(_ToSpace == 3){ 
@@ -72,9 +72,9 @@ Shader "Hidden/Shader Forge/SFN_Transform" {
                 	}
                 } else if( _FromSpace = 1 ){
                 	if(_ToSpace == 0){ 
-                		outputColor = mul( _Object2World, _in );								// Local To World
+                		outputColor = mul( unity_ObjectToWorld, _in );								// Local To World
                 	} else if(_ToSpace == 2){ 
-                		outputColor.xyz = mul( tangentTransform, mul( _Object2World, _in ).xyz );	// Local To Tangent
+                		outputColor.xyz = mul( tangentTransform, mul( unity_ObjectToWorld, _in ).xyz );	// Local To Tangent
                 	} else if(_ToSpace == 3){ 
                 		outputColor = mul( UNITY_MATRIX_MV, _in );								// Local To View
                 	}
@@ -82,7 +82,7 @@ Shader "Hidden/Shader Forge/SFN_Transform" {
                 	if(_ToSpace == 0){ 
                 		outputColor.xyz = mul( _in.xyz, tangentTransform );										// Tangent To World
                 	} else if(_ToSpace == 1){ 
-                		outputColor = mul( _World2Object, float4(mul( _in.xyz, tangentTransform ), 0) );	// Tangent To Local
+                		outputColor = mul( unity_WorldToObject, float4(mul( _in.xyz, tangentTransform ), 0) );	// Tangent To Local
                 	} else if(_ToSpace == 3){ 
                 		outputColor = mul( UNITY_MATRIX_V, float4(mul( _in.xyz, tangentTransform ), 0) );	// Tangent To View
                 	}

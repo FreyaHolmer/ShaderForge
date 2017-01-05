@@ -178,20 +178,18 @@ namespace ShaderForge {
 			float pWidth = r.width;
 			
 			
-			bool onlyDX11 = ps.mOut.tessellation.IsConnectedAndEnabled();
-			bool onlyDX = false;//editor.nodeView.treeStatus.mipInputUsed;
+			bool onlyDX11GlCore = ps.mOut.tessellation.IsConnectedAndEnabled();
 			
 			
 			for(int i=0;i<usedRenderers.Length;i++){
-				bool isDX = ( i == 0 || i == 1 );
-				bool isDX11 = (i == 1);
+				bool isDX11orGlCore = ( i == (int)RenderPlatform.d3d11 ) || i == (int)RenderPlatform.glcore;
 				
 				r.width = 20;
 				
 				bool prevEnable = GUI.enabled;
 				//bool displayBool = usedRenderers[i];
-				
-				bool shouldDisable = ( !isDX && onlyDX ) || ( !isDX11 && onlyDX11 );
+
+				bool shouldDisable = !isDX11orGlCore && onlyDX11GlCore;
 				
 				if( shouldDisable ) {
 					GUI.enabled = false;

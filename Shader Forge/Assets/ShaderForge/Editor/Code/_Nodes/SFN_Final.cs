@@ -75,8 +75,8 @@ namespace ShaderForge {
 				outlineWidth 			= SF_NodeConnector.Create(this,"olwid",		 		  "Outline Width",  ConType.cInput, ValueType.VTv1			,true					).Skip(PassType.Meta, PassType.ShadCast, PassType.FwdAdd, PassType.FwdBase).DisplayLockIfDeferredPrePassIsOn(),
 				outlineColor 			= SF_NodeConnector.Create(this,"olcol",		 	 	  "Outline Color",  ConType.cInput, ValueType.VTvPending	,true,"float3(0,0,0)"	).Skip(PassType.Meta, PassType.ShadCast, PassType.FwdAdd, PassType.FwdBase).TypecastTo(3).DisplayLockIfDeferredPrePassIsOn(),
 				vertexOffset 			= SF_NodeConnector.Create(this,"voffset",		 	  "Vertex Offset",	ConType.cInput, ValueType.VTvPending	,true					).ForceBlock(ShaderProgram.Vert).TypecastTo(3),
-				displacement 			= SF_NodeConnector.Create(this,"disp",		 	  "DX11 Displacement",	ConType.cInput, ValueType.VTv3			,true					).ForceBlock(ShaderProgram.Vert).TypecastTo(3),
-				tessellation 			= SF_NodeConnector.Create(this,"tess",		 	  "DX11 Tessellation",	ConType.cInput, ValueType.VTv1			,true					).ForceBlock(ShaderProgram.Vert)
+				displacement 			= SF_NodeConnector.Create(this,"disp",		 		   "Displacement",	ConType.cInput, ValueType.VTv3			,true					).ForceBlock(ShaderProgram.Vert).TypecastTo(3),
+				tessellation 			= SF_NodeConnector.Create(this,"tess",		 		   "Tessellation",	ConType.cInput, ValueType.VTv1			,true					).ForceBlock(ShaderProgram.Vert)
 			};
 
 			//distortion.enableState = EnableState.Disabled;

@@ -643,8 +643,7 @@ namespace ShaderForge {
 				else
 					App( "#pragma target " + dependencies.GetShaderTarget() );
 			}
-			if( editor.nodeView.treeStatus.mipInputUsed || editor.nodeView.treeStatus.texturesInVertShader || dependencies.pragmaGlsl )
-				App( "#pragma glsl" ); // Kills non DX instruction counts
+
 		}
 		void EndCG() {
 			App( "ENDCG" );

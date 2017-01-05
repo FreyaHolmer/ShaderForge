@@ -23,7 +23,7 @@ namespace ShaderForge {
 		wiiu		= 11	// - Nintendo Wii U
 	};
 	
-
+	
 
 	public static class SF_Tools {
 

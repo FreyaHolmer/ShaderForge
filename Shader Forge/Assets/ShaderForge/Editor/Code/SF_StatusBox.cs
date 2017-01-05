@@ -304,8 +304,8 @@ namespace ShaderForge {
 
 			// Standalone / Webplayer. In this case, it depends on what the user is using
 			// Pick the one that is currently running
-			if( Application.platform == RuntimePlatform.OSXEditor && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.opengl] )
-				return RenderPlatform.opengl;
+			if( Application.platform == RuntimePlatform.OSXEditor && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.glcore] )
+				return RenderPlatform.glcore;
 			if( Application.platform == RuntimePlatform.WindowsEditor && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.d3d9] )
 				return RenderPlatform.d3d9;
 			if( Application.platform == RuntimePlatform.WindowsEditor && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.d3d11] )

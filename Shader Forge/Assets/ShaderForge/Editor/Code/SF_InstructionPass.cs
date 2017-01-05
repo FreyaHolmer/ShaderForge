@@ -26,14 +26,16 @@ namespace ShaderForge{
 		public List<SFIns_PassPlat> plats = new List<SFIns_PassPlat>(){
 			new SFIns_PassPlat(RenderPlatform.d3d9),
 			new SFIns_PassPlat(RenderPlatform.d3d11),
-			new SFIns_PassPlat(RenderPlatform.opengl),
+			new SFIns_PassPlat(RenderPlatform.glcore),
 			new SFIns_PassPlat(RenderPlatform.gles),
 			new SFIns_PassPlat(RenderPlatform.gles3),
 			new SFIns_PassPlat(RenderPlatform.metal),
 			new SFIns_PassPlat(RenderPlatform.d3d11_9x),
 			new SFIns_PassPlat(RenderPlatform.xboxone),
 			new SFIns_PassPlat(RenderPlatform.ps4),
-			new SFIns_PassPlat(RenderPlatform.psp2)
+			new SFIns_PassPlat(RenderPlatform.psp2),
+			new SFIns_PassPlat(RenderPlatform.n3ds),
+			new SFIns_PassPlat(RenderPlatform.wiiu)
 		};
 
 		public void Parse(ShaderProgram prog, string line, bool ignoreMin ) {
@@ -64,6 +66,10 @@ namespace ShaderForge{
 			if( split[1] == "xbox360" ) {
 				Debug.LogWarning( "Xbox 360 is no longer supported by Unity since 5.5, and was removed from the shader" );
 				return;
+			}
+
+			if( split[1] == "opengl" ) {
+				split[1] = "glcore";
 			}
 
 			bool hasTex = ( split.Length == 11 );

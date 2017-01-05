@@ -11,14 +11,16 @@ namespace ShaderForge {
 	public enum RenderPlatform {
 		d3d9 		= 0,	// - Direct3D 9
 		d3d11 		= 1,	// - Direct3D 11
-		opengl 		= 2,	// - OpenGL
+		glcore 		= 2,	// - OpenGL Core
 		gles 		= 3,	// - OpenGL ES 2.0
 		gles3		= 4,	// - OpenGL ES 3.0
 		metal		= 5,	// - iOS Metal
 		d3d11_9x 	= 6,	// - Direct3D 11 windows RT
 		xboxone 	= 7,	// - Xbox One
 		ps4 		= 8,	// - PlayStation 4
-		psp2 		= 9	// - PlayStation Vita
+		psp2 		= 9,	// - PlayStation Vita
+		n3ds		= 10,	// - Nintendo 3DS
+		wiiu		= 11	// - Nintendo Wii U
 	};
 	
 
@@ -27,7 +29,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 1;
-		public static int versionNumSecondary = 31;
+		public static int versionNumSecondary = 32;
 		public static string versionStage = "";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge v" + version;
@@ -41,14 +43,16 @@ namespace ShaderForge {
 		public static string[] rendererLabels = new string[]{
 			"Direct3D 9",
 			"Direct3D 11",
-			"OpenGL",
+			"OpenGL Core",
 			"OpenGL ES 2.0",
 			"OpenGL ES 3.0",
 			"iOS Metal",
 			"Direct3D 11 for Windows RT/Phone",
 			"Xbox One",
 			"PlayStation 4",
-			"PlayStation Vita"
+			"PlayStation Vita",
+			"Nintendo 3DS",
+			"Nintendo Wii U"
 		};
 
 		public const string alphabetLower = "abcdefghijklmnopqrstuvwxyz";

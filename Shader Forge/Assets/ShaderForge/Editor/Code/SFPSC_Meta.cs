@@ -23,28 +23,32 @@ namespace ShaderForge {
 		/*
 		d3d9 		= 0,	// - Direct3D 9
 		d3d11 		= 1,	// - Direct3D 11
-		opengl 		= 2,	// - OpenGL
+		glcore 		= 2,	// - OpenGL Core
 		gles 		= 3,	// - OpenGL ES 2.0
 		gles3		= 4,	// - OpenGL ES 3.0
 		metal		= 5,	// - iOS Metal
 		d3d11_9x 	= 6,	// - Direct3D 11 windows RT
 		xboxone 	= 7,	// - Xbox One
 		ps4 		= 8,	// - PlayStation 4
-		psp2 		= 9	// - PlayStation Vita
+		psp2 		= 10	// - PlayStation Vita
+		n3ds 		= 11	// - Nintendo 3DS
+		wiiu		= 12,	// - Nintendo Wii U
 		*/
 
 		public override SFPS_Category PostInitialize (){
-			usedRenderers = new bool[10]{ // TODO: Load from project settings
+			usedRenderers = new bool[12]{ // TODO: Load from project settings
 				true,	// - Direct3D 9
 				true,	// - Direct3D 11
-				true,	// - OpenGL
+				true,	// - OpenGL Core
 				true,	// - OpenGL ES 2.0
 				false,  // - OpenGL ES 3.0
 				false,	// - iOS Metal
 				false,	// - Direct3D 11 windows RT
 				false,	// - Xbox One
 				false,	// - PlayStation 4
-				false	// - PlayStation Vita
+				false,	// - PlayStation Vita
+				false,	// - Nintendo 3DS
+				false	// - Wii U
 			};
 			return this;
 		}

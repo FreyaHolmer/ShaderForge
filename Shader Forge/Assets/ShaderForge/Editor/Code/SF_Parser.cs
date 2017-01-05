@@ -268,6 +268,9 @@ namespace ShaderForge {
 					Debug.LogWarning( "Xbox 360 is no longer supported by Unity since 5.5, and was removed from the shader" );
 					continue;
 				}
+				if( rndr == "opengl" ) {
+					rndr = "glcore";
+				}
 				int enm = (int)((RenderPlatform)Enum.Parse( typeof( RenderPlatform ), rndr ));
 				editor.ps.catMeta.usedRenderers[enm] = only; // Disable or enable one
 			}

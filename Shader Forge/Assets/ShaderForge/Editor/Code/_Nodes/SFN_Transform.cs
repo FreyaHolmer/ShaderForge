@@ -123,10 +123,10 @@ namespace ShaderForge {
 
 			// From local space
 			if( FromTo( Space.Local, Space.World) ){
-				return "mul( unity_Object2World, " + GetInVector() + " ).xyz";
+				return "mul( unity_ObjectToWorld, " + GetInVector() + " ).xyz";
 			}
 			if(FromTo(Space.Local, Space.Tangent)){
-				return "mul( tangentTransform, " + "mul( unity_Object2World, " + GetInVector() + " ).xyz" + " ).xyz";
+				return "mul( tangentTransform, " + "mul( unity_ObjectToWorld, " + GetInVector() + " ).xyz" + " ).xyz";
 			}
 			if( FromTo(Space.Local, Space.View)){
 				return "mul( UNITY_MATRIX_MV, " + GetInVector() + " ).xyz";

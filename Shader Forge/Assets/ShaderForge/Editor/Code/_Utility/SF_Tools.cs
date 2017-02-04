@@ -10,7 +10,7 @@ namespace ShaderForge {
 	[System.Serializable]
 	public enum RenderPlatform {
 		d3d9 		= 0,	// - Direct3D 9
-		d3d11 		= 1,	// - Direct3D 11
+		d3d11 		= 1,	// - Direct3D 11 / 12
 		glcore 		= 2,	// - OpenGL Core
 		gles 		= 3,	// - OpenGL ES 2.0
 		gles3		= 4,	// - OpenGL ES 3.0
@@ -41,7 +41,7 @@ namespace ShaderForge {
 		public const string documentationURL = "http://www.acegikmo.com/shaderforge/nodes/";
 		public static string[] rendererLabels = new string[]{
 			"Direct3D 9",
-			"Direct3D 11",
+			"Direct3D 11 & 12",
 			"OpenGL Core",
 			"OpenGL ES 2.0",
 			"OpenGL ES 3.0",

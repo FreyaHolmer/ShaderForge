@@ -764,9 +764,10 @@ namespace ShaderForge {
 				scope--;
 				App("}");
 			}
-			
 
-
+			if( currentPass == PassType.FwdBase && ps.catBlending.alphaToCoverage ) {
+				App("AlphaToMask On");
+			}
 
 
 		}
@@ -2582,7 +2583,12 @@ namespace ShaderForge {
 					else
 						AppFinalOutput( "finalColor", "0" );
 				} else {
-					AppFinalOutput( "finalColor", ps.n_alpha );
+
+					if( ps.catBlending.alphaToCoverage && currentPass == PassType.FwdBase && ps.HasAlpha() == false && ps.HasAlphaClip() ) {
+						AppFinalOutput( "finalColor", "(" + ps.n_alphaClip + ") * 2.0 - 1.0" );
+					} else {
+						AppFinalOutput( "finalColor", ps.n_alpha );
+					}
 				}
 
 

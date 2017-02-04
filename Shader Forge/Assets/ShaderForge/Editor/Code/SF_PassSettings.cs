@@ -330,6 +330,10 @@ namespace ShaderForge {
 			return mOut.alpha.IsConnectedEnabledAndAvailable();
 		}
 
+		public bool HasAlphaClip() {
+			return mOut.alphaClip.IsConnectedEnabledAndAvailable();
+		}
+
 		public bool HasSpecular(){
 			return mOut.specular.IsConnectedEnabledAndAvailable();
 		}

@@ -85,6 +85,7 @@ namespace ShaderForge {
 		public int colorMask = 15;
 
 		public Dithering dithering = Dithering.Off;
+		public bool alphaToCoverage = false;
 		
 		public bool writeDepth = true;
 		
@@ -136,6 +137,7 @@ namespace ShaderForge {
 			s += Serialize( "wrdp", writeDepth.ToString() );
 
 			s += Serialize( "dith", ( (int)dithering ).ToString() );
+			s += Serialize( "atcv", alphaToCoverage.ToString() );	// bool
 
 			s += Serialize( "rfrpo", perObjectRefraction.ToString() );
 			s += Serialize( "rfrpn", refractionPassName );
@@ -228,6 +230,9 @@ namespace ShaderForge {
 				break;
 			case "dith":
 				dithering = (Dithering)int.Parse( value );
+				break;
+			case "atcv":
+				alphaToCoverage = bool.Parse( value );
 				break;
 			case "rfrpo":
 				perObjectRefraction = bool.Parse( value );
@@ -415,7 +420,15 @@ namespace ShaderForge {
 			else
 				UndoableLabeledEnumPopup( r, "Dithered alpha clip", Dithering.Off, "dithered alpha clip" );
 			EditorGUI.EndDisabledGroup();
-			
+			r.y += 20;
+
+			bool canEditAlphaToCoverage = editor.mainNode.alphaClip.IsConnectedAndEnabled() || editor.mainNode.alpha.IsConnectedAndEnabled();
+			EditorGUI.BeginDisabledGroup( !canEditAlphaToCoverage );
+			if( canEditAlphaToCoverage )
+				alphaToCoverage = UndoableToggle( r, alphaToCoverage, "Alpha to coverage (forward with MSAA only)", "alpha to coverage" );
+			else
+				GUI.Toggle( r, false, "Alpha to coverage (forward with MSAA only)" );
+			EditorGUI.EndDisabledGroup();
 			r.y += 20;
 			
 			

@@ -1242,10 +1242,19 @@ namespace ShaderForge {
 
 		void CalcGloss() {
 			AppDebug( "Gloss" );
-			if( ps.catLighting.glossRoughMode == SFPSC_Lighting.GlossRoughMode.Roughness )
+			if( ps.catLighting.glossRoughMode == SFPSC_Lighting.GlossRoughMode.Roughness ){
 				App( "float gloss = 1.0 - " + ps.n_gloss + "; // Convert roughness to gloss" );
-			else
+				if( Unity5PBL() )
+					App( "float perceptualRoughness = " + ps.n_gloss + ";" );
+			} else {
 				App( "float gloss = " + ps.n_gloss + ";" );
+				if( Unity5PBL() )
+					App( "float perceptualRoughness = 1.0 - " + ps.n_gloss + ";" );
+			}
+
+			if( Unity5PBL() )
+				App( "float roughness = perceptualRoughness * perceptualRoughness;" );
+			
 			if( !InDeferredPass() ) {
 				if( ps.catLighting.remapGlossExponentially ) {
 					App( "float specPow = exp2( gloss * 10.0+1.0);" );
@@ -1272,7 +1281,7 @@ namespace ShaderForge {
 			
 
 			if( currentPass != PassType.Deferred ) {
-				App( "float NdotL = max(0, dot( " + VarNormalDir() + ", lightDirection ));" );
+				App( "float NdotL = saturate(dot( " + VarNormalDir() + ", lightDirection ));" );
 			}
 
 
@@ -1368,7 +1377,7 @@ namespace ShaderForge {
 
 			if( ps.catLighting.IsPBL() && !InDeferredPass() ) {
 
-				App( "float LdotH = max(0.0,dot(lightDirection, halfDirection));" );
+				App( "float LdotH = saturate(dot(lightDirection, halfDirection));" );
 
 				
 
@@ -1425,28 +1434,28 @@ namespace ShaderForge {
 				
 
 				
-				specularPBL += "*NdotL";
+				//specularPBL += "*NdotL";
 
 
 
 				// VISIBILITY TERM / GEOMETRIC TERM?
 
 				if( !initialized_NdotV ) {
-					App( "float NdotV = max(0.0,dot( " + VarNormalDir() + ", viewDirection ));" );
+					App( "float NdotV = abs(dot( " + VarNormalDir() + ", viewDirection ));" );
 					initialized_NdotV = true;
 				}
 
 				
 				if( !initialized_NdotH ) {
-					App( "float NdotH = max(0.0,dot( " + VarNormalDir() + ", halfDirection ));" );
+					App( "float NdotH = saturate(dot( " + VarNormalDir() + ", halfDirection ));" );
 					initialized_NdotH = true;
 				}
 				if( !initialized_VdotH ) {
-					App( "float VdotH = max(0.0,dot( viewDirection, halfDirection ));" );
+					App( "float VdotH = saturate(dot( viewDirection, halfDirection ));" );
 					initialized_VdotH = true;
 				}
 
-				App( "float visTerm = SmithJointGGXVisibilityTerm( NdotL, NdotV, 1.0-gloss );" );
+				App( "float visTerm = SmithJointGGXVisibilityTerm( NdotL, NdotV, roughness );" );
 
 				specularPBL += "*visTerm";
 
@@ -1471,11 +1480,11 @@ namespace ShaderForge {
 					if( Unity5PBL() ) {
 
 						if( !initialized_NdotH ) {
-							App( "float NdotH = max(0.0,dot( " + VarNormalDir() + ", halfDirection ));" );
+							App( "float NdotH = saturate(dot( " + VarNormalDir() + ", halfDirection ));" );
 							initialized_NdotH = true;
 						}
 
-						App( "float normTerm = max(0.0, GGXTerm(NdotH, 1.0-gloss));" );
+						App( "float normTerm = GGXTerm(NdotH, roughness);" );
 						specularPBL += "*normTerm";
 						
 					} else {
@@ -1509,15 +1518,40 @@ namespace ShaderForge {
 
 
 					specularPBL = specularPBL.Substring( 1 ); // Remove first * symbol
-					specularPBL = "float specularPBL = (" + specularPBL + ") * (UNITY_PI / 4);";
+					specularPBL = "float specularPBL = (" + specularPBL + ") * UNITY_PI;";
 				
 					App( specularPBL );
 
-					App( "if (IsGammaSpace())" );
+					App( "#ifdef UNITY_COLORSPACE_GAMMA" );
 					scope++;
 					App( "specularPBL = sqrt(max(1e-4h, specularPBL));" );
 					scope--;
+					App( "#endif" );
 					App( "specularPBL = max(0, specularPBL * NdotL);" );
+					App( "#if defined(_SPECULARHIGHLIGHTS_OFF)" );
+					scope++;
+					App( "specularPBL = 0.0;" );
+					scope--;
+					App( "#endif" );
+
+					// Surface reduction
+					if( hasIndirectSpecular ) {
+						App( "half surfaceReduction;" );
+						App( "#ifdef UNITY_COLORSPACE_GAMMA" );
+						scope++;
+						App( "surfaceReduction = 1.0-0.28*roughness*perceptualRoughness;" );
+						scope--;
+						App( "#else" );
+						scope++;
+						App( "surfaceReduction = 1.0/(roughness*roughness + 1.0);" );
+						scope--;
+						App( "#endif" );
+					}
+					
+
+					// Kill spec if color = 0
+					App( "specularPBL *= any(specularColor) ? 1.0 : 0.0;" );
+
 
 					directSpecular += "*specularPBL*FresnelTerm(specularColor, LdotH)";
 				} else {
@@ -1555,6 +1589,7 @@ namespace ShaderForge {
 				if( Unity5PBL() ) {
 					if( ps.HasSpecular() ) {
 						App( "indirectSpecular *= FresnelLerp (specularColor, grazingTerm, NdotV);" );
+						App( "indirectSpecular *= surfaceReduction;" );
 					} else {
 						//App( "float3 indirectFresnelPBL = FresnelLerp (specularColor, grazingTerm, NdotV);" );
 					}

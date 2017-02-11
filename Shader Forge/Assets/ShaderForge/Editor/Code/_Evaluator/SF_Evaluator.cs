@@ -1590,7 +1590,8 @@ namespace ShaderForge {
 				if( Unity5PBL() ) {
 					if( ps.HasSpecular() ) {
 						App( "indirectSpecular *= FresnelLerp (specularColor, grazingTerm, NdotV);" );
-						App( "indirectSpecular *= surfaceReduction;" );
+						if(!InDeferredPass())
+							App( "indirectSpecular *= surfaceReduction;" );
 					} else {
 						//App( "float3 indirectFresnelPBL = FresnelLerp (specularColor, grazingTerm, NdotV);" );
 					}

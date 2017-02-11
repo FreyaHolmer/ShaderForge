@@ -346,22 +346,27 @@ namespace ShaderForge {
 				}
 
 				if( n is SFN_TexCoord ) {
-					switch( ( (SFN_TexCoord)n ).currentUV ) {
+					SFN_TexCoord nTC = (SFN_TexCoord)n;
+					switch( nTC.currentUV ) {
 						case SFN_TexCoord.UV.uv0:
 							dependencies.uv0 = true;
 							dependencies.uv0_frag = true;
+							if( nTC.useAsFloat4 ) dependencies.uv0_float4 = true;
 							break;
 						case SFN_TexCoord.UV.uv1:
 							dependencies.uv1 = true;
 							dependencies.uv1_frag = true;
+							if( nTC.useAsFloat4 ) dependencies.uv1_float4 = true;
 							break;
 						case SFN_TexCoord.UV.uv2:
 							dependencies.uv2 = true;
 							dependencies.uv2_frag = true;
+							if( nTC.useAsFloat4 ) dependencies.uv2_float4 = true;
 							break;
 						case SFN_TexCoord.UV.uv3:
 							dependencies.uv3 = true;
 							dependencies.uv3_frag = true;
+							if( nTC.useAsFloat4 ) dependencies.uv3_float4 = true;
 							break;
 					}
 				}
@@ -2106,7 +2111,19 @@ namespace ShaderForge {
 
 
 
-
+		public string GetUvCompCountString( int channel ) {
+			bool useFloat4 = false;
+			if( channel == 0 && dependencies.uv0_float4 ) {
+				useFloat4 = true;
+			} else if( channel == 1 && dependencies.uv1_float4 ) {
+				useFloat4 = true;
+			} else if( channel == 2 && dependencies.uv2_float4 ) {
+				useFloat4 = true;
+			} else if( channel == 3 && dependencies.uv3_float4 ) {
+				useFloat4 = true;
+			}
+			return useFloat4 ? "float4" : "float2";
+		}
 
 
 
@@ -2128,13 +2145,13 @@ namespace ShaderForge {
 			if( dependencies.vert_in_tangents )
 				App( "float4 tangent : TANGENT;" );
 			if( dependencies.uv0 )
-				App( "float2 texcoord0 : TEXCOORD0;" );
+				App( GetUvCompCountString( 0 ) + " texcoord0 : TEXCOORD0;" );
 			if( dependencies.uv1 )
-				App( "float2 texcoord1 : TEXCOORD1;" );
+				App( GetUvCompCountString( 1 ) + " texcoord1 : TEXCOORD1;" );
 			if( dependencies.uv2 )
-				App( "float2 texcoord2 : TEXCOORD2;" );
+				App( GetUvCompCountString( 2 ) + " texcoord2 : TEXCOORD2;" );
 			if( dependencies.uv3 )
-				App( "float2 texcoord3 : TEXCOORD3;" );
+				App( GetUvCompCountString( 3 ) + " texcoord3 : TEXCOORD3;" );
 			if( dependencies.vert_in_vertexColor )
 				App( "float4 vertexColor : COLOR;" );
 		}
@@ -2192,13 +2209,13 @@ namespace ShaderForge {
 				//if( DoPassSphericalHarmonics() && !ps.highQualityLightProbes )
 				//	App ("float3 shLight" + GetVertOutTexcoord() );
 				if( dependencies.uv0_frag )
-					App( "float2 uv0" + GetVertOutTexcoord() );
+					App( GetUvCompCountString( 0 ) + " uv0" + GetVertOutTexcoord() );
 				if( dependencies.uv1_frag )
-					App( "float2 uv1" + GetVertOutTexcoord() );
+					App( GetUvCompCountString( 1 ) + " uv1" + GetVertOutTexcoord() );
 				if( dependencies.uv2_frag )
-					App( "float2 uv2" + GetVertOutTexcoord() );
+					App( GetUvCompCountString( 2 ) + " uv2" + GetVertOutTexcoord() );
 				if( dependencies.uv3_frag )
-					App( "float2 uv3" + GetVertOutTexcoord() );
+					App( GetUvCompCountString( 3 ) + " uv3" + GetVertOutTexcoord() );
 				if( dependencies.vert_out_worldPos )
 					App( "float4 posWorld" + GetVertOutTexcoord() );
 				if( dependencies.vert_out_normals )
@@ -2754,7 +2771,9 @@ namespace ShaderForge {
 
 
 
-
+		string GetMaxUvCompCountString() {
+			return ( dependencies.uv0_float4 || dependencies.uv1_float4 || dependencies.uv2_float4 || dependencies.uv3_float4 ) ? "float4" : "float2";
+		}
 
 
 
@@ -2773,7 +2792,7 @@ namespace ShaderForge {
 			App( "float edge[3]         : SV_TessFactor;" );
 			App( "float inside          : SV_InsideTessFactor;" );
 			App( "float3 vTangent[4]    : TANGENT;" );
-			App( "float2 vUV[4]         : TEXCOORD;" );
+			App( GetMaxUvCompCountString() + " vUV[4]         : TEXCOORD;" );
 			App( "float3 vTanUCorner[4] : TANUCORNER;" );
 			App( "float3 vTanVCorner[4] : TANVCORNER;" );
 			App( "float4 vCWts          : TANWEIGHTS;" );

@@ -26,6 +26,7 @@ namespace ShaderForge {
 		public bool reflectprobed = false;
 		public bool energyConserving = false;
 		public bool remapGlossExponentially = true;
+		public bool includeMetaPass = true;
 
 		public enum RenderPath { Forward, Deferred };
 		public string[] strRenderPath = new string[] { "Forward", "Deferred" };
@@ -61,6 +62,7 @@ namespace ShaderForge {
 			s += Serialize( "rprd", reflectprobed.ToString() );
 			s += Serialize( "enco", energyConserving.ToString());
 			s += Serialize( "rmgx", remapGlossExponentially.ToString());
+			s += Serialize( "imps", includeMetaPass.ToString() );
 			s += Serialize( "rpth", ((int)renderPath).ToString() );
 			
 			//s += Serialize( "shdc", shadowCast.ToString() );
@@ -125,6 +127,9 @@ namespace ShaderForge {
 				
 			case "rmgx":
 				remapGlossExponentially = bool.Parse( value );
+				break;
+			case "imps":
+				includeMetaPass = bool.Parse( value );
 				break;
 			case "rpth":
 				renderPath = (RenderPath)int.Parse( value );
@@ -230,6 +235,19 @@ namespace ShaderForge {
 									 undoSuffix:			"lightmap & light probes"
 			                         );
 			r.y += 20;
+
+
+			bool wantsMetaPass = ps.catLighting.bakedLight && ( ps.HasDiffuse() || ps.HasEmissive() );
+			UndoableConditionalToggle( r, ref includeMetaPass,
+									 usableIf: wantsMetaPass,
+									 disabledDisplayValue: false,
+									 label: "Write meta pass (light bounce coloring)",
+									 undoSuffix: "write meta pass"
+									 );
+			r.y += 20;
+
+			//includeMetaPass = UndoableToggle( r, includeMetaPass, "Write meta pass (light bounce coloring)", "write meta pass", null );
+			//r.y += 20;
 
 			highQualityLightProbes = UndoableToggle( r, highQualityLightProbes, "Per-pixel light probe sampling", "per-pixel light probe sampling", null );
 			r.y += 20;

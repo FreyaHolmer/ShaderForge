@@ -3154,6 +3154,8 @@ namespace ShaderForge {
 		}
 
 		public void MetaPass() {
+			if( ps.catLighting.includeMetaPass == false )
+				return;
 			if( !ps.catLighting.bakedLight || ( !mOut.diffuse.IsConnectedEnabledAndAvailable() && !mOut.emissive.IsConnectedAndEnabled() ) )
 				return;
 			currentPass = PassType.Meta;

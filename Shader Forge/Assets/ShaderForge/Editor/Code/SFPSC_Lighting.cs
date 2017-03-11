@@ -296,6 +296,8 @@ namespace ShaderForge {
 			
 			
 			//r.y += 20;
+
+			/* DISABLED DUE TO CAUSING TOO MANY ARTIFACTS
 			if(ps.catLighting.HasSpecular() && renderPath == RenderPath.Forward){
 				maskedSpec = UndoableToggle( r, maskedSpec, "Mask directional light specular by shadows", "directional light specular shadow masking", null );
 			} else {
@@ -303,7 +305,7 @@ namespace ShaderForge {
 				GUI.Toggle( r, false, "Mask directional light specular by shadows" );
 				GUI.enabled = true;
 			}
-			r.y += 20;
+			r.y += 20;*/
 		
 			r.y += prevYpos;
 

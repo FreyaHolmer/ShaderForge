@@ -1298,11 +1298,11 @@ namespace ShaderForge {
 			string directSpecular = "float3 directSpecular = ";
 
 			string attColStr;
-			if( ps.catLighting.maskedSpec && currentPass == PassType.FwdBase ) {
-				attColStr = "(floor(attenuation) * _LightColor0.xyz)";
-			} else {
-				attColStr = "attenColor";
-			}
+			//if( ps.catLighting.maskedSpec && currentPass == PassType.FwdBase && ps.catLighting.lightMode != SFPSC_Lighting.LightMode.PBL ) {
+			//	attColStr = "(floor(attenuation) * _LightColor0.xyz)";
+			//} else {
+			attColStr = "attenColor";
+			//}
 
 
 

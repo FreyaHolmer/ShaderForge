@@ -744,6 +744,7 @@ namespace ShaderForge {
 				App( "Cull Off" );
 			} else if( currentPass == PassType.ShadCast ) {
 				App( "Offset 1, 1" );
+				App( ps.catGeometry.GetCullString() );
 			} else if( currentPass == PassType.Outline ) {
 				App( "Cull Front" );
 			} else if( ps.catGeometry.UseCulling() )

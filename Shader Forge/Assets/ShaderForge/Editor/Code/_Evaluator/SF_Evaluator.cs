@@ -3096,7 +3096,7 @@ namespace ShaderForge {
 
 		// Only needed when using alpha clip and/or vertex offset (May be needed with Tessellation as well)
 		public void ShadowCasterPass() {
-			bool shouldUse = ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled();
+			bool shouldUse = ps.UseClipping() || mOut.vertexOffset.IsConnectedAndEnabled() || mOut.displacement.IsConnectedAndEnabled() || ps.catGeometry.cullMode != SFPSC_Geometry.CullMode.BackfaceCulling;
 			if( !shouldUse || ps.catExperimental.forceNoShadowPass )
 				return;
 			currentPass = PassType.ShadCast;

@@ -594,7 +594,11 @@ namespace ShaderForge {
 			if( currentPass == PassType.Meta ) {
 				App("#include \"UnityMetaPass.cginc\"");
 			}
-
+			if( ps.catMeta.cgIncludes.Count > 0 ) { // Custom CG includes
+				for (int i = 0; i < ps.catMeta.cgIncludes.Count; i++){
+					App( "#include \"" + ps.catMeta.cgIncludes[i] + ".cginc\"" );
+				}
+			}
 
 			if( currentPass == PassType.FwdBase ) {
 				App( "#pragma multi_compile_fwdbase" + ps.catBlending.GetShadowPragmaIfUsed() );

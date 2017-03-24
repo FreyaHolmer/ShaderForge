@@ -78,6 +78,28 @@ namespace ShaderForge {
 			}
 		}
 
+		private static GUIStyle richTextField;
+		public static GUIStyle RichTextField {
+			get {
+				if( richTextField == null ) {
+					richTextField = new GUIStyle( EditorStyles.textField );
+					richTextField.richText = true;
+				}
+				return richTextField;
+			}
+		}
+
+		private static GUIStyle richLabel;
+		public static GUIStyle RichLabel {
+			get {
+				if( richLabel == null ) {
+					richLabel = new GUIStyle( EditorStyles.label );
+					richLabel.richText = true;
+				}
+				return richLabel;
+			}
+		}
+
 
 		private static GUIStyle instructionCountRenderer;
 		public static GUIStyle InstructionCountRenderer {

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace ShaderForge {
 	
@@ -19,6 +20,8 @@ namespace ShaderForge {
 		public bool[] usedRenderers; // TODO: Serialization?
 		public string fallback = "";
 		public int LOD = 0; // TODO: Serialization?
+
+		public List<string> cgIncludes = new List<string>();
 
 		/*
 		d3d9 		= 0,	// - Direct3D 9
@@ -54,12 +57,31 @@ namespace ShaderForge {
 		}
 
 
+		char[] splitChars = new char[] { '|' };
+		string SerializeCgIncludes() {
+			string serialized = "";
+			for( int i = 0; i < cgIncludes.Count; i++ ) {
+				serialized += cgIncludes[i];
+				if( i < cgIncludes.Count - 1 )
+					serialized += splitChars[0];
+			}
+			string encoded = SF_Tools.StringToBase64String( serialized );
+
+			return encoded;
+		}
+
+		void DeserializeCgIncludes( string serialized ) {
+			string decoded = SF_Tools.Base64StringToString( serialized );
+			cgIncludes = new List<string>( decoded.Split( splitChars, System.StringSplitOptions.None ) );
+		}
+
 		public override string Serialize(){
 			string s = "";
 			s += Serialize( "flbk", fallback );
 			s += Serialize( "iptp", ((int)previewType).ToString() );
 			s += Serialize( "cusa", canUseSpriteAtlas.ToString() );
 			s += Serialize( "bamd", ( (int)batchingMode ).ToString() );
+			s += Serialize( "cgin", SerializeCgIncludes() );
 			return s;
 		}
 
@@ -78,10 +100,12 @@ namespace ShaderForge {
 			case "bamd":
 				batchingMode = (BatchingMode)int.Parse( value );
 				break;
+			case "cgin":
+				DeserializeCgIncludes( value );
+				break;
 			}
 
 		}
-
 	
 
 		public override float DrawInner(ref Rect r){
@@ -93,7 +117,7 @@ namespace ShaderForge {
 			r.xMin += 20;
 			r.y += 20;
 
-		
+			
 			EditorGUI.LabelField( r, "Path", EditorStyles.miniLabel );
 			r.xMin += 30;
 			r.height = 17;
@@ -143,10 +167,6 @@ namespace ShaderForge {
 			r.y += r.height;
 			
 			
-			
-			
-			
-			
 			EditorGUI.LabelField( r, "LOD", EditorStyles.miniLabel );
 			r.xMin += 30;
 			r.height = 17;
@@ -168,6 +188,66 @@ namespace ShaderForge {
 			r.y += 20;
 
 			r.y += 10;
+
+
+			if( cgIncludes.Count == 0 ) {
+				Rect rBtn = r;
+				rBtn.height -= 4;
+				rBtn.width = 100;
+				if( GUI.Button( rBtn, "Add CG Include", EditorStyles.miniButton ) ) {
+					Undo.RecordObject( this, "add CG include" );
+					cgIncludes.Add( "" );
+				}
+				//r.y += 20;
+			} else {
+				EditorGUI.LabelField( r, "CG Includes:" );
+				r.y += 20;
+
+
+				int removeTarget = -1;
+
+				for( int i = 0; i < cgIncludes.Count; i++ ) {
+
+					Rect smallRect = r;
+					smallRect.width = 20;
+					smallRect.height -= 2;
+
+					if( GUI.Button( smallRect, "-" ) ) {
+						removeTarget = i;
+					}
+
+					r.xMin += 22;
+
+					Rect textFieldRect = r;
+					textFieldRect.height -= 2;
+					textFieldRect.width -= 3;
+					cgIncludes[i] = UndoableTextField( textFieldRect, cgIncludes[i], "cg include", null );
+					textFieldRect.x += 1;
+					GUI.color = new Color( 1f, 1f, 1f, 0.3f );
+					GUI.Label( textFieldRect, "<color=#00000000>" + cgIncludes[i] + "</color>.cginc", SF_Styles.RichLabel );
+					GUI.color = Color.white;
+					r.y += 20;
+
+					r.xMin -= 22;
+				}
+
+				if( removeTarget != -1 ) {
+					Undo.RecordObject( this, "remove CG include" );
+					cgIncludes.RemoveAt( removeTarget );
+				}
+
+				Rect buttonRect = r;
+				buttonRect.width = 20;
+				buttonRect.height -= 2;
+				if( GUI.Button( buttonRect, "+" ) ) {
+					Undo.RecordObject( this, "add CG include" );
+					cgIncludes.Add( "" );
+				}
+			}
+
+
+			
+			r.y += 40;
 			
 			
 			

@@ -429,23 +429,11 @@ namespace ShaderForge {
 
 
 		string EncodeCode(){
-			return System.Convert.ToBase64String(GetBytes(code));
+			return SF_Tools.StringToBase64String( code );
 		}
 
 		string DecodeCode(string encoded){
-			return GetString(System.Convert.FromBase64String(encoded));
-		}
-
-		static byte[] GetBytes(string str){
-			byte[] bytes = new byte[str.Length * sizeof(char)];
-			System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-			return bytes;
-		}
-		
-		static string GetString(byte[] bytes){
-			char[] chars = new char[bytes.Length / sizeof(char)];
-			System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-			return new string(chars);
+			return SF_Tools.Base64StringToString( encoded );
 		}
 
 		public class SF_Serializer{

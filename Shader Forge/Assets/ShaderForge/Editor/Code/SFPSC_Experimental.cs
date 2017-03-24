@@ -12,6 +12,7 @@ namespace ShaderForge {
 		public bool force2point0 = false;
 		public bool forceNoShadowPass = false;
 		public bool forceNoFallback = false;
+		public bool forceSkipModelProjection = false;
 
 
 		public override string Serialize(){
@@ -19,6 +20,7 @@ namespace ShaderForge {
 			s += Serialize( "f2p0", force2point0.ToString() );
 			s += Serialize( "fnsp", forceNoShadowPass.ToString() );
 			s += Serialize( "fnfb", forceNoFallback.ToString() );
+			s += Serialize( "fsmp", forceSkipModelProjection.ToString() );
 			return s;
 		}
 
@@ -33,6 +35,9 @@ namespace ShaderForge {
 				break;
 			case "fnfb":
 				forceNoFallback = bool.Parse( value );
+				break;
+			case "fsmp":
+				forceSkipModelProjection = bool.Parse( value );
 				break;
 			}
 
@@ -58,6 +63,8 @@ namespace ShaderForge {
 			forceNoShadowPass = UndoableToggle( r, forceNoShadowPass, "Force no custom shadow pass", "force no custom shadow pass", null );
 			r.y += 20;
 			forceNoFallback = UndoableToggle( r, forceNoFallback, "Force no fallback", "force no fallback", null );
+			r.y += 20;
+			forceSkipModelProjection = UndoableToggle( r, forceSkipModelProjection, "Force skip model projection", "force skip model projection", null );
 			r.y += 20;
 
 			r.y += prevYpos;

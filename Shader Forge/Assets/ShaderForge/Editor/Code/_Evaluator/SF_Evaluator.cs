@@ -2392,7 +2392,13 @@ namespace ShaderForge {
 				InitLightColor();
 			InitHalfVector();
 
-			string positioningPrefix = "mul(UNITY_MATRIX_MVP, "; // World space
+			string positioningPrefix;
+			if( ps.catExperimental.forceSkipModelProjection ){
+				positioningPrefix = "mul(UNITY_MATRIX_VP, "; // Local space. Broken for shadows due to TRANSFER_SHADOW_CASTER assuming model projections
+			} else {
+				positioningPrefix = "mul(UNITY_MATRIX_MVP, "; // World space 
+			}
+			
 			string positioningSuffix = " );";
 			if( ps.catGeometry.vertexPositioning == SFPSC_Geometry.VertexPositioning.ClipSpace ) {
 				positioningPrefix = "";

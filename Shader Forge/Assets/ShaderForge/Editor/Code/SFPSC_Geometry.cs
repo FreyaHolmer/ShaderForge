@@ -8,8 +8,8 @@ namespace ShaderForge {
 	[System.Serializable]
 	public class SFPSC_Geometry : SFPS_Category {
 
-		public enum VertexPositioning { WorldSpace, ClipSpace, Billboard };
-		public string[] strVertexPositioning = new string[] { "World space", "Clip space", "Billboard" };
+		public enum VertexPositioning { LocalSpace, ClipSpace, Billboard };
+		public string[] strVertexPositioning = new string[] { "Local space", "Clip space", "Billboard" };
 		public enum NormalQuality { Interpolated, Normalized };
 		public string[] strNormalQuality = new string[] { "Interpolated", "Normalized" };
 		public enum NormalSpace { Tangent, Object, World };
@@ -23,7 +23,7 @@ namespace ShaderForge {
 		public enum CullMode { BackfaceCulling, FrontfaceCulling, DoubleSided };
 		public static string[] strCullMode = new string[] { "Back", "Front", "Off" };
 
-		public VertexPositioning vertexPositioning = VertexPositioning.WorldSpace;
+		public VertexPositioning vertexPositioning = VertexPositioning.LocalSpace;
 		public NormalQuality normalQuality = NormalQuality.Normalized;
 		public NormalSpace normalSpace = NormalSpace.Tangent;
 		public VertexOffsetMode vertexOffsetMode = VertexOffsetMode.Relative;
@@ -32,7 +32,7 @@ namespace ShaderForge {
 		public TessellationMode tessellationMode = TessellationMode.Regular;
 		public OutlineMode outlineMode = OutlineMode.VertexNormals;
 		public CullMode cullMode = CullMode.BackfaceCulling;
-
+			
 
 
 		public override string Serialize(){

@@ -1263,12 +1263,19 @@ namespace ShaderForge {
 					App( "float perceptualRoughness = 1.0 - " + ps.n_gloss + ";" );
 			}
 
-			if( Unity5PBL() )
+			if( Unity5PBL() ) {
+				if( ps.catLighting.geometricAntiAliasing ) {
+					App( "float3 spaaDx = ddx(i.normalDir);" );
+					App( "float3 spaaDy = ddy(i.normalDir);" );
+					App( "float geoRoughFactor = pow(saturate(max(dot(spaaDx,spaaDx),dot(spaaDy,spaaDy))),0.333);" );
+					App( "perceptualRoughness = max(perceptualRoughness, geoRoughFactor);" );
+				}
 				App( "float roughness = perceptualRoughness * perceptualRoughness;" );
+			}
 			
 			if( !InDeferredPass() ) {
 				if( ps.catLighting.remapGlossExponentially ) {
-					App( "float specPow = exp2( gloss * 10.0+1.0);" );
+					App( "float specPow = exp2( gloss * 10.0 + 1.0 );" );
 				} else {
 					App( "float specPow = gloss;" );
 				}

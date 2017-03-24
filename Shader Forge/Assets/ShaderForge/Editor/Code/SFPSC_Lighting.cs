@@ -8,7 +8,6 @@ namespace ShaderForge {
 	[System.Serializable]
 	public class SFPSC_Lighting : SFPS_Category {
 
-
 		public RenderPath renderPath = RenderPath.Forward;
 		public LightPrecision lightPrecision = LightPrecision.Fragment;
 		public LightMode lightMode = LightMode.BlinnPhong;
@@ -19,6 +18,7 @@ namespace ShaderForge {
 
 		public bool useAmbient = true;
 		public bool maskedSpec = true;
+		public bool geometricAntiAliasing = false;
 		//public bool shadowCast = true;
 		//public bool shadowReceive = true;
 		public bool bakedLight = false;
@@ -274,7 +274,14 @@ namespace ShaderForge {
 			
 			
 			//GUI.enabled = IsLit();
-			
+
+			UndoableConditionalToggle( r, ref geometricAntiAliasing,
+									 usableIf: ps.HasSpecular() && ps.catLighting.IsPBL(),
+									 disabledDisplayValue: false,
+									 label: "Geometric specular anti-aliasing",
+									 undoSuffix: "geometric specular anti-aliasing"
+									 );
+			r.y += 20;
 			
 			
 			UndoableConditionalToggle(r, ref useAmbient,

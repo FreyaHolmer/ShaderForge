@@ -789,7 +789,7 @@ namespace ShaderForge {
 			//Debug.Log("Force close");
 			closeMe = true;
 			GUIUtility.ExitGUI();
-		}
+		} 
 
 		void AddDependenciesHierarchally(SF_Node node, DependencyTree<SF_Node> tree){
 			node.ReadDependencies();
@@ -841,7 +841,7 @@ namespace ShaderForge {
 				previousPosition = position;
 			}
 
-			Rect fullRect = new Rect( 0, 0, Screen.width, Screen.height );
+						Rect fullRect = new Rect( 0, 0, Screen.width, Screen.height);
 			//Debug.Log( fullRect );
 
 			if( currentShaderAsset == null ) {
@@ -899,6 +899,8 @@ namespace ShaderForge {
 			//float wNodeBrowser = 130;
 
 			Rect pRect = new Rect( fullRect );
+			pRect.height /= EditorGUIUtility.pixelsPerPoint;
+			pRect.width /= EditorGUIUtility.pixelsPerPoint;
 			pRect.width = separatorLeft.rect.x;
 			SF_GUI.FillBackground( pRect );
 			DrawPreviewPanel( pRect );
@@ -947,13 +949,12 @@ namespace ShaderForge {
 			//pRect.width = wSeparator;
 			//VerticalSeparatorDraggable(ref rightWidth, pRect );
 			if(SF_Settings.showNodeSidebar){
-				separatorRight.MinX = (int)fullRect.width - 150;
-				separatorRight.MaxX = (int)fullRect.width - 32;
+				separatorRight.MinX = (int)(fullRect.width / EditorGUIUtility.pixelsPerPoint) - 150;
+				separatorRight.MaxX = (int)(fullRect.width /  EditorGUIUtility.pixelsPerPoint) - 32;
 				separatorRight.Draw( (int)pRect.y, (int)pRect.height );
 
-
 				pRect.x += pRect.width + separatorRight.rect.width;
-				pRect.width = fullRect.width - separatorRight.rect.x - separatorRight.rect.width;
+				pRect.width = (fullRect.width / EditorGUIUtility.pixelsPerPoint) - separatorRight.rect.x - separatorRight.rect.width;
 
 				SF_GUI.FillBackground( pRect );
 				nodeBrowser.OnLocalGUI( pRect );

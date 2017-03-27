@@ -187,7 +187,7 @@ namespace ShaderForge {
 
 			this.maxWidth = in_maxWidth;
 			
-			Rect scrollRectPos = new Rect(0f,yOffset,in_maxWidth,Screen.height-yOffset-20);
+			Rect scrollRectPos = new Rect(0f,yOffset,in_maxWidth,Screen.height/EditorGUIUtility.pixelsPerPoint-yOffset-20);
 			bool useScrollbar = (innerScrollRect.height > scrollRectPos.height);
 
 			targetScrollWidth = useScrollbar ? 15 : 0;

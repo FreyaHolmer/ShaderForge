@@ -72,7 +72,12 @@ namespace ShaderForge {
 
 		void DeserializeCgIncludes( string serialized ) {
 			string decoded = SF_Tools.Base64StringToString( serialized );
-			cgIncludes = new List<string>( decoded.Split( splitChars, System.StringSplitOptions.None ) );
+			cgIncludes = new List<string>( decoded.Split( splitChars ) );
+
+			// Remove empty entries
+			for( int i = cgIncludes.Count - 1; i >= 0; i-- )
+				if( cgIncludes[i] == string.Empty )
+					cgIncludes.RemoveAt( i );
 		}
 
 		public override string Serialize(){

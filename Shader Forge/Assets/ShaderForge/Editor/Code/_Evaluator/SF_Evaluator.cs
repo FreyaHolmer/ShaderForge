@@ -596,7 +596,10 @@ namespace ShaderForge {
 			}
 			if( ps.catMeta.cgIncludes.Count > 0 ) { // Custom CG includes
 				for (int i = 0; i < ps.catMeta.cgIncludes.Count; i++){
-					App( "#include \"" + ps.catMeta.cgIncludes[i] + ".cginc\"" );
+					string incStr = ps.catMeta.cgIncludes[i];
+					if( incStr == string.Empty )
+						continue;
+					App( "#include \"" + incStr + ".cginc\"" );
 				}
 			}
 

@@ -274,7 +274,7 @@ namespace ShaderForge {
 			
 			
 			//GUI.enabled = IsLit();
-
+			/*
 			UndoableConditionalToggle( r, ref geometricAntiAliasing,
 									 usableIf: ps.HasSpecular() && ps.catLighting.IsPBL(),
 									 disabledDisplayValue: false,
@@ -282,7 +282,7 @@ namespace ShaderForge {
 									 undoSuffix: "geometric specular anti-aliasing"
 									 );
 			r.y += 20;
-			
+			*/
 			
 			UndoableConditionalToggle(r, ref useAmbient,
 									 usableIf:				!bakedLight && ps.catLighting.IsLit(),

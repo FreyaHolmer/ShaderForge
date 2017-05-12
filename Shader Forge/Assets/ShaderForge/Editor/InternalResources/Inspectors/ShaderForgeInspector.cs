@@ -54,7 +54,7 @@ namespace UnityEditor {
 
 
 		static Type sipp;
-		static ConstructorInfo newSipp;
+		// static ConstructorInfo newSipp;
 		static PropertyInfo sippCurrentMode;
 		static PropertyInfo sippCurrentPlatformMask;
 		static PropertyInfo sippCurrentVariantStripping;
@@ -79,10 +79,10 @@ namespace UnityEditor {
 
 		static PropertyInfo shaderDisableBatching;
 
-		static MethodInfo editorGUIMouseButtonDown;
+		// static MethodInfo editorGUIMouseButtonDown;
 
-		static PropertyInfo guiLayoutUtilityTopLevel;
-		static MethodInfo guilayoutgroupGetLast;
+		// static PropertyInfo guiLayoutUtilityTopLevel;
+		// static MethodInfo guilayoutgroupGetLast;
 
 		static MethodInfo editorGuiUtilityLoadIcon;
 		static MethodInfo editorGuiUtilityTextContent;
@@ -94,7 +94,7 @@ namespace UnityEditor {
 
 			// Reflect some things
 			sipp = Type.GetType( "UnityEditor.ShaderInspectorPlatformsPopup, UnityEditor" );
-			newSipp = sipp.GetConstructor( new Type[] { typeof( string ) } );
+			// newSipp = sipp.GetConstructor( new Type[] { typeof( string ) } );
 			BindingFlags bfs = BindingFlags.Public | BindingFlags.Static | BindingFlags.GetProperty;
 			BindingFlags privStatic = BindingFlags.NonPublic | BindingFlags.Static;
 			sippCurrentMode = sipp.GetProperty( "currentMode", bfs );
@@ -119,13 +119,13 @@ namespace UnityEditor {
 			//BindingFlags priv = BindingFlags.NonPublic;
 			shaderDisableBatching = typeof( Shader ).GetProperty( "disableBatching", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetProperty );
 
-			//disableBatchingType = Type.GetType( "UnityEngine.DisableBatchingType, UnityEngine" );
+			// disableBatchingType = Type.GetType( "UnityEngine.DisableBatchingType, UnityEngine" );
 
-			editorGUIMouseButtonDown = typeof( EditorGUI ).GetMethod( "ButtonMouseDown", privStatic, null, new Type[]{typeof(Rect),typeof(GUIContent),typeof(FocusType),typeof(GUIStyle)}, null );
+			// editorGUIMouseButtonDown = typeof( EditorGUI ).GetMethod( "ButtonMouseDown", privStatic, null, new Type[]{typeof(Rect),typeof(GUIContent),typeof(FocusType),typeof(GUIStyle)}, null );
 
-			Type guilaGroup = Type.GetType( "UnityEngine.GUILayoutGroup, UnityEngine" );
-			guilayoutgroupGetLast = guilaGroup.GetMethod( "GetLast", BindingFlags.Instance | BindingFlags.Public );
-			guiLayoutUtilityTopLevel = typeof( GUILayoutUtility ).GetProperty( "topLevel", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetProperty );
+			// Type guilaGroup = Type.GetType( "UnityEngine.GUILayoutGroup, UnityEngine" );
+			// guilayoutgroupGetLast = guilaGroup.GetMethod( "GetLast", BindingFlags.Instance | BindingFlags.Public );
+			// guiLayoutUtilityTopLevel = typeof( GUILayoutUtility ).GetProperty( "topLevel", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetProperty );
 			editorGuiUtilityLoadIcon = typeof( EditorGUIUtility ).GetMethod( "LoadIcon", privStatic );
 			editorGuiUtilityTextContent = typeof( EditorGUIUtility ).GetMethod( "TextContent", privStatic );
 		}
@@ -317,39 +317,43 @@ namespace UnityEditor {
                         EditorGUILayout.LabelField(propertyName, label, new GUILayoutOption[0]);
                 }
         }
-        
+
         private void ShowCompiledCodeButton(Shader s)
         {
-                EditorGUILayout.BeginHorizontal(new GUILayoutOption[0]);
-                EditorGUILayout.PrefixLabel("Compiled code", EditorStyles.miniButton);
-				bool flag = (bool)sutilHasShaderSnippets.Invoke( null, new object[] { s } ) || (bool)sutilHasSurfaceShaders.Invoke( null, new object[] { s } );
-                if (flag)
-                {
-                        GUIContent showCurrent = Styles.showCurrent;
-                        Rect rect = GUILayoutUtility.GetRect(showCurrent, EditorStyles.miniButton, new GUILayoutOption[]
-                        {
-                                GUILayout.ExpandWidth(false)
-                        });
-                        Rect position = new Rect(rect.xMax - 16f, rect.y, 16f, rect.height);
-						bool mDown = (bool)editorGUIMouseButtonDown.Invoke( null, new object[] { position, GUIContent.none, FocusType.Passive, GUIStyle.none } );
-						if( mDown /*EditorGUI.ButtonMouseDown(position, GUIContent.none, FocusType.Passive, GUIStyle.none)*/)
-                        {
-							Rect last = (Rect)guilayoutgroupGetLast.Invoke( guiLayoutUtilityTopLevel.GetValue( null, null ), null ); //GUILayoutUtility.topLevel.GetLast();
-							PopupWindow.Show( last, (PopupWindowContent)newSipp.Invoke(null, new object[]{s}) );
-                            GUIUtility.ExitGUI();
-                        }
-                        if (GUI.Button(rect, showCurrent, EditorStyles.miniButton))
-                        {
-							sutilOpenCompiledShader.Invoke( null, new object[] { s, sippCurrentMode.GetValue( null, null ), sippCurrentPlatformMask.GetValue( null, null ), (int)sippCurrentVariantStripping.GetValue( null, null ) == 0 } );
-							//ShaderUtil.OpenCompiledShader( s, sippCurrentMode.GetValue( null, null ), sippCurrentPlatformMask.GetValue( null, null ), (int)sippCurrentVariantStripping.GetValue( null, null ) == 0 );
-							GUIUtility.ExitGUI();
-                        }
-                }
-                else
-                {
-                        GUILayout.Button("none (fixed function shader)", GUI.skin.label, new GUILayoutOption[0]);
-                }
-                EditorGUILayout.EndHorizontal();
+			EditorGUILayout.BeginHorizontal(new GUILayoutOption[0]);
+			EditorGUILayout.PrefixLabel("Compiled code", EditorStyles.miniButton);
+			bool flag = (bool)sutilHasShaderSnippets.Invoke( null, new object[] { s } ) || (bool)sutilHasSurfaceShaders.Invoke( null, new object[] { s } );
+			if (flag)
+			{
+				GUIContent showCurrent = Styles.showCurrent;
+				Rect rect = GUILayoutUtility.GetRect(showCurrent, EditorStyles.miniButton, new GUILayoutOption[]
+				{
+						GUILayout.ExpandWidth(false)
+				});
+
+				/* This is super annoying, and I'm not entirely sure what it's used for. Inspecting compiled code of multiple things? Not sure
+				Rect position = new Rect(rect.xMax - 16f, rect.y, 16f, rect.height);
+				bool mDown = (bool)editorGUIMouseButtonDown.Invoke( null, new object[] { position, GUIContent.none, FocusType.Passive, GUIStyle.none } );
+				// EditorGUI.ButtonMouseDown(position, GUIContent.none, FocusType.Passive, GUIStyle.none)
+				if( mDown )
+				{
+					Rect last = (Rect)guilayoutgroupGetLast.Invoke( guiLayoutUtilityTopLevel.GetValue( null, null ), null ); //GUILayoutUtility.topLevel.GetLast();
+					PopupWindow.Show( last, (PopupWindowContent)newSipp.Invoke(null, new object[]{s}) );
+					GUIUtility.ExitGUI();
+				}*/
+
+				if (GUI.Button(rect, showCurrent, EditorStyles.miniButton))
+				{
+					sutilOpenCompiledShader.Invoke( null, new object[] { s, sippCurrentMode.GetValue( null, null ), sippCurrentPlatformMask.GetValue( null, null ), (int)sippCurrentVariantStripping.GetValue( null, null ) == 0 } );
+					//ShaderUtil.OpenCompiledShader( s, sippCurrentMode.GetValue( null, null ), sippCurrentPlatformMask.GetValue( null, null ), (int)sippCurrentVariantStripping.GetValue( null, null ) == 0 );
+					GUIUtility.ExitGUI();
+				}
+			}
+			else
+			{
+					GUILayout.Button("none (fixed function shader)", GUI.skin.label, new GUILayoutOption[0]);
+			}
+			EditorGUILayout.EndHorizontal();
         }
         private static void ShowSurfaceShaderButton(Shader s)
         {

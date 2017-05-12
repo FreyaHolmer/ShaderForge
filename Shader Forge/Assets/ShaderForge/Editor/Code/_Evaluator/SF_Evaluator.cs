@@ -2410,7 +2410,7 @@ namespace ShaderForge {
 			if( ps.catExperimental.forceSkipModelProjection ){
 				positioningPrefix = "mul(UNITY_MATRIX_VP, "; // Local space. Broken for shadows due to TRANSFER_SHADOW_CASTER assuming model projections
 			} else {
-				positioningPrefix = "mul(UNITY_MATRIX_MVP, "; // World space 
+				positioningPrefix = "UnityObjectToClipPos( "; // World space 
 			}
 			
 			string positioningSuffix = " );";

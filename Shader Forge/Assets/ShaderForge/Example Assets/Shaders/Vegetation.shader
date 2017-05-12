@@ -89,7 +89,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 v.vertex.xyz += (normalize((float3(1,0.5,0.5)+v.normal))*o.vertexColor.r*sin(((o.vertexColor.b*3.141592654)+node_392.g))*0.016);
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 UNITY_TRANSFER_FOG(o,o.pos);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
@@ -235,7 +235,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 v.vertex.xyz += (normalize((float3(1,0.5,0.5)+v.normal))*o.vertexColor.r*sin(((o.vertexColor.b*3.141592654)+node_392.g))*0.016);
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 UNITY_TRANSFER_FOG(o,o.pos);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
@@ -340,7 +340,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float4 node_392 = _Time + _TimeEditor;
                 v.vertex.xyz += (normalize((float3(1,0.5,0.5)+v.normal))*o.vertexColor.r*sin(((o.vertexColor.b*3.141592654)+node_392.g))*0.016);
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 TRANSFER_SHADOW_CASTER(o)
                 return o;
             }

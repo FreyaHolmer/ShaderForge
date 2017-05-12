@@ -48,7 +48,7 @@ Shader "Hidden/Shader Forge/PresetParticleAdditive" {
                 VertexOutput o = (VertexOutput)0;
                 o.uv0 = v.texcoord0;
                 o.vertexColor = v.vertexColor;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 UNITY_TRANSFER_FOG(o,o.pos);
                 return o;
             }

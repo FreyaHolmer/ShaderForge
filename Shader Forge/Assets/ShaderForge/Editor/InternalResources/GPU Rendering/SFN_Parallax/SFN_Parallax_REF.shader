@@ -43,7 +43,7 @@ Shader "Hidden/Shader Forge/SFN_Parallax_REF" {
                 o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {

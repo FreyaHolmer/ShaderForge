@@ -26,7 +26,7 @@ Shader "Hidden/Shader Forge/SFN_ScreenPos" {
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 o.screenPos = o.pos;
                 return o;
             }

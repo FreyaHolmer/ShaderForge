@@ -28,7 +28,7 @@ Shader "Hidden/Shader Forge/SFN_VertexColor" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
                 o.vertexColor = v.vertexColor;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {

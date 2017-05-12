@@ -52,7 +52,7 @@ Shader "Hidden/Shader Forge/PresetSprite" {
                 VertexOutput o = (VertexOutput)0;
                 o.uv0 = v.texcoord0;
                 o.vertexColor = v.vertexColor;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 #ifdef PIXELSNAP_ON
                     o.pos = UnityPixelSnap(o.pos);
                 #endif
@@ -98,7 +98,7 @@ Shader "Hidden/Shader Forge/PresetSprite" {
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 #ifdef PIXELSNAP_ON
                     o.pos = UnityPixelSnap(o.pos);
                 #endif

@@ -33,7 +33,7 @@ Shader "Hidden/Shader Forge/SFN_Fresnel_NRM" {
                 VertexOutput o = (VertexOutput)0;
                 o.uv = v.texcoord0;
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 o.screenPos = float4( o.pos.xy / o.pos.w, 0, 0 );
                 o.screenPos.y *= _ProjectionParams.x;
                 return o;

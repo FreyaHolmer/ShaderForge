@@ -50,7 +50,7 @@ Shader "Hidden/Shader Forge/PresetSky" {
                 VertexOutput o = (VertexOutput)0;
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {

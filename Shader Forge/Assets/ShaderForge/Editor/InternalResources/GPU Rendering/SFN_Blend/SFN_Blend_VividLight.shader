@@ -30,7 +30,7 @@ Shader "Hidden/Shader Forge/SFN_Blend_VividLight" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
                 o.uv = v.texcoord0;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {

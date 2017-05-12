@@ -30,7 +30,7 @@ Shader "Hidden/Shader Forge/SFN_NormalVector" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
                 o.uv = v.texcoord0;
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
+                o.pos = UnityObjectToClipPos(v.vertex );
                 o.normalDir = UnityObjectToWorldNormal(v.normal);
                 return o;
             }

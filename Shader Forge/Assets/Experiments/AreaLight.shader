@@ -65,7 +65,7 @@ Shader "Shader Forge/NewShader" {
                 o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+                o.pos = UnityObjectToClipPos(v.vertex);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
             }
@@ -142,7 +142,7 @@ Shader "Shader Forge/NewShader" {
                 o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
-                o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+                o.pos = UnityObjectToClipPos(v.vertex);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
             }

@@ -4,10 +4,11 @@
 	{
 		_Unity ("Unity RT", 2D) = "white" {}
 		_SF ("SF RT", 2D) = "white" {}
-		_iMin ("Input min", Range(0,1)) = 0.0
+		//_iMin ("Input min", Range(0,1)) = 0.0
 		_iMax ("Input max", Range(0,1)) = 1.0
-		_oMin ("Output min", Range(0,1)) = 0.0
-		_oMax ("Output max", Range(0,1)) = 1.0
+		//_oMin ("Output min", Range(0,1)) = 0.0
+		//_oMax ("Output max", Range(0,1)) = 1.0
+		_iMaxPower ("Input max exponent", Range(1,8)) = 1.0
 	}
 	SubShader
 	{
@@ -39,10 +40,11 @@
 			sampler2D _Unity;
 			sampler2D _SF;
 
-			float _iMin;
+			//float _iMin;
 			float _iMax;
-			float _oMin;
-			float _oMax;
+			//float _oMin;
+			//float _oMax;
+			float _iMaxPower;
 
 			// lerp
 			// v = b * t + (1-t)*a
@@ -71,7 +73,8 @@
 				float4 cUnity = tex2D(_Unity, i.uv);
 				float4 cSF = tex2D(_SF, i.uv);
 
-				return Remap( abs(cUnity - cSF), _iMin, _iMax, _oMin, _oMax);
+				_iMax = pow(_iMax, _iMaxPower);
+				return Remap( abs(cUnity - cSF), 0, _iMax, 0, 1);
 			}
 			ENDCG
 		}

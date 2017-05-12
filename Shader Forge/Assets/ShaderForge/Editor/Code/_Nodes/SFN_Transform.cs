@@ -129,7 +129,7 @@ namespace ShaderForge {
 				return "mul( tangentTransform, " + "mul( unity_ObjectToWorld, " + GetInVector() + " ).xyz" + " ).xyz";
 			}
 			if( FromTo(Space.Local, Space.View)){
-				return "mul( UNITY_MATRIX_MV, " + GetInVector() + " ).xyz";
+				return "UnityObjectToViewPos( " + GetInVector() + " ).xyz";
 			}
 
 

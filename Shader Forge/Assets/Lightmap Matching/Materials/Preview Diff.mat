@@ -26,7 +26,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _iMax: 0.05
+    - _iMax: 0.758
+    - _iMaxPower: 8
     - _iMin: 0
     - _oMax: 1
     - _oMin: 0

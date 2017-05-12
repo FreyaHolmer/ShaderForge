@@ -31,7 +31,7 @@ namespace ShaderForge {
 		}
 
 		[SerializeField]
-		public Texture render;
+		public RenderTexture render; // TODO: Why is this separated from the RT itself?
 		[SerializeField]
 		GUIStyle previewStyle;
 		[SerializeField]
@@ -56,25 +56,14 @@ namespace ShaderForge {
 		[SerializeField]
 		public bool isDraggingRMB = false;
 
-		// Used for Reflection to get the preview render
 		[SerializeField]
-		MethodInfo pruBegin;
+		public Camera cam;
 		[SerializeField]
-		MethodInfo pruEnd;
-		//[SerializeField]
-		//MethodInfo pruDrawMesh;
+		Transform camPivot;
 		[SerializeField]
-		object pruRef;
+		GameObject lightHolder;
 		[SerializeField]
-		public Camera pruCam;
-		[SerializeField]
-		Transform pruCamPivot;
-		[SerializeField]
-		Light[] pruLights;
-		[SerializeField]
-		MethodInfo ieuRemoveCustomLighting;
-		[SerializeField]
-		MethodInfo ieuSetCustomLighting;
+		Light[] lights;
 
 		//public bool drawBgColor = true;
 
@@ -129,43 +118,43 @@ namespace ShaderForge {
 
 		public void SetupPreview() {
 			previewIsSetUp = false;
-			// Reflection of PreviewRenderUtility
-			Type pruType = Type.GetType( "UnityEditor.PreviewRenderUtility,UnityEditor" );
-			BindingFlags bfs = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-			pruBegin = pruType.GetMethod( "BeginPreview", new Type[]{ typeof(Rect), typeof(GUIStyle) } );
-			pruEnd = pruType.GetMethod( "EndPreview", bfs );
-			//pruDrawMesh = pruType.GetMethod( "DrawMesh", bfs, null,
-			//new Type[] { typeof( Mesh ), typeof( Vector3 ), typeof( Quaternion ), typeof( Material ), typeof( int ) }, null );
-			pruRef = Activator.CreateInstance( pruType );
-			FieldInfo pruCamField = pruRef.GetType().GetField( "m_Camera" );
-			pruCam = (Camera)pruCamField.GetValue( pruRef );
 
-			pruCamPivot = new GameObject("CameraPivot").transform;
-			pruCamPivot.gameObject.hideFlags = HideFlags.HideAndDontSave;
-			pruCam.clearFlags = CameraClearFlags.Skybox;
-			pruCam.transform.parent = pruCamPivot;
+			// Create preview camera
+			GameObject camObj = new GameObject("Shader Forge Camera");
+			camObj.hideFlags = HideFlags.HideAndDontSave;
+			cam = camObj.AddComponent<Camera>();
+			cam.targetTexture = render;
+			cam.clearFlags = CameraClearFlags.SolidColor;
+			cam.renderingPath = RenderingPath.Forward;
 
+			// Create pivot/transform to hold it
+			camPivot = new GameObject("Shader Forge Camera Pivot").transform;
+			camPivot.gameObject.hideFlags = HideFlags.HideAndDontSave;
+			cam.clearFlags = CameraClearFlags.Skybox;
+			cam.transform.parent = camPivot;
 
-			FieldInfo pruLightsField = pruRef.GetType().GetField( "m_Light" );
-			pruLights = (Light[])pruLightsField.GetValue( pruRef );
+			// Create custom light sources
+			GameObject lightHolder = new GameObject("Shader Forge Light Holder");
+			lightHolder.gameObject.hideFlags = HideFlags.HideAndDontSave;
+			lights = new Light[] {
+				new GameObject("Light 0").AddComponent<Light>(),
+				new GameObject("Light 1").AddComponent<Light>()
+			};
+			lights[0].gameObject.hideFlags = HideFlags.HideAndDontSave;
+			lights[1].gameObject.hideFlags = HideFlags.HideAndDontSave;
 
-			// Reflection of InternalEditorUtility
-			Type ieuType = Type.GetType( "UnityEditorInternal.InternalEditorUtility,UnityEditor" );
-			bfs = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-			ieuSetCustomLighting = ieuType.GetMethod( "SetCustomLighting", bfs );
-			ieuRemoveCustomLighting = ieuType.GetMethod( "RemoveCustomLighting", bfs );
 		}
 
 
 		public bool SkyboxOn{
 			get{
-				return pruCam.clearFlags == CameraClearFlags.Skybox;
+				return cam.clearFlags == CameraClearFlags.Skybox;
 			}
 			set{
 				if(SF_Debug.renderDataNodes)
-					pruCam.clearFlags = CameraClearFlags.Depth;
+					cam.clearFlags = CameraClearFlags.Depth;
 				else
-					pruCam.clearFlags = value ? CameraClearFlags.Skybox : CameraClearFlags.SolidColor;
+					cam.clearFlags = value ? CameraClearFlags.Skybox : CameraClearFlags.SolidColor;
 			}
 		}
 
@@ -178,10 +167,9 @@ namespace ShaderForge {
 			// Reset zoom
 			// Stop auto-rotate
 
-
 			rotMesh.x = rotMeshSmooth.x = rotMeshSphere.x;
 			rotMesh.y = rotMeshSmooth.y = rotMeshSphere.y;
-			pruCam.fieldOfView = targetFOV = smoothFOV = fovSphere;
+			cam.fieldOfView = targetFOV = smoothFOV = fovSphere;
 
 
 
@@ -214,10 +202,10 @@ namespace ShaderForge {
 			r.x += r.width + 10;
 			r.width *= 0.5f;
 			EditorGUI.BeginChangeCheck();
-			GUI.enabled = pruCam.clearFlags != CameraClearFlags.Skybox;
+			GUI.enabled = cam.clearFlags != CameraClearFlags.Skybox;
 			//GUI.color = GUI.enabled ? Color.white : new Color(1f,1f,1f,0.5f);
 			settings.colorBg = EditorGUI.ColorField( r, "", settings.colorBg );
-			pruCam.backgroundColor = settings.colorBg;
+			cam.backgroundColor = settings.colorBg;
 
 			GUI.enabled = true;
 			//GUI.color = Color.white;
@@ -284,9 +272,9 @@ namespace ShaderForge {
 			SFPSC_Lighting.RenderPath rPath = editor.ps.catLighting.renderPath;
 
 			if(rPath == SFPSC_Lighting.RenderPath.Forward){
-				pruCam.renderingPath = RenderingPath.Forward;
+				cam.renderingPath = RenderingPath.Forward;
 			} else if(rPath == SFPSC_Lighting.RenderPath.Deferred){
-				pruCam.renderingPath = RenderingPath.DeferredLighting;
+				cam.renderingPath = RenderingPath.DeferredLighting;
 				//pruCam.clearFlags == CameraClearFlags.Depth;
 			}
 		}
@@ -326,9 +314,9 @@ namespace ShaderForge {
 			if( Event.current.isMouse && Event.current.type == EventType.mouseDrag ) {
 				float x = ( -( Event.current.delta.x ) ) * 0.4f;
 				float y = ( -( Event.current.delta.y ) ) * 0.4f;
-				for( int i = 0; i < pruLights.Length; i++ ) {
-					pruLights[i].transform.RotateAround( Vector3.zero, pruCam.transform.right, y );
-					pruLights[i].transform.RotateAround( Vector3.zero, pruCam.transform.up, x );
+				for( int i = 0; i < lights.Length; i++ ) {
+					lights[i].transform.RotateAround( Vector3.zero, cam.transform.right, y );
+					lights[i].transform.RotateAround( Vector3.zero, cam.transform.up, x );
 				}
 			}
 			
@@ -399,23 +387,18 @@ namespace ShaderForge {
 			if( backgroundTexture == null )
 				UpdatePreviewBackgroundColor();
 
-			if( pruRef == null ) {
+			if( pruRef == null ) { // TODO, this shouldn't be done every frame
 				SetupPreview();
-			}
-			UpdateRenderPath();
-			pruBegin.Invoke( pruRef, new object[] { previewRect, previewStyle } );
-
-			RenderTexture prevTexture = pruCam.targetTexture;
-			CameraClearFlags clearPrev = pruCam.clearFlags;
-			RenderingPath prevPath = pruCam.renderingPath;
-			if( overrideRT != null ) {
-				pruCam.targetTexture = overrideRT;
-				pruCam.clearFlags = CameraClearFlags.SolidColor;
-				pruCam.renderingPath = RenderingPath.Forward;
 			}
 			
 
-			PreparePreviewLight();
+			// TODO: Override RT is used for screenshots, probably
+			if( overrideRT != null )
+				cam.targetTexture = overrideRT;
+
+			UpdateRenderPath();
+
+			SetCustomLight(on:true);
 
 			Mesh drawMesh = sphere ? sphereMesh : mesh;
 
@@ -424,35 +407,31 @@ namespace ShaderForge {
 			Quaternion rotA = Quaternion.Euler( 0f, A, 0f );
 			Quaternion rotB = Quaternion.Euler( B, 0f, 0f );
 			Quaternion finalRot = rotA * rotB;
-			pruCamPivot.rotation = finalRot;
+			camPivot.rotation = finalRot;
 			float meshExtents = drawMesh.bounds.extents.magnitude;
 
 
 			Vector3 pos = new Vector3( -drawMesh.bounds.center.x, -drawMesh.bounds.center.y, -drawMesh.bounds.center.z );
-			pruCam.transform.localPosition = new Vector3( 0f, 0f, -3f * meshExtents );
+			cam.transform.localPosition = new Vector3( 0f, 0f, -3f * meshExtents );
 
 			int smCount = drawMesh.subMeshCount;
 
 			Material mat = (overrideMaterial == null) ? InternalMaterial : overrideMaterial;
 			for( int i=0; i < smCount; i++ ) {
-				Graphics.DrawMesh( drawMesh, Quaternion.identity * pos, Quaternion.identity, mat, 0, pruCam, i );
+				Graphics.DrawMesh( drawMesh, Quaternion.identity * pos, Quaternion.identity, mat, 0, cam, i );
 			}
 
-			pruCam.farClipPlane = 3f * meshExtents * 2f;
-			pruCam.nearClipPlane = 0.1f;
-			pruCam.fieldOfView = sphere ? fovSphere : smoothFOV;
-			pruCam.Render();
+			cam.farClipPlane = 3f * meshExtents * 2f;
+			cam.nearClipPlane = 0.1f;
+			cam.fieldOfView = sphere ? fovSphere : smoothFOV;
+			cam.Render();
 
-			ieuRemoveCustomLighting.Invoke( null, new object[0] );
-			render = (Texture)pruEnd.Invoke( pruRef, new object[0] );
+			// Reset
+			if( overrideRT != null )
+				cam.targetTexture = render;
 
-			if( sphere ) // Reset if needed
-				pruCam.fieldOfView = smoothFOV;
-			if( overrideRT != null ) { // Reset if needed
-				pruCam.targetTexture = prevTexture;
-				pruCam.clearFlags = clearPrev;
-				pruCam.renderingPath = prevPath;
-			}
+			if( sphere ) // Reset if needed. // TODO: What?
+				cam.fieldOfView = smoothFOV;
 		}
 
 
@@ -479,7 +458,7 @@ namespace ShaderForge {
 				
 			}
 			targetFOV = Mathf.Clamp( targetFOV, minFOV, maxFOV );
-			smoothFOV = Mathf.Lerp( pruCam.fieldOfView, targetFOV, 0.25f );
+			smoothFOV = Mathf.Lerp( cam.fieldOfView, targetFOV, 0.25f );
 		}
 
 
@@ -488,36 +467,28 @@ namespace ShaderForge {
 				backgroundTexture = new Texture2D( 2, 2, TextureFormat.ARGB32, false, QualitySettings.activeColorSpace == ColorSpace.Linear );
 				backgroundTexture.hideFlags = HideFlags.HideAndDontSave;
 			}
+
+			// TODO: Don't do this every frame, geez
 			Color c = settings.colorBg;
 			backgroundTexture.SetPixels( new Color[] { c, c, c, c } );
 			backgroundTexture.Apply();
 		}
 
-
-		public void PreparePreviewLight() {
-
-			Color ambient;
-			//		if (this.m_LightMode == 0)
-			//		{
-			pruLights[0].intensity = 1f; // Directional
-			if( !previewIsSetUp )
-				pruLights[0].transform.rotation = Quaternion.Euler( 30f, 30f, 0f );
-			pruLights[1].intensity = 0.75f;
-			pruLights[1].color = new Color(1f,0.5f,0.25f);
-			ambient = RenderSettings.ambientLight;
-			//		}
-			//		else
-			//		{
-			//			pruLights[0].intensity = 0.5f;
-			//			pruLights[0].transform.rotation = Quaternion.Euler(50f, 50f, 0f);
-			//			pruLights[1].intensity = 0.5f;
-			//			ambient = new Color(0.2f, 0.2f, 0.2f, 0f);
-			//		}
-			ieuSetCustomLighting.Invoke( null, new object[] { pruLights, ambient } );
-			previewIsSetUp = true;
+		public void SetCustomLight(bool on) {
+			if( on ) {
+				lightHolder.SetActive( true );
+				Color ambient;
+				lights[0].intensity = 1f; // Directional
+				if( !previewIsSetUp )
+					lights[0].transform.rotation = Quaternion.Euler( 30f, 30f, 0f );
+				lights[1].intensity = 0.75f;
+				lights[1].color = new Color( 1f, 0.5f, 0.25f );
+				ambient = RenderSettings.ambientLight;
+				previewIsSetUp = true; // TODO: Should this really be here?
+			} else {
+				lightHolder.SetActive( false );
+			}
 		}
-
-
 
 	}
 }

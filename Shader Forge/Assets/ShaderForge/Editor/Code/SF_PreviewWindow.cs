@@ -131,7 +131,7 @@ namespace ShaderForge {
 			cam.enabled = false;
 			cam.useOcclusionCulling = false;
 			cam.cameraType = CameraType.Preview;
-			cam.fov = targetFOV;
+			cam.fieldOfView = targetFOV;
 
 			// Make sure it only renders using DrawMesh, to make ignore the scene. This is a bit risky, due to using reflection :(
 			BindingFlags bfs = BindingFlags.Static | BindingFlags.NonPublic;

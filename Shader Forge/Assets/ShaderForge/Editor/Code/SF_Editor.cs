@@ -113,6 +113,8 @@ namespace ShaderForge {
 #else
 			titleContent = new GUIContent( "Shader Forge", (Texture)SF_GUI.Icon );
 #endif
+			if( this.preview != null )
+				preview.OnEnable();
 		}
 
 		void OnDisable(){
@@ -123,6 +125,9 @@ namespace ShaderForge {
 				Repaint();
 				shaderEvaluator.Evaluate();
 			}
+
+			if( this.preview != null )
+				preview.OnDisable();
 
 			SF_Settings.SaveAllToDisk();
 

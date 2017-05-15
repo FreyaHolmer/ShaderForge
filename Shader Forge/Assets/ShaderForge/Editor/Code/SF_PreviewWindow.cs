@@ -61,8 +61,6 @@ namespace ShaderForge {
 		[SerializeField]
 		Transform camPivot;
 		[SerializeField]
-		GameObject lightHolder;
-		[SerializeField]
 		Light[] lights;
 
 		//public bool drawBgColor = true;
@@ -77,24 +75,27 @@ namespace ShaderForge {
 			}
 		}
 
-		public SF_PreviewWindow( SF_Editor editor ) {
+		// Reflection to call Handles.SetCameraOnlyDrawMesh(this.m_Camera);
+		MethodInfo mSetCameraOnlyDrawMesh;
 
+		public SF_PreviewWindow( SF_Editor editor ) {
 			settings = new SF_PreviewSettings( this );
 			UpdatePreviewBackgroundColor();
 
 			this.editor = editor;
-			//this.material = (Material)AssetDatabase.LoadAssetAtPath( SF_Paths.pInternal + "ShaderForgeInternal.mat", typeof( Material ) );
-			//this.InternalMaterial = (Material)Resources.Load("ShaderForgeInternal",typeof(Material));
 			this.mesh = GetSFMesh( "sf_sphere" );
-
-			previewIsSetUp = false;
-
 			SetupPreview();
-
-			
-
 		}
 
+		[SerializeField] bool enabled = true;
+		public void OnEnable() {
+			enabled = true;
+			SetupPreview();
+		}
+		public void OnDisable() {
+			enabled = false;
+			CleanupObjects();
+		}
 
 		public Mesh GetSFMesh(string find_name) {
 			UnityEngine.Object[] objs = SF_Resources.LoadAll( SF_Resources.pMeshes+"sf_meshes.fbx" );
@@ -117,7 +118,8 @@ namespace ShaderForge {
 
 
 		public void SetupPreview() {
-			previewIsSetUp = false;
+
+			previewIsSetUp = true;
 
 			// Create preview camera
 			GameObject camObj = new GameObject("Shader Forge Camera");
@@ -126,6 +128,16 @@ namespace ShaderForge {
 			cam.targetTexture = render;
 			cam.clearFlags = CameraClearFlags.SolidColor;
 			cam.renderingPath = RenderingPath.Forward;
+			cam.enabled = false;
+			cam.useOcclusionCulling = false;
+			cam.cameraType = CameraType.Preview;
+			cam.fov = targetFOV;
+
+			// Make sure it only renders using DrawMesh, to make ignore the scene. This is a bit risky, due to using reflection :(
+			BindingFlags bfs = BindingFlags.Static | BindingFlags.NonPublic;
+			Type[] args = new Type[]{ typeof(Camera) };
+			mSetCameraOnlyDrawMesh = typeof( Handles ).GetMethod( "SetCameraOnlyDrawMesh", bfs, null, args, null );
+			mSetCameraOnlyDrawMesh.Invoke( null, new object[]{ cam } );
 
 			// Create pivot/transform to hold it
 			camPivot = new GameObject("Shader Forge Camera Pivot").transform;
@@ -134,15 +146,30 @@ namespace ShaderForge {
 			cam.transform.parent = camPivot;
 
 			// Create custom light sources
-			GameObject lightHolder = new GameObject("Shader Forge Light Holder");
-			lightHolder.gameObject.hideFlags = HideFlags.HideAndDontSave;
 			lights = new Light[] {
 				new GameObject("Light 0").AddComponent<Light>(),
 				new GameObject("Light 1").AddComponent<Light>()
 			};
-			lights[0].gameObject.hideFlags = HideFlags.HideAndDontSave;
-			lights[1].gameObject.hideFlags = HideFlags.HideAndDontSave;
+			for( int i = 0; i < lights.Length; i++ ) {
+				lights[i].gameObject.hideFlags = HideFlags.HideAndDontSave;
+				lights[i].type = LightType.Directional;
+				lights[i].lightmapBakeType = LightmapBakeType.Realtime;
+				lights[i].enabled = false;
+			}
 
+			lights[0].intensity = 1f;
+			lights[0].transform.rotation = Quaternion.Euler( 30f, 30f, 0f );
+			lights[1].intensity = 0.75f;
+			lights[1].color = new Color( 1f, 0.5f, 0.25f );
+			lights[1].transform.rotation = Quaternion.Euler( 340f, 218f, 177f );
+		}
+
+		void CleanupObjects() {
+			GameObject.DestroyImmediate( cam.gameObject );
+			GameObject.DestroyImmediate( camPivot.gameObject );
+			for( int i = 0; i < lights.Length; i++ ) {
+				GameObject.DestroyImmediate( lights[i].gameObject );
+			}
 		}
 
 
@@ -171,13 +198,13 @@ namespace ShaderForge {
 			rotMesh.y = rotMeshSmooth.y = rotMeshSphere.y;
 			cam.fieldOfView = targetFOV = smoothFOV = fovSphere;
 
-
-
-
 		}
 
 
 		public int OnGUI( int yOffset, int maxWidth ) {
+
+			if( enabled == false )
+				return yOffset;
 
 			Rect topBar = new Rect( 0, yOffset, maxWidth, 18 );
 			
@@ -224,46 +251,19 @@ namespace ShaderForge {
 			}
 			GUI.enabled = true;
 
-
-			//GUILayout.Label( "Rotate:" );
-			
-			//GUILayout.Label( "BG" );
 			r.x += r.width + 10;
-			//bool bef = settings.previewAutoRotate;
 			settings.previewAutoRotate = GUI.Toggle( r, settings.previewAutoRotate, "Rotate" );
-			//}
-			//EditorGUILayout.EndHorizontal();
 
-			//GUI.Label(new Rect(),);
-
-			// DEBUG:
-
-			/*
-			if( this.mesh != null ) {
-				GUILayout.Label( "Current mesh: " + this.mesh.name );
-
-				GUILayout.Label( "Current path: " + AssetDatabase.GetAssetPath( this.mesh ) );
-
-				GUILayout.Label( "Sub asset: " + AssetDatabase.IsSubAsset( this.mesh ));
-			}
-			*/
-
-		//	GUILayout.Label( string.Empty, GUILayout.Width( maxWidth ), GUILayout.Height( maxWidth ) );
 
 			Rect previewRect = new Rect( topBar );
 			previewRect.y += topBar.height;
 			previewRect.height = topBar.width;
 
-			//GUI.Box(previewRect, string.Empty, EditorStyles.textField );
-			//				GUI.color = shaderEvaluator.previewBackgroundColor;
-			//				GUI.DrawTexture(GUILayoutUtility.GetLastRect(),EditorGUIUtility.whiteTexture);
-			//				GUI.color = Color.white;
+
 			UpdateCameraZoom();
 			DrawMeshGUI( previewRect );
 			if(SF_Debug.renderDataNodes)
 				GUI.Label(previewRect, "rotMesh.x = " + rotMesh.x + "  rotMesh.y = " + rotMesh.y);
-			//GUI.Box( previewRect, string.Empty/*, EditorStyles.textField*/ );
-			//				GUILayout.Box(shaderEvaluator.shaderString,GUILayout.Width(340));
 
 			return (int)previewRect.yMax;
 		}
@@ -374,10 +374,27 @@ namespace ShaderForge {
 			previewStyle.normal.background = backgroundTexture;
 
 
+
+			bool makeNew = false;
+			if( render == null ) {
+				makeNew = true;
+			} else if( render.width != (int)previewRect.width || render.height != (int)previewRect.height ) {
+				RenderTexture.DestroyImmediate( render );
+				makeNew = true;
+			}
+
+			if( makeNew ) {
+				render = new RenderTexture( (int)previewRect.width, (int)previewRect.height, 24, RenderTextureFormat.ARGB32 );
+				render.antiAliasing = 8;
+			}
+
 			DrawMesh();
 
-
-			GUI.DrawTexture( previewRect, render, ScaleMode.StretchToFill, false );
+			if( Event.current.type == EventType.repaint ) {
+				GL.sRGBWrite = ( QualitySettings.activeColorSpace == ColorSpace.Linear );
+				GUI.DrawTexture( previewRect, render, ScaleMode.StretchToFill, false );
+				GL.sRGBWrite = false;
+			}
 
 		}
 
@@ -387,7 +404,8 @@ namespace ShaderForge {
 			if( backgroundTexture == null )
 				UpdatePreviewBackgroundColor();
 
-			if( pruRef == null ) { // TODO, this shouldn't be done every frame
+			// Make sure all objects are set up properly
+			if( previewIsSetUp == false ) {
 				SetupPreview();
 			}
 			
@@ -395,6 +413,8 @@ namespace ShaderForge {
 			// TODO: Override RT is used for screenshots, probably
 			if( overrideRT != null )
 				cam.targetTexture = overrideRT;
+			else if( cam.targetTexture == null )
+				cam.targetTexture = render;
 
 			UpdateRenderPath();
 
@@ -418,7 +438,7 @@ namespace ShaderForge {
 
 			Material mat = (overrideMaterial == null) ? InternalMaterial : overrideMaterial;
 			for( int i=0; i < smCount; i++ ) {
-				Graphics.DrawMesh( drawMesh, Quaternion.identity * pos, Quaternion.identity, mat, 0, cam, i );
+				Graphics.DrawMesh( drawMesh, Quaternion.identity * pos, Quaternion.identity, mat, 31, cam, i );
 			}
 
 			cam.farClipPlane = 3f * meshExtents * 2f;
@@ -426,7 +446,9 @@ namespace ShaderForge {
 			cam.fieldOfView = sphere ? fovSphere : smoothFOV;
 			cam.Render();
 
-			// Reset
+			// Reset things
+			SetCustomLight( on: false );
+
 			if( overrideRT != null )
 				cam.targetTexture = render;
 
@@ -464,31 +486,26 @@ namespace ShaderForge {
 
 		public void UpdatePreviewBackgroundColor() {
 			if( backgroundTexture == null ){
-				backgroundTexture = new Texture2D( 2, 2, TextureFormat.ARGB32, false, QualitySettings.activeColorSpace == ColorSpace.Linear );
+				backgroundTexture = new Texture2D( 1, 1, TextureFormat.ARGB32, false, QualitySettings.activeColorSpace == ColorSpace.Linear );
 				backgroundTexture.hideFlags = HideFlags.HideAndDontSave;
 			}
 
-			// TODO: Don't do this every frame, geez
+			// TODO: Don't do this every frame, past me. What the shit is this. Geez, FIXME
 			Color c = settings.colorBg;
-			backgroundTexture.SetPixels( new Color[] { c, c, c, c } );
+			backgroundTexture.SetPixels( new Color[] { c } );
 			backgroundTexture.Apply();
 		}
 
 		public void SetCustomLight(bool on) {
 			if( on ) {
-				lightHolder.SetActive( true );
-				Color ambient;
-				lights[0].intensity = 1f; // Directional
-				if( !previewIsSetUp )
-					lights[0].transform.rotation = Quaternion.Euler( 30f, 30f, 0f );
-				lights[1].intensity = 0.75f;
-				lights[1].color = new Color( 1f, 0.5f, 0.25f );
-				ambient = RenderSettings.ambientLight;
-				previewIsSetUp = true; // TODO: Should this really be here?
+				UnityEditorInternal.InternalEditorUtility.SetCustomLighting( lights, RenderSettings.ambientLight );
 			} else {
-				lightHolder.SetActive( false );
+				UnityEditorInternal.InternalEditorUtility.RemoveCustomLighting();
 			}
 		}
+
+
+
 
 	}
 }

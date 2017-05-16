@@ -682,8 +682,8 @@ namespace ShaderForge {
 			fps = 1f/(float)deltaTime;
 
 
-
-			if(fps > 40)
+			
+			if(fps > 60)
 				return; // Wait for target FPS
 			
 

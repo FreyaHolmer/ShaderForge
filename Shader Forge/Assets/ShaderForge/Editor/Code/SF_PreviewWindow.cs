@@ -259,7 +259,7 @@ namespace ShaderForge {
 			previewRect.y += topBar.height;
 			previewRect.height = topBar.width;
 
-
+			
 			UpdateCameraZoom();
 			DrawMeshGUI( previewRect );
 			if(SF_Debug.renderDataNodes)
@@ -389,12 +389,9 @@ namespace ShaderForge {
 			}
 
 			DrawMesh();
-
-			if( Event.current.type == EventType.repaint ) {
-				GL.sRGBWrite = ( QualitySettings.activeColorSpace == ColorSpace.Linear );
-				GUI.DrawTexture( previewRect, render, ScaleMode.StretchToFill, false );
-				GL.sRGBWrite = false;
-			}
+			GL.sRGBWrite = ( QualitySettings.activeColorSpace == ColorSpace.Linear );
+			GUI.DrawTexture( previewRect, render, ScaleMode.StretchToFill, false );
+			GL.sRGBWrite = false;
 
 		}
 
@@ -476,11 +473,11 @@ namespace ShaderForge {
 				} else if( Event.current.delta.y < 0f ){
 					targetFOV-=2f;
 				}
-					
-				
 			}
-			targetFOV = Mathf.Clamp( targetFOV, minFOV, maxFOV );
-			smoothFOV = Mathf.Lerp( cam.fieldOfView, targetFOV, 0.25f );
+			if( Event.current.type == EventType.repaint ) {
+				targetFOV = Mathf.Clamp( targetFOV, minFOV, maxFOV );
+				smoothFOV = Mathf.Lerp( cam.fieldOfView, targetFOV, 0.5f );
+			}
 		}
 
 
@@ -489,8 +486,6 @@ namespace ShaderForge {
 				backgroundTexture = new Texture2D( 1, 1, TextureFormat.ARGB32, false, QualitySettings.activeColorSpace == ColorSpace.Linear );
 				backgroundTexture.hideFlags = HideFlags.HideAndDontSave;
 			}
-
-			// TODO: Don't do this every frame, past me. What the shit is this. Geez, FIXME
 			Color c = settings.colorBg;
 			backgroundTexture.SetPixels( new Color[] { c } );
 			backgroundTexture.Apply();

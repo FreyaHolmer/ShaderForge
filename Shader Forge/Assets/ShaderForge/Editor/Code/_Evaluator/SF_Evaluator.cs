@@ -108,6 +108,10 @@ namespace ShaderForge {
 			return ps.catLighting.bakedLight && ( ps.HasSpecular() || ps.HasDiffuse() ) && ps.catLighting.lightMode != SFPSC_Lighting.LightMode.Unlit;
 		}
 
+		bool IsReflectionProbed() {
+			return ( ps.HasSpecular() && ps.catLighting.lightMode != SFPSC_Lighting.LightMode.Unlit ) && ps.catLighting.reflectprobed && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred );
+		}
+
 		public void UpdateDependencies() {
 
 			dependencies = new SF_Dependencies( editor.ps );
@@ -153,12 +157,12 @@ namespace ShaderForge {
 				dependencies.NeedFragNormals();
 			}
 
-			if( ps.catLighting.reflectprobed && ps.HasSpecular() && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) ) {
+			if( IsReflectionProbed() && ps.HasSpecular() && ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) ) {
 				dependencies.NeedFragViewReflection();
 				dependencies.reflection_probes = true;
 			}
 
-			if( (currentPass == PassType.FwdBase || currentPass == PassType.Deferred) && (LightmappedAndLit() || ps.catLighting.reflectprobed || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) ) {
+			if( ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) && ( LightmappedAndLit() || IsReflectionProbed() || ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL ) ) {
 				dependencies.NeedFragViewReflection();
 			}
 

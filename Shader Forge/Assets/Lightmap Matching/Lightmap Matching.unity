@@ -71,7 +71,7 @@ LightmapSettings:
     m_FinalGatherFiltering: 1
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
-    m_MixedBakeMode: 0
+    m_MixedBakeMode: 3
     m_BakeBackend: 0
     m_PVRSampling: 1
     m_PVRDirectSampleCount: 32
@@ -88,7 +88,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 112000026, guid: d73c9293080dc5d49a3ca064badd523a,
     type: 2}
-  m_ShadowMaskMode: 0
+  m_ShadowMaskMode: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -278,6 +278,30 @@ Prefab:
         type: 2}
       propertyPath: m_CullingMask.m_Bits
       value: 16384
+      objectReference: {fileID: 0}
+    - target: {fileID: 108121516971938230, guid: c05ae62e223be2a48b63f3e5dcbb6ce1,
+        type: 2}
+      propertyPath: m_Lightmapping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 108121516971938230, guid: c05ae62e223be2a48b63f3e5dcbb6ce1,
+        type: 2}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 108121516971938230, guid: c05ae62e223be2a48b63f3e5dcbb6ce1,
+        type: 2}
+      propertyPath: m_Shadows.m_NormalBias
+      value: 0.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 108121516971938230, guid: c05ae62e223be2a48b63f3e5dcbb6ce1,
+        type: 2}
+      propertyPath: m_Shadows.m_Bias
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4745725487252490, guid: c05ae62e223be2a48b63f3e5dcbb6ce1, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.015
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c05ae62e223be2a48b63f3e5dcbb6ce1, type: 2}
@@ -988,6 +1012,30 @@ Prefab:
         type: 2}
       propertyPath: m_CullingMask.m_Bits
       value: 8192
+      objectReference: {fileID: 0}
+    - target: {fileID: 108121516971938230, guid: c05ae62e223be2a48b63f3e5dcbb6ce1,
+        type: 2}
+      propertyPath: m_Lightmapping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 108121516971938230, guid: c05ae62e223be2a48b63f3e5dcbb6ce1,
+        type: 2}
+      propertyPath: m_Shadows.m_Bias
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 108121516971938230, guid: c05ae62e223be2a48b63f3e5dcbb6ce1,
+        type: 2}
+      propertyPath: m_Shadows.m_NormalBias
+      value: 0.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 108121516971938230, guid: c05ae62e223be2a48b63f3e5dcbb6ce1,
+        type: 2}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4745725487252490, guid: c05ae62e223be2a48b63f3e5dcbb6ce1, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.015
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c05ae62e223be2a48b63f3e5dcbb6ce1, type: 2}

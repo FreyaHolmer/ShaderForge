@@ -40,7 +40,7 @@ namespace ShaderForge {
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return "_Time + _TimeEditor";
+			return "_Time";
 		}
 
 		public override float EvalCPU( int c ) {

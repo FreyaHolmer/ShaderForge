@@ -728,20 +728,6 @@ namespace ShaderForge {
 			}
 
 
-			if( !Application.isPlaying ) { // In order to animate shaders when game is not running
-
-				Shader.SetGlobalVector( "_TimeEditor", new Vector4( // TODO: Make this only run if a Time node is present
-						(float)now / 20f,
-				        (float)now,
-				        (float)now * 2f,
-				        (float)now * 3f
-					)
-				); 
-			}
-
-			
-
-
 			//UpdateCameraZoomValue();
 			if(focusedWindow == this)
 				Repaint(); // Update GUI every frame if focused

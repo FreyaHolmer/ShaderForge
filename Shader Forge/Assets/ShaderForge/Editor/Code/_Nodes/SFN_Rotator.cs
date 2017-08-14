@@ -89,7 +89,7 @@ namespace ShaderForge {
 
 			string pivStr = mode.Contains( "PIV" ) ? "_piv.xy" : "float2(0.5,0.5)";
 			string spdStr = mode.Contains( "SPD" ) ? "_spd.x" : "1.0";
-			string angStr = mode.Contains( "ANG" ) ? "_ang.x" : "_Time + _TimeEditor";
+			string angStr = mode.Contains( "ANG" ) ? "_ang.x" : "_Time";
 
 			return new string[] {
 				"float ang = "+angStr+";",

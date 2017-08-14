@@ -868,11 +868,6 @@ namespace ShaderForge {
 			if( dependencies.frag_sceneDepth )
 				App( "uniform sampler2D _CameraDepthTexture;" );
 
-			if( dependencies.time ) {
-				//App( "uniform float4 _Time;" ); // TODO: _Time too. Maybe replace at the end?
-				App( "uniform float4 _TimeEditor;" );
-			}
-
 			if( dependencies.fog_color ) {
 				App( "uniform float4 unity_FogColor;" );
 			}

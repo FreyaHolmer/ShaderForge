@@ -56,9 +56,9 @@ namespace ShaderForge {
 			// NeedSceneUVs()
 			switch(currentType){
 			case ScreenPosType.Normalized:
-				return "i.screenPos";
+				return "(sceneUVs * 2 - 1)";
 			case ScreenPosType.Tiled:
-				return "float2(i.screenPos.x*(_ScreenParams.r/_ScreenParams.g), i.screenPos.y)";
+				return "float2((sceneUVs.x * 2 - 1)*(_ScreenParams.r/_ScreenParams.g), sceneUVs.y * 2 - 1)";
 			case ScreenPosType.SceneUVs:
 				return "sceneUVs";
 			}

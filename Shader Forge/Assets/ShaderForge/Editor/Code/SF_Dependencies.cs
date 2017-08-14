@@ -131,12 +131,6 @@ namespace ShaderForge {
 			vert_out_vertexColor = true;
 		}
 
-		public void NeedFragScreenPos() {
-			NeedVertScreenPos();
-			vert_out_screenPos = true;
-			frag_screenPos = true;
-		}
-
 		public void NeedFragObjPos() {
 			frag_objectPos = true;
 		}
@@ -159,11 +153,11 @@ namespace ShaderForge {
 
 		public void NeedRefraction() {
 			NeedGrabPass();
-			NeedFragScreenPos();
+			NeedSceneUVs();
 		}
 
 		public void NeedSceneUVs(){
-			NeedFragScreenPos();
+			frag_projPos = true;
 			scene_uvs = true;
 		}
 

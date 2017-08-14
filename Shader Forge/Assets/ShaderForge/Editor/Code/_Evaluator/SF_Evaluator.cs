@@ -257,7 +257,7 @@ namespace ShaderForge {
 
 				if( n is SFN_SceneColor ) {
 					if( ( n as SFN_SceneColor ).AutoUV() )
-						dependencies.NeedFragScreenPos();
+						dependencies.NeedSceneUVs();
 					dependencies.NeedGrabPass();
 				}
 
@@ -313,10 +313,7 @@ namespace ShaderForge {
 				*/
 
 				if( n is SFN_ScreenPos ) {
-					dependencies.NeedFragScreenPos();
-					if( ( n as SFN_ScreenPos ).currentType == SFN_ScreenPos.ScreenPosType.SceneUVs ) {
-						dependencies.NeedSceneUVs();
-					}
+					dependencies.NeedSceneUVs();
 				}
 
 				if( n is SFN_Tex2d ) {
@@ -2089,9 +2086,9 @@ namespace ShaderForge {
 
 
 				if( ps.HasRefraction() ) {
-					sUv += "float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + " + ps.n_distortion + ";";
+					sUv += "(i.projPos.xy / i.projPos.w) + " + ps.n_distortion + ";";
 				} else {
-					sUv += "float2(1,grabSign)*i.screenPos.xy*0.5+0.5;";
+					sUv += "(i.projPos.xy / i.projPos.w);";
 				}
 
 				App( sUv );
@@ -2568,8 +2565,6 @@ namespace ShaderForge {
 			InitObjectPos();
 			InitObjectScale();
 
-			InitGrabPassSign();
-
 			if( ps.catGeometry.normalQuality == SFPSC_Geometry.NormalQuality.Normalized && dependencies.frag_normalDirection ) {
 				App( "i.normalDir = normalize(i.normalDir);" );
 				if( dependencies.frag_facing ) {
@@ -2777,23 +2772,6 @@ namespace ShaderForge {
 			App( "return UnityMetaFragment( o );" );
 
 		}
-
-
-
-		void InitGrabPassSign() {
-			if( !dependencies.scene_uvs )
-				return;
-			App( "#if UNITY_UV_STARTS_AT_TOP" );
-			scope++;
-			App( "float grabSign = -_ProjectionParams.x;" );
-			scope--;
-			App( "#else" );
-			scope++;
-			App( "float grabSign = _ProjectionParams.x;" );
-			scope--;
-			App( "#endif" );
-		}
-
 
 
 		string GetMaxUvCompCountString() {

@@ -513,6 +513,18 @@ namespace ShaderForge {
 			if( ps.catGeometry.showPixelSnap )
 				App("[MaterialToggle] PixelSnap (\"Pixel snap\", Float) = 0");
 
+			if( ps.catBlending.allowStencilWriteThroughProperties ) {
+				App( "_Stencil (\"Stencil ID\", Float) = 0" );
+				App( "_StencilReadMask (\"Stencil Read Mask\", Float) = 255" );
+				App( "_StencilWriteMask (\"Stencil Write Mask\", Float) = 255" );
+				App( "_StencilComp (\"Stencil Comparison\", Float) = 8" );
+				App( "_StencilOp (\"Stencil Operation\", Float) = 0" );
+				App( "_StencilOpFail (\"Stencil Fail Operation\", Float) = 0" );
+				App( "_StencilOpZFail (\"Stencil Z-Fail Operation\", Float) = 0" );
+			}
+
+
+
 			End();
 
 		}

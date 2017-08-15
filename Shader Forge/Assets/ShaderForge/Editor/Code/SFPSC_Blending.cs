@@ -117,6 +117,7 @@ namespace ShaderForge {
 
 
 		public bool useStencilBuffer = false;
+		public bool allowStencilWriteThroughProperties = false;
 
 
 		new void OnEnable() {
@@ -168,6 +169,7 @@ namespace ShaderForge {
 			
 			// Stencil buffer:
 			s += Serialize ( "stcl", useStencilBuffer.ToString());
+			s += Serialize ( "atwp", allowStencilWriteThroughProperties.ToString());
 			s += Serialize ( "stva", stencilValue.ToString());
 			s += Serialize ( "stmr", stencilMaskRead.ToString());
 			s += Serialize ( "stmw", stencilMaskWrite.ToString());
@@ -305,6 +307,9 @@ namespace ShaderForge {
 				// Stencil buffer:
 			case "stcl":
 				useStencilBuffer = bool.Parse(value);
+				break;
+			case "atwp":
+				allowStencilWriteThroughProperties = bool.Parse( value );
 				break;
 			case "stva":
 				stencilValue = byte.Parse(value);
@@ -562,25 +567,33 @@ namespace ShaderForge {
 		
 		
 		public string GetStencilContent(){
+
 			string s = "";
-			
-			s += "Ref " + stencilValue + "\n";
-			
-			if(stencilMaskRead != (byte)255)
-				s += "ReadMask " + stencilMaskRead + "\n";
-			if(stencilMaskWrite != (byte)255)
-				s += "WriteMask " + stencilMaskWrite + "\n";
-			if(stencilComparison != DepthTestStencil.Always)
-				s += "Comp " + stencilComparison + "\n";
-			if(stencilPass != StencilOp.Keep)
-				s += "Pass " + stencilPass + "\n";
-			if(stencilFail != StencilOp.Keep)
-				s += "Fail " + stencilFail + "\n";
-			if(stencilFailZ != StencilOp.Keep)
-				s += "ZFail " + stencilFailZ + "\n";
-			
-			return s.Substring(0,s.Length-1);
-			
+			if( allowStencilWriteThroughProperties ) {
+				s += "Ref [_Stencil]\n";
+				s += "ReadMask [_StencilReadMask]\n";
+				s += "WriteMask [_StencilWriteMask]\n";
+				s += "Comp [_StencilComp]\n";
+				s += "Pass [_StencilOp]\n";
+				s += "Fail [_StencilOpFail]\n";
+				s += "ZFail [_StencilOpZFail]";
+			} else {
+				s += "Ref " + stencilValue + "\n";
+				if( stencilMaskRead != (byte)255 )
+					s += "ReadMask " + stencilMaskRead + "\n";
+				if( stencilMaskWrite != (byte)255 )
+					s += "WriteMask " + stencilMaskWrite + "\n";
+				if( stencilComparison != DepthTestStencil.Always )
+					s += "Comp " + stencilComparison + "\n";
+				if( stencilPass != StencilOp.Keep )
+					s += "Pass " + stencilPass + "\n";
+				if( stencilFail != StencilOp.Keep )
+					s += "Fail " + stencilFail + "\n";
+				if( stencilFailZ != StencilOp.Keep )
+					s += "ZFail " + stencilFailZ + "\n";
+				s = s.Substring( 0, s.Length - 1 );
+			}
+			return s;
 		}
 
 		public void RefractionBlock( ref Rect r ) {
@@ -645,7 +658,12 @@ namespace ShaderForge {
 			if(!useStencilBuffer)
 				return;
 			r.xMin += 20;
-			
+
+			allowStencilWriteThroughProperties = UndoableToggle( r, allowStencilWriteThroughProperties, "Expose stencil as properties", "toggle expose stencil as properties" );
+			r.y += 20;
+
+			EditorGUI.BeginDisabledGroup( allowStencilWriteThroughProperties );
+
 			Rect rTmp = r;
 			rTmp.width = 88;
 			GUI.Label(rTmp,"Reference Value", EditorStyles.miniLabel);
@@ -669,6 +687,8 @@ namespace ShaderForge {
 			r.y += 20;
 			r.xMin -= 20;
 			r.y += 20;
+
+			EditorGUI.EndDisabledGroup();
 		}
 		
 		

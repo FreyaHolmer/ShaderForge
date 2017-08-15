@@ -296,6 +296,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_LightPosition ), 		catLighting + "Light Position" ).UavailableInDeferredPrePass();
 			
 			string catExtData = "External Data/";
+			AddTemplate( typeof( SFN_PixelSize ),				catExtData + "Pixel Size" );
 			AddTemplate( typeof( SFN_ProjectionParameters ), 	catExtData + "Projection Parameters" );
 			AddTemplate( typeof( SFN_ScreenParameters ), 		catExtData + "Screen Parameters" );
 			AddTemplate( typeof( SFN_Time ), 					catExtData + "Time" );

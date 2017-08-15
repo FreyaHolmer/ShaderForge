@@ -75,6 +75,7 @@ namespace ShaderForge {
 		public bool objectScaleReciprocal = false;
 
 		public bool frag_sceneDepth = false;
+		public bool depthTexture = false;
 		//public bool frag_pixelDepth = false;
 
 		public bool frag_projPos = false;
@@ -116,6 +117,7 @@ namespace ShaderForge {
 		public void NeedSceneDepth(){
 			frag_projPos = true;
 			frag_sceneDepth = true;
+			depthTexture = true;
 		}
 
 		public void IncrementTexCoord( int num ) {

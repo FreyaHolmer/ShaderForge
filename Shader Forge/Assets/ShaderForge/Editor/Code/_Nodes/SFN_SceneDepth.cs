@@ -18,7 +18,8 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( false );
 			base.texture.CompCount = 1;
 			connectors = new SF_NodeConnector[]{
-				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1)
+				SF_NodeConnector.Create(this,"OUT","",ConType.cOutput,ValueType.VTv1),
+				SF_NodeConnector.Create(this,"UV","UV",ConType.cInput,ValueType.VTv2)
 			};
 		}
 
@@ -27,7 +28,12 @@ namespace ShaderForge {
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return "sceneZ";
+			string infix = "";
+			if( GetConnectorByStringID( "UV" ).IsConnectedAndEnabled() )
+				infix = GetConnectorByStringID( "UV" ).TryEvaluate();
+			else
+				infix = "sceneUVs";
+			return "max(0, LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, " + infix + ")) - _ProjectionParams.g)";
 		}
 
 	}

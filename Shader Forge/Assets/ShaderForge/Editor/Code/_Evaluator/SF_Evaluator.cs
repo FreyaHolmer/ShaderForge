@@ -251,7 +251,6 @@ namespace ShaderForge {
 			foreach( SF_Node n in cNodes ) {
 
 				if( n is SFN_Time ) {
-					//Debug.Log("TIME DEPENDENCY");
 					dependencies.time = true;
 				}
 
@@ -279,7 +278,9 @@ namespace ShaderForge {
 				}
 
 				if( n is SFN_SceneDepth ) {
-					dependencies.NeedSceneDepth();
+					dependencies.depthTexture = true;
+					if(n.GetInputIsConnected("UV") == false)
+						dependencies.NeedSceneUVs();
 				}
 
 				if( n is SFN_DepthBlend ) {
@@ -864,8 +865,7 @@ namespace ShaderForge {
 				App( "uniform sampler2D " + ps.catBlending.GetGrabTextureName() + ";" );
 			}
 				
-
-			if( dependencies.frag_sceneDepth )
+			if( dependencies.depthTexture )
 				App( "uniform sampler2D _CameraDepthTexture;" );
 
 			if( dependencies.fog_color ) {
@@ -2063,10 +2063,6 @@ namespace ShaderForge {
 		}
 
 		void InitSceneColorAndDepth() {
-
-			//if(dependencies.frag_pixelDepth){
-			//	App ("float pixelDepth = mul( UNITY_MATRIX_V, float4((_WorldSpaceCameraPos.rgb-i.posWorld.rgb), 0) ).b - _ProjectionParams.g");
-			//}
 
 			if( dependencies.frag_sceneDepth ) {
 				App( "float sceneZ = max(0,LinearEyeDepth (UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.projPos)))) - _ProjectionParams.g);" );

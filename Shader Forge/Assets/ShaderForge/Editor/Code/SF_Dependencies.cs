@@ -103,7 +103,7 @@ namespace ShaderForge {
 			
 
 
-			//excludeRenderers.Add( RenderPlatform.flash ); // Always exclude flash // TODO: Maybe not always... Read from config
+			//excludeRenderers.Add( RenderPlatform.flash );
 			//excludeRenderers.Add( RenderPlatform.gles );
 			//excludeRenderers.Add( RenderPlatform.xbox360 );
 			//excludeRenderers.Add( RenderPlatform.ps3 );

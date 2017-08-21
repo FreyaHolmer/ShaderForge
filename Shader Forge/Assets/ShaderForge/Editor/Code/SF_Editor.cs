@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using System;
-using Holoville.HOEditorUtils; // Third party, to force inspector title icon
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -108,11 +107,7 @@ namespace ShaderForge {
 		 
 		void OnEnable() {
 			SF_Settings.LoadAllFromDisk();
-#if UNITY_5_0
-			HOPanelUtils.SetWindowTitle( this, (Texture)SF_GUI.Icon, "Shader Forge" );
-#else
 			titleContent = new GUIContent( "Shader Forge", (Texture)SF_GUI.Icon );
-#endif
 			if( this.preview != null )
 				preview.OnEnable();
 		}

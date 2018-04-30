@@ -2,15 +2,13 @@
 README - SHADER FORGE
 
 
-Contact / Support:
-------------------
-Mail - joachim@neatcorporation.com
-Bugs & feature requests - http://shaderforge.userecho.com/
-Twitter - @JoachimHolmer / #ShaderForge
+Contact:
+--------
+Keep in mind that Shader Forge has been discontinued!
+I probably won't respond to support emails anymore.
 
-Please avoid sending me questions like "How do I make a shader that ________ ? ".
-I'm unfortunately unable to respond to all shader inquiries, given the volume of users and the limited time I have.
-Try to keep that to the forum threads so that others can see and potentially help you too. (Though I will occasionally respond there as well)
+Mail - webmaster@acegikmo.com
+Twitter - @FreyaHolmer
 
 Website:
 --------

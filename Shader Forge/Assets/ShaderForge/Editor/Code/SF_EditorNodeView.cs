@@ -770,7 +770,7 @@ namespace ShaderForge {
 
 			string header = "";
 			header += "// Shader created with " + SF_Tools.versionString + " \n";
-			header += "// Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/\n";
+			header += "// Shader Forge (c) Freya Holmer - http://www.acegikmo.com/shaderforge/\n";
 			header += "// Note: Manually altering this data may prevent you from opening it in Shader Forge\n";
 			header += "/" + "*"; // Hurgh!
 

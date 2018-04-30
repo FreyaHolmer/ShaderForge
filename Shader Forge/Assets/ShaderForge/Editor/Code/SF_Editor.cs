@@ -1557,7 +1557,7 @@ namespace ShaderForge {
 			EditorGUILayout.Separator();
 			FlexHorizontal(()=>{
 				GUILayout.Label( "Created by ", SF_Styles.CreditsLabelText);
-				GUILayout.Label( "Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.boldLabel);
+				GUILayout.Label( "Freya 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.boldLabel);
 			});
 			EditorGUILayout.Separator();
 			EditorGUILayout.Separator();
@@ -1783,8 +1783,8 @@ namespace ShaderForge {
 			
 			FlexHorizontal(()=>{
 				GUI.color = new Color( 0.7f, 0.7f, 0.7f );
-				if( GUILayout.Button( '\u00a9' + " Neat Corporation / Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel ) ) {
-					Application.OpenURL("https://twitter.com/JoachimHolmer");
+				if( GUILayout.Button( '\u00a9' + " Freya 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel ) ) {
+					Application.OpenURL("https://twitter.com/FreyaHolmer");
 				}
 				
 				SF_GUI.AssignCursorForPreviousRect( MouseCursor.Link );

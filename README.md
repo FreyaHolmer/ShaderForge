@@ -1,25 +1,9 @@
-For contributors of Shader Forge
-================================
-If you've been given access to this source, there are a few things you should know!
-Let's start with the boring stuff
+https://tldrlegal.com/license/mit-license
 
-Legal
-=====
-Shader Forge is currently owned by Neat Corporation, and it has to remain that way, since copies are still being sold, and our studio of two is too small to handle the logistics and management of shared revenue.
-In addition, the rights to Shader Forge might be sold to Unity in the future, which means we at Neat Corp and Unity, don't want to deal with all the legal hassles of what could happen if every contribution retained ownership.
-Basically, to sound extra legal:
+Copyright 2018 Freya Holmér (Formerly Joachim Holmér)
 
-**[X] I, contributor of the Shader Forge project, hereby acknowledge that by contributing to this project and reading this, I surrender all rights and ownership of the code and assets I alter or add to this project, to Neat Corporation (NeCo Software AB). In addition, I will not contribute copyrighted code or assets, nor will I distribute the code or assets from this project to anyone else**
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-(Look, I even checked the box for you!)
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-This doesn't mean that I will take credit for code you've written, this is solely to dodge legal issues.
-Feel free to add yourself to the credits of Shader Forge! Also, I'll most likely tweet every time I pull your code in.
-I'll definitely mention you in the changelog too.
-
-Practical
-=========
-* Many parts of my code is ugly and confusing. You have been warned!
-* Test your features properly! Make sure serialization works, and use it in various cases.
-* Make sure you don't push a huge line-ending change of an entire file. If you're using Source Tree, enable the "ignore whitespace" option!
-* Always clean up any Debug.Log/Warning/Error/print messages that aren't supposed to be seen by users
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

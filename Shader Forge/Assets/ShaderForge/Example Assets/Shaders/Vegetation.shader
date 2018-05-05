@@ -110,7 +110,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i);
+                UNITY_LIGHT_ATTENUATION(attenuation,i, i.posWorld.xyz);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 ///////// Gloss:
                 float gloss = 0.4;
@@ -254,7 +254,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i);
+                UNITY_LIGHT_ATTENUATION(attenuation,i, i.posWorld.xyz);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 ///////// Gloss:
                 float gloss = 0.4;

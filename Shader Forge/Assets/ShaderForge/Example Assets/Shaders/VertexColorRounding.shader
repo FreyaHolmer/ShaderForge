@@ -21,7 +21,6 @@ Shader "Shader Forge/Examples/Vertex Color Rounding" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #define UNITY_PASS_FORWARDBASE
             #include "UnityCG.cginc"
             #pragma multi_compile_fwdbase_fullshadows
             #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
@@ -61,7 +60,6 @@ Shader "Shader Forge/Examples/Vertex Color Rounding" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #define UNITY_PASS_META 1
             #include "UnityCG.cginc"
             #include "UnityMetaPass.cginc"
             #pragma fragmentoption ARB_precision_hint_fastest

@@ -582,7 +582,9 @@ namespace ShaderForge {
 					App( "#define UNITY_PASS_DEFERRED" );
 					break;
 				case PassType.ShadCast:
+					App ( "#if !UNITY_PASS_SHADOWCASTER" );
 					App( "#define UNITY_PASS_SHADOWCASTER" );
+					App ( "#endif" );
 					break;
 				case PassType.Meta:
 					App( "#define UNITY_PASS_META 1" );

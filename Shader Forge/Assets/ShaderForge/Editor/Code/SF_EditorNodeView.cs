@@ -412,7 +412,7 @@ namespace ShaderForge {
 			if( Event.current.type == EventType.DragPerform ) {
 				Object droppedObj = DragAndDrop.objectReferences[0];
 				if( droppedObj is Texture2D
-#if !UNITY_2018
+#if !UNITY_2018_1_OR_NEWER
 					|| droppedObj is ProceduralTexture
 #endif
 					|| droppedObj is RenderTexture ) {
@@ -421,7 +421,7 @@ namespace ShaderForge {
 					texNode.OnAssignedTexture();
 					Event.current.Use();
 				}
-#if !UNITY_2018
+#if !UNITY_2018_1_OR_NEWER
 				if(droppedObj is ProceduralMaterial){
 					OnDroppedSubstance(droppedObj as ProceduralMaterial);
 				}
@@ -432,7 +432,7 @@ namespace ShaderForge {
 				if( DragAndDrop.objectReferences.Length > 0 ) {
 					Object dragObj = DragAndDrop.objectReferences[0];
 					if( dragObj is Texture2D
-#if !UNITY_2018
+#if !UNITY_2018_1_OR_NEWER
 						|| dragObj is ProceduralTexture
 #endif
 						|| dragObj is RenderTexture  ) {
@@ -442,7 +442,7 @@ namespace ShaderForge {
 						else
 							editor.nodeBrowser.UpdateDrag();
 					}
-#if !UNITY_2018
+#if !UNITY_2018_1_OR_NEWER
 					else if(dragObj is ProceduralMaterial){
 						DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 					}
@@ -505,7 +505,7 @@ namespace ShaderForge {
 
 		}
 
-#if !UNITY_2018
+#if !UNITY_2018_1_OR_NEWER
 		public void OnDroppedSubstance(ProceduralMaterial procMat){
 
 			Texture diffuse = TryGetProceduralTexture(procMat, "_MainTex");
@@ -543,7 +543,7 @@ namespace ShaderForge {
 			return null;
 		}
 
-#if !UNITY_2018
+#if !UNITY_2018_1_OR_NEWER
 		public Texture TryGetProceduralTexture(ProceduralMaterial procMat, string propName){
 			Texture returnTex = null;
 			try{

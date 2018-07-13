@@ -158,7 +158,7 @@ namespace ShaderForge{
 			if(!connector.IsConnected())
 				return;
 
-			if(Event.current.rawType != EventType.repaint)
+			if(Event.current.rawType != EventType.Repaint)
 				return;
 
 			//Vector2 a = connector.GetConnectionPoint();

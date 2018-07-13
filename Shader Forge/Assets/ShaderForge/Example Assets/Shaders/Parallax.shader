@@ -1,7 +1,7 @@
 // Shader created with Shader Forge v1.38 
-// Shader Forge (c) Freya Holmer - http://www.acegikmo.com/shaderforge/
+// Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:1.38;sub:START;pass:START;ps:flbk:,iptp:0,cusa:False,bamd:0,cgin:,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:True,rprd:True,enco:False,rmgx:True,imps:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,atcv:False,rfrpo:True,rfrpn:Refraction,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,atwp:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False,fnsp:False,fnfb:False,fsmp:False;n:type:ShaderForge.SFN_Final,id:0,x:33740,y:32624,varname:node_0,prsc:2|diff-123-RGB,spec-46-OUT,gloss-42-OUT,normal-47-RGB;n:type:ShaderForge.SFN_Multiply,id:35,x:32898,y:32736,varname:node_35,prsc:2|A-37-UVOUT,B-36-OUT;n:type:ShaderForge.SFN_Vector1,id:36,x:32701,y:32828,varname:node_36,prsc:2,v1:8;n:type:ShaderForge.SFN_TexCoord,id:37,x:32701,y:32682,varname:node_37,prsc:2,uv:0,uaff:False;n:type:ShaderForge.SFN_Vector1,id:42,x:33559,y:32729,varname:node_42,prsc:2,v1:0.7;n:type:ShaderForge.SFN_Vector1,id:46,x:33559,y:32673,varname:node_46,prsc:2,v1:0;n:type:ShaderForge.SFN_Tex2d,id:47,x:33559,y:32821,ptovrint:False,ptlb:Normal,ptin:_Normal,varname:_Normal,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:cf20bfced7e912046a9ce991a4d775ec,ntxv:3,isnm:True|UVIN-110-UVOUT;n:type:ShaderForge.SFN_Parallax,id:110,x:33299,y:32714,varname:node_110,prsc:2|UVIN-35-OUT,HEI-111-A,DEP-112-OUT;n:type:ShaderForge.SFN_Tex2d,id:111,x:33095,y:32608,varname:node_574,prsc:2,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-35-OUT,TEX-113-TEX;n:type:ShaderForge.SFN_Vector1,id:112,x:33095,y:32793,varname:node_112,prsc:2,v1:0.15;n:type:ShaderForge.SFN_Tex2dAsset,id:113,x:32898,y:32571,ptovrint:False,ptlb:AO (RGB) Height (A),ptin:_AORGBHeightA,varname:_AORGBHeightA,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:123,x:33559,y:32544,varname:node_577,prsc:2,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-110-UVOUT,TEX-113-TEX;proporder:113-47;pass:END;sub:END;*/
+/*SF_DATA;ver:1.38;sub:START;pass:START;ps:flbk:,cmtg:SF,iptp:0,cusa:False,bamd:0,cgin:,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:True,rprd:True,enco:False,rmgx:True,imps:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,atcv:False,rfrpo:True,rfrpn:Refraction,acwp:False,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,atwp:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False,fnsp:False,fnfb:False,fsmp:False;n:type:ShaderForge.SFN_Final,id:0,x:33740,y:32624,varname:node_0,prsc:2|diff-123-RGB,spec-46-OUT,gloss-42-OUT,normal-47-RGB;n:type:ShaderForge.SFN_Multiply,id:35,x:32898,y:32736,varname:node_35,prsc:2|A-37-UVOUT,B-36-OUT;n:type:ShaderForge.SFN_Vector1,id:36,x:32701,y:32828,varname:node_36,prsc:2,v1:8;n:type:ShaderForge.SFN_TexCoord,id:37,x:32701,y:32682,varname:node_37,prsc:2,uv:0,uaff:False;n:type:ShaderForge.SFN_Vector1,id:42,x:33559,y:32729,varname:node_42,prsc:2,v1:0.7;n:type:ShaderForge.SFN_Vector1,id:46,x:33559,y:32673,varname:node_46,prsc:2,v1:0;n:type:ShaderForge.SFN_Tex2d,id:47,x:33559,y:32821,ptovrint:False,ptlb:Normal,ptin:_Normal,varname:_Normal,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:cf20bfced7e912046a9ce991a4d775ec,ntxv:3,isnm:True|UVIN-110-UVOUT;n:type:ShaderForge.SFN_Parallax,id:110,x:33299,y:32714,varname:node_110,prsc:2|UVIN-35-OUT,HEI-111-A,DEP-112-OUT;n:type:ShaderForge.SFN_Tex2d,id:111,x:33095,y:32608,varname:node_574,prsc:2,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-35-OUT,TEX-113-TEX;n:type:ShaderForge.SFN_Vector1,id:112,x:33095,y:32793,varname:node_112,prsc:2,v1:0.15;n:type:ShaderForge.SFN_Tex2dAsset,id:113,x:32898,y:32571,ptovrint:False,ptlb:AO (RGB) Height (A),ptin:_AORGBHeightA,varname:_AORGBHeightA,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:123,x:33559,y:32544,varname:node_577,prsc:2,tex:5fb7986dd6d0a8e4093ba82369dd6a4d,ntxv:0,isnm:False|UVIN-110-UVOUT,TEX-113-TEX;proporder:113-47;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Parallax" {
     Properties {
@@ -11,6 +11,7 @@ Shader "Shader Forge/Examples/Parallax" {
     SubShader {
         Tags {
             "RenderType"="Opaque"
+            "CustomTag"="SF"
         }
         LOD 128
         Pass {
@@ -23,7 +24,9 @@ Shader "Shader Forge/Examples/Parallax" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #if !UNITY_PASS_FORWARDBASE
             #define UNITY_PASS_FORWARDBASE
+            #endif
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #define _GLOSSYENV 1
             #include "UnityCG.cginc"
@@ -100,7 +103,7 @@ Shader "Shader Forge/Examples/Parallax" {
                 float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i);
+                UNITY_LIGHT_ATTENUATION(attenuation, i, i.posWorld.xyz);
                 float3 attenColor = attenuation * _LightColor0.xyz;
                 float Pi = 3.141592654;
                 float InvPi = 0.31830988618;
@@ -111,15 +114,9 @@ Shader "Shader Forge/Examples/Parallax" {
                 float specPow = exp2( gloss * 10.0 + 1.0 );
 /////// GI Data:
                 UnityLight light;
-                #ifdef LIGHTMAP_OFF
-                    light.color = lightColor;
-                    light.dir = lightDirection;
-                    light.ndotl = LambertTerm (normalDirection, light.dir);
-                #else
-                    light.color = half3(0.f, 0.f, 0.f);
-                    light.ndotl = 0.0f;
-                    light.dir = half3(0.f, 0.f, 0.f);
-                #endif
+                light.color = lightColor;
+                light.dir = lightDirection;
+                light.ndotl = LambertTerm (normalDirection, light.dir);
                 UnityGIInput d;
                 d.light = light;
                 d.worldPos = i.posWorld.xyz;
@@ -189,7 +186,7 @@ Shader "Shader Forge/Examples/Parallax" {
                 half fd90 = 0.5 + 2 * LdotH * LdotH * (1-gloss);
                 float nlPow5 = Pow5(1-NdotL);
                 float nvPow5 = Pow5(1-NdotV);
-                float3 directDiffuse = ((1 +(fd90 - 1)*nlPow5) * (1 + (fd90 - 1)*nvPow5) * NdotL) * attenColor;
+                float3 directDiffuse = ((1 +(fd90 - 1)*nlPow5) * (1 + (fd90 - 1)*nvPow5) * NdotL) * gi.light.color;
                 float3 indirectDiffuse = float3(0,0,0);
                 indirectDiffuse += gi.indirect.diffuse;
                 float3 diffuse = (directDiffuse + indirectDiffuse) * diffuseColor;
@@ -212,7 +209,9 @@ Shader "Shader Forge/Examples/Parallax" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #if !UNITY_PASS_FORWARDADD
             #define UNITY_PASS_FORWARDADD
+            #endif
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #define _GLOSSYENV 1
             #include "UnityCG.cginc"
@@ -278,7 +277,7 @@ Shader "Shader Forge/Examples/Parallax" {
                 float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i);
+                UNITY_LIGHT_ATTENUATION(attenuation, i, i.posWorld.xyz);
                 float3 attenColor = attenuation * _LightColor0.xyz;
                 float Pi = 3.141592654;
                 float InvPi = 0.31830988618;

@@ -311,7 +311,7 @@ namespace ShaderForge {
 
 		public void UpdateDragRMB() {
 
-			if( Event.current.isMouse && Event.current.type == EventType.mouseDrag ) {
+			if( Event.current.isMouse && Event.current.type == EventType.MouseDrag ) {
 				float x = ( -( Event.current.delta.x ) ) * 0.4f;
 				float y = ( -( Event.current.delta.y ) ) * 0.4f;
 				for( int i = 0; i < lights.Length; i++ ) {
@@ -343,14 +343,14 @@ namespace ShaderForge {
 			if( previewRect.width > 1 )
 				this.previewRect = previewRect;
 
-			if( Event.current.rawType == EventType.mouseUp ) {
+			if( Event.current.rawType == EventType.MouseUp ) {
 				if( Event.current.button == 0 ) 
 					StopDragLMB();
 				else if( Event.current.button == 1 ) 
 					StopDragRMB();
 			}
 
-			if( Event.current.type == EventType.mouseDown && MouseOverPreview() ) {
+			if( Event.current.type == EventType.MouseDown && MouseOverPreview() ) {
 				if( Event.current.button == 0 )
 					StartDragLMB();
 				else if( Event.current.button == 1 )
@@ -363,7 +363,7 @@ namespace ShaderForge {
 				UpdateDragRMB();
 
 
-			if( mesh == null || InternalMaterial == null || Event.current.type != EventType.repaint )
+			if( mesh == null || InternalMaterial == null || Event.current.type != EventType.Repaint )
 				return;
 
 			
@@ -467,14 +467,14 @@ namespace ShaderForge {
 
 		public void UpdateCameraZoom() {
 
-			if( Event.current.type == EventType.scrollWheel && MouseOverPreview() ) {
+			if( Event.current.type == EventType.ScrollWheel && MouseOverPreview() ) {
 				if(Event.current.delta.y > 0f){
 					targetFOV+=2f;
 				} else if( Event.current.delta.y < 0f ){
 					targetFOV-=2f;
 				}
 			}
-			if( Event.current.type == EventType.repaint ) {
+			if( Event.current.type == EventType.Repaint ) {
 				targetFOV = Mathf.Clamp( targetFOV, minFOV, maxFOV );
 				smoothFOV = Mathf.Lerp( cam.fieldOfView, targetFOV, 0.5f );
 			}

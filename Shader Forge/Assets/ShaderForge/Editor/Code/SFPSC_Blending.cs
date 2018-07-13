@@ -65,6 +65,7 @@ namespace ShaderForge {
 		public int offsetFactor = 0;
 		public int offsetUnits = 0;
 
+		public bool allowColorMaskWriteThroughProperties = false;
 		// colorMask is a bitmask
 		// 0 =	____
 		// 1 =	___A
@@ -143,6 +144,7 @@ namespace ShaderForge {
 			s += Serialize( "rfrpo", perObjectRefraction.ToString() );
 			s += Serialize( "rfrpn", refractionPassName );
 
+			s += Serialize( "acwp", allowColorMaskWriteThroughProperties.ToString());
 			s += Serialize( "coma", colorMask.ToString() );
 			
 			s += Serialize( "ufog", useFog.ToString() );
@@ -241,6 +243,9 @@ namespace ShaderForge {
 				break;
 			case "rfrpn":
 				refractionPassName = value;
+				break;
+			case "acwp":
+				allowColorMaskWriteThroughProperties = bool.Parse( value );
 				break;
 			case "coma":
 				colorMask = int.Parse( value );
@@ -414,9 +419,13 @@ namespace ShaderForge {
 			r.y += 20;
 			//}
 
+			allowColorMaskWriteThroughProperties = UndoableToggle( r, allowColorMaskWriteThroughProperties, "Expose ColorMask as property", "Allow Color Mask Write through property" );
+			r.y += 20;
 
+			EditorGUI.BeginDisabledGroup(allowColorMaskWriteThroughProperties);
 			UndoableColorMask( r, "Color Mask", ref colorMask );
 			r.y += 20;
+			EditorGUI.EndDisabledGroup();
 			
 			bool canEditDithering = editor.mainNode.alphaClip.IsConnectedAndEnabled();
 			EditorGUI.BeginDisabledGroup( !canEditDithering );

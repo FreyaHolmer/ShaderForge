@@ -45,6 +45,8 @@ namespace ShaderForge {
 		public bool vert_in_tangents = false;
 		public bool vert_in_vertexColor = false;
 		public bool vert_out_vertexColor = false;
+		public bool vert_in_vertex = false;
+		public bool vert_out_vertex = false;
 		public bool frag_viewReflection = false;
 		public bool frag_viewDirection = false;
 		public bool frag_normalDirection = false;
@@ -131,6 +133,12 @@ namespace ShaderForge {
 		public void NeedFragVertexColor() {
 			vert_in_vertexColor = true;
 			vert_out_vertexColor = true;
+		}
+
+		public void NeedFragVertex()
+		{
+			vert_in_vertex = true;
+			vert_out_vertex = true;
 		}
 
 		public void NeedFragObjPos() {

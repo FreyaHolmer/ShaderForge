@@ -277,6 +277,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_ScreenPos ), 				catGeoData + "Screen Position" );
 			AddTemplate( typeof( SFN_Tangent ), 				catGeoData + "Tangent Dir." );
 			AddTemplate( typeof( SFN_TexCoord ), 				catGeoData + "UV Coordinates", KeyCode.U );
+			AddTemplate( typeof( SFN_Vertex ),					catGeoData + "Vertex" );
 			AddTemplate( typeof( SFN_VertexColor ), 			catGeoData + "Vertex Color", KeyCode.V );
 			AddTemplate( typeof( SFN_ViewVector ), 				catGeoData + "View Dir." );
 			AddTemplate( typeof( SFN_ViewReflectionVector ), 	catGeoData + "View Refl. Dir.", KeyCode.None, "View Reflection"  );
@@ -630,7 +631,7 @@ namespace ShaderForge {
 
 
 		bool Clicked() {
-			return Event.current.type == EventType.mouseDown;
+			return Event.current.type == EventType.MouseDown;
 		}
 		
 		float fps = 0;
@@ -916,7 +917,7 @@ namespace ShaderForge {
 				}
 			}
 
-			if( Event.current.rawType == EventType.keyUp ){
+			if( Event.current.rawType == EventType.KeyUp ){
 				foreach(SF_EditorNodeData nd in nodeTemplates){
 					nd.holding = false;
 				}
@@ -980,7 +981,7 @@ namespace ShaderForge {
 			//GUI.DrawTexture(ssRectIcon, SF_GUI.Screenshot_icon);
 
 
-			if(Event.current.type == EventType.repaint)
+			if(Event.current.type == EventType.Repaint)
 				UpdateCoroutines();
 
 
@@ -1557,7 +1558,7 @@ namespace ShaderForge {
 			EditorGUILayout.Separator();
 			FlexHorizontal(()=>{
 				GUILayout.Label( "Created by ", SF_Styles.CreditsLabelText);
-				GUILayout.Label( "Freya 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.boldLabel);
+				GUILayout.Label( "Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.boldLabel);
 			});
 			EditorGUILayout.Separator();
 			EditorGUILayout.Separator();
@@ -1783,8 +1784,8 @@ namespace ShaderForge {
 			
 			FlexHorizontal(()=>{
 				GUI.color = new Color( 0.7f, 0.7f, 0.7f );
-				if( GUILayout.Button( '\u00a9' + " Freya 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel ) ) {
-					Application.OpenURL("https://twitter.com/FreyaHolmer");
+				if( GUILayout.Button( '\u00a9' + " Neat Corporation / Joachim 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel ) ) {
+					Application.OpenURL("https://twitter.com/JoachimHolmer");
 				}
 				
 				SF_GUI.AssignCursorForPreviousRect( MouseCursor.Link );

@@ -20,6 +20,7 @@ namespace ShaderForge {
 		public bool[] usedRenderers; // TODO: Serialization?
 		public string fallback = "";
 		public int LOD = 0; // TODO: Serialization?
+		public string customTag = "SF";
 
 		public List<string> cgIncludes = new List<string>();
 
@@ -83,6 +84,7 @@ namespace ShaderForge {
 		public override string Serialize(){
 			string s = "";
 			s += Serialize( "flbk", fallback );
+			s += Serialize( "cmtg", customTag );
 			s += Serialize( "iptp", ((int)previewType).ToString() );
 			s += Serialize( "cusa", canUseSpriteAtlas.ToString() );
 			s += Serialize( "bamd", ( (int)batchingMode ).ToString() );
@@ -95,6 +97,9 @@ namespace ShaderForge {
 			switch( key ) {
 			case "flbk":
 				fallback = value;
+				break;
+			case "cmtg":
+				customTag = value;
 				break;
 			case "iptp":
 				previewType = (Inspector3DPreviewType)int.Parse(value);
@@ -182,6 +187,15 @@ namespace ShaderForge {
 			r.xMax += 3;
 			r.y += 20;
 
+			EditorGUI.LabelField( r, "Custom Tag", EditorStyles.miniLabel );
+			r.xMin += 80;
+			r.height = 17;
+			r.xMax -= 3;
+			customTag = UndoableTextField( r, customTag, "CustomTag", null);
+			r.xMin -= 80;
+			r.height = 20;
+			r.xMax += 3;
+			r.y += 20;
 
 			canUseSpriteAtlas = UndoableToggle( r, canUseSpriteAtlas, "Allow using atlased sprites", "allow using atlased sprites", null );
 			r.y += 20;

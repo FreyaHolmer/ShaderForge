@@ -23,7 +23,7 @@ namespace ShaderForge {
 
 
 		public static void DrawLock(Rect r, string tooltip = null, TextAlignment align = TextAlignment.Right){
-			if(Event.current.type != EventType.repaint)
+			if(Event.current.type != EventType.Repaint)
 				return;
 
 			Color pCol = GUI.color;
@@ -333,35 +333,35 @@ namespace ShaderForge {
 		}
 
 		public static bool PressedLMB() {
-			return ( Event.current.type == EventType.mouseDown ) && ( Event.current.button == 0 );
+			return ( Event.current.type == EventType.MouseDown ) && ( Event.current.button == 0 );
 		}
 
 		public static bool ReleasedLMB() {
-			return ( Event.current.type == EventType.mouseUp ) && ( Event.current.button == 0 );
+			return ( Event.current.type == EventType.MouseUp ) && ( Event.current.button == 0 );
 		}
 
 		public static bool PressedMMB() {
-			return ( Event.current.type == EventType.mouseDown ) && ( Event.current.button == 2 );
+			return ( Event.current.type == EventType.MouseDown ) && ( Event.current.button == 2 );
 		}
 
 		public static bool ReleasedRawMMB() {
-			return ( Event.current.rawType == EventType.mouseUp ) && ( Event.current.button == 2 );
+			return ( Event.current.rawType == EventType.MouseUp ) && ( Event.current.button == 2 );
 		}
 
 		public static bool ReleasedRawLMB() {
-			return ( Event.current.rawType == EventType.mouseUp ) && ( Event.current.button == 0 );
+			return ( Event.current.rawType == EventType.MouseUp ) && ( Event.current.button == 0 );
 		}
 
 		public static bool ReleasedRawRMB() {
-			return ( Event.current.rawType == EventType.mouseUp ) && ( Event.current.button == 1 );
+			return ( Event.current.rawType == EventType.MouseUp ) && ( Event.current.button == 1 );
 		}
 
 		public static bool PressedRMB() {
-			return ( Event.current.type == EventType.mouseDown ) && ( Event.current.button == 1 );
+			return ( Event.current.type == EventType.MouseDown ) && ( Event.current.button == 1 );
 		}
 
 		public static bool ReleasedRMB() {
-			return ( Event.current.type == EventType.mouseUp ) && ( Event.current.button == 1 );
+			return ( Event.current.type == EventType.MouseUp ) && ( Event.current.button == 1 );
 		}
 
 		public static bool HoldingAlt() {
@@ -386,7 +386,7 @@ namespace ShaderForge {
 		}
 		
 		public static bool PressedDelete(){
-			if(Event.current.type != EventType.keyDown)
+			if(Event.current.type != EventType.KeyDown)
 				return false;
 			
 			if(Event.current.keyCode == KeyCode.Delete) // Windows / Mac extended keyboard delete

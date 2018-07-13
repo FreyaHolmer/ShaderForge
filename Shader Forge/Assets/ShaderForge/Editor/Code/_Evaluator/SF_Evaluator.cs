@@ -343,6 +343,10 @@ namespace ShaderForge {
 					dependencies.NeedFragVertexColor(); // TODO: Check if it really needs to be frag
 				}
 
+				if( n is SFN_Vertex ) {
+					dependencies.NeedFragVertex();
+				}
+
 				if( n is SFN_DDX || n is SFN_DDY ) {
 					dependencies.pragmaGlsl = true;
 				}
@@ -513,6 +517,9 @@ namespace ShaderForge {
 			if( ps.catGeometry.showPixelSnap )
 				App("[MaterialToggle] PixelSnap (\"Pixel snap\", Float) = 0");
 
+			if (ps.catBlending.allowColorMaskWriteThroughProperties ) {
+				App( "_ColorMask (\"Color Mask\", Float) = 15");
+			}
 			if( ps.catBlending.allowStencilWriteThroughProperties ) {
 				App( "_Stencil (\"Stencil ID\", Float) = 0" );
 				App( "_StencilReadMask (\"Stencil Read Mask\", Float) = 255" );
@@ -562,16 +569,22 @@ namespace ShaderForge {
 
 			switch( currentPass ) {
 				case PassType.FwdBase:
+					App( "#if !UNITY_PASS_FORWARDBASE" );
 					App( "#define UNITY_PASS_FORWARDBASE" );
+					App( "#endif" );
 					break;
 				case PassType.FwdAdd:
+					App( "#if !UNITY_PASS_FORWARDADD" );
 					App( "#define UNITY_PASS_FORWARDADD" );
+					App( "#endif" );
 					break;
 				case PassType.Deferred:
 					App( "#define UNITY_PASS_DEFERRED" );
 					break;
 				case PassType.ShadCast:
+					App ( "#if !UNITY_PASS_SHADOWCASTER" );
 					App( "#define UNITY_PASS_SHADOWCASTER" );
+					App ( "#endif" );
 					break;
 				case PassType.Meta:
 					App( "#define UNITY_PASS_META 1" );
@@ -717,6 +730,7 @@ namespace ShaderForge {
 			bool hasBatchConfig = ps.catMeta.batchingMode != SFPSC_Meta.BatchingMode.Enabled;
 			bool hasAtlasConfig = ps.catMeta.canUseSpriteAtlas;
 			bool hasPreviewType = ps.catMeta.previewType != SFPSC_Meta.Inspector3DPreviewType.Sphere;
+			bool hasCustomTag = ps.catMeta.customTag.Length > 0;
 
 			if( !ip && !doesOffset && !hasRenderType && !hasBatchConfig && !hasAtlasConfig && !hasPreviewType )
 				return; // No tags!
@@ -748,6 +762,8 @@ namespace ShaderForge {
 				if( ps.catMeta.previewType == SFPSC_Meta.Inspector3DPreviewType.Skybox )
 					AppTag( "PreviewType", "Skybox" );
 			}
+			if( hasCustomTag )
+				AppTag( "CustomTag", ps.catMeta.customTag );
 
 
 
@@ -778,8 +794,15 @@ namespace ShaderForge {
 				App( ps.catBlending.GetZWriteString() );
 			}
 
-			if( ps.catBlending.colorMask != 15 ) { // 15 means RGBA, which is default
-				App("ColorMask " + ps.catBlending.colorMask.ToColorMaskString());
+			if ( ps.catBlending.allowColorMaskWriteThroughProperties )
+			{
+				App("ColorMask [_ColorMask]");
+			}
+			else
+			{
+				if( ps.catBlending.colorMask != 15 ) { // 15 means RGBA, which is default
+					App("ColorMask " + ps.catBlending.colorMask.ToColorMaskString());
+				}
 			}
 
 			App( ps.catBlending.GetOffsetString() );
@@ -959,10 +982,15 @@ namespace ShaderForge {
 			if( SF_Evaluator.inVert && ps.catLighting.IsVertexLit() && ShouldUseLightMacros() )
 				App( "TRANSFER_VERTEX_TO_FRAGMENT(o)" );
 
+#if UNITY_2018_1_OR_NEWER
+			string atten = "UNITY_LIGHT_ATTENUATION(attenuation, " + ( ( currentProgram == ShaderProgram.Frag ) ? "i" : "o" ) + ", " + ( ( currentProgram == ShaderProgram.Frag ) ? "i.posWorld.xyz" : "o.posWorld.xyz" ) + ");";
+			App( ShouldUseLightMacros() ? atten : "float attenuation = 1;" );
+#else
 			string atten = "LIGHT_ATTENUATION(" + ( ( currentProgram == ShaderProgram.Frag ) ? "i" : "o" ) + ")";
 
 			string inner = ( ShouldUseLightMacros() ? atten : "1" );
 			App( "float attenuation = " + inner + ";" );
+#endif
 			if( ps.catLighting.lightMode != SFPSC_Lighting.LightMode.Unlit )
 				App( "float3 attenColor = attenuation * _LightColor0.xyz;" );
 		}
@@ -1100,7 +1128,16 @@ namespace ShaderForge {
 					}
 				}
 
-				lmbStr = "float3 directDiffuse = " + lmbStr + " * attenColor";
+				if (HasGIData())
+				{
+
+					lmbStr = "float3 directDiffuse = " + lmbStr + " * gi.light.color";
+				}
+				else
+				{
+					lmbStr = "float3 directDiffuse = " + lmbStr + " * attenColor";
+				}
+
 				lmbStr += ";";
 				App( lmbStr );
 			}
@@ -1335,11 +1372,11 @@ namespace ShaderForge {
 
 			/*
 			 * float3 specular = pow(max(0.0,dot(halfDirection, normalDirection)),specPow) * specularColor;
-							#ifndef LIGHTMAP_OFF
-								#ifndef DIRLIGHTMAP_OFF
+# ifndef LIGHTMAP_OFF
+# ifndef DIRLIGHTMAP_OFF
 									specular *= lightmap;
-								#else
-									specular *= floor(attenuation) * _LightColor0.xyz;
+#else
+					specular *= floor(attenuation) * _LightColor0.xyz;
 								#endif
 							#else
 								specular = floor(attenuation) * _LightColor0.xyz;
@@ -1935,13 +1972,17 @@ namespace ShaderForge {
 			}
 
 		}
+		
+		bool HasGIData()
+		{
+			return ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) && ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || LightmappedAndLit() );
+		}
 
 
 		void CalcGIdata(){
 
 
-			if( ( currentPass == PassType.FwdBase || currentPass == PassType.Deferred ) && ( ps.catLighting.lightMode == SFPSC_Lighting.LightMode.PBL || ps.catLighting.reflectprobed || LightmappedAndLit() ) ) {
-
+			if (HasGIData()) {
 
 				AppDebug("GI Data");
 
@@ -1953,19 +1994,19 @@ namespace ShaderForge {
 					App( "light.ndotl = max(0,dot(normalDirection,light.dir));" );
 				} else {
 					App( "UnityLight light;" );
-					App( "#ifdef LIGHTMAP_OFF" );
-					scope++;
+					//App( "#ifdef LIGHTMAP_OFF" );
+					//scope++;
 					App( "light.color = lightColor;" );
 					App( "light.dir = lightDirection;" );
 					App( "light.ndotl = LambertTerm (normalDirection, light.dir);" );
-					scope--;
-					App( "#else" );
-					scope++;
-					App( "light.color = half3(0.f, 0.f, 0.f);" );
-					App( "light.ndotl = 0.0f;" );
-					App( "light.dir = half3(0.f, 0.f, 0.f);" );
-					scope--;
-					App( "#endif" );
+					//scope--;
+					//App( "#else" );
+					//scope++;
+					//App( "light.color = half3(0.f, 0.f, 0.f);" );
+					//App( "light.ndotl = 0.0f;" );
+					//App( "light.dir = half3(0.f, 0.f, 0.f);" );
+					//scope--;
+					//App( "#endif" );
 				}
 				
 				
@@ -1990,6 +2031,11 @@ namespace ShaderForge {
 					App( "d.ambient = i.ambientOrLightmapUV;" );
 					scope--;
 					App( "#endif" );
+
+				} else {
+
+					App( "d.ambient = 0;" );
+
 				}
 				
 				
@@ -2164,15 +2210,18 @@ namespace ShaderForge {
 			if( dependencies.vert_in_tangents )
 				App( "float4 tangent : TANGENT;" );
 			if( dependencies.uv0 )
-				App( GetUvCompCountString( 0 ) + " texcoord0 : TEXCOORD0;" );
+				App( GetUvCompCountString( 0 ) + " texcoord0" + GetVertOutTexcoord() );// : TEXCOORD0;" );
 			if( dependencies.uv1 )
-				App( GetUvCompCountString( 1 ) + " texcoord1 : TEXCOORD1;" );
+				App( GetUvCompCountString( 1 ) + " texcoord1" + GetVertOutTexcoord() );// : TEXCOORD1;" );
 			if( dependencies.uv2 )
-				App( GetUvCompCountString( 2 ) + " texcoord2 : TEXCOORD2;" );
+				App( GetUvCompCountString( 2 ) + " texcoord2" + GetVertOutTexcoord() );// : TEXCOORD2;" );
 			if( dependencies.uv3 )
-				App( GetUvCompCountString( 3 ) + " texcoord3 : TEXCOORD3;" );
+				App( GetUvCompCountString( 3 ) + " texcoord3" + GetVertOutTexcoord() );// : TEXCOORD3;" );
+			if( dependencies.vert_in_vertex)
+				App( "float4 vertexLocal" + GetVertOutTexcoord() );// : TEXCOORD3;" ); 
 			if( dependencies.vert_in_vertexColor )
 				App( "float4 vertexColor : COLOR;" );
+			ResetVertOutTexcoord();
 		}
 
 		void TransferCommonData() {
@@ -2205,7 +2254,9 @@ namespace ShaderForge {
 				App( "o.vertexColor = v.vertexColor;" );
 		}
 
-
+		public void ResetVertOutTexcoord() {
+			dependencies.ResetTexcoordNumbers();
+		}
 		public string GetVertOutTexcoord( bool numberOnly = false ) {
 			if( numberOnly )
 				return dependencies.GetVertOutTexcoord();
@@ -2235,6 +2286,8 @@ namespace ShaderForge {
 					App( GetUvCompCountString( 2 ) + " uv2" + GetVertOutTexcoord() );
 				if( dependencies.uv3_frag )
 					App( GetUvCompCountString( 3 ) + " uv3" + GetVertOutTexcoord() );
+				if( dependencies.vert_out_vertex )
+					App( "float4 vertexLocal" + GetVertOutTexcoord() );
 				if( dependencies.vert_out_worldPos )
 					App( "float4 posWorld" + GetVertOutTexcoord() );
 				if( dependencies.vert_out_normals )
@@ -2318,6 +2371,8 @@ namespace ShaderForge {
 				App( "o.uv2 = v.texcoord2;" );
 			if( dependencies.uv3_frag )
 				App( "o.uv3 = v.texcoord3;" );
+			if( dependencies.vert_out_vertex )
+				App( "o.vertexLocal = v.vertex;" );
 			if( dependencies.vert_out_vertexColor )
 				App( "o.vertexColor = v.vertexColor;" );
 

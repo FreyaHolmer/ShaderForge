@@ -2,13 +2,15 @@
 README - SHADER FORGE
 
 
-Contact:
---------
-Keep in mind that Shader Forge has been discontinued!
-I probably won't respond to support emails anymore.
+Contact / Support:
+------------------
+Mail - joachim@neatcorporation.com
+Bugs & feature requests - http://shaderforge.userecho.com/
+Twitter - @JoachimHolmer / #ShaderForge
 
-Mail - webmaster@acegikmo.com
-Twitter - @FreyaHolmer
+Please avoid sending me questions like "How do I make a shader that ________ ? ".
+I'm unfortunately unable to respond to all shader inquiries, given the volume of users and the limited time I have.
+Try to keep that to the forum threads so that others can see and potentially help you too. (Though I will occasionally respond there as well)
 
 Website:
 --------
@@ -23,16 +25,8 @@ If you have an old version of Shader Forge installed, remove the *entire* Shader
 
 Legal Stuff / Licensing:
 ------------------------
-https://tldrlegal.com/license/mit-license
-
-Copyright 2018 Freya Holmér (Formerly known as Joachim Holmér)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+Shader Forge is licensed per-seat, as with all other editor extensions, according to Unity's EULA.
+This means that in order for a team to use Shader Forge, everyone who want to be able to use it, needs their own license.
 If you finish and release a product using Shader Forge, I would appreciate a mention of Shader Forge in the credits :)
 
 

@@ -278,7 +278,16 @@ namespace ShaderForge {
 		public string GetIncludedPlatforms() {
 			string s = "";
 			foreach( RenderPlatform plat in includeRenderers )
-				s += plat.ToString() + " ";
+			{
+				if(plat.ToString()=="nswitch")
+				{
+					s += "switch ";
+				}
+				else
+				{
+					s += plat.ToString() + " ";
+				}
+			}
 			//Debug.Log("Exclude Str: " + s);
 			return s;
 		}

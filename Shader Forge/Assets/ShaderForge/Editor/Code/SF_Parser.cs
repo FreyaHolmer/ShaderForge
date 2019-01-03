@@ -271,6 +271,9 @@ namespace ShaderForge {
 				if( rndr == "opengl" ) {
 					rndr = "glcore";
 				}
+				if( rndr == "switch" ) {
+					rndr = "nswitch";
+				}
 				int enm = (int)((RenderPlatform)Enum.Parse( typeof( RenderPlatform ), rndr ));
 				editor.ps.catMeta.usedRenderers[enm] = only; // Disable or enable one
 			}

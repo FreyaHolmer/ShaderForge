@@ -26,7 +26,10 @@ namespace ShaderForge{
 			SF_Node source = editor.GetNodeByID( sNode );
 			SF_Node target = editor.GetNodeByID( tNode );
 			// Debug.Log( "Linking " + target.nodeName + " <- " + source.nodeName );
-			
+			if(target==null)
+			{
+				return;
+			}
 			target.GetConnectorByID(tCon).LinkTo( source.GetConnectorByID(sCon), linkMethod );
 		}
 		

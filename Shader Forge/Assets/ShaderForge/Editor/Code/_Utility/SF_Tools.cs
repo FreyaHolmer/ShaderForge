@@ -22,6 +22,7 @@ namespace ShaderForge {
 		n3ds		= 10,	// - Nintendo 3DS
 		wiiu		= 11,	// - Nintendo Wii U
 		nswitch	    = 12,	// - Nintendo Switch
+		vulkan      = 13,	// - Vulkan
 	};
 	
 	
@@ -30,7 +31,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 1;
-		public static int versionNumSecondary = 39;
+		public static int versionNumSecondary = 40;
 		public static string versionStage = "";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge v" + version;
@@ -53,7 +54,8 @@ namespace ShaderForge {
 			"PlayStation Vita",
 			"Nintendo 3DS",
 			"Nintendo Wii U",
-			"Nintendo Switch"
+			"Nintendo Switch",
+			"Vulkan"
 		};
 
 		public const string alphabetLower = "abcdefghijklmnopqrstuvwxyz";

@@ -310,7 +310,8 @@ namespace ShaderForge {
 				return RenderPlatform.d3d9;
 			if( Application.platform == RuntimePlatform.WindowsEditor && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.d3d11] )
 				return RenderPlatform.d3d11;
-
+			if( Application.platform == RuntimePlatform.WindowsEditor && editor.ps.catMeta.usedRenderers[(int)RenderPlatform.vulkan] )
+				return RenderPlatform.vulkan;
 
 			Debug.LogWarning( "[SF] Unhandled platform settings. Make sure your build target (" + active + ") is sensible, and that you've got platforms enabled to compile for" );
 			// You're using some weird setup, pick first active one

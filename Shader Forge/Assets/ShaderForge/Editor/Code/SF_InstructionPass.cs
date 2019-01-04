@@ -36,7 +36,8 @@ namespace ShaderForge{
 			new SFIns_PassPlat(RenderPlatform.psp2),
 			new SFIns_PassPlat(RenderPlatform.n3ds),
 			new SFIns_PassPlat(RenderPlatform.wiiu),
-			new SFIns_PassPlat(RenderPlatform.nswitch)
+			new SFIns_PassPlat(RenderPlatform.nswitch),
+			new SFIns_PassPlat(RenderPlatform.vulkan)
 		};
 
 		public void Parse(ShaderProgram prog, string line, bool ignoreMin ) {

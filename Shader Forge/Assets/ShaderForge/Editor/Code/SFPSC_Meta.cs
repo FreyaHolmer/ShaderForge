@@ -36,11 +36,12 @@ namespace ShaderForge {
 		psp2 		= 10	// - PlayStation Vita
 		n3ds 		= 11	// - Nintendo 3DS
 		wiiu		= 12,	// - Nintendo Wii U
-		switch      = 13,
+		switch      = 13,	// - Nintendo Switch
+		vulkan      = 14,	// - Vulkan
 		*/
 
 		public override SFPS_Category PostInitialize (){
-			usedRenderers = new bool[13]{ // TODO: Load from project settings
+			usedRenderers = new bool[14]{ // TODO: Load from project settings
 				true,	// - Direct3D 9
 				true,	// - Direct3D 11
 				true,	// - OpenGL Core
@@ -53,7 +54,8 @@ namespace ShaderForge {
 				false,	// - PlayStation Vita
 				false,	// - Nintendo 3DS
 				false,	// - Wii U
-				false   // - Switch
+				false,  // - Switch
+				true    // - Vulkan
 			};
 			return this;
 		}

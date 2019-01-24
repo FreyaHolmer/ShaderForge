@@ -1631,7 +1631,7 @@ namespace ShaderForge {
 		public string GetShaderPresetPath(ShaderPresets preset) {
 			int i = (int)preset;
 			string file = "preset" + shaderPresetShaders[i] + ".shader";
-			return SF_Resources.InternalResourcesPath + "Shader Presets/" + file;
+			return SF_Resources.InternalResourcesPath + "ShaderPresets/" + file;
 		}
 
 

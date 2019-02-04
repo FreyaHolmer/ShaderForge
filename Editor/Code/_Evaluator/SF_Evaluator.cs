@@ -969,10 +969,22 @@ namespace ShaderForge {
 			if( SF_Evaluator.inVert && ps.catLighting.IsVertexLit() && ShouldUseLightMacros() )
 				App( "TRANSFER_VERTEX_TO_FRAGMENT(o)" );
 
+#if UNITY_2018_1_OR_NEWER
+			if (ShouldUseLightMacros())
+      {
+				string s = ( ( currentProgram == ShaderProgram.Frag ) ? "i" : "o" );
+				App( "UNITY_LIGHT_ATTENUATION(attenuation, " + s + ", " + s + ".posWorld.xyz);" );
+			}
+      else
+      {
+				App( "float attenuation = 1;" );
+			}
+#else //UNITY_2018_1_OR_NEWER
 			string atten = "LIGHT_ATTENUATION(" + ( ( currentProgram == ShaderProgram.Frag ) ? "i" : "o" ) + ")";
 
 			string inner = ( ShouldUseLightMacros() ? atten : "1" );
 			App( "float attenuation = " + inner + ";" );
+#endif //UNITY_2018_1_OR_NEWER
 			if( ps.catLighting.lightMode != SFPSC_Lighting.LightMode.Unlit )
 				App( "float3 attenColor = attenuation * _LightColor0.xyz;" );
 		}
@@ -1151,9 +1163,12 @@ namespace ShaderForge {
 						App( "indirectDiffuse += " + ps.n_ambientDiffuse + "; // Diffuse Ambient Light" );
 
 
-					if( LightmappedAndLit() ) {
-
-
+					if( LightmappedAndLit() )
+          {
+            if (currentPass == PassType.Deferred)
+            {
+					    App("#pragma multi_compile ___ LIGHTPROBE_SH");
+				    }
 						App( "indirectDiffuse += gi.indirect.diffuse;" );
 
 

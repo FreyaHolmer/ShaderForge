@@ -562,19 +562,29 @@ namespace ShaderForge {
 
 			switch( currentPass ) {
 				case PassType.FwdBase:
+					App( "#ifndef UNITY_PASS_FORWARDBASE" );
 					App( "#define UNITY_PASS_FORWARDBASE" );
+					App( "#endif //UNITY_PASS_FORWARDBASE" );
 					break;
 				case PassType.FwdAdd:
+					App( "#ifndef UNITY_PASS_FORWARDADD" );
 					App( "#define UNITY_PASS_FORWARDADD" );
+					App( "#endif //UNITY_PASS_FORWARDADD" );
 					break;
 				case PassType.Deferred:
+					App( "#ifndef UNITY_PASS_DEFERRED" );
 					App( "#define UNITY_PASS_DEFERRED" );
+					App( "#endif //UNITY_PASS_DEFERRED" );
 					break;
 				case PassType.ShadCast:
+					App( "#ifndef UNITY_PASS_SHADOWCASTER" );
 					App( "#define UNITY_PASS_SHADOWCASTER" );
+					App( "#endif //UNITY_PASS_SHADOWCASTER" );
 					break;
 				case PassType.Meta:
+					App( "#ifndef UNITY_PASS_META 1" );
 					App( "#define UNITY_PASS_META 1" );
+					App( "#endif UNITY_PASS_META 1" );
 					break;
 			}
 

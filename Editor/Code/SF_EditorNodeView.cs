@@ -732,6 +732,7 @@ namespace ShaderForge {
 			string header = "";
 			header += "// Shader created with " + SF_Tools.versionString + " \n";
 			header += "// Shader Forge (c) Freya Holmer - http://www.acegikmo.com/shaderforge/\n";
+			header += "// Enhanced by Antoine Guillon / Arkham Development - http://www.arkham-development.com/\n";
 			header += "// Note: Manually altering this data may prevent you from opening it in Shader Forge\n";
 			header += "/" + "*"; // Hurgh!
 

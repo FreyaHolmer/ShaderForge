@@ -36,6 +36,13 @@ namespace ShaderForge {
 			string[] split = s.Split(',');
 			for( int i = 0; i < split.Length; i++ ) {
 				string[] keyval = split[i].Split(':');
+        if(keyval.Length<2)
+        {
+          string[] newsplit=new string[2];
+          newsplit[0]=keyval[0];
+          newsplit[1]="";
+          keyval=newsplit;
+        }
 				Deserialize( keyval[0], keyval[1] );
 			}
 		}

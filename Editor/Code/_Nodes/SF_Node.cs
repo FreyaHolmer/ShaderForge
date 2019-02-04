@@ -2444,6 +2444,13 @@ namespace ShaderForge {
 				if(SF_Debug.deserialization)
 					Debug.Log("Deserializing node: " + s);
 				string[] split = s.Split( ':' );
+        if(split.Length<2)
+        {
+          string[] newsplit=new string[2];
+          newsplit[0]=split[0];
+          newsplit[1]="";
+          split=newsplit;
+        }
 				string dKey = split[0];
 				string dValue = split[1];
 				

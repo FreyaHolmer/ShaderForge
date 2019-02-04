@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 5e81283b11113de4295d1943aec0a765
+timeCreated: 1503327524
+licenseType: Store
+ShaderImporter:
+  defaultTextures:
+  - _Normals: {fileID: 2800000, guid: cf20bfced7e912046a9ce991a4d775ec, type: 3}
+  - _DisplacementR: {fileID: 2800000, guid: 28c7aad1372ff114b90d330f8a2dd938, type: 3}
+  - _AORGBHeightA: {fileID: 2800000, guid: 5fb7986dd6d0a8e4093ba82369dd6a4d, type: 3}
+  - _Diffuse: {fileID: 2800000, guid: b66bceaf0cc0ace4e9bdc92f14bba709, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,7 +1,6 @@
 ﻿
 README - SHADER FORGE
 
-
 Contact:
 --------
 Keep in mind that Shader Forge has been discontinued!
@@ -14,6 +13,9 @@ Website:
 --------
 http://www.acegikmo.com/shaderforge/  (Includes documentation, tutorials, links to forum threads, and more!)
 
+Enhancements
+------------
+This version is enhanced by Arkham Development - http://www.arkham-development.com/
 
 Installation:
 -------------

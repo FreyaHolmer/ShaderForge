@@ -1,7 +1,8 @@
-// Shader created with Shader Forge v1.38 
-// Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
+// Shader created with Shader Forge v1.42 
+// Shader Forge (c) Freya Holmer - http://www.acegikmo.com/shaderforge/
+// Enhanced by Antoine Guillon / Arkham Development - http://www.arkham-development.com/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:1.38;sub:START;pass:START;ps:flbk:,iptp:0,cusa:False,bamd:0,cgin:,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:True,enco:False,rmgx:True,imps:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,atcv:False,rfrpo:True,rfrpn:Refraction,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,atwp:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False,fnsp:False,fnfb:False,fsmp:False;n:type:ShaderForge.SFN_Final,id:0,x:33638,y:32808,varname:node_0,prsc:2|diff-138-RGB,spec-145-OUT,gloss-144-OUT;n:type:ShaderForge.SFN_Tex2d,id:138,x:33259,y:32700,ptovrint:False,ptlb:Base Color,ptin:_BaseColor,varname:_Diffuse,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:b66bceaf0cc0ace4e9bdc92f14bba709,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Slider,id:144,x:33102,y:32979,ptovrint:False,ptlb:Gloss,ptin:_Gloss,varname:_Gloss,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0.5,max:1;n:type:ShaderForge.SFN_Slider,id:145,x:33102,y:32879,ptovrint:False,ptlb:Metallic,ptin:_Metallic,varname:_Specular,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;proporder:138-145-144;pass:END;sub:END;*/
+/*SF_DATA;ver:1.42;sub:START;pass:START;ps:flbk:,iptp:0,cusa:False,bamd:0,cgin:,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:True,enco:False,rmgx:True,imps:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,atcv:False,rfrpo:True,rfrpn:Refraction,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:1,rntp:1,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,atwp:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False,fnsp:False,fnfb:False,fsmp:False;n:type:ShaderForge.SFN_Final,id:0,x:33638,y:32808,varname:node_0,prsc:2|diff-138-RGB,spec-145-OUT,gloss-144-OUT;n:type:ShaderForge.SFN_Tex2d,id:138,x:33259,y:32700,ptovrint:False,ptlb:Base Color,ptin:_BaseColor,varname:_Diffuse,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Slider,id:144,x:33102,y:32979,ptovrint:False,ptlb:Gloss,ptin:_Gloss,varname:_Gloss,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0.5,max:1;n:type:ShaderForge.SFN_Slider,id:145,x:33102,y:32879,ptovrint:False,ptlb:Metallic,ptin:_Metallic,varname:_Specular,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;proporder:138-145-144;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Tiles" {
     Properties {
@@ -23,7 +24,9 @@ Shader "Shader Forge/Examples/Tiles" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #ifndef UNITY_PASS_FORWARDBASE
             #define UNITY_PASS_FORWARDBASE
+            #endif //UNITY_PASS_FORWARDBASE
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #define _GLOSSYENV 1
             #include "UnityCG.cginc"
@@ -58,7 +61,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float3 normalDir : TEXCOORD4;
                 float3 tangentDir : TEXCOORD5;
                 float3 bitangentDir : TEXCOORD6;
-                LIGHTING_COORDS(7,8)
+                UNITY_LIGHTING_COORDS(7,8)
                 UNITY_FOG_COORDS(9)
                 #if defined(LIGHTMAP_ON) || defined(UNITY_SHOULD_SAMPLE_SH)
                     float4 ambientOrLightmapUV : TEXCOORD10;
@@ -84,7 +87,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = UnityObjectToClipPos( v.vertex );
                 UNITY_TRANSFER_FOG(o,o.pos);
-                TRANSFER_VERTEX_TO_FRAGMENT(o)
+                UNITY_TRANSFER_LIGHTING(o, v.texcoord1);
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
@@ -97,7 +100,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i);
+                UNITY_LIGHT_ATTENUATION(attenuation, i, i.posWorld.xyz);
                 float3 attenColor = attenuation * _LightColor0.xyz;
                 float Pi = 3.141592654;
                 float InvPi = 0.31830988618;
@@ -209,7 +212,9 @@ Shader "Shader Forge/Examples/Tiles" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #ifndef UNITY_PASS_FORWARDADD
             #define UNITY_PASS_FORWARDADD
+            #endif //UNITY_PASS_FORWARDADD
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #define _GLOSSYENV 1
             #include "UnityCG.cginc"
@@ -244,7 +249,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float3 normalDir : TEXCOORD4;
                 float3 tangentDir : TEXCOORD5;
                 float3 bitangentDir : TEXCOORD6;
-                LIGHTING_COORDS(7,8)
+                UNITY_LIGHTING_COORDS(7,8)
                 UNITY_FOG_COORDS(9)
             };
             VertexOutput vert (VertexInput v) {
@@ -259,7 +264,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = UnityObjectToClipPos( v.vertex );
                 UNITY_TRANSFER_FOG(o,o.pos);
-                TRANSFER_VERTEX_TO_FRAGMENT(o)
+                UNITY_TRANSFER_LIGHTING(o, v.texcoord1);
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
@@ -271,7 +276,7 @@ Shader "Shader Forge/Examples/Tiles" {
                 float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i);
+                UNITY_LIGHT_ATTENUATION(attenuation, i, i.posWorld.xyz);
                 float3 attenColor = attenuation * _LightColor0.xyz;
                 float Pi = 3.141592654;
                 float InvPi = 0.31830988618;
@@ -330,7 +335,9 @@ Shader "Shader Forge/Examples/Tiles" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #ifndef UNITY_PASS_META 1
             #define UNITY_PASS_META 1
+            #endif UNITY_PASS_META 1
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #define _GLOSSYENV 1
             #include "UnityCG.cginc"

@@ -1,7 +1,8 @@
-// Shader created with Shader Forge v1.38 
-// Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
+// Shader created with Shader Forge v1.42 
+// Shader Forge (c) Freya Holmer - http://www.acegikmo.com/shaderforge/
+// Enhanced by Antoine Guillon / Arkham Development - http://www.arkham-development.com/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:1.38;sub:START;pass:START;ps:flbk:Transparent/Cutout/Diffuse,iptp:0,cusa:False,bamd:0,cgin:,lico:1,lgpr:1,limd:1,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:False,enco:False,rmgx:True,imps:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:2,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,atcv:True,rfrpo:True,rfrpn:Refraction,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:2,rntp:3,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,atwp:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False,fnsp:False,fnfb:False,fsmp:False;n:type:ShaderForge.SFN_Final,id:0,x:34000,y:32640,varname:node_0,prsc:2|diff-322-OUT,spec-3-OUT,gloss-270-OUT,normal-2-RGB,transm-7-OUT,lwrap-6-OUT,clip-1-A,voffset-394-OUT;n:type:ShaderForge.SFN_Tex2d,id:1,x:33572,y:32631,ptovrint:False,ptlb:Diffuse,ptin:_Diffuse,varname:_Diffuse,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:66321cc856b03e245ac41ed8a53e0ecc,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:2,x:33572,y:32818,ptovrint:False,ptlb:Normal,ptin:_Normal,varname:_Normal,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:cb6c5165ed180c543be39ed70e72abc8,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Vector1,id:3,x:33777,y:32641,varname:node_3,prsc:2,v1:0.2;n:type:ShaderForge.SFN_Vector3,id:6,x:33572,y:33075,varname:node_6,prsc:2,v1:0.3275862,v2:0.3275862,v3:0.2911878;n:type:ShaderForge.SFN_Vector3,id:7,x:33572,y:32976,varname:node_7,prsc:2,v1:0.2824138,v2:0.3137931,v3:0.1568965;n:type:ShaderForge.SFN_Vector1,id:270,x:33777,y:32701,varname:node_270,prsc:2,v1:0.4;n:type:ShaderForge.SFN_VertexColor,id:321,x:33330,y:32501,varname:node_321,prsc:2;n:type:ShaderForge.SFN_Multiply,id:322,x:33777,y:32508,varname:node_322,prsc:2|A-330-OUT,B-1-RGB;n:type:ShaderForge.SFN_Lerp,id:330,x:33572,y:32478,varname:node_330,prsc:2|A-331-OUT,B-337-OUT,T-321-B;n:type:ShaderForge.SFN_Vector1,id:331,x:33330,y:32356,varname:node_331,prsc:2,v1:1;n:type:ShaderForge.SFN_Vector3,id:337,x:33330,y:32410,varname:node_337,prsc:2,v1:0.9632353,v2:0.8224623,v3:0.03541304;n:type:ShaderForge.SFN_VertexColor,id:389,x:32886,y:33347,varname:node_389,prsc:2;n:type:ShaderForge.SFN_NormalVector,id:391,x:33073,y:33231,prsc:2,pt:False;n:type:ShaderForge.SFN_Time,id:392,x:33073,y:33586,varname:node_392,prsc:2;n:type:ShaderForge.SFN_Sin,id:393,x:33479,y:33548,varname:node_393,prsc:2|IN-413-OUT;n:type:ShaderForge.SFN_Multiply,id:394,x:33729,y:33420,cmnt:Wind animation,varname:node_394,prsc:2|A-562-OUT,B-389-R,C-393-OUT,D-403-OUT;n:type:ShaderForge.SFN_Vector1,id:403,x:33479,y:33699,varname:node_403,prsc:2,v1:0.016;n:type:ShaderForge.SFN_Add,id:413,x:33298,y:33548,varname:node_413,prsc:2|A-519-OUT,B-392-T;n:type:ShaderForge.SFN_Multiply,id:519,x:33073,y:33457,varname:node_519,prsc:2|A-389-B,B-520-OUT;n:type:ShaderForge.SFN_Pi,id:520,x:32919,y:33494,varname:node_520,prsc:2;n:type:ShaderForge.SFN_Add,id:561,x:33294,y:33171,varname:node_561,prsc:2|A-563-OUT,B-391-OUT;n:type:ShaderForge.SFN_Normalize,id:562,x:33479,y:33280,varname:node_562,prsc:2|IN-561-OUT;n:type:ShaderForge.SFN_Vector3,id:563,x:33073,y:33131,cmnt:Wind direction,varname:node_563,prsc:2,v1:1,v2:0.5,v3:0.5;proporder:1-2;pass:END;sub:END;*/
+/*SF_DATA;ver:1.42;sub:START;pass:START;ps:flbk:Transparent/Cutout/Diffuse,iptp:0,cusa:False,bamd:0,cgin:,lico:1,lgpr:1,limd:1,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:False,enco:False,rmgx:True,imps:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:2,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,atcv:True,rfrpo:True,rfrpn:Refraction,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:2,rntp:3,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,atwp:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False,fnsp:False,fnfb:False,fsmp:False;n:type:ShaderForge.SFN_Final,id:0,x:34000,y:32640,varname:node_0,prsc:2|diff-322-OUT,spec-3-OUT,gloss-270-OUT,normal-2-RGB,transm-7-OUT,lwrap-6-OUT,clip-1-A,voffset-394-OUT;n:type:ShaderForge.SFN_Tex2d,id:1,x:33572,y:32631,ptovrint:False,ptlb:Diffuse,ptin:_Diffuse,varname:_Diffuse,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:2,x:33572,y:32818,ptovrint:False,ptlb:Normal,ptin:_Normal,varname:_Normal,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Vector1,id:3,x:33777,y:32641,varname:node_3,prsc:2,v1:0.2;n:type:ShaderForge.SFN_Vector3,id:6,x:33572,y:33075,varname:node_6,prsc:2,v1:0.3275862,v2:0.3275862,v3:0.2911878;n:type:ShaderForge.SFN_Vector3,id:7,x:33572,y:32976,varname:node_7,prsc:2,v1:0.2824138,v2:0.3137931,v3:0.1568965;n:type:ShaderForge.SFN_Vector1,id:270,x:33777,y:32701,varname:node_270,prsc:2,v1:0.4;n:type:ShaderForge.SFN_VertexColor,id:321,x:33330,y:32501,varname:node_321,prsc:2;n:type:ShaderForge.SFN_Multiply,id:322,x:33777,y:32508,varname:node_322,prsc:2|A-330-OUT,B-1-RGB;n:type:ShaderForge.SFN_Lerp,id:330,x:33572,y:32478,varname:node_330,prsc:2|A-331-OUT,B-337-OUT,T-321-B;n:type:ShaderForge.SFN_Vector1,id:331,x:33330,y:32356,varname:node_331,prsc:2,v1:1;n:type:ShaderForge.SFN_Vector3,id:337,x:33330,y:32410,varname:node_337,prsc:2,v1:0.9632353,v2:0.8224623,v3:0.03541304;n:type:ShaderForge.SFN_VertexColor,id:389,x:32886,y:33347,varname:node_389,prsc:2;n:type:ShaderForge.SFN_NormalVector,id:391,x:33073,y:33231,prsc:2,pt:False;n:type:ShaderForge.SFN_Time,id:392,x:33073,y:33586,varname:node_392,prsc:2;n:type:ShaderForge.SFN_Sin,id:393,x:33479,y:33548,varname:node_393,prsc:2|IN-413-OUT;n:type:ShaderForge.SFN_Multiply,id:394,x:33729,y:33420,cmnt:Wind animation,varname:node_394,prsc:2|A-562-OUT,B-389-R,C-393-OUT,D-403-OUT;n:type:ShaderForge.SFN_Vector1,id:403,x:33479,y:33699,varname:node_403,prsc:2,v1:0.016;n:type:ShaderForge.SFN_Add,id:413,x:33298,y:33548,varname:node_413,prsc:2|A-519-OUT,B-392-T;n:type:ShaderForge.SFN_Multiply,id:519,x:33073,y:33457,varname:node_519,prsc:2|A-389-B,B-520-OUT;n:type:ShaderForge.SFN_Pi,id:520,x:32919,y:33494,varname:node_520,prsc:2;n:type:ShaderForge.SFN_Add,id:561,x:33294,y:33171,varname:node_561,prsc:2|A-563-OUT,B-391-OUT;n:type:ShaderForge.SFN_Normalize,id:562,x:33479,y:33280,varname:node_562,prsc:2|IN-561-OUT;n:type:ShaderForge.SFN_Vector3,id:563,x:33073,y:33131,cmnt:Wind direction,varname:node_563,prsc:2,v1:1,v2:0.5,v3:0.5;proporder:1-2;pass:END;sub:END;*/
 
 Shader "Shader Forge/Examples/Animated Vegetation" {
     Properties {
@@ -26,7 +27,9 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #ifndef UNITY_PASS_FORWARDBASE
             #define UNITY_PASS_FORWARDBASE
+            #endif //UNITY_PASS_FORWARDBASE
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
@@ -61,7 +64,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 tangentDir : TEXCOORD5;
                 float3 bitangentDir : TEXCOORD6;
                 float4 vertexColor : COLOR;
-                LIGHTING_COORDS(7,8)
+                UNITY_LIGHTING_COORDS(7,8)
                 UNITY_FOG_COORDS(9)
                 #if defined(LIGHTMAP_ON) || defined(UNITY_SHOULD_SAMPLE_SH)
                     float4 ambientOrLightmapUV : TEXCOORD10;
@@ -90,7 +93,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = UnityObjectToClipPos( v.vertex );
                 UNITY_TRANSFER_FOG(o,o.pos);
-                TRANSFER_VERTEX_TO_FRAGMENT(o)
+                UNITY_TRANSFER_LIGHTING(o, v.texcoord1);
                 return o;
             }
             float4 frag(VertexOutput i, float facing : VFACE) : COLOR {
@@ -110,7 +113,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i);
+                UNITY_LIGHT_ATTENUATION(attenuation, i, i.posWorld.xyz);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 ///////// Gloss:
                 float gloss = 0.4;
@@ -182,7 +185,9 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #ifndef UNITY_PASS_FORWARDADD
             #define UNITY_PASS_FORWARDADD
+            #endif //UNITY_PASS_FORWARDADD
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
@@ -217,7 +222,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 tangentDir : TEXCOORD5;
                 float3 bitangentDir : TEXCOORD6;
                 float4 vertexColor : COLOR;
-                LIGHTING_COORDS(7,8)
+                UNITY_LIGHTING_COORDS(7,8)
                 UNITY_FOG_COORDS(9)
             };
             VertexOutput vert (VertexInput v) {
@@ -235,7 +240,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = UnityObjectToClipPos( v.vertex );
                 UNITY_TRANSFER_FOG(o,o.pos);
-                TRANSFER_VERTEX_TO_FRAGMENT(o)
+                UNITY_TRANSFER_LIGHTING(o, v.texcoord1);
                 return o;
             }
             float4 frag(VertexOutput i, float facing : VFACE) : COLOR {
@@ -254,7 +259,7 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
                 float3 lightColor = _LightColor0.rgb;
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
-                float attenuation = LIGHT_ATTENUATION(i);
+                UNITY_LIGHT_ATTENUATION(attenuation, i, i.posWorld.xyz);
                 float3 attenColor = attenuation * _LightColor0.xyz;
 ///////// Gloss:
                 float gloss = 0.4;
@@ -295,7 +300,9 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #ifndef UNITY_PASS_SHADOWCASTER
             #define UNITY_PASS_SHADOWCASTER
+            #endif //UNITY_PASS_SHADOWCASTER
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
@@ -364,7 +371,9 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #ifndef UNITY_PASS_META 1
             #define UNITY_PASS_META 1
+            #endif UNITY_PASS_META 1
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #include "UnityCG.cginc"
             #include "Lighting.cginc"

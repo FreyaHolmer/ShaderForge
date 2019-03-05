@@ -967,7 +967,13 @@ namespace ShaderForge {
 		void InitAttenuation() {
 
 			if( SF_Evaluator.inVert && ps.catLighting.IsVertexLit() && ShouldUseLightMacros() )
+			{
+#if UNITY_2018_1_OR_NEWER
+				App( "UNITY_TRANSFER_LIGHTING(o, " + (LightmappedAndLit() ? "v.texcoord1" : "float2(0,0)") + ");" );
+#else
 				App( "TRANSFER_VERTEX_TO_FRAGMENT(o)" );
+#endif
+			}
 
 #if UNITY_2018_1_OR_NEWER
 			if (ShouldUseLightMacros())
@@ -2275,7 +2281,13 @@ namespace ShaderForge {
 				if( dependencies.frag_projPos )
 					App( "float4 projPos" + GetVertOutTexcoord() );
 				if( ShouldUseLightMacros() )
+				{
+#if UNITY_2018_1_OR_NEWER
+					App( "UNITY_LIGHTING_COORDS(" + GetVertOutTexcoord( true ) + "," + GetVertOutTexcoord( true ) + ")" );
+#else
 					App( "LIGHTING_COORDS(" + GetVertOutTexcoord( true ) + "," + GetVertOutTexcoord( true ) + ")" );
+#endif
+				}
 				if( UseUnity5FogInThisPass() )
 					App( "UNITY_FOG_COORDS(" + GetVertOutTexcoord( true ) + ")" ); // New in Unity 5
 
@@ -2541,7 +2553,13 @@ namespace ShaderForge {
 				if( ps.catLighting.IsVertexLit() )
 					Lighting();
 				else if( ShouldUseLightMacros() )
+				{
+#if UNITY_2018_1_OR_NEWER
+					App( "UNITY_TRANSFER_LIGHTING(o, " + (LightmappedAndLit() ? "v.texcoord1" : "float2(0,0)") + ");" );
+#else
 					App( "TRANSFER_VERTEX_TO_FRAGMENT(o)" );
+#endif
+				}
 			}
 
 			App( "return o;" );

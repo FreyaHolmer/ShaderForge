@@ -1488,7 +1488,7 @@ namespace ShaderForge {
 		}
 
 
-		private enum MainMenuState{Main, Credits, PresetPick}
+		private enum MainMenuState{Main, Credits, PresetPick, UpgradeDialog}
 
 		private MainMenuState menuState = MainMenuState.Main;
 
@@ -1524,7 +1524,11 @@ namespace ShaderForge {
 				} else if( menuState == MainMenuState.PresetPick ) {
 					minSize = new Vector2( 128*(shaderPresetNames.Length + 1), 560 );
 					DrawPresetPickGUI();
-				} else if(menuState == MainMenuState.Credits){
+				} else if (menuState == MainMenuState.UpgradeDialog) {
+					minSize = new Vector2(400, 400);
+					DrawUpgradeDialogGUI();
+				}
+				else if(menuState == MainMenuState.Credits) {
 
 					//Vector2 centerPrev = position.center;
 
@@ -1741,6 +1745,313 @@ namespace ShaderForge {
 			
 		}
 
+		private struct ShaderInfo
+		{
+			public Shader shader;
+			public string assetPath;
+			public float version;
+			public bool selected;
+
+			public ShaderInfo(Shader shader, string assetPath, float version)
+			{
+				this.shader = shader;
+				this.assetPath = assetPath;
+				this.version = version;
+				this.selected = false;
+			}
+		}
+
+		[NonSerialized]
+		private ShaderInfo[] allUpgradableShaders;
+		[NonSerialized]
+		private List<ShaderInfo> pendingUpgradableShaders;
+		[NonSerialized]
+		private string[] pendingShaderGuids;
+		[NonSerialized]
+		private int pendingShaderIndex;
+		[NonSerialized]
+		private Vector2 upgradeDialogScrollPos;
+		[NonSerialized]
+		private int upgradeDialogLastSelected;
+		[NonSerialized]
+		private int[] upgradingShaders;
+		[NonSerialized]
+		private int upgradingShaderIndex;
+		[NonSerialized]
+		private bool upgradingShaderThisFrame;
+
+		[SerializeField]
+		public bool upgradingDisplayAssetPath;
+		[SerializeField]
+		public bool upgradingHideIfUpToDate;
+
+		public void DrawUpgradeDialogGUI() {
+
+			GUIStyle centerLabel = new GUIStyle( EditorStyles.boldLabel );
+			GUIStyle centerLabelSmall = new GUIStyle( EditorStyles.miniLabel );
+			centerLabel.alignment = centerLabelSmall.alignment = TextAnchor.MiddleCenter;
+
+			float currentVersion = float.Parse(SF_Tools.version);
+
+			bool needRepaint = false;
+
+			if (allUpgradableShaders == null)
+			{
+				if (pendingUpgradableShaders == null)
+					pendingUpgradableShaders = new List<ShaderInfo>();
+
+				if (pendingShaderGuids == null)
+				{
+					pendingShaderGuids = AssetDatabase.FindAssets("t:Shader");
+					pendingShaderIndex = 0;
+				}
+
+				int processedCount = 0;
+				while (pendingShaderIndex < pendingShaderGuids.Length)
+				{
+					string path = AssetDatabase.GUIDToAssetPath(pendingShaderGuids[pendingShaderIndex++]);
+					Shader shader = AssetDatabase.LoadAssetAtPath<Shader>(path);
+					try
+					{
+						if (shader != null)
+						{
+							float version;
+							string sfData = SF_Parser.ExtractShaderForgeData(shader, out version, false, false, false);
+							if (!string.IsNullOrEmpty(sfData))
+							{
+								pendingUpgradableShaders.Add(new ShaderInfo(shader, path, version));
+							}
+						}
+					}
+					catch (Exception)
+					{
+					}
+
+					if (++processedCount >= 10)
+						break;
+				}
+
+				if (pendingShaderIndex >= pendingShaderGuids.Length)
+				{
+					pendingUpgradableShaders.Sort((a, b) => String.Compare(a.shader.name, b.shader.name, true));
+					allUpgradableShaders = pendingUpgradableShaders.ToArray();
+					pendingUpgradableShaders = null;
+					pendingShaderGuids = null;
+					upgradingShaders = null;
+					upgradeDialogLastSelected = -1;
+				}
+			}
+
+			if (allUpgradableShaders == null)
+			{
+				EditorGUILayout.Separator();
+				FlexHorizontal(() => {
+					GUILayout.Label(string.Format("Looking for ShaderForge shaders in your assets ({0}/{1}).", pendingShaderIndex, pendingShaderGuids.Length), centerLabel);
+				});
+				EditorGUILayout.Separator();
+				needRepaint = true;
+			}
+			else if(upgradingShaders != null)
+			{
+				int shaderIndex = (upgradingShaderIndex < upgradingShaders.Length) ? upgradingShaders[upgradingShaderIndex] : -1;
+				Shader shader = (shaderIndex >= 0 && shaderIndex < allUpgradableShaders.Length) ? allUpgradableShaders[shaderIndex].shader : null;
+
+				EditorGUILayout.Separator();
+				FlexHorizontal(() => {
+					GUILayout.Label(string.Format("Upgrading shader ({0}/{1}) : {2}.", upgradingShaderIndex, upgradingShaders.Length, shader != null ? shader.name : "none"), centerLabel);
+				});
+				EditorGUILayout.Separator();
+
+				if (shader != null && upgradingShaderThisFrame)
+				{
+					try
+					{
+						if (InitializeInstance(shader) && nodeView.treeStatus.CheckCanCompile())
+						{
+							shaderEvaluator.Evaluate();
+							allUpgradableShaders[shaderIndex].version = currentVersion;
+						}
+						else
+						{
+							Debug.LogErrorFormat("Failed to upgrade shader {0} ({1}) : the shader doesn't compile.", shader.name, allUpgradableShaders[shaderIndex].assetPath);
+						}
+					}
+					catch(Exception e)
+					{
+						Debug.LogErrorFormat("Failed to upgrade shader {0} ({1}) : {2}", shader.name, allUpgradableShaders[shaderIndex].assetPath, e.Message);
+					}
+					currentShaderAsset = null; // stay in the current view.
+					shaderOutdated = UpToDateState.UpToDate;
+				}
+
+				if (upgradingShaderThisFrame)
+				{
+					upgradingShaderIndex++;
+					upgradingShaderThisFrame = false;
+				}
+				else
+					upgradingShaderThisFrame = true;
+
+				if (upgradingShaderIndex >= upgradingShaders.Length)
+				{
+					upgradingShaders = null;
+				}
+
+				needRepaint = true;
+			}
+			else
+			{
+				EditorGUILayout.Separator();
+				FlexHorizontal( () => {
+					GUILayout.Label( "ShaderForge shaders list.", centerLabel );
+				} );
+				EditorGUILayout.Separator();
+				FlexHorizontal(() => {
+					upgradingDisplayAssetPath = GUILayout.Toggle(upgradingDisplayAssetPath, "Display Asset Path");
+					upgradingHideIfUpToDate = GUILayout.Toggle(upgradingHideIfUpToDate, "Hide If Up To Date");
+				});
+				EditorGUILayout.Separator();
+
+				{
+					GUIStyle normalStyle = new GUIStyle(EditorStyles.boldLabel);
+					normalStyle.alignment = TextAnchor.UpperCenter;
+					GUIStyle selectedStyle = new GUIStyle(normalStyle);
+					selectedStyle.normal.background = Texture2D.whiteTexture;
+					selectedStyle.normal.textColor = new Color32(50, 50, 50, 255);
+					Color selectedBGColor = new Color32(199, 210, 249, 255);
+					Color baseBGColor = GUI.backgroundColor;
+
+					Event e = Event.current;
+
+					upgradeDialogScrollPos = GUILayout.BeginScrollView(upgradeDialogScrollPos);
+					for (int i = 0; i < allUpgradableShaders.Length; i++)
+					{
+						ShaderInfo current = allUpgradableShaders[i];
+
+						if (upgradingHideIfUpToDate && current.version >= currentVersion)
+							continue;
+
+						GUILayout.BeginHorizontal();
+						GUIStyle style = current.selected ? selectedStyle : normalStyle;
+						GUI.backgroundColor = current.selected ? selectedBGColor : baseBGColor;
+						GUILayout.Label(upgradingDisplayAssetPath ? current.assetPath : current.shader.name, style, GUILayout.ExpandWidth(true));
+						Rect nameRect = GUILayoutUtility.GetLastRect();
+						GUILayout.Label(current.version.ToString("N2"), style, GUILayout.Width(60));
+						Rect versionRect = GUILayoutUtility.GetLastRect();
+						GUILayout.EndHorizontal();
+
+						if (e.type == EventType.MouseUp && e.button == 0 && (nameRect.Contains(e.mousePosition) || versionRect.Contains(e.mousePosition)))
+						{
+							bool wantSelected = !allUpgradableShaders[i].selected;
+							if (!e.control)
+							{
+								for (int j = 0; j < allUpgradableShaders.Length; j++)
+									allUpgradableShaders[j].selected = false;
+							}
+							if (e.shift && upgradeDialogLastSelected != -1)
+							{
+								upgradeDialogLastSelected = Math.Max(0, Math.Min(upgradeDialogLastSelected, allUpgradableShaders.Length - 1));
+								int start = Math.Min(upgradeDialogLastSelected, i);
+								int end = Math.Max(upgradeDialogLastSelected, i);
+								for (int j = start; j <= end; j++)
+									allUpgradableShaders[j].selected = wantSelected;
+							}
+							else
+							{
+								allUpgradableShaders[i].selected = wantSelected;
+							}
+							needRepaint = true;
+							upgradeDialogLastSelected = i;
+						}
+					}
+					GUI.backgroundColor = baseBGColor;
+					GUILayout.EndScrollView();
+				}
+			}
+
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+
+			if (allUpgradableShaders != null && upgradingShaders == null)
+			{
+				FlexHorizontal(() => {
+					GUI.enabled = allUpgradableShaders.Count(info => info.selected) == 1;
+					if (GUILayout.Button("Open Selected"))
+					{
+						Shader shader = allUpgradableShaders.First(info => info.selected).shader;
+						SF_Editor.Init(shader);
+					}
+
+					GUI.enabled = allUpgradableShaders.Any(info => info.selected);
+					if (GUILayout.Button("Resave Selected"))
+					{
+						List<int> tmpShaderIndexes = new List<int>();
+						for (int i = 0; i < allUpgradableShaders.Length; ++i)
+						{
+							if (allUpgradableShaders[i].selected)
+								tmpShaderIndexes.Add(i);
+						}
+						if (tmpShaderIndexes.Count > 0)
+						{
+							upgradingShaders = tmpShaderIndexes.ToArray();
+							upgradingShaderIndex = 0;
+							upgradingShaderThisFrame = false;
+							needRepaint = true;
+						}
+					}
+					GUI.enabled = allUpgradableShaders.Any(info => info.version < currentVersion);
+					if (GUILayout.Button("Upgrade As Needed"))
+					{
+						List<int> tmpShaderIndexes = new List<int>();
+						for (int i = 0; i < allUpgradableShaders.Length; ++i)
+						{
+							if (allUpgradableShaders[i].version < currentVersion)
+								tmpShaderIndexes.Add(i);
+						}
+						if (tmpShaderIndexes.Count > 0)
+						{
+							upgradingShaders = tmpShaderIndexes.ToArray();
+							upgradingShaderIndex = 0;
+							upgradingShaderThisFrame = false;
+							needRepaint = true;
+						}
+					}
+					GUI.enabled = allUpgradableShaders.Length > 0;
+					if (GUILayout.Button("Resave All"))
+					{
+						upgradingShaders = new int[allUpgradableShaders.Length];
+						for (int i = 0; i < upgradingShaders.Length; ++i)
+							upgradingShaders[i] = i;
+						upgradingShaderIndex = 0;
+						upgradingShaderThisFrame = false;
+						needRepaint = true;
+					}
+					GUI.enabled = true;
+				});
+			}
+
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
+
+			FlexHorizontal( () => {
+				if( GUILayout.Button( "Back" ) ) {
+					allUpgradableShaders = null;
+					pendingUpgradableShaders = null;
+					pendingShaderGuids = null;
+					upgradingShaders = null;
+					menuState = MainMenuState.Main;
+				}
+			} );
+
+			if (needRepaint)
+			{
+				Repaint();
+			}
+		}
 
 		public Texture2D GetShaderPresetIcon(ShaderPresets preset) {
 
@@ -1809,6 +2120,9 @@ namespace ShaderForge {
 					}
 					if( GUILayout.Button( "Load Shader", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
 						OpenLoadDialog();
+					}
+					if( GUILayout.Button( "Upgrade Shaders", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
+						menuState = MainMenuState.UpgradeDialog;
 					}
 				} else {
 					GUILayout.BeginVertical();

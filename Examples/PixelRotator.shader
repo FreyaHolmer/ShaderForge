@@ -28,7 +28,7 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             #include "AutoLight.cginc"
             #pragma multi_compile_fwdbase_fullshadows
             #pragma multi_compile_fog
-            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
+            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu switch vulkan 
             #pragma target 3.0
             uniform float4 _LightColor0;
             struct VertexInput {
@@ -82,8 +82,8 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float2 node_741_skew = node_744 + 0.2127+node_744.x*0.3713*node_744.y;
                 float2 node_741_rnd = 4.789*sin(489.123*(node_741_skew));
                 float node_741 = frac(node_741_rnd.x*node_741_rnd.y*(1+node_741_skew.x));
-                float4 node_3064 = _Time;
-                float node_563_ang = node_3064.g;
+                float4 node_1785 = _Time;
+                float node_563_ang = node_1785.g;
                 float node_563_spd = 1.0;
                 float node_563_cos = cos(node_563_spd*node_563_ang);
                 float node_563_sin = sin(node_563_spd*node_563_ang);
@@ -118,7 +118,7 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
             #include "AutoLight.cginc"
             #pragma multi_compile_fwdadd_fullshadows
             #pragma multi_compile_fog
-            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
+            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu switch vulkan 
             #pragma target 3.0
             uniform float4 _LightColor0;
             struct VertexInput {
@@ -170,8 +170,8 @@ Shader "Shader Forge/Examples/Pixel Rotator" {
                 float2 node_741_skew = node_744 + 0.2127+node_744.x*0.3713*node_744.y;
                 float2 node_741_rnd = 4.789*sin(489.123*(node_741_skew));
                 float node_741 = frac(node_741_rnd.x*node_741_rnd.y*(1+node_741_skew.x));
-                float4 node_9415 = _Time;
-                float node_563_ang = node_9415.g;
+                float4 node_9318 = _Time;
+                float node_563_ang = node_9318.g;
                 float node_563_spd = 1.0;
                 float node_563_cos = cos(node_563_spd*node_563_ang);
                 float node_563_sin = sin(node_563_spd*node_563_ang);

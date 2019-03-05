@@ -37,7 +37,7 @@ Shader "Shader Forge/Examples/Refraction" {
             #include "UnityPBSLighting.cginc"
             #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdbase_fullshadows
-            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 
+            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu switch vulkan 
             #pragma target 3.0
             uniform sampler2D _GrabTexture;
             uniform float _RefractionIntensity;
@@ -206,7 +206,7 @@ Shader "Shader Forge/Examples/Refraction" {
             #include "UnityPBSLighting.cginc"
             #include "UnityStandardBRDF.cginc"
             #pragma multi_compile_fwdadd_fullshadows
-            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 
+            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu switch vulkan 
             #pragma target 3.0
             uniform sampler2D _GrabTexture;
             uniform float _RefractionIntensity;
@@ -330,7 +330,7 @@ Shader "Shader Forge/Examples/Refraction" {
             #include "UnityStandardBRDF.cginc"
             #pragma fragmentoption ARB_precision_hint_fastest
             #pragma multi_compile_shadowcaster
-            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 
+            #pragma only_renderers d3d9 d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu switch vulkan 
             #pragma target 3.0
             struct VertexInput {
                 float4 vertex : POSITION;

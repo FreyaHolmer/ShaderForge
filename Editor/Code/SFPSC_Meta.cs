@@ -4,8 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace ShaderForge {
-	
-	
+
+
 	[System.Serializable]
 	public class SFPSC_Meta : SFPS_Category {
 
@@ -115,18 +115,18 @@ namespace ShaderForge {
 			}
 
 		}
-	
+
 
 		public override float DrawInner(ref Rect r){
 
 			float prevYpos = r.y;
 			r.y = 0;
 
-			
+
 			r.xMin += 20;
 			r.y += 20;
 
-			
+
 			EditorGUI.LabelField( r, "Path", EditorStyles.miniLabel );
 			r.xMin += 30;
 			r.height = 17;
@@ -148,10 +148,10 @@ namespace ShaderForge {
 			r.height = 20;
 			r.xMax += 3;
 			r.y += 20;
-			
-			
-			
-			
+
+
+
+
 			EditorGUI.LabelField( r, "Fallback", EditorStyles.miniLabel );
 			Rect rStart = new Rect( r );
 			r.xMin += 50;
@@ -174,8 +174,8 @@ namespace ShaderForge {
 			ps.EndIgnoreChangeCheck();
 			r = rStart;
 			r.y += r.height;
-			
-			
+
+
 			EditorGUI.LabelField( r, "LOD", EditorStyles.miniLabel );
 			r.xMin += 30;
 			r.height = 17;
@@ -255,31 +255,31 @@ namespace ShaderForge {
 			}
 
 
-			
+
 			r.y += 40;
-			
-			
-			
+
+
+
 			EditorGUI.LabelField( r, "Target renderers:" );
 			r.xMin += 20;
 			r.y += 20;
 			r.height = 17;
 			float pWidth = r.width;
-			
-			
-			bool onlyDX11GlCore = ps.mOut.tessellation.IsConnectedAndEnabled();
-			
-			
+
+
+			bool onlyTessellationCore = ps.mOut.tessellation.IsConnectedAndEnabled();
+
+
 			for(int i=0;i<usedRenderers.Length;i++){
-				bool isDX11orGlCore = ( i == (int)RenderPlatform.d3d11 ) || i == (int)RenderPlatform.glcore;
-				
+				bool isTessellationCore = ( i == (int)RenderPlatform.d3d11 ) || i == (int)RenderPlatform.glcore || i == (int)RenderPlatform.ps4 || i == (int)RenderPlatform.xboxone || i == (int)RenderPlatform.nswitch || i == (int)RenderPlatform.vulkan;
+
 				r.width = 20;
-				
+
 				bool prevEnable = GUI.enabled;
 				//bool displayBool = usedRenderers[i];
 
-				bool shouldDisable = !isDX11orGlCore && onlyDX11GlCore;
-				
+				bool shouldDisable = !isTessellationCore && onlyTessellationCore;
+
 				if( shouldDisable ) {
 					GUI.enabled = false;
 					EditorGUI.Toggle( r, false );
@@ -287,22 +287,22 @@ namespace ShaderForge {
 					usedRenderers[i] = UndoableToggle( r, usedRenderers[i], SF_Tools.rendererLabels[i] + " renderer");
 					//usedRenderers[i] = EditorGUI.Toggle( r, usedRenderers[i] );
 				}
-				
-				
+
+
 				r.width = pWidth;
 				r.xMin += 20;
 				EditorGUI.LabelField( r, SF_Tools.rendererLabels[i], EditorStyles.miniLabel );
-				
+
 				if( shouldDisable ) {
 					GUI.enabled = prevEnable;
 				}
-				
+
 				r.xMin -= 20;
 				r.y += r.height+1;
 			}
 
 			r.y += prevYpos;
-			
+
 			return (int)r.yMax;
 		}
 
@@ -329,7 +329,7 @@ namespace ShaderForge {
 				}
 			}
 		}
-		
+
 		public void ShaderPicker(Rect r, string s){
 			if( GUI.Button( r, s, EditorStyles.popup ) ) {
 				DisplayShaderContext(r);

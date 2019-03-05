@@ -371,9 +371,9 @@ Shader "Shader Forge/Examples/Animated Vegetation" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #ifndef UNITY_PASS_META 1
+            #ifndef UNITY_PASS_META
             #define UNITY_PASS_META 1
-            #endif UNITY_PASS_META 1
+            #endif UNITY_PASS_META
             #define SHOULD_SAMPLE_SH ( defined (LIGHTMAP_OFF) && defined(DYNAMICLIGHTMAP_OFF) )
             #include "UnityCG.cginc"
             #include "Lighting.cginc"

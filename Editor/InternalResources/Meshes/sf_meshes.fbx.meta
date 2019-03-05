@@ -1,0 +1,174 @@
+fileFormatVersion: 2
+guid: 27cd3ffabf618924f9c9eeefb09b60e0
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: dodecahedron_soft
+    100002: plant
+    100004: //RootNode
+    100006: sphere
+    100008: sphere_lowpoly
+    100010: terrain
+    100012: torus
+    100014: torus_lowpoly
+    100016: lightcone
+    100018: pSphere1
+    100020: filledframe
+    100022: sf_dodecahedron_soft
+    100024: sf_sphere
+    100026: sf_sphere_lowpoly
+    100028: sf_torus
+    100030: sf_torus_knot
+    100032: sf_torus_lowpoly
+    400000: dodecahedron_soft
+    400002: plant
+    400004: //RootNode
+    400006: sphere
+    400008: sphere_lowpoly
+    400010: terrain
+    400012: torus
+    400014: torus_lowpoly
+    400016: lightcone
+    400018: pSphere1
+    400020: filledframe
+    400022: sf_dodecahedron_soft
+    400024: sf_sphere
+    400026: sf_sphere_lowpoly
+    400028: sf_torus
+    400030: sf_torus_knot
+    400032: sf_torus_lowpoly
+    2300000: dodecahedron_soft
+    2300002: plant
+    2300004: sphere
+    2300006: sphere_lowpoly
+    2300008: terrain
+    2300010: torus
+    2300012: torus_lowpoly
+    2300014: lightcone
+    2300016: pSphere1
+    2300018: filledframe
+    2300020: sf_dodecahedron_soft
+    2300022: sf_sphere
+    2300024: sf_sphere_lowpoly
+    2300026: sf_torus
+    2300028: sf_torus_knot
+    2300030: sf_torus_lowpoly
+    3300000: dodecahedron_soft
+    3300002: plant
+    3300004: sphere
+    3300006: sphere_lowpoly
+    3300008: terrain
+    3300010: torus
+    3300012: torus_lowpoly
+    3300014: lightcone
+    3300016: pSphere1
+    3300018: filledframe
+    3300020: sf_dodecahedron_soft
+    3300022: sf_sphere
+    3300024: sf_sphere_lowpoly
+    3300026: sf_torus
+    3300028: sf_torus_knot
+    3300030: sf_torus_lowpoly
+    4300000: torus
+    4300002: dodecahedron_soft
+    4300004: sphere
+    4300006: torus_lowpoly
+    4300008: sphere_lowpoly
+    4300010: terrain
+    4300012: plant
+    4300014: lightcone
+    4300016: pSphere1
+    4300018: filledframe
+    4300020: sf_torus
+    4300022: sf_dodecahedron_soft
+    4300024: sf_sphere
+    4300026: sf_torus_lowpoly
+    4300028: sf_sphere_lowpoly
+    4300030: sf_torus_knot
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.1
+    animationPositionError: 0.1
+    animationScaleError: 0.1
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 2
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

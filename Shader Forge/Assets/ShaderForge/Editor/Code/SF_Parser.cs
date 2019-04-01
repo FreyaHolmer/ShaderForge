@@ -199,7 +199,7 @@ namespace ShaderForge {
 					if( verStr.StartsWith( "v" ) )
 						verStr = verStr.Substring( 1 );
 
-					version = float.Parse(verStr);
+					version = float.Parse(verStr, System.Globalization.CultureInfo.InvariantCulture);
 				}
 				if( shaderData[i].StartsWith( "/*SF_DATA;" ) ) {
 					returnString = shaderData[i].Substring( 10, shaderData[i].Length - 12 ); // Exclude comment markup

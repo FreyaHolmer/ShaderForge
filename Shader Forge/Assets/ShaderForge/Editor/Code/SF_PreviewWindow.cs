@@ -389,9 +389,10 @@ namespace ShaderForge {
 			}
 
 			DrawMesh();
+			bool prev = GL.sRGBWrite;
 			GL.sRGBWrite = ( QualitySettings.activeColorSpace == ColorSpace.Linear );
 			GUI.DrawTexture( previewRect, render, ScaleMode.StretchToFill, false );
-			GL.sRGBWrite = false;
+			GL.sRGBWrite = prev;
 
 		}
 

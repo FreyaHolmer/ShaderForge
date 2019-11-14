@@ -1690,7 +1690,10 @@ namespace ShaderForge {
 					GUI.Label( r.MovedDown(), shaderPresetNames[i], style );
 
 					if(r.Contains(Event.current.mousePosition) ){
-						GUI.DrawTexture(r, SF_GUI.Shader_preset_icon_highlight, ScaleMode.ScaleToFit, true);
+						bool prev = GL.sRGBWrite;
+						GL.sRGBWrite = ( QualitySettings.activeColorSpace != ColorSpace.Linear );
+						GUI.DrawTexture(r, SF_GUI.Shader_preset_icon_highlight, ScaleMode.StretchToFill, true);
+						GL.sRGBWrite = prev;
 						desc = shaderPresetDescriptions[i];
 					}
 

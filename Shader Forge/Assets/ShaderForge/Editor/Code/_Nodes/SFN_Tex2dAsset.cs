@@ -53,8 +53,6 @@ namespace ShaderForge {
 				AssetImporter importer = UnityEditor.AssetImporter.GetAtPath( path );
 				if(importer is TextureImporter)
 					return ((TextureImporter)importer).textureType == TextureImporterType.NormalMap;
-				else if(textureAsset is ProceduralTexture && textureAsset.name.EndsWith("_Normal"))
-					return true; // When it's a ProceduralTexture having _Normal as a suffix
 				else
 					return false; // When it's a RenderTexture or ProceduralTexture
 			}
@@ -148,17 +146,17 @@ namespace ShaderForge {
 
 			if( IsProperty() && Event.current.type == EventType.DragPerform && rectInner.Contains(Event.current.mousePosition) ) {
 				Object droppedObj = DragAndDrop.objectReferences[0];
-				if( droppedObj is Texture2D || droppedObj is ProceduralTexture || droppedObj is RenderTexture) {
+				if( droppedObj is Texture2D || droppedObj is RenderTexture) {
 					Event.current.Use();
 					textureAsset = droppedObj as Texture;
 					OnAssignedTexture();
 				}
 			}
 			
-			if( IsProperty() && Event.current.type == EventType.dragUpdated ) {
+			if( IsProperty() && Event.current.type == EventType.DragUpdated ) {
 				if(DragAndDrop.objectReferences.Length > 0){
 					Object dragObj = DragAndDrop.objectReferences[0];
-					if( dragObj is Texture2D || dragObj is ProceduralTexture || dragObj is RenderTexture) {
+					if( dragObj is Texture2D || dragObj is RenderTexture) {
 						DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 						editor.nodeBrowser.CancelDrag();
 						Event.current.Use();
@@ -291,8 +289,6 @@ namespace ShaderForge {
 				AssetImporter importer = UnityEditor.AssetImporter.GetAtPath( path );
 				if(importer is TextureImporter)
 					newAssetIsNormalMap = ((TextureImporter)importer ).textureType == TextureImporterType.NormalMap;
-				else if(textureAsset is ProceduralTexture && textureAsset.name.EndsWith("_Normal"))
-					newAssetIsNormalMap = true; // When it's a ProceduralTexture having _Normal as a suffix
 				else
 					newAssetIsNormalMap = false; // When it's a RenderTexture or ProceduralTexture
 			}

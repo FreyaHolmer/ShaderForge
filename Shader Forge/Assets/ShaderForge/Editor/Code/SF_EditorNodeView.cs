@@ -404,35 +404,25 @@ namespace ShaderForge {
 				}
 			}
 
-
-
-
-
-
 			if( Event.current.type == EventType.DragPerform ) {
 				Object droppedObj = DragAndDrop.objectReferences[0];
-				if( droppedObj is Texture2D || droppedObj is ProceduralTexture || droppedObj is RenderTexture ) {
+				if( droppedObj is Texture2D || droppedObj is RenderTexture ) {
 					SFN_Tex2d texNode = editor.nodeBrowser.OnStopDrag() as SFN_Tex2d;
 					texNode.TextureAsset = droppedObj as Texture;
 					texNode.OnAssignedTexture();
 					Event.current.Use();
 				}
-				if(droppedObj is ProceduralMaterial){
-					OnDroppedSubstance(droppedObj as ProceduralMaterial);
-				}
 			}
 
-			if( Event.current.type == EventType.dragUpdated && Event.current.type != EventType.DragPerform ) {
+			if( Event.current.type == EventType.DragUpdated && Event.current.type != EventType.DragPerform ) {
 				if( DragAndDrop.objectReferences.Length > 0 ) {
 					Object dragObj = DragAndDrop.objectReferences[0];
-					if( dragObj is Texture2D || dragObj is ProceduralTexture || dragObj is RenderTexture  ) {
+					if( dragObj is Texture2D || dragObj is RenderTexture  ) {
 						DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 						if( !editor.nodeBrowser.IsPlacing() )
 							editor.nodeBrowser.OnStartDrag( editor.GetTemplate<SFN_Tex2d>() );
 						else
 							editor.nodeBrowser.UpdateDrag();
-					} else if(dragObj is ProceduralMaterial){
-						DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 					} else {
 						DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
 					}
@@ -491,21 +481,6 @@ namespace ShaderForge {
 
 		}
 
-
-		public void OnDroppedSubstance(ProceduralMaterial procMat){
-
-			Texture diffuse = TryGetProceduralTexture(procMat, "_MainTex");
-			Texture normal = TryGetProceduralTexture(procMat, "_BumpMap");
-			//Texture parallax = TryGetProceduralTexture(procMat, "_ParallaxMap");
-			//Texture emission = TryGetProceduralTexture(procMat, "_Illum");
-			//TryGetProceduralTexture("_MainTex");
-
-			SF_Node prevNode = TryLinkIfExistsAndOpenSlotAvailable(diffuse, "MainTex", editor.mainNode.diffuse, "RGB");
-			TryLinkIfExistsAndOpenSlotAvailable(normal, "BumpMap", editor.mainNode.normal, "RGB", prevNode);
-
-
-		}
-
 		// For connecting procedural materials to the main node
 		public SF_Node TryLinkIfExistsAndOpenSlotAvailable(Texture tex, string propertyName, SF_NodeConnector connector, string outChannel, SF_Node prevNode = null){
 
@@ -527,20 +502,6 @@ namespace ShaderForge {
 			}
 			return null;
 		}
-
-		public Texture TryGetProceduralTexture(ProceduralMaterial procMat, string propName){
-			Texture returnTex = null;
-			try{
-				if(procMat.HasProperty(propName))
-					returnTex = procMat.GetTexture(propName);
-			} catch (UnityException e){
-				e.Equals(e);
-			}
-			return returnTex;
-		}
-
-
-
 
 		public void UpdateCutLine(){
 

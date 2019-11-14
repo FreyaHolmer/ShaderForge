@@ -21,7 +21,7 @@ namespace ShaderForge {
 			base.texture.uniform = true;
 			base.texture.CompCount = 4;
 			base.canAlwaysSetPrecision = true;
-			base.alwaysDefineVariable = false;
+			base.alwaysDefineVariable = true;
 
 			property = ScriptableObject.CreateInstance<SFP_Matrix4x4Property>().Initialize( this );
 
@@ -35,7 +35,7 @@ namespace ShaderForge {
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return property.GetVariable();
+			return property.EvalProperty();
 		}
 
 		public override void NeatWindow() {

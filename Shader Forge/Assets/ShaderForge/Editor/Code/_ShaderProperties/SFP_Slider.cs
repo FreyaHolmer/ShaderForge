@@ -23,26 +23,11 @@ namespace ShaderForge {
 			return GetTagString() + GetVariable() + " (\"" + nameDisplay + "\", Range(" + GetMin() + ", " + GetMax() + ")) = " + defaultValue;
 		}
 
-		float GetMin() {
-			return ( node as SFN_Slider ).min;
-		}
+		float GetMin() => ( node as SFN_Slider ).min;
+		float GetMax() => ( node as SFN_Slider ).max;
+		float GetCurrent() => ( node as SFN_Slider ).current;
 
-		float GetMax() {
-			return ( node as SFN_Slider ).max;
-		}
-
-		float GetCurrent() {
-			return ( node as SFN_Slider ).current;
-		}
-
-		public override string GetVariableLine() {
-			return "uniform " + node.precision.ToCode() + " " + GetVariable() + ";";
-		}
-
-		// TODO: Unity UV offsets
-		public override string GetFragmentPrepare() {
-			return node.precision.ToCode()+" " + GetVariable() + " = " + node.Evaluate() + ";";
-		}
+		public override string GetCGType() => node.precision.ToCode();
 
 
 	}

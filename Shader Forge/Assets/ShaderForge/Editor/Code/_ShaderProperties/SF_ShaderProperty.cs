@@ -216,28 +216,25 @@ namespace ShaderForge {
 			return false;
 		}
 
+		public bool IsInstancedType() {
+			if( global || this is SFP_Cubemap || this is SFP_Tex2d )
+				return false;
+			return true;
+		}
+
 
 		public SF_ShaderProperty() {
 			// Empty
 		}
 
 
-		public virtual string GetVariable() {
-			return nameInternal;
-			//return "_" + node.GetVariableName();
-		}
+		public virtual string GetVariable() => nameInternal;
 
-		//public virtual string GetVariable() {
-		//	return nameInternal; // Override for textures
-		//}
-
-		public string GetFilteredVariableLine() {
-			//if( this.nameInternal == "_SpecColor" ) { // TODO: Why?
-			//	return null;
-			//}
-
-			return GetVariableLine();
-
+		public string EvalProperty() {
+			if( IsInstancedType() )
+				return $"UNITY_ACCESS_INSTANCED_PROP( Props, {GetVariable()} )";
+			else
+				return GetVariable();
 		}
 
 		public string Serialize(){
@@ -283,12 +280,16 @@ namespace ShaderForge {
 			return ""; // Override, textures need to unpack before usage in the frag shader
 		}
 
-		public virtual string GetVariableLine() {
+		public virtual string GetCGType() {
 			return ""; // Override
 		}
 
+		public virtual string GetVariableLine() {
+			return $"uniform {GetCGType()} {GetVariable()};";
+		}
+
 		public virtual string GetFragmentPrepare() {
-			return ""; // Override
+			return $"{GetCGType()} {GetVariable()} = {node.Evaluate()};";
 		}
 
 

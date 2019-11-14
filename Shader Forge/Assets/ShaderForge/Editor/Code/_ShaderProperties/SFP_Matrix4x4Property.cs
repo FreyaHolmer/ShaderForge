@@ -21,15 +21,7 @@ namespace ShaderForge {
 			return Color.black;
 		}
 
-		public override string GetVariableLine() {
-			return "uniform " + node.precision.ToCode() + "4x4 " + GetVariable() + ";";
-		}
-
-		// TODO: Unity UV offsets
-		public override string GetFragmentPrepare() {
-			return node.precision.ToCode() + "4x4 " + GetVariable() + " = " + node.Evaluate() + ";";
-		}
-
+		public override string GetCGType() => node.precision.ToCode() + "4x4";
 
 	}
 }

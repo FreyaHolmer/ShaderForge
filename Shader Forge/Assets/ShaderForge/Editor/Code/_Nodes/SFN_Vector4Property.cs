@@ -15,7 +15,7 @@ namespace ShaderForge {
 			base.Initialize( "Vector 4" );
 			base.showColor = true;
 			base.UseLowerPropertyBox( true );
-			base.neverDefineVariable = true;
+			base.alwaysDefineVariable = true;
 			base.texture.uniform = true;
 			base.texture.CompCount = 4;
 			base.shaderGenMode = ShaderGenerationMode.OffUniform;
@@ -32,12 +32,10 @@ namespace ShaderForge {
 			};
 		}
 
-		public override bool IsUniformOutput() {
-			return true;
-		}
+		public override bool IsUniformOutput() => true;
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return property.GetVariable();
+			return property.EvalProperty();
 		}
 
 

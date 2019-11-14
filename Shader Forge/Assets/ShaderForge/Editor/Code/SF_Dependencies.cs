@@ -89,6 +89,7 @@ namespace ShaderForge {
 
 		public bool pragmaGlsl = false;
 
+		public bool hasPropertiesWithInstancing = false;
 
 		int shaderTarget = 3; // Shader target: #pragma target 3.0
 		public List<RenderPlatform> includeRenderers;

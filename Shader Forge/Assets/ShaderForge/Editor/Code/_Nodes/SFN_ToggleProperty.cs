@@ -22,7 +22,7 @@ namespace ShaderForge {
 			lowerRect.y -= 8;
 			lowerRect.height = 28;
 			base.showColor = false;
-			base.neverDefineVariable = true;
+			base.alwaysDefineVariable = true;
 			base.UseLowerPropertyBox( true );
 			base.texture.uniform = true;
 			base.texture.CompCount = 1;
@@ -40,7 +40,7 @@ namespace ShaderForge {
 		}
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return property.GetVariable();
+			return property.EvalProperty();
 		}
 
 

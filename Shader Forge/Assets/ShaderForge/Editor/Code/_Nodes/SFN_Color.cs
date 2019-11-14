@@ -19,7 +19,7 @@ namespace ShaderForge {
 			base.UseLowerPropertyBox( true );
 			base.property = ScriptableObject.CreateInstance<SFP_Color>().Initialize( this );
 			base.texture.uniform = true;
-			base.neverDefineVariable = true;
+			base.alwaysDefineVariable = true;
 			base.texture.dataUniform = new Color( 0.5f, 0.5f, 0.5f, 1.0f );
 			base.texture.CompCount = 4;
 			base.shaderGenMode = ShaderGenerationMode.OffUniform;
@@ -38,12 +38,9 @@ namespace ShaderForge {
 			OnUpdateNode( NodeUpdateType.Soft );
 		}
 
-		public override bool IsUniformOutput() {
-			return true;
-		}
-
+		public override bool IsUniformOutput() => true;
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return property.GetVariable();
+			return property.EvalProperty();
 		}
 
 		public override void DrawLowerPropertyBox() {

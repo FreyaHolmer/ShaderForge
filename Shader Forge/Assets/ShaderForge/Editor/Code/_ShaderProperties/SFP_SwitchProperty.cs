@@ -17,9 +17,7 @@ namespace ShaderForge {
 			return GetTagString() + "[MaterialToggle] " + GetVariable() + " (\"" + nameDisplay + "\", Float ) = " + defaultValue;
 		}
 
-		public override string GetVariableLine() {
-			return "uniform fixed " + GetVariable() + ";";
-		}
+		public override string GetCGType() => "fixed";
 
 		// TODO: Unity UV offsets
 		//public override string GetFragmentPrepare() {

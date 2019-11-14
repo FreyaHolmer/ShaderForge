@@ -17,15 +17,7 @@ namespace ShaderForge {
 			return GetTagString() + GetVariable() + " (\"" + nameDisplay + "\", Float ) = " + defaultValue;
 		}
 
-		public override string GetVariableLine() {
-			return "uniform "+node.precision.ToCode()+" " + GetVariable() + ";";
-		}
-
-		// TODO: Unity UV offsets
-		public override string GetFragmentPrepare() {
-			return node.precision.ToCode() + "4 " + GetVariable() + " = " + node.Evaluate() + ";";
-		}
-
+		public override string GetCGType() => node.precision.ToCode();
 
 	}
 }

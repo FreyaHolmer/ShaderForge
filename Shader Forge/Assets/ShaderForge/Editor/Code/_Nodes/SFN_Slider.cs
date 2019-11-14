@@ -24,7 +24,7 @@ namespace ShaderForge {
 			node_height = 58;
 			base.Initialize( "Slider" );
 			base.showColor = false;
-			base.neverDefineVariable = true;
+			base.alwaysDefineVariable = true;
 			base.UseLowerPropertyBox( false );
 			base.texture.uniform = true;
 			base.texture.CompCount = 1;
@@ -44,16 +44,10 @@ namespace ShaderForge {
 		}*/
 
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return property.GetVariable();
+			return property.EvalProperty();
 		}
-
-		public override float EvalCPU( int c ) {
-			return current;
-		}
-
-		public override bool IsUniformOutput() {
-			return true;
-		}
+		public override float EvalCPU( int c ) => current;
+		public override bool IsUniformOutput() => true;
 
 
 		public override void NeatWindow( ) {

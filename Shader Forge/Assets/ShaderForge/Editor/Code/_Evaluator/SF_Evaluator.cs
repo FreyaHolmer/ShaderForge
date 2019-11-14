@@ -43,21 +43,9 @@ namespace ShaderForge {
 		public static PassType currentPass = PassType.FwdBase;
 		public static ShaderProgram currentProgram = ShaderProgram.Vert;
 
-		public static bool inFrag {
-			get {
-				return SF_Evaluator.currentProgram == ShaderProgram.Frag;
-			}
-		}
-		public static bool inVert {
-			get {
-				return SF_Evaluator.currentProgram == ShaderProgram.Vert;
-			}
-		}
-		public static bool inTess {
-			get {
-				return SF_Evaluator.currentProgram == ShaderProgram.Tess;
-			}
-		}
+		public static bool inFrag => SF_Evaluator.currentProgram == ShaderProgram.Frag;
+		public static bool inVert => SF_Evaluator.currentProgram == ShaderProgram.Vert;
+		public static bool inTess => SF_Evaluator.currentProgram == ShaderProgram.Tess;
 
 		public static string WithProgramPrefix( string s ) {
 			if( SF_Evaluator.inFrag )
@@ -395,6 +383,8 @@ namespace ShaderForge {
 					dependencies.NeedLightColor();
 				}
 
+				if( n.IsProperty() && n.property.IsInstancedType() )
+					dependencies.hasPropertiesWithInstancing = true;
 
 				if( n is SFN_Parallax ) {
 					dependencies.NeedFragViewDirection();
@@ -495,12 +485,13 @@ namespace ShaderForge {
 			//Debug.Log("Printing properties, count = " + editor.nodeView.treeStatus.propertyList.Count);
 
 			for( int i = 0; i < editor.nodeView.treeStatus.propertyList.Count; i++ ) {
-				if( editor.nodeView.treeStatus.propertyList[i] == null ) {
+				SF_Node propertyNode = editor.nodeView.treeStatus.propertyList[i];
+				if( propertyNode == null ) {
 					editor.nodeView.treeStatus.propertyList.RemoveAt( i );
 					i = -1; // restart
 				}
-				if( editor.nodeView.treeStatus.propertyList[i].IsProperty() ) {
-					string line = editor.nodeView.treeStatus.propertyList[i].property.GetInitializationLine();
+				if( propertyNode.IsProperty() ) {
+					string line = propertyNode.property.GetInitializationLine();
 					App( line );
 				}
 			}
@@ -528,15 +519,36 @@ namespace ShaderForge {
 			End();
 
 		}
+
+
+
+
 		void PropertiesCG() {
+
+
+			bool ValidProperty( SF_Node n ) {  // SpecColor already defined in Lighting.cginc
+				return !( ( IncludeLightingCginc() || IncludeUnity5BRDF() ) && n.property.nameInternal == "_SpecColor" );
+			}
+
+			// Non-instanced properties
 			for( int i = 0; i < cNodes.Count; i++ ) {
 				AppIfNonEmpty( cNodes[i].GetPrepareUniformsAndFunctions() );
-				if( cNodes[i].IsProperty() ) {
-					string propName = cNodes[i].property.nameInternal;
-					if( !( ( IncludeLightingCginc() || IncludeUnity5BRDF() ) && propName == "_SpecColor" ) ) // SpecColor already defined in Lighting.cginc
-						App( cNodes[i].property.GetFilteredVariableLine() );
+				if( cNodes[i].IsProperty() && cNodes[i].property.IsInstancedType() == false ) {
+					if( ValidProperty( cNodes[i] ) )
+						App( cNodes[i].property.GetVariableLine() );
 				}
 			}
+
+			// Instanced properties
+			if( dependencies.hasPropertiesWithInstancing ) {
+				App( "UNITY_INSTANCING_BUFFER_START( Props )" );
+				scope++;
+				foreach( SF_Node node in cNodes.Where(n => n.IsProperty() && n.property.IsInstancedType() && ValidProperty(n) ) )
+					App( $"UNITY_DEFINE_INSTANCED_PROP( {node.property.GetCGType()}, {node.property.nameInternal})" );
+				scope--;
+				App( "UNITY_INSTANCING_BUFFER_END( Props )" );
+			}
+
 		}
 		void BeginSubShader() {
 			App( "SubShader {" );
@@ -588,6 +600,8 @@ namespace ShaderForge {
 				App ("#define _GLOSSYENV 1");
 			}
 
+			if( dependencies.hasPropertiesWithInstancing )
+				App( "#pragma multi_compile_instancing" );
 
 			if( ps.catGeometry.showPixelSnap )
 				App( "#pragma multi_compile _ PIXELSNAP_ON" );
@@ -2223,6 +2237,9 @@ namespace ShaderForge {
 					App( "float4 pos : SV_POSITION;" ); // Already included in shadow passes
 				}
 
+				if( dependencies.hasPropertiesWithInstancing )
+					App( "UNITY_VERTEX_INPUT_INSTANCE_ID" );
+
 				if( ps.catLighting.IsVertexLit() )
 					App( "float3 vtxLight : COLOR;" );
 				//if( DoPassSphericalHarmonics() && !ps.highQualityLightProbes )
@@ -2308,7 +2325,10 @@ namespace ShaderForge {
 			scope++;
 			App( "VertexOutput o = (VertexOutput)0;" );
 
-
+			if( dependencies.hasPropertiesWithInstancing ) {
+				App( "UNITY_SETUP_INSTANCE_ID( v );" );
+				App( "UNITY_TRANSFER_INSTANCE_ID( v, o );" );
+			}
 
 			if( dependencies.uv0_frag )
 				App( "o.uv0 = v.texcoord0;" );
@@ -2559,6 +2579,10 @@ namespace ShaderForge {
 			}
 			
 			scope++;
+
+			if( dependencies.hasPropertiesWithInstancing ) {
+				App( "UNITY_SETUP_INSTANCE_ID( i );" );
+			}
 
 			if( dependencies.frag_facing ) {
 				App( "float isFrontFace = ( facing >= 0 ? 1 : 0 );" );

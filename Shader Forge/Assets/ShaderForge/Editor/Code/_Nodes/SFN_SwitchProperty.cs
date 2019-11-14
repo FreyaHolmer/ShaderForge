@@ -22,7 +22,7 @@ namespace ShaderForge {
 			//base.lowerRect.height += 4;
 			base.showColor = true;
 			base.shaderGenMode = ShaderGenerationMode.ValuePassing;
-
+			base.alwaysDefineVariable = true;
 			base.UseLowerPropertyBox( true, true );
 
 
@@ -131,7 +131,9 @@ namespace ShaderForge {
 		}
 		
 		public override string Evaluate( OutChannel channel = OutChannel.All ) {
-			return "lerp( " + GetConnectorByStringID( "A" ).TryEvaluate() + ", " + GetConnectorByStringID( "B" ).TryEvaluate() + ", "+ property.GetVariable() + " )";
+			string a = GetConnectorByStringID( "A" ).TryEvaluate();
+			string b = GetConnectorByStringID( "B" ).TryEvaluate();
+			return $"lerp( {a}, {b}, {property.EvalProperty()} )";
 		}
 		
 		public override float EvalCPU( int c ) {

@@ -29,7 +29,7 @@ namespace ShaderForge {
 
 		// Versioning
 		public static int versionNumPrimary = 1;
-		public static int versionNumSecondary = 38;
+		public static int versionNumSecondary = 40;
 		public static string versionStage = "";
 		public static string version = versionNumPrimary + "." + versionNumSecondary.ToString( "D2" );
 		public static string versionString = "Shader Forge v" + version;
@@ -78,19 +78,11 @@ namespace ShaderForge {
 				return currentUnityVersion;
 			}
 		}
-		
-		public static bool CanRunShaderForge(){
-			return (CurrentUnityVersion >= minimumUnityVersion);
-		}
+
+		public static bool CanRunShaderForge() => ( CurrentUnityVersion >= minimumUnityVersion );
+		public static bool HasUnityPro() => UnityEditorInternal.InternalEditorUtility.HasPro();
 
 
-		public static bool HasUnityPro(){
-			return UnityEditorInternal.InternalEditorUtility.HasPro();
-		}
-
-
-
-		
 		public static void UnityOutOfDateGUI(){
 			GUIStyle st = new GUIStyle(EditorStyles.boldLabel);
 			

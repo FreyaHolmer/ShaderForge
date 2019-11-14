@@ -450,7 +450,7 @@ namespace ShaderForge {
 
 
 			bool hovering = Hovering(world:false);
-			bool click = ( Event.current.type == EventType.mouseDown && Event.current.button == button );
+			bool click = ( Event.current.type == EventType.MouseDown && Event.current.button == button );
 			bool clickedCont = hovering && click;
 			//bool clickedCont=cont&&click;
 			//Debug.Log();
@@ -459,7 +459,7 @@ namespace ShaderForge {
 
 		public bool Released() {
 			bool cont = Hovering(world:false);
-			bool release = ( Event.current.type == EventType.mouseUp );
+			bool release = ( Event.current.type == EventType.MouseUp );
 			return cont && release;
 		}
 
@@ -494,7 +494,7 @@ namespace ShaderForge {
 
 			
 
-			if( conType == ConType.cInput && Event.current.type == EventType.repaint ) {
+			if( conType == ConType.cInput && Event.current.type == EventType.Repaint ) {
 				DrawConnection( editor );
 			}
 
@@ -543,7 +543,7 @@ namespace ShaderForge {
 					break;
 			}
 
-			if( Event.current.type == EventType.repaint ) {
+			if( Event.current.type == EventType.Repaint ) {
 				Color c = hovering ? Color.green : GetConnectionLineColor();
 
 				bool input = ( conType == ConType.cInput );
@@ -701,7 +701,7 @@ namespace ShaderForge {
 		}*/
 
 		public bool CheckIfDeleted() {
-			if( (Event.current.keyCode == KeyCode.Delete || Event.current.keyCode == KeyCode.Backspace) && Event.current.type == EventType.keyDown && Hovering( world: true ) ) {
+			if( (Event.current.keyCode == KeyCode.Delete || Event.current.keyCode == KeyCode.Backspace) && Event.current.type == EventType.KeyDown && Hovering( world: true ) ) {
 				Disconnect();
 				return true;
 			}
@@ -1182,7 +1182,7 @@ namespace ShaderForge {
 				//GUI.Label(lockRect,"//");
 				//GUI.drawe
 				//GUI.Box(lockRect, "", );
-				if(Event.current.type == EventType.repaint){
+				if(Event.current.type == EventType.Repaint){
 					SF_GUI.DrawLock(lockRect.PadTop(4),"Unavailable when using deferred rendering", TextAlignment.Right );
 
 				}

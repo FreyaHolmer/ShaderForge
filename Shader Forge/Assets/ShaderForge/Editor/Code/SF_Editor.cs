@@ -630,7 +630,7 @@ namespace ShaderForge {
 
 
 		bool Clicked() {
-			return Event.current.type == EventType.mouseDown;
+			return Event.current.type == EventType.MouseDown;
 		}
 		
 		float fps = 0;
@@ -916,7 +916,7 @@ namespace ShaderForge {
 				}
 			}
 
-			if( Event.current.rawType == EventType.keyUp ){
+			if( Event.current.rawType == EventType.KeyUp ){
 				foreach(SF_EditorNodeData nd in nodeTemplates){
 					nd.holding = false;
 				}
@@ -980,7 +980,7 @@ namespace ShaderForge {
 			//GUI.DrawTexture(ssRectIcon, SF_GUI.Screenshot_icon);
 
 
-			if(Event.current.type == EventType.repaint)
+			if(Event.current.type == EventType.Repaint)
 				UpdateCoroutines();
 
 

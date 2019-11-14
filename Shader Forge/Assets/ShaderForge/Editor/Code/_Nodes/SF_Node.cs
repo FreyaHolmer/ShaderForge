@@ -1319,7 +1319,7 @@ namespace ShaderForge {
 			//Vector2 prev = new Vector2( rect.x, rect.y );
 			//int prevCont = GUIUtility.hotControl;
 
-			if(Event.current.type == EventType.repaint){
+			if(Event.current.type == EventType.Repaint){
 				commentYposCurrent = Mathf.Lerp(commentYposCurrent, commentYposTarget, 0.4f);
 			}
 
@@ -1397,7 +1397,7 @@ namespace ShaderForge {
 
 
 			string focusName = "namelabel" + this.id;
-			if( Event.current.type == EventType.keyDown && ( Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter ) && GUI.GetNameOfFocusedControl() == focusName ) {
+			if( Event.current.type == EventType.KeyDown && ( Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter ) && GUI.GetNameOfFocusedControl() == focusName ) {
 				editor.Defocus();
 			}
 
@@ -1509,7 +1509,7 @@ namespace ShaderForge {
 				if(isEditingNodeTextField){
 
 
-					bool clicked = Event.current.rawType == EventType.mouseDown && Event.current.button == 0;
+					bool clicked = Event.current.rawType == EventType.MouseDown && Event.current.button == 0;
 					bool clickedOutside = clicked && !cr.Contains(Event.current.mousePosition);
 					bool pressedReturn = Event.current.rawType == EventType.KeyDown && Event.current.keyCode == KeyCode.Return;
 

@@ -108,7 +108,7 @@ namespace ShaderForge {
 
 		public void OnLocalGUI( Rect rect ) {
 
-			if( IsPlacing() && Event.current.type == EventType.mouseUp && Event.current.button == 1 ) {
+			if( IsPlacing() && Event.current.type == EventType.MouseUp && Event.current.button == 1 ) {
 				CancelDrag();
 				Event.current.Use();
 			}
@@ -185,7 +185,7 @@ namespace ShaderForge {
 
 			scrollPos = GUI.BeginScrollView( panelRect, scrollPos, scrollRect, false, true /*GUILayout.Width( rect.wi )*/ );
 			{
-				if(Event.current.type == EventType.layout)
+				if(Event.current.type == EventType.Layout)
 					innerStartY = btnRect.y;
 				if( GetNodeList().Count > 0 ) {
 					foreach( SF_EditorNodeData entry in GetNodeList() ) {
@@ -203,7 +203,7 @@ namespace ShaderForge {
 					GUI.color = Color.white;
 				}
 
-				if(Event.current.type == EventType.layout){
+				if(Event.current.type == EventType.Layout){
 					innerHeight = btnRect.yMax - innerStartY;
 					//Debug.Log ("Inner: " + innerHeight + ", Panel: " + panelRect.height);
 				}
@@ -247,7 +247,7 @@ namespace ShaderForge {
 			GUI.Label( btnRect, (usable ? string.Empty : "    ") + entry.nodeName, styleButton );
 
 
-			if( mouseOver && Event.current.type == EventType.mouseDown && Event.current.button == 0 && usable) {
+			if( mouseOver && Event.current.type == EventType.MouseDown && Event.current.button == 0 && usable) {
 				OnStartDrag( entry );
 			} else if( Event.current.type == EventType.ContextClick ) {
 				Vector2 mousePos = Event.current.mousePosition;
@@ -275,7 +275,7 @@ namespace ShaderForge {
 			if(usable){
 				SF_GUI.AssignCursor( btnRect, MouseCursor.Pan );
 			} else {
-				if(Event.current.type == EventType.repaint){
+				if(Event.current.type == EventType.Repaint){
 					GUI.enabled = true;
 					SF_GUI.DrawLock(btnRect.PadTop(4),"Forward rendering only", TextAlignment.Right);
 					//Draw(btnRect.PadTop(4), false, true, true, false); // Draw lock
@@ -328,7 +328,7 @@ namespace ShaderForge {
 
 			GUI.Box( boxRect, dragNode.nodeName );
 			//	Debug.Log( Event.current.type.ToString()); 
-			if( Event.current.rawType == EventType.mouseUp )
+			if( Event.current.rawType == EventType.MouseUp )
 				OnStopDrag();
 
 
@@ -350,7 +350,7 @@ namespace ShaderForge {
 
 
 		public bool DragButton( Rect r, string label, GUIStyle style ) {
-			bool clicked = ( Event.current.type == EventType.mouseDown && Event.current.button == 0 );
+			bool clicked = ( Event.current.type == EventType.MouseDown && Event.current.button == 0 );
 			GUI.Button( r, label, style );
 			bool hover = r.Contains( Event.current.mousePosition );
 			return ( hover && clicked );

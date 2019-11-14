@@ -121,7 +121,7 @@ namespace ShaderForge {
 
 
 
-			bool clicked = Event.current.type == EventType.mouseDown && Event.current.button == 0;
+			bool clicked = Event.current.type == EventType.MouseDown && Event.current.button == 0;
 
 
 
@@ -176,7 +176,7 @@ namespace ShaderForge {
 
 
 
-			if(resizing && Event.current.type == EventType.mouseDrag){
+			if(resizing && Event.current.type == EventType.MouseDrag){
 
 				if(Event.current.delta.sqrMagnitude > 0){
 					UndoRecord("resize node");

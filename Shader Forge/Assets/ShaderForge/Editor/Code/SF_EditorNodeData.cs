@@ -183,13 +183,13 @@ namespace ShaderForge {
 			bool mouseInNodeView = SF_Editor.instance.nodeView.MouseInsideNodeView(false);
 
 
-			if(Event.current.type == EventType.repaint){
+			if(Event.current.type == EventType.Repaint){
 				smoothHotkeySelectorIndex = Mathf.Lerp(smoothHotkeySelectorIndex, hotkeySelectorIndex, 0.5f);
 			}
 
 			bool useScroll = SF_Settings.quickPickScrollWheel;
 
-			if(holding && Event.current.type == EventType.scrollWheel && HotkeyFriends.Count > 0 && mouseInNodeView){
+			if(holding && Event.current.type == EventType.ScrollWheel && HotkeyFriends.Count > 0 && mouseInNodeView){
 
 				if(useScroll){
 					hotkeySelectorIndex += (int)Mathf.Sign(Event.current.delta.y);
@@ -205,7 +205,7 @@ namespace ShaderForge {
 				return null;
 
 			if( Event.current.keyCode == key ) {
-				if( Event.current.type == EventType.keyDown && !SF_GUI.HoldingControl() && holding == false && mouseInNodeView ){
+				if( Event.current.type == EventType.KeyDown && !SF_GUI.HoldingControl() && holding == false && mouseInNodeView ){
 
 					hotkeySelectorIndex = defaultHotkeySelectorIndex;
 					smoothHotkeySelectorIndex = defaultHotkeySelectorIndex;
@@ -214,7 +214,7 @@ namespace ShaderForge {
 
 					holding = true;
 				}
-				if( Event.current.rawType == EventType.keyUp ){
+				if( Event.current.rawType == EventType.KeyUp ){
 					holding = false;
 				}
 			}
@@ -330,7 +330,7 @@ namespace ShaderForge {
 
 
 				//}
-				if(Event.current.type == EventType.keyDown/* && Event.current.type == EventType.layout*/ /*&& GUI.GetNameOfFocusedControl() == "defocus"*/){
+				if(Event.current.type == EventType.KeyDown/* && Event.current.type == EventType.layout*/ /*&& GUI.GetNameOfFocusedControl() == "defocus"*/){
 					Event.current.Use();
 				}
 				//}
@@ -343,7 +343,7 @@ namespace ShaderForge {
 
 
 
-			bool clicked = Event.current.type == EventType.mouseDown;
+			bool clicked = Event.current.type == EventType.MouseDown;
 			if(holding && clicked){
 				return HotkeyFriends[hotkeySelectorIndex];
 			} else {

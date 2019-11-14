@@ -91,23 +91,19 @@ namespace ShaderForge {
 
 		public bool hasPropertiesWithInstancing = false;
 
+
 		int shaderTarget = 3; // Shader target: #pragma target 3.0
 		public List<RenderPlatform> includeRenderers;
 
 		public SF_Dependencies(SF_PassSettings ps) {
 			includeRenderers = new List<RenderPlatform>();
+			if( ps.catMeta.compileToAllPlatforms == false ) {
 			for( int i = 0; i < ps.catMeta.usedRenderers.Length; i++ ) {
 				if( ps.catMeta.usedRenderers[i] ) {
 					includeRenderers.Add( (RenderPlatform)i );
 				}
 			}
-			
-
-
-			//excludeRenderers.Add( RenderPlatform.flash );
-			//excludeRenderers.Add( RenderPlatform.gles );
-			//excludeRenderers.Add( RenderPlatform.xbox360 );
-			//excludeRenderers.Add( RenderPlatform.ps3 );
+			}
 		}
 
 		public void NeedSceneAndFragDepth(){

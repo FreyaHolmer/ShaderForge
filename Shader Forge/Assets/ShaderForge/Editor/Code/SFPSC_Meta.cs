@@ -17,6 +17,7 @@ namespace ShaderForge {
 
 		public BatchingMode batchingMode = BatchingMode.Enabled;
 		public bool canUseSpriteAtlas = false;
+		public bool compileToAllPlatforms = true;
 		public bool[] usedRenderers; // TODO: Serialization?
 		public string fallback = "";
 		public int LOD = 0; // TODO: Serialization?
@@ -44,8 +45,8 @@ namespace ShaderForge {
 				true,	// - Direct3D 11
 				true,	// - OpenGL Core
 				true,	// - OpenGL ES 2.0
-				false,  // - OpenGL ES 3.0
-				false,	// - iOS Metal
+				true,  // - OpenGL ES 3.0
+				true,	// - iOS Metal
 				false,	// - Direct3D 11 windows RT
 				false,	// - Xbox One
 				false,	// - PlayStation 4
@@ -87,6 +88,7 @@ namespace ShaderForge {
 			s += Serialize( "cusa", canUseSpriteAtlas.ToString() );
 			s += Serialize( "bamd", ( (int)batchingMode ).ToString() );
 			s += Serialize( "cgin", SerializeCgIncludes() );
+			s += Serialize( "cpap", compileToAllPlatforms.ToString() );
 			return s;
 		}
 
@@ -107,6 +109,9 @@ namespace ShaderForge {
 				break;
 			case "cgin":
 				DeserializeCgIncludes( value );
+				break;
+			case "cpap":
+				compileToAllPlatforms = bool.Parse( value );
 				break;
 			}
 
@@ -192,7 +197,7 @@ namespace ShaderForge {
 			previewType = (Inspector3DPreviewType)UndoableLabeledEnumPopupNamed( r, "Inspector preview mode", previewType, strInspector3DPreviewType, "inspector preview mode" );
 			r.y += 20;
 
-			r.y += 10;
+			r.y += 5;
 
 
 			if( cgIncludes.Count == 0 ) {
@@ -251,54 +256,62 @@ namespace ShaderForge {
 			}
 
 
-			
-			r.y += 40;
-			
-			
-			
-			EditorGUI.LabelField( r, "Target renderers:" );
-			r.xMin += 20;
-			r.y += 20;
-			r.height = 17;
-			float pWidth = r.width;
-			
-			
-			bool onlyDX11GlCore = ps.mOut.tessellation.IsConnectedAndEnabled();
-			
-			
-			for(int i=0;i<usedRenderers.Length;i++){
-				bool isDX11orGlCore = ( i == (int)RenderPlatform.d3d11 ) || i == (int)RenderPlatform.glcore;
-				
-				r.width = 20;
-				
-				bool prevEnable = GUI.enabled;
-				//bool displayBool = usedRenderers[i];
+			r.y += 30;
 
-				bool shouldDisable = !isDX11orGlCore && onlyDX11GlCore;
+
+			compileToAllPlatforms = UndoableToggle( r, compileToAllPlatforms, "Compile to all platforms", "toggle compile to all platforms" );
+			r.y += r.height;
+
+			if( compileToAllPlatforms == false ) {
+				r.x += 20;
+				EditorGUI.LabelField( r, "Target renderers:" );
+				r.xMin += 5;
+				r.y += 20;
+				r.height = 17;
+				float pWidth = r.width;
+			
+			
+				bool onlyDX11GlCore = ps.mOut.tessellation.IsConnectedAndEnabled();
+
+
+				for(int i=0;i<usedRenderers.Length;i++){
+					bool isDX11orGlCore = ( i == (int)RenderPlatform.d3d11 ) || i == (int)RenderPlatform.glcore;
 				
-				if( shouldDisable ) {
-					GUI.enabled = false;
-					EditorGUI.Toggle( r, false );
-				} else {
-					usedRenderers[i] = UndoableToggle( r, usedRenderers[i], SF_Tools.rendererLabels[i] + " renderer");
-					//usedRenderers[i] = EditorGUI.Toggle( r, usedRenderers[i] );
+					r.width = 20;
+				
+					bool prevEnable = GUI.enabled;
+					//bool displayBool = usedRenderers[i];
+
+					bool shouldDisable = !isDX11orGlCore && onlyDX11GlCore;
+				
+					if( shouldDisable ) {
+						GUI.enabled = false;
+						EditorGUI.Toggle( r, false );
+					} else {
+						usedRenderers[i] = UndoableToggle( r, usedRenderers[i], SF_Tools.rendererLabels[i] + " renderer");
+						//usedRenderers[i] = EditorGUI.Toggle( r, usedRenderers[i] );
+					}
+				
+				
+					r.width = pWidth;
+					r.xMin += 20;
+					EditorGUI.LabelField( r, SF_Tools.rendererLabels[i], EditorStyles.miniLabel );
+				
+					if( shouldDisable ) {
+						GUI.enabled = prevEnable;
+					}
+				
+					r.xMin -= 20;
+					r.y += r.height+1;
 				}
+
+
 				
-				
-				r.width = pWidth;
-				r.xMin += 20;
-				EditorGUI.LabelField( r, SF_Tools.rendererLabels[i], EditorStyles.miniLabel );
-				
-				if( shouldDisable ) {
-					GUI.enabled = prevEnable;
-				}
-				
-				r.xMin -= 20;
-				r.y += r.height+1;
+
 			}
-
+			r.x -= 20;
+			r.y += 5;
 			r.y += prevYpos;
-			
 			return (int)r.yMax;
 		}
 

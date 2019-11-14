@@ -96,13 +96,12 @@ namespace ShaderForge {
 			SF_Editor.instance = this;
 		}
 
-		[MenuItem( "Window/Shader Forge" )]
+		[MenuItem( "Tools/Shader Forge" )]
 		static void InitEmpty() {
 			if( SF_Editor.instance == null )
 				Init( null );
-			else {
-				EditorWindow.GetWindow( typeof( SF_Editor ) ); // Focus
-			}
+			else
+				EditorWindow.GetWindow<SF_Editor>(); // Focus
 		}
 		 
 		void OnEnable() {

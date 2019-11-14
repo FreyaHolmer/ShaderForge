@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Reflection;
 using ShaderForge;
 using System.Globalization;
+using System.Linq;
 
 namespace UnityEditor {
 	[CustomEditor( typeof( Shader ) )]
@@ -288,22 +289,23 @@ namespace UnityEditor {
                     ShowShaderProperties(shader);
             }
         }
-        private void ShowShaderCodeArea(Shader s)
-        {
+        private void ShowShaderCodeArea(Shader s) {
                 ShowSurfaceShaderButton(s);
                 this.ShowCompiledCodeButton(s);
                 this.ShowShaderErrors(s);
         }
 		private void ShowShaderErrors( Shader s ) {
-			int shaderErrorCount = (int)sutilGetShaderErrorCount.Invoke(null, new object[]{s} );
-			if( shaderErrorCount < 1 ) {
-				return;
+			ShaderMessage[] messages = ShaderUtil.GetShaderMessages( s );
+			if( messages.Length > 0 ) {
+				this.m_ScrollPosition = GUILayout.BeginScrollView( this.m_ScrollPosition, false, false );
+				foreach( ShaderMessage msg in messages ) {
+					using( new GUILayout.VerticalScope( EditorStyles.helpBox ) ) {
+						Texture2D icon = msg.severity == Rendering.ShaderCompilerMessageSeverity.Error ? SF_Styles.IconErrorSmall : SF_Styles.IconWarningSmall;
+						GUILayout.Label( new GUIContent( $"{msg.message} at line {msg.line} on {msg.platform}", icon ) );
+					}
+				}
+				GUILayout.EndScrollView();
 			}
-
-			object[] args = new object[] { s, sutilGetShaderErrors.Invoke( null, new object[] { s } ), this.m_ScrollPosition };
-			shinspGetErrorListUI.Invoke(null, args );
-			// ShaderInspector.ShaderErrorListUI( s, ShaderUtil.GetShaderErrors( s ), ref this.m_ScrollPosition );
-			this.m_ScrollPosition  = (Vector2)args[2];
 		}
         private void ShowShaderProperties(Shader s)
         {

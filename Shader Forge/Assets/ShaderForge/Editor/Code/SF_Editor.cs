@@ -180,6 +180,7 @@ namespace ShaderForge {
 			AddTemplate( typeof( SFN_Abs ), 			catArithmetic + "Abs" );
 			AddTemplate( typeof( SFN_Add ), 			catArithmetic + "Add", KeyCode.A );
 			AddTemplate( typeof( SFN_Blend ), 			catArithmetic + "Blend", KeyCode.B );
+			AddTemplate( typeof( SFN_BlendOver ),		catArithmetic + "Blend Over" );
 			AddTemplate( typeof( SFN_Ceil ), 			catArithmetic + "Ceil" );
 			AddTemplate( typeof( SFN_Clamp ), 			catArithmetic + "Clamp" );
 			AddTemplate( typeof( SFN_Clamp01 ), 		catArithmetic + "Clamp 0-1" );

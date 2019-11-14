@@ -17,7 +17,7 @@ namespace ShaderForge {
 
 	public delegate T Func<T>();
 	
-	public enum UpToDateState{UpToDate, OutdatedSoft, OutdatedHard};
+	public enum UpToDateState{ UpToDate, OutdatedSoft, OutdatedHard };
 
 	[Serializable]
 	public class SF_Editor : EditorWindow {
@@ -141,7 +141,6 @@ namespace ShaderForge {
 				Debug.Log( "[SF_LOG] - SF_Editor Init(" + initShader + ")" );
 			SF_Editor materialEditor = (SF_Editor)EditorWindow.GetWindow( typeof( SF_Editor ) );
 			SF_Editor.instance = materialEditor;
-			updateCheck = "";
 			bool loaded = materialEditor.InitializeInstance( initShader );
 			if( !loaded )
 				return false;
@@ -1446,49 +1445,6 @@ namespace ShaderForge {
 			GUILayout.FlexibleSpace(); GUILayout.EndHorizontal();
 		}
 
-
-		public static string updateCheck = "";
-		public static bool outOfDate = false;
-
-		public static void CheckForUpdates(){
-			updateCheck = "Checking for updates...";
-			//Debug.Log(updateCheck);
-
-			WebClient wc = new WebClient();
-
-			string latestVersion;
-
-			try{
-				latestVersion = wc.DownloadString("http://www.acegikmo.com/shaderforge/latestversion.php");
-				string[] split = latestVersion.Split('.');
-				int latestMajor = int.Parse(split[0]);
-				int latestMinor = int.Parse(split[1]);
-
-				if(latestMajor > SF_Tools.versionNumPrimary){
-					outOfDate = true;
-				} else if(latestMajor == SF_Tools.versionNumPrimary && latestMinor > SF_Tools.versionNumSecondary){
-					outOfDate = true;
-				} else {
-					outOfDate = false;
-				}
-
-				if(outOfDate){
-					updateCheck = "Shader Forge is out of date!\nYou are running " + SF_Tools.version + ", the latest version is " + latestVersion;
-				} else {
-					updateCheck = "Shader Forge is up to date!";
-				}
-
-
-
-
-			} catch ( WebException e){
-				updateCheck = "Couldn't check for updates: " + e.Status;
-			}
-		
-
-		}
-
-
 		private enum MainMenuState{Main, Credits, PresetPick}
 
 		private MainMenuState menuState = MainMenuState.Main;
@@ -1499,10 +1455,6 @@ namespace ShaderForge {
 
 			//SF_AllDependencies.DrawDependencyTree(new Rect(0f,0f,Screen.width,Screen.height));
 			//return;
-			
-			if(string.IsNullOrEmpty(updateCheck)){
-				CheckForUpdates();
-			}
 
 			GUILayout.BeginVertical();
 			{
@@ -1511,11 +1463,7 @@ namespace ShaderForge {
 
 				FlexHorizontal(()=>{
 					GUILayout.Label( SF_GUI.Logo );
-					if(outOfDate)
-						GUI.color = Color.red;
 					GUILayout.Label( SF_Tools.versionStage + " v" + SF_Tools.version, EditorStyles.boldLabel );
-					if(outOfDate)
-						GUI.color = Color.white;
 				});
 
 
@@ -1781,22 +1729,22 @@ namespace ShaderForge {
 		}
 
 
-		public void DrawPrimaryMainMenuGUI(){
+		public void DrawPrimaryMainMenuGUI() {
 
-			
-			
-			FlexHorizontal(()=>{
+
+
+			FlexHorizontal( () => {
 				GUI.color = new Color( 0.7f, 0.7f, 0.7f );
 				if( GUILayout.Button( '\u00a9' + " Freya 'Acegikmo' Holm" + '\u00e9' + "r", EditorStyles.miniLabel ) ) {
-					Application.OpenURL("https://twitter.com/FreyaHolmer");
+					Application.OpenURL( "https://twitter.com/FreyaHolmer" );
 				}
-				
+
 				SF_GUI.AssignCursorForPreviousRect( MouseCursor.Link );
 				GUI.color = Color.white;
-			});
-			
+			} );
+
 			EditorGUILayout.Separator();
-			
+
 			/*
 				FlexHorizontal(()=>{
 					if( GUILayout.Button(SF_Tools.manualLabel , GUILayout.Height( 32f ), GUILayout.Width( 190f ) ) ) {
@@ -1804,10 +1752,10 @@ namespace ShaderForge {
 					}
 				});
 			*/
-			
-			FlexHorizontal(()=>{
-				
-				if(SF_Tools.CanRunShaderForge()){
+
+			FlexHorizontal( () => {
+
+				if( SF_Tools.CanRunShaderForge() ) {
 					if( GUILayout.Button( "New Shader", GUILayout.Width( 128 ), GUILayout.Height( 64 ) ) ) {
 						menuState = MainMenuState.PresetPick;
 					}
@@ -1819,62 +1767,29 @@ namespace ShaderForge {
 					SF_Tools.UnityOutOfDateGUI();
 					GUILayout.EndVertical();
 				}
-			});
+			} );
 
-			
-			
-			FlexHorizontal(()=>{
-				if( GUILayout.Button( "Polycount thread" ) ) {
-					Application.OpenURL( "http://www.polycount.com/forum/showthread.php?t=123439" );
-				}
-				if( GUILayout.Button( "Unity thread" ) ) {
-					Application.OpenURL( "http://forum.unity3d.com/threads/222049-Shader-Forge-A-visual-node-based-shader-editor" );
-				}
+
+
+			FlexHorizontal( () => {
 				if( GUILayout.Button( SF_Tools.documentationLabel ) ) {
 					Application.OpenURL( SF_Tools.documentationURL );
 				}
 				if( GUILayout.Button( "Wiki" ) ) {
 					Application.OpenURL( "http://acegikmo.com/shaderforge/wiki" );
 				}
-				if( GUILayout.Button("Credits") ){
+			} );
+
+			FlexHorizontal( () => {
+				if( GUILayout.Button( "Shader Forge on GitHub", GUILayout.ExpandWidth( false ) ) ) {
+					Application.OpenURL( "https://github.com/FreyaHolmer/ShaderForge" );
+				}
+			});
+			FlexHorizontal( () => {
+				if( GUILayout.Button( "Credits", GUILayout.ExpandWidth( false ) ) ) {
 					menuState = MainMenuState.Credits;
 				}
 			});
-
-			
-			FlexHorizontal( () => {
-				if( GUILayout.Button( SF_Tools.bugReportLabel, GUILayout.Height( 32f ), GUILayout.Width( 180f ) ) ) {
-					Application.OpenURL( SF_Tools.bugReportURL );
-				}
-			} );
-
-			FlexHorizontal( () => {
-				if( GUILayout.Button( "Forums", GUILayout.Height( 32f ), GUILayout.Width( 120f ) ) ) {
-					Application.OpenURL( "http://neatcorporation.com/forums/viewforum.php?f=1" );
-				}
-			} );
-			
-			EditorGUILayout.Separator();
-			FlexHorizontal(()=>{
-				GUILayout.Label(updateCheck);
-			});
-			if(outOfDate){
-				float t = (Mathf.Sin((float)EditorApplication.timeSinceStartup*Mathf.PI*2f)*0.5f)+0.5f;
-				GUI.color = Color.Lerp(Color.white, new Color(0.4f,0.7f,1f),t);
-				FlexHorizontal(()=>{
-					if(GUILayout.Button("Download latest version")){
-						Application.OpenURL( "https://www.assetstore.unity3d.com/#/content/14147" );
-					}
-				});
-				t = (Mathf.Sin((float)EditorApplication.timeSinceStartup*Mathf.PI*2f-1)*0.5f)+0.5f;
-				GUI.color = Color.Lerp(Color.white, new Color(0.4f,0.7f,1f),t);
-				FlexHorizontal(()=>{
-					if(GUILayout.Button("What's new?")){
-						Application.OpenURL( "http://acegikmo.com/shaderforge/changelog/" );
-					}
-				});
-				GUI.color = Color.green;
-			}
 		}
 		
 		

@@ -2167,6 +2167,8 @@ namespace ShaderForge {
 		void VertexInputStruct() {
 			App( "struct VertexInput {" );
 			scope++;
+			if (dependencies.hasPropertiesWithInstancing)
+				App("UNITY_VERTEX_INPUT_INSTANCE_ID");
 			App( "float4 vertex : POSITION;" );
 			CommonVertexData();
 			scope--;
@@ -2231,6 +2233,8 @@ namespace ShaderForge {
 			App( "struct VertexOutput {" );
 			scope++;
 			{
+				if( dependencies.hasPropertiesWithInstancing )
+					App( "UNITY_VERTEX_INPUT_INSTANCE_ID" );
 				if( currentPass == PassType.ShadCast ) {
 					App( "V2F_SHADOW_CASTER;" );
 					dependencies.IncrementTexCoord( 1 );
@@ -2238,8 +2242,6 @@ namespace ShaderForge {
 					App( "float4 pos : SV_POSITION;" ); // Already included in shadow passes
 				}
 
-				if( dependencies.hasPropertiesWithInstancing )
-					App( "UNITY_VERTEX_INPUT_INSTANCE_ID" );
 
 				if( ps.catLighting.IsVertexLit() )
 					App( "float3 vtxLight : COLOR;" );

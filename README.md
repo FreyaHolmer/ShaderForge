@@ -5,7 +5,7 @@ I'll mostly do compatibility updates for future versions of Unity whenever I nee
 
 also, please don't pressure me into doing or fixing things because holy heck I was burnt out at the end of Shader Forge's first lifetime 👀 I'm mostly working on this casually, either when I need a fix or a new feature, or when I have time to fix something other people really want to see fixed!
 
-also, if you enjoy or are currently enjoying or finding Shader Forge useful, please consider supporing me, if you're able to!
+also, if you enjoy or are currently enjoying or finding Shader Forge useful, please consider supporting me, if you're able to!
 
 you can either do a one-time donation on PayPal at https://www.paypal.me/acegikmo ✨
 

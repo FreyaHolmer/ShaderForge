@@ -56,16 +56,16 @@ namespace ShaderForge {
 			string dotStr = "dot(_a, _b)";
 			switch( mode ) {
 				case "POS":
-					dotStr = "max(0," + dotStr + ")";
+					dotStr = $"max(0,{dotStr})";
 					break;
 				case "NEG":
-					dotStr = "min(0," + dotStr + ")";
+					dotStr = $"min(0,{dotStr})";
 					break;
 				case "ABS":
-					dotStr = "abs(" + dotStr + ")";
+					dotStr = $"abs({dotStr})";
 					break;
 				case "NRM":
-					dotStr = "0.5*" + dotStr + "+0.5";
+					dotStr = $"(0.5*{dotStr}+0.5)";
 					break;
 			}
 			return new string[]{dotStr};
@@ -76,13 +76,13 @@ namespace ShaderForge {
 			string dotStr = "dot(" + GetConnectorByStringID( "A" ).TryEvaluate() + "," + GetConnectorByStringID( "B" ).TryEvaluate() + ")";
 			switch( dotType ) {
 				case DotType.Positive:
-					return "max(0," + dotStr + ")";
+					return $"max(0,{dotStr})";
 				case DotType.Negative:
-					return "min(0," + dotStr + ")";
+					return $"min(0,{dotStr})";
 				case DotType.Abs:
-					return "abs(" + dotStr + ")";
+					return $"abs({dotStr})";
 				case DotType.Normalized:
-					return "0.5*" + dotStr + "+0.5";
+					return $"(0.5*{dotStr}+0.5)";
 			}
 			return dotStr;
 		}

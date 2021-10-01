@@ -20,7 +20,8 @@ namespace ShaderForge {
 		ps4 		= 8,	// - PlayStation 4
 		psp2 		= 9,	// - PlayStation Vita
 		n3ds		= 10,	// - Nintendo 3DS
-		wiiu		= 11	// - Nintendo Wii U
+		wiiu		= 11,	// - Nintendo Wii U
+		ps5			= 12	// - PlayStation 5
 	};
 	
 	
@@ -51,7 +52,8 @@ namespace ShaderForge {
 			"PlayStation 4",
 			"PlayStation Vita",
 			"Nintendo 3DS",
-			"Nintendo Wii U"
+			"Nintendo Wii U",
+			"PlayStation 5"
 		};
 
 		public const string alphabetLower = "abcdefghijklmnopqrstuvwxyz";

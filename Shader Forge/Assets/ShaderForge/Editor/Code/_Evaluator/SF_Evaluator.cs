@@ -222,6 +222,10 @@ namespace ShaderForge {
 			if( ps.HasTessellation() ) {
 				dependencies.NeedTessellation();
 			}
+			
+			if( ps.HasTessellationPhong() ) {
+				dependencies.NeedTessellationPhong();
+			}
 
 			if( ps.HasDisplacement() ) {
 				dependencies.NeedDisplacement();
@@ -2870,7 +2874,31 @@ namespace ShaderForge {
 			scope++;
 			App( "VertexInput v = (VertexInput)0;" );
 
-			TransferBarycentric( "vertex" );
+			if (dependencies.tessellationPhong) {
+				// Apply phong tessellation. Based on code from flammpfeil: https://gist.github.com/flammpfeil/e9e178170a7cbd9f4806516ac11da09b
+				// Thanks, flammpfeil!
+				App( "" );
+				App( "// Apply phong tessellation." );
+				App( "float phong = " + ps.n_tessellationPhong + ";" );
+				App( "float3 normalz[3];" );
+				App( "for (int s = 0; s < 3; ++s)" );
+				scope++;
+				App( "normalz[s] = normalize(vi[s].normal);" );
+				scope--;
+
+				App( "v.vertex = vi[0].vertex * bary.x + vi[1].vertex * bary.y + vi[2].vertex * bary.z;" );
+				App( "float3 pp[3];" );
+				App( "for (int i = 0; i < 3; ++i)" );
+				scope++;
+				App( "pp[i] = v.vertex.xyz - normalz[i] * (dot(v.vertex.xyz, normalz[i]) - dot(vi[i].vertex.xyz, normalz[i]));" );
+				scope--;
+				App( "v.vertex.xyz = phong * (pp[0] * bary.x + pp[1] * bary.y + pp[2] * bary.z) + (1.0f - phong) * v.vertex.xyz;" );
+				App( "" );
+			}
+			else {
+				TransferBarycentric( "vertex" );
+			}
+
 			if( dependencies.vert_in_normals )
 				TransferBarycentric( "normal" );
 			if( dependencies.vert_in_tangents )

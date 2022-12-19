@@ -32,6 +32,7 @@ namespace ShaderForge {
 			, vertexOffset
 			, displacement
 			, tessellation
+			, tessellationPhong
 		;
 
 		public SFN_Final() {
@@ -45,7 +46,7 @@ namespace ShaderForge {
 			AssignID();
 			base.nodeName = "Main";
 			Vector2 pos = new Vector2( 32768, 32768 );
-			base.rect = new Rect( pos.x - NODE_WIDTH / 2, pos.y - NODE_HEIGHT / 2, NODE_WIDTH * 1.7f, 400 + 20f * 2 );
+			base.rect = new Rect( pos.x - NODE_WIDTH / 2, pos.y - NODE_HEIGHT / 2, NODE_WIDTH * 1.7f, 400 + 20f * 3 );
 
 			this.connectors = new SF_NodeConnector[]{
 				 
@@ -76,7 +77,8 @@ namespace ShaderForge {
 				outlineColor 			= SF_NodeConnector.Create(this,"olcol",		 	 	  "Outline Color",  ConType.cInput, ValueType.VTvPending	,true,"float3(0,0,0)"	).Skip(PassType.Meta, PassType.ShadCast, PassType.FwdAdd, PassType.FwdBase).TypecastTo(3).DisplayLockIfDeferredPrePassIsOn(),
 				vertexOffset 			= SF_NodeConnector.Create(this,"voffset",		 	  "Vertex Offset",	ConType.cInput, ValueType.VTvPending	,true					).ForceBlock(ShaderProgram.Vert).TypecastTo(3),
 				displacement 			= SF_NodeConnector.Create(this,"disp",		 		   "Displacement",	ConType.cInput, ValueType.VTv3			,true					).ForceBlock(ShaderProgram.Vert).TypecastTo(3),
-				tessellation 			= SF_NodeConnector.Create(this,"tess",		 		   "Tessellation",	ConType.cInput, ValueType.VTv1			,true					).ForceBlock(ShaderProgram.Vert)
+				tessellation 			= SF_NodeConnector.Create(this,"tess",		 		   "Tessellation",	ConType.cInput, ValueType.VTv1			,true					).ForceBlock(ShaderProgram.Vert),
+				tessellationPhong		= SF_NodeConnector.Create(this,"tessPhong",		 "Tessellation Phong",	ConType.cInput, ValueType.VTv1			,true					).ForceBlock(ShaderProgram.Vert)
 			};
 
 			//distortion.enableState = EnableState.Disabled;

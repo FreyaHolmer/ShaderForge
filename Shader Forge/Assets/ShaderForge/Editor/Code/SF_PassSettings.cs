@@ -120,6 +120,9 @@ namespace ShaderForge {
 		public string n_tessellation {
 			get { return mOut.tessellation.TryEvaluate(); }
 		}
+		public string n_tessellationPhong {
+			get { return mOut.tessellationPhong.TryEvaluate(); }
+		}
 		public SFN_Final mOut {
 			get { return editor.mainNode; }
 		}
@@ -309,6 +312,9 @@ namespace ShaderForge {
 
 		public bool HasTessellation() {
 			return mOut.tessellation.IsConnectedEnabledAndAvailable();
+		}
+		public bool HasTessellationPhong() {
+			return mOut.tessellationPhong.IsConnectedEnabledAndAvailable();
 		}
 		public bool HasOutline() {
 			return mOut.outlineWidth.IsConnectedEnabledAndAvailable();

@@ -32,6 +32,7 @@ namespace ShaderForge {
 		public bool grabPass = false;
 		public bool scene_uvs = false;
 		public bool tessellation = false;
+		public bool tessellationPhong = false;
 		public bool displacement = false;
 
 		public bool frag_facing = false;
@@ -178,6 +179,9 @@ namespace ShaderForge {
 			tessellation = true;
 		}
 
+		public void NeedTessellationPhong() {
+			tessellationPhong = true;
+		}
 
 		public void NeedDisplacement() {
 			displacement = true;
